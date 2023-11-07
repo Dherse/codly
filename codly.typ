@@ -224,7 +224,6 @@
           }
 
           set par(justify: false)
-          set align(horizon)
           if config.width-numbers != none {
             place(
               horizon + left,
