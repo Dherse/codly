@@ -18,7 +18,7 @@
 
 // Default language-block style
 #let language-block(name, icon, color) = {
-  let content = name + icon
+  let content = icon + name
   locate(loc => {
     let config = state("codly-config").at(loc)
     style(styles => {
