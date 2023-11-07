@@ -16,6 +16,25 @@
   state("codly-config").update(none)
 }
 
+// Default language-block style
+#let language-block(name, icon, color) = {
+  let content = name + icon
+  locate(loc => {
+    let config = state("codly-config").at(loc)
+    style(styles => {
+      let height = measure(content, styles).height
+      box(
+        radius: config.radius, 
+        fill: color.lighten(60%), 
+        inset: config.padding,
+        height: height + config.padding * 2,
+        stroke: config.stroke-width + color,
+        content,
+      )
+    })
+  })
+}
+
 // Configures codly.
 #let codly(
   // The list of languages, allows setting a display name and an icon,
@@ -57,6 +76,13 @@
   // This is a function applied to the text of every line number.
   numbers-format: text,
 
+  // A function that takes 3 positional parameters:
+  // - name
+  // - icon
+  // - color
+  // It returns the content for the language block.
+  language-block: language-block,
+
   // Whether this code block is breakable.
   breakable: true,
 ) = locate(loc => {
@@ -75,6 +101,7 @@
       numbers-format: numbers-format,
       breakable: breakable,
       stroke-color: stroke-color,
+      language-block: language-block
     ))
   } else {
     let folded_langs = old.languages;
@@ -95,6 +122,7 @@
       numbers-format: numbers-format,
       breakable: breakable,
       stroke-color: stroke-color,
+      language-block: language-block
     ))
   }
 })
@@ -122,42 +150,20 @@
     } else if it.lang == none {
       none
     } else if it.lang in config.languages {
-      let lang =config. languages.at(it.lang);
-      let content = if config.display-name == true and config.display-icon == true {
-        lang.icon + lang.name
-      } else if config.display-name == true {
+      let lang = config.languages.at(it.lang);
+      let name = if config.display-name {
         lang.name
       } else {
-        lang.icon
-      };
-
-      style(styles => {
-        let height = measure(content, styles).height
-        box(
-          radius: config.radius, 
-          fill: lang.color.lighten(60%), 
-          inset: config.padding,
-          height: height + config.padding * 2,
-          stroke: config.stroke-width + lang.color,
-          content,
-        )
-      })
-    } else {
-      if config.display-name == false {
-        style(styles => {
-          let height = measure(it.lang, styles).height
-          box(
-            radius: config.radius, 
-            fill: config.default-color.lighten(60%), 
-            inset: config.padding,
-            height: height + padding * 2,
-            stroke: config.stroke-width + config.default-color,
-            it.lang,
-          )
-        })
-      } else {
-        none
+        []
       }
+      let icon = if config.display-icon {
+        lang.icon
+      } else {
+        []
+      }
+      (config.language-block)(name, icon, lang.color)
+    } else if config.display-name {
+      (config.language-block)(it.lang, [], config.default-color)
     };
 
     let offset = state("codly-offset").at(loc);
