@@ -53,6 +53,10 @@
   // If set to `none`, the numbers column will be disabled.
   width-numbers: 2em,
 
+  // Format of the line numbers.
+  // This is a function applied to the text of every line number.
+  numbers-format: text,
+
   // Whether this code block is breakable.
   breakable: true,
 ) = locate(loc => {
@@ -68,6 +72,7 @@
       zebra-color: zebra-color,
       stroke-width: stroke-width,
       width-numbers: width-numbers,
+      numbers-format: numbers-format,
       breakable: breakable,
       stroke-color: stroke-color,
     ))
@@ -87,6 +92,7 @@
       zebra-color: zebra-color,
       stroke-width: stroke-width,
       width-numbers: width-numbers,
+      numbers-format: numbers-format,
       breakable: breakable,
       stroke-color: stroke-color,
     ))
@@ -206,11 +212,12 @@
           }
 
           set par(justify: false)
+          set align(horizon)
           if config.width-numbers != none {
             place(
-              top + left,
-              dx: -config.width-numbers, 
-              [#(offset + it.number)]
+              horizon + left,
+              dx: -config.width-numbers,
+              (config.numbers-format)[#(offset + it.number)]
             )
           }
           it
