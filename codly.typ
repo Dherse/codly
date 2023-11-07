@@ -58,6 +58,10 @@
   // Padding of a code block.
   padding: 0.32em,
 
+  // Fill color of lines.
+  // If zebra color is enabled, this is just for odd lines.
+  fill: white,
+
   // The zebra color to use or `none` to disable.
   zebra-color: luma(240),
 
@@ -95,6 +99,7 @@
       default-color: default-color,
       radius: radius,
       padding: padding,
+      fill: fill,
       zebra-color: zebra-color,
       stroke-width: stroke-width,
       width-numbers: width-numbers,
@@ -117,6 +122,7 @@
       radius: radius,
       padding: padding,
       zebra-color: zebra-color,
+      fill: fill,
       stroke-width: stroke-width,
       width-numbers: width-numbers,
       numbers-format: numbers-format,
@@ -200,10 +206,10 @@
         width: 100%,
         height: 1.2em + config.padding * 2,
         inset: (left: config.padding + width, top: config.padding + 0.1em, rest: config.padding),
-        fill: if calc.rem(it.number, 2) == 0 {
+        fill: if config.zebra-color != none and calc.rem(it.number, 2) == 0 {
           config.zebra-color
         } else {
-          white
+          none
         },
         radius: border(it.number, it.count).radius,
         stroke: border(it.number, it.count).stroke,
@@ -241,6 +247,8 @@
       breakable: config.breakable,
       clip: false,
       width: 100%,
+      radius: config.radius,
+      fill: config.fill,
       stack(dir: ttb, ..it.lines)
     )
 
