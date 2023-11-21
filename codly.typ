@@ -16,6 +16,25 @@
   state("codly-config").update(none)
 }
 
+// Default language-block style
+#let language-block(name, icon, color) = {
+  let content = icon + name
+  locate(loc => {
+    let config = state("codly-config").at(loc)
+    style(styles => {
+      let height = measure(content, styles).height
+      box(
+        radius: config.radius, 
+        fill: color.lighten(60%), 
+        inset: config.padding,
+        height: height + config.padding * 2,
+        stroke: config.stroke-width + color,
+        content,
+      )
+    })
+  })
+}
+
 // Configures codly.
 #let codly(
   // The list of languages, allows setting a display name and an icon,
@@ -39,6 +58,10 @@
   // Padding of a code block.
   padding: 0.32em,
 
+  // Fill color of lines.
+  // If zebra color is enabled, this is just for odd lines.
+  fill: white,
+
   // The zebra color to use or `none` to disable.
   zebra-color: luma(240),
 
@@ -53,6 +76,17 @@
   // If set to `none`, the numbers column will be disabled.
   width-numbers: 2em,
 
+  // Format of the line numbers.
+  // This is a function applied to the text of every line number.
+  numbers-format: text,
+
+  // A function that takes 3 positional parameters:
+  // - name
+  // - icon
+  // - color
+  // It returns the content for the language block.
+  language-block: language-block,
+
   // Whether this code block is breakable.
   breakable: true,
 ) = locate(loc => {
@@ -65,11 +99,14 @@
       default-color: default-color,
       radius: radius,
       padding: padding,
+      fill: fill,
       zebra-color: zebra-color,
       stroke-width: stroke-width,
       width-numbers: width-numbers,
+      numbers-format: numbers-format,
       breakable: breakable,
       stroke-color: stroke-color,
+      language-block: language-block
     ))
   } else {
     let folded_langs = old.languages;
@@ -85,10 +122,13 @@
       radius: radius,
       padding: padding,
       zebra-color: zebra-color,
+      fill: fill,
       stroke-width: stroke-width,
       width-numbers: width-numbers,
+      numbers-format: numbers-format,
       breakable: breakable,
       stroke-color: stroke-color,
+      language-block: language-block
     ))
   }
 })
@@ -116,42 +156,20 @@
     } else if it.lang == none {
       none
     } else if it.lang in config.languages {
-      let lang =config. languages.at(it.lang);
-      let content = if config.display-name == true and config.display-icon == true {
-        lang.icon + lang.name
-      } else if config.display-name == true {
+      let lang = config.languages.at(it.lang);
+      let name = if config.display-name {
         lang.name
       } else {
-        lang.icon
-      };
-
-      style(styles => {
-        let height = measure(content, styles).height
-        box(
-          radius: config.radius, 
-          fill: lang.color.lighten(60%), 
-          inset: config.padding,
-          height: height + config.padding * 2,
-          stroke: config.stroke-width + lang.color,
-          content,
-        )
-      })
-    } else {
-      if config.display-name == false {
-        style(styles => {
-          let height = measure(it.lang, styles).height
-          box(
-            radius: config.radius, 
-            fill: config.default-color.lighten(60%), 
-            inset: config.padding,
-            height: height + padding * 2,
-            stroke: config.stroke-width + config.default-color,
-            it.lang,
-          )
-        })
-      } else {
-        none
+        []
       }
+      let icon = if config.display-icon {
+        lang.icon
+      } else {
+        []
+      }
+      (config.language-block)(name, icon, lang.color)
+    } else if config.display-name {
+      (config.language-block)(it.lang, [], config.default-color)
     };
 
     let offset = state("codly-offset").at(loc);
@@ -188,10 +206,10 @@
         width: 100%,
         height: 1.2em + config.padding * 2,
         inset: (left: config.padding + width, top: config.padding + 0.1em, rest: config.padding),
-        fill: if calc.rem(it.number, 2) == 0 {
+        fill: if config.zebra-color != none and calc.rem(it.number, 2) == 0 {
           config.zebra-color
         } else {
-          white
+          none
         },
         radius: border(it.number, it.count).radius,
         stroke: border(it.number, it.count).stroke,
@@ -208,9 +226,9 @@
           set par(justify: false)
           if config.width-numbers != none {
             place(
-              top + left,
-              dx: -config.width-numbers, 
-              [#(offset + it.number)]
+              horizon + left,
+              dx: -config.width-numbers,
+              (config.numbers-format)[#(offset + it.number)]
             )
           }
           it
@@ -228,6 +246,8 @@
       breakable: config.breakable,
       clip: false,
       width: 100%,
+      radius: config.radius,
+      fill: config.fill,
       stack(dir: ttb, ..it.lines)
     )
 
