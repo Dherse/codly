@@ -24,8 +24,8 @@
     style(styles => {
       let height = measure(content, styles).height
       box(
-        radius: config.radius, 
-        fill: color.lighten(60%), 
+        radius: config.radius,
+        fill: color.lighten(60%),
         inset: config.padding,
         height: height + config.padding * 2,
         stroke: config.stroke-width + color,
