@@ -44,7 +44,7 @@ To start using codly, you need to initialize codly using a show rule:
 #show: codly-init.with()
 ```
 
-Then you need to congigure codly with your parameters:
+Then you need to configure codly with your parameters:
 
 ```typ
 #codly(
@@ -75,11 +75,11 @@ To locally disable codly, you can just do the following, you can then later re-e
 ### Setting an offset
 
 If you wish to add an offset to your code block, but without selecting a subset of lines, you can use the `codly-offset` function:
-    
-```typ 
+
+```typ
 // Sets a 5 line offset
 #codly-offset(5)
-```	
+```
 
 ### Selecting a subset of lines
 
@@ -112,7 +112,7 @@ You disable zebra striping by setting the `zebra-color` to white.
 ### Customize the stroke
 
 You can customize the stroke surrounding the figure using the `stroke-width` and `stroke-color` parameters of the `codly` function:
-    
+
 ```typ
 #codly(
   stroke-width: 1pt,
