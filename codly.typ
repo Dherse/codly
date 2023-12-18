@@ -24,8 +24,8 @@
     style(styles => {
       let height = measure(content, styles).height
       box(
-        radius: config.radius, 
-        fill: color.lighten(60%), 
+        radius: config.radius,
+        fill: color.lighten(60%),
         inset: config.padding,
         height: height + config.padding * 2,
         stroke: config.stroke-width + color,
@@ -89,6 +89,11 @@
 
   // Whether this code block is breakable.
   breakable: true,
+
+  // Whether each raw line in a code block is breakable.
+  // Setting this to true may cause problems when your raw block is split across pagebreaks,
+  // so only change this setting if you're sure you need it.
+  breakable-lines: false,
 ) = locate(loc => {
   let old = state("codly-config").at(loc);
   if old == none {
@@ -105,6 +110,7 @@
       width-numbers: width-numbers,
       numbers-format: numbers-format,
       breakable: breakable,
+      breakable-lines: breakable-lines,
       stroke-color: stroke-color,
       language-block: language-block
     ))
@@ -127,6 +133,7 @@
       width-numbers: width-numbers,
       numbers-format: numbers-format,
       breakable: breakable,
+      breakable-lines: breakable-lines,
       stroke-color: stroke-color,
       language-block: language-block
     ))
@@ -206,6 +213,7 @@
         width: 100%,
         height: 1.2em + config.padding * 2,
         inset: (left: config.padding + width, top: config.padding + 0.1em, rest: config.padding),
+        breakable: config.breakable-lines,
         fill: if config.zebra-color != none and calc.rem(it.number, 2) == 0 {
           config.zebra-color
         } else {
