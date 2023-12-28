@@ -228,7 +228,7 @@
       breakable: config.breakable,
       clip: false,
       width: 100%,
-      stack(dir: ttb, ..it.lines)
+      align(left, stack(dir: ttb, ..it.lines))
     )
 
     codly-offset()
