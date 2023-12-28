@@ -73,6 +73,9 @@ pub fn main() {
 
 #codly(
   display-icon: false,
+  stroke-color: luma(240),
+  width-numbers: 2.5em,
+  zebra-color: luma(240),
 )
 
 ```rust
@@ -81,9 +84,17 @@ pub fn main() {
 }
 ```
 
-#pagebreak(weak: true)
+```rust
+pub fn function<R, S, T>() -> R where T: From<S>, S: Into<R>, R: Send + Sync + 'static {
+    println!("Hello, world!");
+}
+```
 
-#v(100% - 2pt)
+#v(15%)
+
+#codly(
+  breakable: true
+)
 
 ```rust
 pub fn main() {

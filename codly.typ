@@ -1,6 +1,48 @@
+#let __codly-enabled = state("codly-enabled", false)
+#let __codly-offset = state("codly-offset", 0)
+#let __codly-range = state("codly-range", none)
+#let __codly-languages = state("codly-languages", (:))
+#let __codly-display-names = state("codly-display-names", true)
+#let __codly-display-icons = state("codly-display-icons", true)
+#let __codly-default-color = state("codly-default-color", rgb("#283593"))
+#let __codly-radius = state("codly-radius", 0.32em)
+#let __codly-padding = state("codly-padding", 0.32em)
+#let __codly-fill = state("codly-fill", white)
+#let __codly-zebra-color = state("codly-zebra-color", luma(240))
+#let __codly-stroke-width = state("codly-stroke-width", none)
+#let __codly-stroke-color = state("codly-stroke-color", luma(240))
+#let __codly-width-numbers = state("codly-width-numbers", 2em)
+#let __codly-numbers-format = state("codly-numbers-format", text)
+#let __codly-breakable = state("codly-breakable", true)
+#let __codly-breakable-lines = state("codly-breakable-lines", false)
+
+// Default language-block style
+#let default-language-block(name, icon, color, loc) = {
+  let radius = __codly-radius.at(loc)
+  let padding = __codly-padding.at(loc)
+  let stroke-width = __codly-stroke-width.at(loc)
+  let color = if color == none { __codly-default-color.at(loc) } else { color }
+  let content = icon + name
+  locate(loc => {
+    style(styles => {
+      let height = measure(content, styles).height
+      box(
+        radius: radius,
+        fill: color.lighten(60%),
+        inset: padding,
+        height: height + padding * 2,
+        stroke: stroke-width + color,
+        content,
+      )
+    })
+  })
+}
+
+#let __codly-language-block = state("codly-language-block", default-language-block)
+
 // Lets you set a line number offset.
 #let codly-offset(offset: 0) = {
-  state("codly-offset").update(offset)
+  __codly-offset.update(offset)
 }
 
 // Lets you set a range of line numbers to highlight.
@@ -8,31 +50,29 @@
   start: 1,
   end: none,
 ) = {
-  state("codly-range").update((start, end))
+  __codly-range.update((start, end))
 }
 
 // Disables codly.
 #let disable-codly() = {
-  state("codly-config").update(none)
-}
-
-// Default language-block style
-#let language-block(name, icon, color) = {
-  let content = icon + name
-  locate(loc => {
-    let config = state("codly-config").at(loc)
-    style(styles => {
-      let height = measure(content, styles).height
-      box(
-        radius: config.radius,
-        fill: color.lighten(60%),
-        inset: config.padding,
-        height: height + config.padding * 2,
-        stroke: config.stroke-width + color,
-        content,
-      )
-    })
-  })
+  __codly-enabled.update(false)
+  __codly-offset.update(0)
+  __codly-range.update(none)
+  __codly-languages.update((:))
+  __codly-display-names.update(true)
+  __codly-display-icons.update(true)
+  __codly-default-color.update(rgb("#283593"))
+  __codly-radius.update(0.32em)
+  __codly-padding.update(0.32em)
+  __codly-fill.update(white)
+  __codly-zebra-color.update(none)
+  __codly-stroke-width.update(none)
+  __codly-stroke-color.update(luma(240))
+  __codly-width-numbers.update(2em)
+  __codly-numbers-format.update(text)
+  __codly-breakable.update(true)
+  __codly-breakable-lines.update(false)
+  __codly-language-block.update(default-language-block)
 }
 
 // Configures codly.
@@ -40,112 +80,191 @@
   // The list of languages, allows setting a display name and an icon,
   // it should be a dict of the form:
   //  `<language-name>: (name: <display-name>, icon: <icon-content>, color: <color>)`
-  languages: (:),
+  languages: none,
 
   // Whether to display the language name.
-  display-name: true,
+  display-name: none,
 
   // Whether to display the language icon.
-  display-icon: true,
+  display-icon: none,
 
   // The default color for a language not in the list.
   // Only used if `display-icon` or `display-name` is `true`.
-  default-color: rgb("#283593"),
+  default-color: none,
 
   // Radius of a code block.
-  radius: 0.32em,
+  radius: none,
 
   // Padding of a code block.
-  padding: 0.32em,
+  padding: none,
 
   // Fill color of lines.
   // If zebra color is enabled, this is just for odd lines.
-  fill: white,
+  fill: none,
 
   // The zebra color to use or `none` to disable.
-  zebra-color: luma(240),
+  zebra-color: none,
 
   // The stroke width to use to surround the code block.
   // Set to `none` to disable.
-  stroke-width: 0.1em,
+  stroke-width: none,
 
   // The stroke color to use to surround the code block.
-  stroke-color: luma(240),
+  stroke-color: none,
 
   // The width of the numbers column.
   // If set to `none`, the numbers column will be disabled.
-  width-numbers: 2em,
+  width-numbers: none,
 
   // Format of the line numbers.
   // This is a function applied to the text of every line number.
-  numbers-format: text,
+  numbers-format: none,
 
   // A function that takes 3 positional parameters:
   // - name
   // - icon
   // - color
   // It returns the content for the language block.
-  language-block: language-block,
+  language-block: none,
 
   // Whether this code block is breakable.
-  breakable: true,
+  breakable: none,
 
   // Whether each raw line in a code block is breakable.
   // Setting this to true may cause problems when your raw block is split across pagebreaks,
   // so only change this setting if you're sure you need it.
-  breakable-lines: false,
-) = locate(loc => {
-  let old = state("codly-config").at(loc);
-  if old == none {
-    state("codly-config").update((
-      languages: languages,
-      display-name: display-name,
-      display-icon: display-icon,
-      default-color: default-color,
-      radius: radius,
-      padding: padding,
-      fill: fill,
-      zebra-color: zebra-color,
-      stroke-width: stroke-width,
-      width-numbers: width-numbers,
-      numbers-format: numbers-format,
-      breakable: breakable,
-      breakable-lines: breakable-lines,
-      stroke-color: stroke-color,
-      language-block: language-block
-    ))
-  } else {
-    let folded_langs = old.languages;
-    for (lang, def) in languages {
-      folded_langs.insert(lang, def)
-    }
+  breakable-lines: none,
+) = {
+  // Enable codly
+  __codly-enabled.update(true)
 
-    state("codly-config").update((
-      languages: folded_langs,
-      display-name: display-name,
-      display-icon: display-icon,
-      default-color: default-color,
-      radius: radius,
-      padding: padding,
-      zebra-color: zebra-color,
-      fill: fill,
-      stroke-width: stroke-width,
-      width-numbers: width-numbers,
-      numbers-format: numbers-format,
-      breakable: breakable,
-      breakable-lines: breakable-lines,
-      stroke-color: stroke-color,
-      language-block: language-block
-    ))
+  if languages != none {
+    assert(type(languages) == type((:)), message: "codly: `languages` must be a dict")
+    __codly-languages.update(languages)
   }
-})
+
+  if display-name != none {
+    assert(type(display-name) == bool, message: "codly: `display-name` must be a dict")
+    __codly-display-names.update(display-name)
+  }
+
+  if display-icon != none {
+    assert(type(display-icon) == bool, message: "codly: `display-icon` must be a dict")
+    __codly-display-icons.update(display-icon)
+  }
+
+  if default-color != none {
+    assert(
+      type(default-color) == color
+        or type(default-color) == gradient
+        or type(default-color) == pattern,
+      message: "codly: `default-color` must be a color or a gradient or a pattern"
+    )
+    __codly-default-color.update(default-color)
+  }
+
+  if radius != none {
+    assert(
+      type(radius) == type(1pt + 0.32em),
+      message: "codly: `radius` must be a length"
+    )
+    __codly-radius.update(radius)
+  }
+
+  if padding != none {
+    assert(
+      type(padding) == type(1pt + 0.32em),
+      message: "codly: `padding` must be a length"
+    )
+    __codly-padding.update(padding)
+  }
+
+  if fill != none {
+    assert(
+      type(fill) == color
+        or type(fill) == gradient
+        or type(fill) == pattern,
+      message: "codly: `fill` must be a color or a gradient or a pattern"
+    )
+    __codly-fill.update(fill)
+  }
+
+  if zebra-color != none {
+    assert(
+      zebra-color == none
+        or type(zebra-color) == color
+        or type(zebra-color) == gradient
+        or type(zebra-color) == pattern,
+      message: "codly: `zebra-color` must be none, a color, a gradient, or a pattern"
+    )
+    __codly-zebra-color.update(zebra-color)
+  }
+
+  if stroke-width != none {
+    assert(
+      type(stroke-width) == type(1pt + 0.1em),
+      message: "codly: `stroke-width` must be a length"
+    )
+    __codly-stroke-width.update(stroke-width)
+  }
+
+  if stroke-color != none {
+    assert(
+      stroke-color == none
+        or type(stroke-color) == color
+        or type(stroke-color) == gradient
+        or type(stroke-color) == pattern,
+      message: "codly: `stroke-color` must be none, a color, a gradient, or a pattern"
+    )
+    __codly-stroke-color.update(stroke-color)
+  }
+
+  if width-numbers != none {
+    assert(
+      width-numbers == none or type(width-numbers) == type(1pt + 2em),
+      message: "codly: `width-numbers` must be a length or none"
+    )
+    __codly-width-numbers.update(width-numbers)
+  }
+
+  if numbers-format != none {
+    assert(
+      type(numbers-format) == function,
+      message: "codly: `numbers-format` must be a function"
+    )
+    __codly-numbers-format.update(numbers-format)
+  }
+
+  if breakable != none {
+    assert(
+      type(breakable) == bool,
+      message: "codly: `breakable` must be a bool"
+    )
+    __codly-breakable.update(breakable)
+  }
+
+  if breakable-lines != none {
+    assert(
+      type(breakable-lines) == bool,
+      message: "codly: `breakable-lines` must be a bool"
+    )
+    __codly-breakable-lines.update(breakable-lines)
+  }
+
+  if language-block != none {
+    assert(
+      type(language-block) == function,
+      message: "codly: `language-block` must be a function"
+    )
+    __codly-language-block.update(language-block)
+  }
+}
 
 #let codly-init(
   body,
 ) = {
   show raw.where(block: true): it => locate(loc => {
-    let config = state("codly-config").at(loc)
-    let range = state("codly-range").at(loc)
+    let range = __codly-range.at(loc)
     let in_range(line) = {
       if range == none {
         true
@@ -155,107 +274,135 @@
         line >= range.at(0) and line <= range.at(1)
       }
     }
-    if config == none {
+    if __codly-enabled.at(loc) != true {
       return it
     }
-    let language_block = if config.display-name == false and config.display-icon == false {
+
+    // The little box containing the language name and icon.
+    let languages = __codly-languages.at(loc)
+    let display-names = __codly-display-names.at(loc)
+    let display-icons = __codly-display-icons.at(loc)
+    let language-block = __codly-language-block.at(loc)
+    let default-color = __codly-default-color.at(loc)
+    let radius = __codly-radius.at(loc)
+    let language-block = if display-names != true and display-icons != true {
       none
     } else if it.lang == none {
       none
-    } else if it.lang in config.languages {
-      let lang = config.languages.at(it.lang);
-      let name = if config.display-name {
+    } else if it.lang in languages {
+      let lang = languages.at(it.lang);
+      let name = if display-names {
         lang.name
       } else {
         []
       }
-      let icon = if config.display-icon {
+      let icon = if display-icons {
         lang.icon
       } else {
         []
       }
-      (config.language-block)(name, icon, lang.color)
-    } else if config.display-name {
-      (config.language-block)(it.lang, [], config.default-color)
+      (language-block)(name, icon, lang.color, loc)
+    } else if display-names {
+      (language-block)(it.lang, [], default-color, loc)
     };
 
-    let offset = state("codly-offset").at(loc);
+    let offset = __codly-offset.at(loc);
     let start = if range == none { 1 } else { range.at(0) };
+    let stroke-width = __codly-stroke-width.at(loc)
+    let stroke-color = __codly-stroke-color.at(loc)
     let border(i, len) = {
-      let end = if range == none { len } else if range.at(1) == none { len } else { range.at(1) };
-
-      let stroke-width = if config.stroke-width == none { 0pt } else { config.stroke-width };
+      let end = if range == none { len } else if range.at(1) == none { len } else { range.at(1) }
       let radii = (:)
-      let stroke = (x: config.stroke-color + stroke-width)
+      let stroke = (x: stroke-color + stroke-width)
 
       if i == start {
-        radii.insert("top-left", config.radius)
-        radii.insert("top-right", config.radius)
-        stroke.insert("top", config.stroke-color + stroke-width)
+        radii.insert("top-left", radius)
+        radii.insert("top-right", radius)
+        stroke.insert("top", stroke-color + stroke-width)
       }
 
       if i == end {
-        radii.insert("bottom-left", config.radius)
-        radii.insert("bottom-right", config.radius)
-        stroke.insert("bottom", config.stroke-color + stroke-width)
+        radii.insert("bottom-left", radius)
+        radii.insert("bottom-right", radius)
+        stroke.insert("bottom", stroke-color + stroke-width)
       }
 
       radii.insert("rest", 0pt)
 
-      (radius: radii, stroke: stroke)
+      (radii, stroke)
     }
 
-    let width = if config.width-numbers == none { 0pt } else { config.width-numbers }
+    let width-numbers = __codly-width-numbers.at(loc)
+    let padding = __codly-padding.at(loc)
+    let width = if width-numbers == none { 0pt } else { width-numbers }
+
     show raw.line: it => if not in_range(it.number) {
       none
     } else {
-      block(
-        width: 100%,
-        height: 1.2em + config.padding * 2,
-        inset: (left: config.padding + width, top: config.padding + 0.1em, rest: config.padding),
-        breakable: config.breakable-lines,
-        fill: if config.zebra-color != none and calc.rem(it.number, 2) == 0 {
-          config.zebra-color
+      style(styles => {
+        let breakable-lines = __codly-breakable-lines.at(loc)
+        let zebra-color = __codly-zebra-color.at(loc)
+        let numbers-format = __codly-numbers-format.at(loc)
+        let (radius, stroke) = border(it.number, it.count)
+        let lang-width = if it.number == start  {
+          measure(language-block, styles).width + 2 * padding
         } else {
-          none
-        },
-        radius: border(it.number, it.count).radius,
-        stroke: border(it.number, it.count).stroke,
-        {
-          if it.number == start  {
-            place(
-              top + right,
-              language_block,
-              dy: -config.padding * 0.66666,
-              dx: config.padding * 0.66666 - 0.1em,
-            )
-          }
-
-          set par(justify: false)
-          if config.width-numbers != none {
-            place(
-              horizon + left,
-              dx: -config.width-numbers,
-              (config.numbers-format)[#(offset + it.number)]
-            )
-          }
-          it
+          0pt
         }
-      )
+
+        set par(justify: false)
+        block(
+          width: 100%,
+          inset: (left: padding, y: padding + 0.32em, rest: padding),
+          breakable: breakable-lines,
+          fill: if zebra-color != none and calc.rem(it.number, 2) == 0 {
+            zebra-color
+          } else {
+            none
+          },
+          radius: radius,
+          stroke: stroke,
+          grid(
+            columns: (
+              0pt,
+              auto,
+              padding * 2, 1fr,
+              if it.number == start  { lang-width } else { 0pt }
+            ),
+            hide(box(width: 0pt)[empty]), // min-height like
+            if width-numbers != none {
+              align(left, (numbers-format)[#(offset + it.number)])
+            },
+            none,
+            align(left, it.body),
+            if it.number == start  {
+              place(
+                right + top,
+                dy: -padding,
+                language-block,
+              )
+            }
+          )
+        )
+      })
     }
 
-    let stroke = if config.stroke-width == 0pt or config.stroke-width == none {
+    let stroke-width = __codly-stroke-width.at(loc)
+    let stroke-color = __codly-stroke-color.at(loc)
+    let stroke = if stroke-width == 0pt or stroke-width == none or stroke-color == none {
       none
     } else {
-      config.stroke-width + config.zebra-color
+      stroke-width + stroke-color
     };
 
+    let breakable = __codly-breakable.at(loc)
+    let fill = __codly-fill.at(loc)
     block(
-      breakable: config.breakable,
+      breakable: breakable,
       clip: false,
       width: 100%,
-      radius: config.radius,
-      fill: config.fill,
+      radius: radius,
+      fill: fill,
       align(left, stack(dir: ttb, ..it.lines))
     )
 

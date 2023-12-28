@@ -7,6 +7,7 @@ function to work across all languages easily. You can customize the icons, color
 suit your document's theme. By default it has zebra striping, line numbers, for ease of reading.
 
 ````typ
+#import "@preview/codly:0.2.0": *
 #let icon(codepoint) = {
   box(
     height: 0.8em,
@@ -53,6 +54,9 @@ Then you need to configure codly with your parameters:
   )
 )
 ```
+
+Any parameter that you leave blank will be set to its default.
+Therefore calling `codly()` is equivalent to calling with all the default parameters.
 
 Then you just need to add a code block and it will be automatically displayed correctly:
 
