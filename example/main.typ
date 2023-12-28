@@ -80,3 +80,13 @@ pub fn main() {
     println!("Hello, world!");
 }
 ```
+
+#pagebreak(weak: true)
+
+#v(100% - 2pt)
+
+```rust
+pub fn main() {
+    println!("This is in another page!")
+}
+```
