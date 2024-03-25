@@ -99,7 +99,7 @@ You can configure this with the `codly` function:
 
 ```typ
 #codly(
-  width-numbers: none,
+  enable-numbers: false,
 )
 ```
 
