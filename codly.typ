@@ -202,7 +202,7 @@
       type(numbers-format) == function,
       message: "codly: `numbers-format` must be a function"
     )
-    __codly-numbers-format.update(numbers-format)
+    __codly-numbers-format.update((_) => numbers-format)
   }
 
   if breakable != none {
@@ -272,7 +272,7 @@
 
       // Always push the formatted line number
       if enable-numbers {
-        items.push((numbers-format)[#(offset + line.number)])
+        items.push(numbers-format(str(line.number + offset)))
       }
 
       // The language block (icon + name)

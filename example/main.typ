@@ -101,3 +101,11 @@ pub fn main() {
     println!("This is in another page!")
 }
 ```
+
+#codly(numbers-format: strong)
+
+```rust
+pub fn main() {
+    println!("Strong line numbers go brrrrrrr.");
+}
+```
