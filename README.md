@@ -50,7 +50,7 @@ Then you need to configure codly with your parameters:
 ```typ
 #codly(
   languages: (
-    rust: (name: "Rust", icon: icon("\u{fa53}"), color: rgb("#CE412B")),
+    rust: (name: "Rust", icon: "\u{fa53}", color: rgb("#CE412B")),
   )
 )
 ```
