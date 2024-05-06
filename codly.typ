@@ -12,6 +12,7 @@
 #let __codly-stroke-width = state("codly-stroke-width", none)
 #let __codly-stroke-color = state("codly-stroke-color", luma(240))
 #let __codly-numbers-format = state("codly-numbers-format", text)
+#let __codly-numbers-alignment = state("codly-numbers-align", "horizon")
 #let __codly-breakable = state("codly-breakable", true)
 #let __codly-enable-numbers = state("codly-enable-numbers", true)
 
@@ -95,6 +96,10 @@
   // This is a function applied to the text of every line number.
   numbers-format: none,
 
+  // Alignment of line numbers
+  // This is a alignment function to control the alignment behavior of line numbers.
+  // It will be visible when the code is bigger than one line
+  numbers-alignment: none,
   // A function that takes 3 positional parameters:
   // - name
   // - icon
@@ -205,6 +210,14 @@
     __codly-numbers-format.update((_) => numbers-format)
   }
 
+  if numbers-alignment != none {
+    assert(
+      ("top","horizon","bottom").find(numbers-alignment),
+      message: "codly: `numbers-alignment` must be `top`, `horizon` or `bottom`"
+    )
+    __codly-numbers-alignment.update(numbers-alignment)
+  }
+
   if breakable != none {
     assert(
       type(breakable) == bool,
@@ -251,6 +264,7 @@
     let stroke-color = __codly-stroke-color.at(loc)
     let zebra-color = __codly-zebra-color.at(loc)
     let numbers-format = __codly-numbers-format.at(loc)
+    let numbers-alignment = __codly-numbers-alignment.at(loc)
     let padding = __codly-padding.at(loc)
     let breakable = __codly-breakable.at(loc)
     let fill = __codly-fill.at(loc)
@@ -318,7 +332,7 @@
           columns: (auto, 1fr),
           inset: padding * 1.5,
           stroke: none,
-          align: left + horizon,
+          align: (left + numbers-alignment, left + horizon),
           fill: (x, y) => if zebra-color != none and calc.rem(y, 2) == 0 {
             zebra-color
           } else {
