@@ -12,7 +12,7 @@
 #let __codly-stroke-width = state("codly-stroke-width", none)
 #let __codly-stroke-color = state("codly-stroke-color", luma(240))
 #let __codly-numbers-format = state("codly-numbers-format", text)
-#let __codly-numbers-alignment = state("codly-numbers-align", "horizon")
+#let __codly-numbers-alignment = state("codly-numbers-align", horizon)
 #let __codly-breakable = state("codly-breakable", true)
 #let __codly-enable-numbers = state("codly-enable-numbers", true)
 
@@ -212,7 +212,7 @@
 
   if numbers-alignment != none {
     assert(
-      ("top","horizon","bottom").find(numbers-alignment),
+      (top,horizon,bottom).contains(numbers-alignment),
       message: "codly: `numbers-alignment` must be `top`, `horizon` or `bottom`"
     )
     __codly-numbers-alignment.update(numbers-alignment)

@@ -37,6 +37,21 @@ We can also set a line number offset with `codly-offset(int)`:
     println!("Hello, world!");
 ```
 
+We are also able to control line numbers alignment:
+
+`#codly(numbers-alignment: horizon)`
+#codly(numbers-alignment: horizon)
+```python
+import numpy as np
+print(np.array([np.random.randint(1, 100) for _ in range(1000)]), np.array([np.random.normal(0, 1) for _ in range(1000)]), np.array([np.random.uniform(0, 1) for _ in range(1000)]))
+```
+`#codly(numbers-alignment: top)`
+#codly(numbers-alignment: top)
+```python
+import numpy as np
+print(np.array([np.random.randint(1, 100) for _ in range(1000)]), np.array([np.random.normal(0, 1) for _ in range(1000)]), np.array([np.random.uniform(0, 1) for _ in range(1000)]))
+```
+
 And we can also disable line numbers:
 
 #codly(enable-numbers: false)
