@@ -81,14 +81,14 @@
   fill: none,
 
   // The zebra color to use or `none` to disable.
-  zebra-color: none,
+  zebra-color: false,
 
   // The stroke width to use to surround the code block.
   // Set to `none` to disable.
   stroke-width: none,
 
   // The stroke color to use to surround the code block.
-  stroke-color: none,
+  stroke-color: false,
 
   // Whether to enable line numbers.
   enable-numbers: none,
@@ -122,12 +122,12 @@
   }
 
   if display-name != none {
-    assert(type(display-name) == bool, message: "codly: `display-name` must be a dict")
+    assert(type(display-name) == bool, message: "codly: `display-name` must be a bool")
     __codly-display-names.update(display-name)
   }
 
   if display-icon != none {
-    assert(type(display-icon) == bool, message: "codly: `display-icon` must be a dict")
+    assert(type(display-icon) == bool, message: "codly: `display-icon` must be a bool")
     __codly-display-icons.update(display-icon)
   }
 
@@ -167,7 +167,7 @@
     __codly-fill.update(fill)
   }
 
-  if zebra-color != none {
+  if zebra-color != false {
     assert(
       zebra-color == none
         or type(zebra-color) == color
@@ -177,7 +177,7 @@
     )
     __codly-zebra-color.update(zebra-color)
   }
-
+  
   if stroke-width != none {
     assert(
       type(stroke-width) == type(1pt + 0.1em),
@@ -186,13 +186,13 @@
     __codly-stroke-width.update(stroke-width)
   }
 
-  if stroke-color != none {
+  if stroke-color != false {
     assert(
       stroke-color == none
         or type(stroke-color) == color
         or type(stroke-color) == gradient
         or type(stroke-color) == pattern,
-      message: "codly: `stroke-color` must be none, a color, a gradient, or a pattern"
+      message: "codly: `stroke-color` must be a color, a gradient, or a pattern"
     )
     __codly-stroke-color.update(stroke-color)
   }
@@ -314,13 +314,14 @@
         place(right + horizon, language-block),
       )))
     }
-
+    
     block(
       breakable: breakable,
       clip: true,
       width: 100%,
       radius: radius,
       stroke: stroke-color + stroke-width,
+      fill: fill,
       if enable-numbers {
         table(
           columns: (auto, 1fr),

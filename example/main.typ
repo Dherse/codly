@@ -14,6 +14,7 @@
 #codly(languages: (
   rust: (name: "Rust", icon: icon("brand-rust.svg"), color: rgb("#CE412B")),
   python: (name: "Python", icon: icon("brand-python.svg"), color: rgb("#3572A5")),
+  typst: (name: "Typst", icon: none, color: rgb("#239dad"))
 ))
 
 ```rust
@@ -47,7 +48,24 @@ pub fn main() {
 }
 ```
 
-We can also select only a range of lines to show:
+We can also select only a range of lines to show. From this:
+
+// probably enable numbers to show the range
+#codly(enable-numbers: true)
+
+// also show how we generate it
+#raw(lang: "typst", block: true,
+"#codly-range(start: 5, end: 5)
+
+```python
+def fibonaci(n):
+    if n <= 1:
+        return n
+    else:
+        return(fibonaci(n-1) + fibonaci(n-2))
+```")
+
+to this:
 
 #codly-range(start: 5, end: 5)
 
@@ -98,7 +116,7 @@ pub fn function<R, S, T>() -> R where T: From<S>, S: Into<R>, R: Send + Sync + '
 
 ```rust
 pub fn main() {
-    println!("This is in another page!")
+    println!("This is in another page!");
 }
 ```
 
@@ -109,3 +127,13 @@ pub fn main() {
     println!("Strong line numbers go brrrrrrr.");
 }
 ```
+
+#codly(zebra-color: none, fill: black)
+#show raw.where(block: true): set text(fill: white)
+
+```rust
+pub fn main() {
+    println!("Dark style works too");
+}
+```
+
