@@ -56,6 +56,8 @@
   // The list of languages, allows setting a display name and an icon,
   // it should be a dict of the form:
   //  `<language-name>: (name: <display-name>, icon: <icon-content>, color: <color>)`
+  // also allowing for alises of the form where `<language-name2>` is a key in the dictionary:
+  //  `<language-name1>: <language-name2>`
   languages: none,
 
   // Whether to display the language name.
@@ -110,6 +112,12 @@
 
   if languages != none {
     assert(type(languages) == type((:)), message: "codly: `languages` must be a dict")
+    for (k, v) in languages.pairs() {
+      if type(v) == type("") {
+        assert(languages.keys().contains(v), "Alias key is missing from languages")
+        languages.insert(k, languages.get(v))
+      }
+    }
     __codly-languages.update(languages)
   }
 
