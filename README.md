@@ -7,7 +7,7 @@ function to work across all languages easily. You can customize the icons, color
 suit your document's theme. By default it has zebra striping, line numbers, for ease of reading.
 
 ````typ
-#import "@preview/codly:0.2.0": *
+#import "@preview/codly:0.2.2": *
 #let icon(codepoint) = {
   box(
     height: 0.8em,
