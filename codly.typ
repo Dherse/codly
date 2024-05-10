@@ -114,7 +114,7 @@
     assert(type(languages) == type((:)), message: "codly: `languages` must be a dict")
     for (k, v) in languages.pairs() {
       if type(v) == type("") {
-        assert(languages.keys().contains(v), "Alias key is missing from languages")
+        assert(languages.keys().contains(v), message: "codly: Alias key is missing from `languages`")
         languages.insert(k, languages.get(v))
       }
     }
