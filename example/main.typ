@@ -12,9 +12,9 @@
 }
 
 #codly(languages: (
-  rust: (name: "Rust", icon: icon("brand-rust.svg"), color: rgb("#CE412B")),
+  rust: (name: text(fill: black)[Rust], icon: icon("brand-rust.svg"), color: rgb("#CE412B")),
   python: (name: "Python", icon: icon("brand-python.svg"), color: rgb("#3572A5")),
-  typst: (name: "Typst", icon: none, color: rgb("#239dad"))
+  typst: (name: "Typst", color: rgb("#239dad"))
 ))
 
 ```rust
