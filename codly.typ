@@ -33,12 +33,15 @@
 
 #let __codly-language-block = state("codly-language-block", default-language-block)
 
-// Lets you set a line number offset.
+/// Lets you set a line number offset.
+/// - offset (int): Line offset
 #let codly-offset(offset: 0) = {
   __codly-offset.update(offset)
 }
 
-// Lets you set a range of line numbers to highlight.
+/// Lets you set a range of line numbers to highlight.
+/// - start (int): Starting line (inclusive)
+/// - end (int, none): Ending line. Use `none`
 #let codly-range(
   start: 1,
   end: none,
@@ -46,63 +49,54 @@
   __codly-range.update((start, end))
 }
 
-// Disables codly.
+/// Disables codly.
 #let disable-codly() = {
   __codly-enabled.update(false)
 }
 
-// Configures codly.
+/// Configures codly.
+/// - languages (dict):  The list of languages, allows setting a display name and an icon,
+///              it should be a dict of the form:\
+///              `<language-name>: (name: <display-name>, icon: <icon-content>, color: <color>)`\
+///              Note that the `icon` field is optional if no icon is needed/wanted.\
+///              also allowing for alises of the form where `<language-name2>` is a key in the dictionary:\
+///              `<language-name1>: <language-name2>`
+/// - display-name (bool): Whether to display the language name.
+/// - display-icon (bool): Whether to display the language icon.
+/// - default-color (color, gradient, pattern): The default color for a language not in the list.
+///                  Only used if `display-icon` or `display-name` is `true`.
+/// - radius (length): Radius of a code block.
+/// - padding (length): Padding of a code block.
+/// - fill (color, gradient, pattern): Fill color of lines.
+///         If zebra color is enabled, this is just for odd lines.
+/// - zebra-color (none, color, gradient, pattern): The zebra color to use or `none` to disable
+/// - stroke-width (length): The stroke width to use to surround the code block.
+///                 Set to `none` to disable strokes.
+/// - stroke-color (color, gradient, pattern): The stroke color to use to surround the code block.
+/// - enable-numbers (bool): Whether to enable line numbers.
+/// - numbers-format (function): Format of the line numbers.
+///                   This is a function applied to the text of every line number.
+/// - language-block (function): A function that takes 3 positional parameters:
+///                   - name
+///                   - icon
+///                   - color
+///                   
+///                   It returns the content for the language block.
+/// - breakable (bool): Whether this code block is breakable.
 #let codly(
-  // The list of languages, allows setting a display name and an icon,
-  // it should be a dict of the form:
-  //  `<language-name>: (name: <display-name>, icon: <icon-content>, color: <color>)`
   languages: none,
-
-  // Whether to display the language name.
   display-name: none,
-
-  // Whether to display the language icon.
   display-icon: none,
-
-  // The default color for a language not in the list.
-  // Only used if `display-icon` or `display-name` is `true`.
   default-color: none,
-
-  // Radius of a code block.
   radius: none,
-
-  // Padding of a code block.
   padding: none,
-
-  // Fill color of lines.
-  // If zebra color is enabled, this is just for odd lines.
   fill: none,
-
-  // The zebra color to use or `none` to disable.
-  zebra-color: none,
-
-  // The stroke width to use to surround the code block.
-  // Set to `none` to disable.
-  stroke-width: none,
-
-  // The stroke color to use to surround the code block.
+  zebra-color: false,
+  stroke-width: false,
   stroke-color: none,
-
-  // Whether to enable line numbers.
   enable-numbers: none,
-
-  // Format of the line numbers.
-  // This is a function applied to the text of every line number.
   numbers-format: none,
-
-  // A function that takes 3 positional parameters:
-  // - name
-  // - icon
-  // - color
-  // It returns the content for the language block.
   language-block: none,
-
-  // Whether this code block is breakable.
   breakable: none,
 ) = {
   // Enable codly
@@ -110,16 +104,24 @@
 
   if languages != none {
     assert(type(languages) == type((:)), message: "codly: `languages` must be a dict")
+    for (k, v) in languages.pairs().filter(((_, v)) => type(v) == type((:))) {
+      v.insert("icon", v.at("icon", default: none))
+      languages.insert(k, v)
+    }
+    for (k, v) in languages.pairs().filter(((_, v)) => type(v) == type("")) {
+      assert(languages.keys().contains(v), message: "codly: Alias key is missing from `languages`")
+      languages.insert(k, languages.get(v))
+    }
     __codly-languages.update(languages)
   }
 
   if display-name != none {
-    assert(type(display-name) == bool, message: "codly: `display-name` must be a dict")
+    assert(type(display-name) == bool, message: "codly: `display-name` must be a bool")
     __codly-display-names.update(display-name)
   }
 
   if display-icon != none {
-    assert(type(display-icon) == bool, message: "codly: `display-icon` must be a dict")
+    assert(type(display-icon) == bool, message: "codly: `display-icon` must be a bool")
     __codly-display-icons.update(display-icon)
   }
 
@@ -159,7 +161,7 @@
     __codly-fill.update(fill)
   }
 
-  if zebra-color != none {
+  if zebra-color != false {
     assert(
       zebra-color == none
         or type(zebra-color) == color
@@ -169,22 +171,22 @@
     )
     __codly-zebra-color.update(zebra-color)
   }
-
-  if stroke-width != none {
+  
+  if stroke-width != false {
     assert(
-      type(stroke-width) == type(1pt + 0.1em),
-      message: "codly: `stroke-width` must be a length"
+      type(stroke-width) == type(1pt + 0.1em)
+        or type(stroke-width) == type(none),
+      message: "codly: `stroke-width` must be a length or none"
     )
     __codly-stroke-width.update(stroke-width)
   }
 
   if stroke-color != none {
     assert(
-      stroke-color == none
-        or type(stroke-color) == color
+      type(stroke-color) == color
         or type(stroke-color) == gradient
         or type(stroke-color) == pattern,
-      message: "codly: `stroke-color` must be none, a color, a gradient, or a pattern"
+      message: "codly: `stroke-color` must be a color, a gradient, or a pattern"
     )
     __codly-stroke-color.update(stroke-color)
   }
@@ -222,6 +224,10 @@
   }
 }
 
+/// Initialise codly to run on your document. Add the following to the top of your code:
+/// ```typst
+/// #show: codly-init.with()
+/// ```
 #let codly-init(
   body,
 ) = {
@@ -306,13 +312,14 @@
         place(right + horizon, language-block),
       )))
     }
-
+    
     block(
       breakable: breakable,
       clip: true,
       width: 100%,
       radius: radius,
       stroke: stroke-color + stroke-width,
+      fill: fill,
       if enable-numbers {
         table(
           columns: (auto, 1fr),

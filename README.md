@@ -1,4 +1,3 @@
-
 # Codly: simple and beautiful code blocks for Typst
 
 Codly is a package that lets you easily create beautiful code blocks for your Typst documents.
@@ -7,7 +6,7 @@ function to work across all languages easily. You can customize the icons, color
 suit your document's theme. By default it has zebra striping, line numbers, for ease of reading.
 
 ````typ
-#import "@preview/codly:0.2.0": *
+#import "@preview/codly:0.2.2": *
 #let icon(codepoint) = {
   box(
     height: 0.8em,
@@ -36,6 +35,8 @@ Which renders to:
 You can find all of the documentation in the [example](https://github.com/Dherse/codly/tree/main/example/main.typ) file.
 
 ## Short manual
+
+> A full set of documentation can be found [here](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf)
 
 ### Setup
 
