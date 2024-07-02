@@ -303,7 +303,7 @@
       items.push(style(styles => grid(
         columns: (1fr, measure(language-block, styles).width + 2 * padding),
         line,
-        place(right + horizon, language-block),
+        place(right + horizon, dx: 0.35em, language-block),
       )))
     }
 
