@@ -218,7 +218,7 @@
       type(language-block) == function,
       message: "codly: `language-block` must be a function"
     )
-    __codly-language-block.update(language-block)
+    __codly-language-block.update((_) => language-block)
   }
 }
 
