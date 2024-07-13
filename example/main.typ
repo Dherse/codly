@@ -39,14 +39,14 @@ We can also set a line number offset with `codly-offset(int)`:
 
 We are also able to control line numbers alignment:
 
-`#codly(numbers-alignment: horizon)`
-#codly(numbers-alignment: horizon)
+`#codly(number-align: horizon)`
+#codly(number-align: horizon)
 ```python
 import numpy as np
 print(np.array([np.random.randint(1, 100) for _ in range(1000)]), np.array([np.random.normal(0, 1) for _ in range(1000)]), np.array([np.random.uniform(0, 1) for _ in range(1000)]))
 ```
-`#codly(numbers-alignment: top)`
-#codly(numbers-alignment: top)
+`#codly(number-align: top)`
+#codly(number-align: top)
 ```python
 import numpy as np
 print(np.array([np.random.randint(1, 100) for _ in range(1000)]), np.array([np.random.normal(0, 1) for _ in range(1000)]), np.array([np.random.uniform(0, 1) for _ in range(1000)]))
@@ -54,7 +54,7 @@ print(np.array([np.random.randint(1, 100) for _ in range(1000)]), np.array([np.r
 
 And we can also disable line numbers:
 
-#codly(enable-numbers: false)
+#codly(number-format: none)
 
 ```rust
 pub fn main() {
@@ -75,8 +75,7 @@ def fibonaci(n):
 ```
 
 #codly(
-  stroke-width: 1pt,
-  stroke-color: red,
+  stroke: 1pt + red,
 )
 
 ```rust
@@ -88,9 +87,9 @@ pub fn main() {
 
 #codly(
   display-icon: false,
-  stroke-color: luma(240),
-  zebra-color: luma(240),
-  enable-numbers: true,
+  stroke: 1pt + luma(240),
+  zebra-fill: luma(240),
+  number-format: none,
 )
 
 ```rust
@@ -117,10 +116,26 @@ pub fn main() {
 }
 ```
 
-#codly(numbers-format: strong)
+#codly(number-format: (x) => strong(str(x)))
 
 ```rust
 pub fn main() {
     println!("Strong line numbers go brrrrrrr.");
+}
+```
+
+#codly(lang-formatter: (..) => [ No, I don't think I will. ], number-format: (s) => str(s))
+```rust
+pub fn main() {
+    println!("Strong line numbers go brrrrrrr.");
+}
+```
+
+= Empty line test with line number disabled.
+#codly(lang-formatter: none, number-format: none)
+```rust
+pub fn main() {
+    println!("Strong line numbers go brrrrrrr.");
+
 }
 ```
