@@ -103,8 +103,8 @@
     },
     "lang-format": {
         "description": "The formatter for the language box",
-        "default": "none",
-        "ty": [ "type(none)", "function" ],
+        "default": "auto",
+        "ty": [ "type(auto)", "type(none)", "function" ],
         "function": false
     },
     "number-format": {

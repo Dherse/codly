@@ -73,6 +73,12 @@
         value
       }
     },
+    get-raw: () => {
+      state.get()
+    },
+    set-raw: (value) => {
+      state.update((_) => value)
+    },
     update: (value) => {
       assert(
         type_check(value, false),
@@ -112,9 +118,8 @@
 // Must be called in a context!
 #let __codly-save() = {
   let out = (:)
-  for key in __codly-args.keys() {
-    let value = state("codly-" + key).get()
-    out.insert(key, value)
+  for (key, value) in __codly-args {
+    out.insert(key, (value.get-raw)())
   }
   return out
 }
@@ -122,6 +127,6 @@
 // Must be called after `__codly_save`!
 #let __codly-load(stored) = {
   for (key, value) in __codly-args {
-    (value.update)(stored.at(key))
+    (value.set-raw)(stored.at(key))
   }
 }

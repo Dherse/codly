@@ -616,11 +616,10 @@
 /// == Language block formatter (`lang-format`)
 /// The formatter for the language block.
 /// 
-/// A value of `none` will use the default language block formatter.
-/// To disable the language block, set `display-icon` and `display-name` to `false`.
-/// Or set `lang-format` to `(..) => none`.
+/// A value of `none` will not display the language block.
+/// To use the default formatter, use `auto`.
 /// 
-/// - *Default*: `codly.default-language-block`
+/// - *Default*: `auto`
 /// - *Type*: `function`
 /// - *Can be a contextual function*: no
 /// 
@@ -712,6 +711,8 @@
 /// 
 /// Generally you probably want the `content` to be contained within a `rotate(90deg)`.
 /// 
+/// As with other code block settings, annotations are reset after each code block.
+/// 
 /// *Note*: Annotations cannot overlap.
 /// 
 /// *Known issues*:
@@ -719,6 +720,7 @@
 /// - Annotations on the first line of a code block will not work correctly.
 /// - Annotations that span lines that overflow (one line of code <-> two lines of text)
 ///   will not work correctly.
+/// 
 /// This should be considered a Bêta feature.
 ///  
 ///
@@ -835,6 +837,8 @@
     let language-block = {
       let fn = (args.lang-format.get)()
       if fn == none {
+        (..) => none
+      } else if fn == auto {
         default-language-block
       } else {
         fn
@@ -947,8 +951,8 @@
         (grid.cell(
           rowspan: current-annot.end - current-annot.start + 1,
           align: left + horizon,
-          annot-content
-        ) + extra, )
+          annot-content + extra
+        ), )
       } else if current-annot != none or not has-annotations {
         ()
       } else {
@@ -1006,12 +1010,10 @@
       }
 
       if line.number != start or (display-names != true and display-icons != true) {
-        items.push(l)
-        items = (..items, ..annot())
+        items = (..items, l, ..annot())
         continue
       } else if it.lang == none {
-        items.push(l)
-        items = (..items, ..annot())
+        items = (..items, l, ..annot())
         continue
       }
       
@@ -1044,8 +1046,7 @@
       let lb = measure(language-block);
 
       if has-annotations {
-        items.push(l)
-        items = (..items, ..annot(extra: place(
+        items = (..items, l, ..annot(extra: place(
           right + horizon,
           dx: lang-outset.x,
           dy: lang-outset.y,
@@ -1119,7 +1120,11 @@
           )
         } else {
           grid(
-            columns: (1fr, ),
+            columns: if has-annotations {
+              (1fr, annot-width)
+            } else {
+              (1fr)
+            },
             inset: padding * 1.5,
             stroke: none,
             align: (numbers-alignment, left + horizon),
@@ -1137,6 +1142,7 @@
     codly-offset()
     codly-range(start: 1, end: none)
     state("codly-skips").update((_) => ())
+    state("codly-annotations").update((_) => ())
   }
 
   body
