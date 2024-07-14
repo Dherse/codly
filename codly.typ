@@ -751,6 +751,92 @@
 /// - *Type*: `none` or `function`
 /// - *Can be a contextual function*: no
 /// 
+/// == Highlights (`highlights`)
+/// You can apply highlights to the code block using the `highlights` argument.
+/// It consists of a list of dictionaries, each with the following keys:
+/// - `line`: the line number to start highlighting
+/// - `start`: the character position to start highlighting, zero if omitted or `none`
+/// - `end`: the character position to end highlighting, the end of the line if omitted or `none`
+/// - `fill`: the fill of the highlight, defaults to the default color
+/// - `tag`: an optional tag to be displayed alongside the highlight.
+/// 
+/// As with other code block settings, annotations are reset after each code block.
+/// 
+/// *Note*: This feature performs what I loosely call "globbing", this means that instead of highlighting
+/// individual characters, it highlights the whole word or sequence of characters that the start and end
+/// positions are part of. This is done to avoid having to deal with the complexity of highlighting
+/// individual characters, and needing to re-style them manually. While also making the API a tad less error
+/// prone at the cost of sometimes goofy looking highlights if they overlap.
+/// 
+/// *Limitation*: If there is a `tag` and the line overflows, it can look kind of goofy. This is a trade-off,
+/// as it would need to either use a grid which will prevent overflowing all together, or use a more complex
+/// multi-box based system (which is what is used) that can sometimes look goofy (see example below).
+/// 
+/// - *Default*: `none`
+/// - *Type*: `array` or `none`
+/// - *Can be a contextual function*: yes
+/// 
+/// #pre-example()
+/// #example(````
+///  #codly(highlights: (
+///   (line: 3, start: 4, end: none, fill: red),
+///   (line: 4, start: 14, end: 22, fill: green, tag: "(a)"),
+///   (line: 4, start: 29, end: 38, fill: blue, tag: "(b)"),
+///  ))
+///  ```py
+///  def fib(n):
+///    if n <= 1:
+///      return n
+///    else:
+///      return (fib(n - 1) + fib(n - 2))
+///  print(fib(25))
+///  ```
+/// ````, mode: "markup", scale-preview: 100%)
+/// 
+/// #pre-example()
+/// #example(````
+///  #codly(highlights: (
+///   (line: 0, start: 7, end: 13, fill: green, tag: "Call"),
+///   (line: 0, fill: blue, tag: "Statement"),
+///   (line: 1, start: 7, end: 13, fill: green, tag: "Call"),
+///   (line: 1, fill: blue, tag: "Statement"),
+///  ))
+///  ```py
+///  print(fib(25))
+///  print(fib(25))
+///  ```
+/// ````, mode: "markup", scale-preview: 100%)
+/// 
+/// == Highlight radius (`highlight-radius`)
+/// The radius of the border of the highlights.
+/// 
+/// - *Default*: `0.32em`
+/// - *Type*: `length`
+/// - *Can be a contextual function*: yes
+/// 
+/// == Highlight fill (`highlight-fill`)
+/// The fill transformer of the highlights, is a function that
+/// takes in the highlight color and returns a fill.
+///
+/// - *Default*: `(color) => color.lighten(80%)`
+/// - *Type*: `function`
+/// - *Can be a contextual function*: no
+/// 
+/// == Highlight stroke (`highlight-stroke`)
+/// The stroke transformer of the highlights, is a function that
+/// takes in the highlight color and returns a stroke.
+/// 
+/// - *Default*: `(color) => 0.5pt + color`
+/// - *Type*: `function`
+/// - *Can be a contextual function*: no
+/// 
+/// == Highlight inset (`highlight-inset`)
+/// The inset of the highlights.
+/// 
+/// - *Default*: `0.32em`
+/// - *Type*: `length`
+/// - *Can be a contextual function*: yes
+/// 
 /// == Breakable (`breakable`)
 /// Whether the code block is breakable.
 /// 
@@ -907,6 +993,29 @@
     }
     let has-annotations = annotations != none and annotations.len() > 0
 
+    let highlight-stroke = (args.highlight-stroke.get)()
+    let highlight-fill = (args.highlight-fill.get)()
+    let highlight-radius = (args.highlight-radius.get)()
+    let highlight-inset = (args.highlight-inset.get)()
+    let highlights = {
+      let highlights = (args.highlights.get)()
+      if highlights == none {
+        ()
+      } else {
+        highlights
+          .sorted(key: (x) => x.line)
+          .map((x) => {
+            if not "start" in x or x.start == none {
+              x.insert("start", 0)
+            }
+            if not "end" in x or x.end == none {
+              x.insert("end", 999999999)
+            }
+            x
+          })
+      }
+    }
+
     let start = if range == none { 1 } else { range.at(0) };
 
     // Get the widest annotation.
@@ -960,12 +1069,13 @@
       }
 
       // Try and look for a skip
-      let skip = skips.remove(0, default: none)
+      let skip = skips.at(0, default: none)
       if skip != none and i == skip.at(0) {
         items.push(skip-number)
         items.push(skip-line)
         // Advance the offset.
         offset += skip.at(1)
+        skips.remove(0)
       }
 
       if not in_range(line.number) {
@@ -982,6 +1092,111 @@
       } else {
         l += box(height: height, width: 0pt)
       }
+
+      // Apply highlights
+      let hl = highlights.at(0, default: none)
+      let highlighted = l
+      while hl != none and i == hl.line {
+        let fill = highlight-fill(hl.fill)
+        let stroke = highlight-stroke(hl.fill)
+        let tag = if "tag" in hl { hl.tag } else { none }
+        assert(l.has("children"), message: "highlighted line must have children")
+
+        let get-len(child) = {
+          let len = 0
+          let fields = child.fields()
+
+          if "children" in fields {
+            for c in fields.children {
+              len += get-len(c)
+            }
+          } else if "text" in fields {
+            len += fields.text.len()
+          } else if "child" in fields {
+            len += get-len(fields.child)
+          } else if "body" in fields {
+            len += get-len(fields.body)
+          } else {
+            
+          }
+
+          return len
+        }
+
+        let children = ()
+        let collection = none
+        let i = 0
+        let len = highlighted.children.len()
+        for (index, child) in highlighted.children.enumerate() {
+          let last = index == len - 1
+          let args = child.fields()
+          let len = get-len(child)
+
+          if collection != none {
+            collection.push(child)
+
+            if i + len >= hl.end or last {
+              if tag == none {
+                children.push(box(
+                  radius: highlight-radius,
+                  clip: true,
+                  fill: fill,
+                  stroke: stroke,
+                  inset: highlight-inset,
+                  baseline: highlight-inset,
+                  collection.join()
+                ))
+              } else {
+                let col = collection.join()
+                let height-col = measure(col).height
+                let height-tag = measure(tag).height
+                let max-height = calc.max(height-col, height-tag) + 2 * highlight-inset
+                children.push(box(
+                  radius: (
+                    top-right: 0pt,
+                    bottom-right: 0pt,
+                    rest: highlight-radius,
+                  ),
+                  height: max-height,
+                  clip: true,
+                  fill: fill,
+                  stroke: stroke,
+                  inset: highlight-inset,
+                  baseline: highlight-inset,
+                  collection.join()
+                ))
+                children.push(h(0pt, weak: true))
+                children.push(box(
+                  radius: (
+                    top-left: 0pt,
+                    bottom-left: 0pt,
+                    rest: highlight-radius,
+                  ),
+                  height: max-height,
+                  clip: true,
+                  fill: fill,
+                  stroke: stroke,
+                  inset: highlight-inset,
+                  baseline: highlight-inset,
+                  tag
+                ))
+              }
+              collection = none
+            }
+          } else if collection == none and (i >= hl.start or i + len >= hl.start) and (i < hl.end) {
+            collection = (child, )
+          } else {
+            children.push(child)
+          }
+
+          i += len
+        }
+
+        highlighted = children.join()
+        _ = highlights.remove(0)
+        hl = highlights.at(0, default: none)
+      }
+
 
       // Smart indentation code.
       if smart-indent and l.has("children") {
@@ -1001,19 +1216,19 @@
             let width = measure([#indent]).width
 
             // We add the indentation to the line.
-            l = {
+            highlighted = {
               set par(hanging-indent: width)
-              l
+              highlighted
             }
           }
         }
       }
 
       if line.number != start or (display-names != true and display-icons != true) {
-        items = (..items, l, ..annot())
+        items = (..items, highlighted, ..annot())
         continue
       } else if it.lang == none {
-        items = (..items, l, ..annot())
+        items = (..items, highlighted, ..annot())
         continue
       }
       
@@ -1046,7 +1261,7 @@
       let lb = measure(language-block);
 
       if has-annotations {
-        items = (..items, l, ..annot(extra: place(
+        items = (..items, highlighted, ..annot(extra: place(
           right + horizon,
           dx: lang-outset.x,
           dy: lang-outset.y,
@@ -1055,7 +1270,7 @@
       } else {
         items.push(grid(
           columns: (1fr, lb.width + 2 * padding),
-          l,
+          highlighted,
           place(
             right + horizon,
             dx: lang-outset.x,
@@ -1070,7 +1285,7 @@
     let is-complex-fill = ((type(fill) != color and fill != none) 
         or (type(zebra-color) != color and zebra-color != none))
 
-    block(
+    return block(
       breakable: breakable,
       clip: true,
       width: 100%,
@@ -1143,6 +1358,7 @@
     codly-range(start: 1, end: none)
     state("codly-skips").update((_) => ())
     state("codly-annotations").update((_) => ())
+    state("codly-highlights").update((_) => ())
   }
 
   body

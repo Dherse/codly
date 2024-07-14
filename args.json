@@ -160,5 +160,35 @@
         "default": "numbering.with(\"(1)\")",
         "ty": [ "type(none)", "function" ],
         "function": false
+    },
+    "highlights": {
+        "description": "The highlights to display in the code block.",
+        "default": "none",
+        "ty": [ "array", "type(none)" ],
+        "function": true
+    },
+    "highlight-radius": {
+        "description": "The radius of the highlights.",
+        "default": "0.32em",
+        "ty": [ "length" ],
+        "function": true
+    },
+    "highlight-fill": {
+        "description": "The fill transformer of the highlights.",
+        "default": "(color) => color.lighten(80%)",
+        "ty": [ "function" ],
+        "function": false
+    },
+    "highlight-stroke": {
+        "description": "The stroke of the highlights.",
+        "default": "(color) => 0.5pt + color",
+        "ty": [ "type(none)", "stroke", "function" ],
+        "function": false
+    },
+    "highlight-inset": {
+        "description": "The inset of the highlights.",
+        "default": "0.32em",
+        "ty": [ "length" ],
+        "function": true
     }
 }
