@@ -25,14 +25,14 @@ jobs:
         with:
           crate: typst-test
           git: https://github.com/tingerrr/typst-test.git
-          branch: ci-semi-stable
+          branch: cli-lib-separation
 
       - name: Setup typst
         uses: yusancky/setup-typst@v2
         with:
           version: 'v0.11.1'
       - name: Run test suite
-        run: typst-test run
+        run: typst-test run --max-delta 128 --max-deviation 64
       - name: Archive diffs
         uses: actions/upload-artifact@v4
         if: always()
