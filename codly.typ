@@ -91,6 +91,10 @@
 /// 
 /// #pre-example()
 /// #example(````
+///  *Enabled:*
+///  ```
+///  Hello, world!
+///  ```
 ///  #codly-disable()
 ///  *Disabled:*
 ///  ```
