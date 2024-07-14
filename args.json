@@ -101,7 +101,7 @@
         "ty": [ "type(none)", "color", "gradient", "pattern", "function" ],
         "function": false
     },
-    "lang-formatter": {
+    "lang-format": {
         "description": "The formatter for the language box",
         "default": "none",
         "ty": [ "type(none)", "function" ],
@@ -109,7 +109,7 @@
     },
     "number-format": {
         "description": "The format of the line numbers, a function that takes in number and returns a content. If set to none, disables line numbers.",
-        "default": "(number) => [ #number ]",
+        "default": "numbering.with(\"1\")",
         "ty": [ "function", "type(none)" ],
         "function": false
     },
@@ -147,6 +147,18 @@
         "description": "Whether to smart indent the code.",
         "default": "false",
         "ty": [ "bool" ],
+        "function": false
+    },
+    "annotations": {
+        "description": "The annotations to display in the code block.",
+        "default": "none",
+        "ty": [ "array", "type(none)" ],
+        "function": true
+    },
+    "annotation-format": {
+        "description": "The formatter for the annotations.",
+        "default": "numbering.with(\"(1)\")",
+        "ty": [ "type(none)", "function" ],
         "function": false
     }
 }

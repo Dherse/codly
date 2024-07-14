@@ -175,7 +175,7 @@
 ///    lang-radius: 0.32em,
 ///    lang-stroke: (lang) => lang.color + 0.5pt,
 ///    lang-fill: (lang) => lang.color.lighten(80%),
-///    lang-formatter: codly.default-language-block,
+///    lang-format: codly.default-language-block,
 ///    number-format: (number) => [ #number ],
 ///    number-align: left + horizon,
 ///    breakable: false,
@@ -606,12 +606,12 @@
 ///  ```
 /// ````, mode: "markup", scale-preview: 100%)
 /// 
-/// == Language block formatter (`lang-formatter`)
+/// == Language block formatter (`lang-format`)
 /// The formatter for the language block.
 /// 
 /// A value of `none` will use the default language block formatter.
 /// To disable the language block, set `display-icon` and `display-name` to `false`.
-/// Or set `lang-formatter` to `(..) => none`.
+/// Or set `lang-format` to `(..) => none`.
 /// 
 /// - *Default*: `codly.default-language-block`
 /// - *Type*: `function`
@@ -619,7 +619,7 @@
 /// 
 /// #pre-example()
 /// #example(````
-///  #codly(lang-formatter: (..) => [ No! ])
+///  #codly(lang-format: (..) => [ No! ])
 ///  ```
 ///  print('Hello, world!')
 ///  print('Goodbye, world!')
@@ -629,7 +629,7 @@
 /// == Line number formatter (`number-format`)
 /// The formatter for line numbers.
 /// 
-/// - *Default*: `(line) => str(line)`
+/// - *Default*: `numbering.with("1")`
 /// - *Type*: `function`
 /// - *Can be a contextual function*: false
 /// 
@@ -689,6 +689,57 @@
 ///  print(fib(25))
 ///  ```
 /// ````, mode: "markup", scale-preview: 100%)
+/// 
+/// == Bêta: Annotations (`annotations`)
+/// The annotations to display on the code block.
+/// 
+/// A list of annotations that are automatically numbered and displayed on the
+/// right side of the code block.
+/// 
+/// Each entry is a dictionary with the following keys:
+/// - `start`: the line number to start the annotation
+/// - `end`: the line number to end the annotation, if missing or `none` the
+///   annotation will only contain the start line
+/// - `content`: the content of the annotation as a showable value, if missing
+///   or `none` the annotation will only contain the number
+/// 
+/// Generally you probably want the `content` to be contained within a `rotate(90deg)`.
+/// 
+/// *Note*: Annotations cannot overlap.
+/// *Known issues*:
+/// - Annotations that spread over a page break will not work correctly.
+/// - Annotations on the first line of a code block will not work correctly.
+/// - Annotations that span lines that overflow (one line of code <-> two lines of text)
+///   will not work correctly.
+/// This should be considered a Bêta feature.
+///  
+///
+/// - *Default*: `none`
+/// - *Type*: `array` or `none`
+/// - *Can be a contextual function*: yes
+/// 
+/// #pre-example()
+/// #example(````
+///  #codly(smart-indent: true, annotation-format: none)
+///  #codly(annotations: ((start: 1, end: 4, content: block(width: 2em, rotate(-90deg, align(center, box(width: 100pt)[Function body])))), ))
+///  ```py
+///  def fib(n):
+///   if n <= 1:
+///    return n
+///   else:
+///    return (fib(n-1)+fib(n-2))
+///  print(fib(25))
+///  ```
+/// ````, mode: "markup", scale-preview: 100%)
+/// 
+/// == Bêta: Annotation format (`annotation-format`)
+/// The format of the annotation number.
+/// 
+/// Can be `none` or a function that formats the annotation number.
+/// 
+/// - *Default*: `numbering.with("(1)")`
+/// - *Type*: `none` or `function`
+/// - *Can be a contextual function*: no
 /// 
 /// == Breakable (`breakable`)
 /// Whether the code block is breakable.
@@ -774,7 +825,7 @@
     let display-icons = (args.display-icon.get)()
     let lang-outset = (args.lang-outset.get)()
     let language-block = {
-      let fn = (args.lang-formatter.get)()
+      let fn = (args.lang-format.get)()
       if fn == none {
         default-language-block
       } else {
@@ -803,13 +854,101 @@
     let skip-line = (args.skip-line.get)()
     let skip-number = (args.skip-number.get)()
 
+    let annotation-format = {
+      let fn = (args.annotation-format.get)()
+      if fn == none {
+        (_) => none
+      } else {
+        fn
+      }
+    }
+    let annotations = {
+      let annotations = (args.annotations.get)()
+      annotations = if annotations == none {
+        ()
+      } else {
+        annotations
+          .sorted(key: (x) => x.start)
+          .map((x) => {
+            if (not "end" in x) or x.end == none {
+              x.insert("end", x.start)
+            }
+
+            if (not "content" in x) {
+              x.insert("content", none)
+            }
+
+            x
+          })
+      }
+
+      // Check for overlapping annotations.
+      let current = none
+      for a in annotations {
+        if current != none and a.start <= current.end {
+          panic("codly: overlapping annotations")
+        }
+        current = a
+      }
+
+      annotations
+    }
+    let has-annotations = annotations != none and annotations.len() > 0
+
     let start = if range == none { 1 } else { range.at(0) };
+
+    // Get the widest annotation.
+    let annot-bodies-width = annotations.map((x) => x.content).map(measure).map((x) => x.width)
+    let num = annotation-format(annotations.len())
+    let lr-width = measure(math.lr("}", size: 5em) + num).width;
+    let annot-width = annot-bodies-width.fold(0pt, (a, b) => calc.max(a, b)) + 2 * padding + lr-width
+
+    // Get the height of an individual line.
+    let line-height = measure(it.lines.at(0, default: [`Hello, world!`])).height + 2 * padding
 
     let items = ()
     let height = measure[1].height
+    let current-annot = none
+    let first-annot = false
+    let annots = 0
     for (i, line) in it.lines.enumerate() {
+      first-annot = false
+
+      // Check for annotations
+      let annot = annotations.at(0, default: none)
+      if annot != none and i == annot.start {
+        current-annot = annot
+        first-annot = true
+        annots += 1
+      }
+
+      // Cleanup annotations
+      if current-annot != none and i > current-annot.end {
+        current-annot = none
+        _ = annotations.remove(0)
+      }
+
+      // Annotation printing
+      let annot(extra: none) = if current-annot != none and first-annot {
+        let height = line-height * (current-annot.end - current-annot.start + 1)
+        let num = annotation-format(annots)
+        let annot-content = {
+          $lr(}, size: #height) #num #current-annot.content$
+        }
+
+        (grid.cell(
+          rowspan: current-annot.end - current-annot.start + 1,
+          align: left + horizon,
+          annot-content
+        ) + extra, )
+      } else if current-annot != none or not has-annotations {
+        ()
+      } else {
+        (extra, )
+      }
+
       // Try and look for a skip
-      let skip = skips.at(0, default: none)
+      let skip = skips.remove(0, default: none)
       if skip != none and i == skip.at(0) {
         items.push(skip-number)
         items.push(skip-line)
@@ -860,9 +999,11 @@
 
       if line.number != start or (display-names != true and display-icons != true) {
         items.push(l)
+        items = (..items, ..annot())
         continue
       } else if it.lang == none {
         items.push(l)
+        items = (..items, ..annot())
         continue
       }
       
@@ -893,16 +1034,27 @@
 
       // Push the line and the language block in a grid for alignment
       let lb = measure(language-block);
-      items.push(grid(
-        columns: (1fr, lb.width + 2 * padding),
-        l,
-        place(
+
+      if has-annotations {
+        items.push(l)
+        items = (..items, ..annot(extra: place(
           right + horizon,
           dx: lang-outset.x,
           dy: lang-outset.y,
           language-block
-        ),
-      ))
+        )))
+      } else {
+        items.push(grid(
+          columns: (1fr, lb.width + 2 * padding),
+          l,
+          place(
+            right + horizon,
+            dx: lang-outset.x,
+            dy: lang-outset.y,
+            language-block
+          ),
+        ))
+      }
     }
 
     // If the fill or zebra color is a gradient, we will draw it on a separate layer.
@@ -920,7 +1072,11 @@
           // We use place to draw the fill on a separate layer.
           place(
             grid(
-              columns: (1fr, ),
+              columns: if has-annotations {
+                (1fr, annot-width)
+              } else {
+                (1fr, )
+              },
               stroke: none,
               inset: padding * 1.5,
               fill: (x, y) => if zebra-color != none and calc.rem(y, 2) == 0 {
@@ -934,7 +1090,11 @@
         }
         if numbers-format != none {
           grid(
-            columns: (auto, 1fr),
+            columns: if has-annotations {
+              (auto, 1fr, annot-width)
+            } else {
+              (auto, 1fr)
+            },
             inset: padding * 1.5,
             stroke: none,
             align: (numbers-alignment, left + horizon),

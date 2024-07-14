@@ -124,7 +124,7 @@ pub fn main() {
 }
 ```
 
-#codly(lang-formatter: (..) => [ No, I don't think I will. ], number-format: (s) => str(s))
+#codly(lang-format: (..) => [ No, I don't think I will. ], number-format: (s) => str(s))
 ```rust
 pub fn main() {
     println!("Strong line numbers go brrrrrrr.");
@@ -132,7 +132,7 @@ pub fn main() {
 ```
 
 = Empty line test with line number disabled.
-#codly(lang-formatter: none, number-format: none)
+#codly(lang-format: none, number-format: none)
 ```rust
 pub fn main() {
     println!("Strong line numbers go brrrrrrr.");
@@ -141,7 +141,7 @@ pub fn main() {
 ```
 
 = Test of smart indent
-#codly(lang-formatter: none, number-format: none, smart-indent: true)
+#codly(lang-format: none, number-format: none, smart-indent: true)
 #box(width: 50%,
     ```rust
     pub fn main() {
