@@ -139,3 +139,13 @@ pub fn main() {
 
 }
 ```
+
+= Test of smart indent
+#codly(lang-formatter: none, number-format: none, smart-indent: true)
+#box(width: 50%,
+    ```rust
+    pub fn main() {
+        println!("Strong line numbers go brrrrrrr.");
+    }
+    ```
+)

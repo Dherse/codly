@@ -824,6 +824,14 @@
       // Always push the formatted line number
       let l = line.body
 
+      // Must be done before the smart indentation code.
+      // Otherwise it results in two paragraphs.
+      if numbers-format != none {
+        items.push(numbers-format(line.number + offset))
+      } else {
+        l += box(height: height, width: 0pt)
+      }
+
       // Smart indentation code.
       if smart-indent and l.has("children") {
         // Check the indentation of the line by taking l,
@@ -837,7 +845,7 @@
             // Calculate the indentation.
             let indent = match.end - match.start
 
-            // Then we wrap it in a block with a left indent.
+            // Then measure the necessary indent.
             let indent = first.text.slice(match.start, match.end)
             let width = measure([#indent]).width
 
@@ -848,13 +856,6 @@
             }
           }
         }
-
-      }
-
-      if numbers-format != none {
-        items.push(numbers-format(line.number + offset))
-      } else {
-        l += box(height: height, width: 0pt)
       }
 
       if line.number != start or (display-names != true and display-icons != true) {
