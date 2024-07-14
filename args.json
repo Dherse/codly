@@ -142,5 +142,11 @@
         "default": "[ ... ]",
         "ty": [ "content", "type(none)" ],
         "function": true
+    },
+    "smart-indent": {
+        "description": "Whether to smart indent the code.",
+        "default": "false",
+        "ty": [ "bool" ],
+        "function": false
     }
 }

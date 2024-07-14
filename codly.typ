@@ -667,6 +667,29 @@
 ///  ```
 /// ````, mode: "markup", scale-preview: 100%)
 /// 
+/// == Smart indentation (`smart-indent`)
+/// Whether to use smart indentation, which will check for indentation on a line
+/// and use a bigger left side inset instead of spaces. This allows for linebreaks
+/// to continue at the same level of indentation. This is off by default
+/// since it is slower.
+/// 
+/// - *Default*: `false`
+/// - *Type*: `bool`
+/// - *Can be a contextual function*: no
+/// 
+/// #pre-example()
+/// #example(````
+///  #codly(smart-indent: true)
+///  ```py
+///  def fib(n):
+///    if n <= 1:
+///      return n
+///    else:
+///      return (fib(n - 1) + fib(n - 2))
+///  print(fib(25))
+///  ```
+/// ````, mode: "markup", scale-preview: 100%)
+/// 
 /// == Breakable (`breakable`)
 /// Whether the code block is breakable.
 /// 
@@ -730,6 +753,7 @@
   body,
 ) = {
   show raw.where(block: true): it => context {
+    let indent_regex = regex("\\s*")
     let args = __codly-args
     let range = (args.range.get)()
     let in_range(line) = {
@@ -767,6 +791,7 @@
     let padding = (args.inset.get)()
     let breakable = (args.breakable.get)()
     let fill = (args.fill.get)()
+    let smart-indent = (args.smart-indent.get)()
     let skips = {
       let skips = (args.skips.get)()
       if skips == none {
@@ -797,7 +822,45 @@
       }
 
       // Always push the formatted line number
-      let l = line
+      let l = line.body
+
+      // Smart indentation code.
+      if smart-indent and l.has("children") {
+        // Check the indentation of the line by taking l,
+        // and checking for the first element in the sequence.
+        let first = l.children.at(0, default: none)
+        if first != none and first.has("text") {
+          let match = first.text.match(indent_regex)
+
+          // Ensure there is a match and it starts at the beginning of the line.
+          if match != none and match.start == 0 {
+            // Calculate the indentation.
+            let indent = match.end - match.start
+
+            // We remove from the line the indentation.
+            let children = l.children
+            let indent = children.remove(0).text
+
+            // Keep the text of the first element.
+            let text = indent.slice(match.end, none)
+            let indent = indent.slice(match.start, match.end)
+
+            // We create a new sequence with the indentation.
+            l = ([#text], ..children).join()
+
+            // Then we wrap it in a block with a left indent.
+            let width = measure([#indent]).width
+
+            // We add the indentation to the line.
+            l = box(
+              inset: (left: width, rest: 0pt),
+              l
+            )
+          }
+        }
+
+      }
+
       if numbers-format != none {
         items.push(numbers-format(line.number + offset))
       } else {
