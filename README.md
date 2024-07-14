@@ -1,5 +1,14 @@
-
 # Codly: simple and beautiful code blocks for Typst
+
+<p align="center">
+  <a href="https://github.com/Dherse/codly/blob/main/docs.pdf">
+    <img alt="Documentation" src="https://img.shields.io/website?down_message=offline&label=manual&up_color=007aff&up_message=online&url=https%3A%2F%2Fgithub.com%2FDherse%2Fcodly%2Fblob%2Fmain%2Fdocs.pdf"
+  /></a>
+  <a href="https://github.com/Dherse/codly/blob/main/LICENSE">
+    <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-brightgreen">
+  </a>
+  <img src="https://github.com/Dherse/codly/actions/workflows/test.yml/badge.svg" />
+</p>
 
 Codly is a package that lets you easily create beautiful code blocks for your Typst documents.
 It uses the newly added [`raw.line`](https://typst.app/docs/reference/text/raw/#definitions-line)

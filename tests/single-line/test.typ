@@ -67,7 +67,7 @@ Hello, world!
 
 = Wrap-around line
 #codly-reset()
-#codly(languages: (py: (name: "Python", icon: "🐍", color: rgb("#4584b6")), ))
+#codly(languages: (py: (name: "Python", icon: "Sss ", color: rgb("#4584b6")), ))
 ```py
 # Example code that calculates the sum of the first 10 natural numbers squares
 ```
