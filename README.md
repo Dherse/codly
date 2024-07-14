@@ -108,6 +108,44 @@ If you wish to select a subset of lines, you can use the `codly-range` function.
 #codly-range(start: 5, end: 10)
 ```
 
+### Adding a "skip"
+
+You can add a "fake" skip between lines using the `skips` parameters:
+
+```typ
+// Before the 5th line (indexing start at 0), insert a 32 line jump.
+#codly(skips: ((4, 32), ))
+```
+
+This can be customized using the `skip-line` and `skip-number` to customize what it looks like.
+
+### Adding annotations
+
+> [!IMPORTANT]
+> This is a Beta feature and has a few quirks, refer to [the documentation](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf) for those
+
+You can annotate a line/group of lines using the `annotations` parameters :
+
+```typ
+// Add an annotation from the second line (0 indexing) to the 5th line included.
+#codly(
+  annotations: (
+    (
+      start: 1,
+      end: 4,
+      content: block(
+        width: 2em,
+        // Rotate the element to make it look nice
+        rotate(
+          -90deg,
+          align(center, box(width: 100pt)[Function body])
+        )
+      )
+    ), 
+  )
+)
+```
+
 ### Disabling line numbers
 
 You can configure this with the `codly` function:
