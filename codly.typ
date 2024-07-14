@@ -216,6 +216,29 @@
 /// They are called within a `context` that provides the current location.
 /// They can be used to have more dynamic control over the value, without the need
 /// for sometimes slow state updates.
+/// 
+/// == In figure code blocks:
+/// If the code block is in a figure, additional features are available for referencing
+/// annotations and highlights.
+/// #pre-example()
+/// #example(````
+///  #codly(annotations: ((start: 0, end: 0, content: "Function call", label: <func-call>), ))
+///  #codly(highlights: ((line: 1, start: 7, end: none, fill: green, tag: "Call", label: <call>), ))
+///  #figure(
+///    caption: ["Hello, world!" in Python]
+///  )[
+///  ```py
+///    print("Hello, world!")
+///    print("Hello, world!")
+///  ```
+///  ] <fig-hello>
+/// 
+///  I can later reference the figure: @fig-hello. But I can also reference the
+/// annotation: @func-call. And finally, I can reference the highlight: @call.
+/// ````, mode: "markup", scale-preview: 72%)
+/// 
+/// This behaviour can be completely customized using the `reference-by`,
+/// `reference-sep`, and `reference-number-format` fields listed below.
 ///
 /// == Enabled (`enabled`)
 /// Whether codly is enabled or not.
@@ -708,6 +731,8 @@
 ///   annotation will only contain the start line
 /// - `content`: the content of the annotation as a showable value, if missing
 ///   or `none` the annotation will only contain the number
+/// - `label`: *if and only if* the code block is in a `figure`, sets the label
+///   by which the annotation can be referenced.
 /// 
 /// Generally you probably want the `content` to be contained within a `rotate(90deg)`.
 /// 
@@ -759,6 +784,8 @@
 /// - `end`: the character position to end highlighting, the end of the line if omitted or `none`
 /// - `fill`: the fill of the highlight, defaults to the default color
 /// - `tag`: an optional tag to be displayed alongside the highlight.
+/// - `label`: *if and only if* the code block is in a `figure`, and it has a `tag`,
+///   sets the label by which the highlight can be referenced.
 /// 
 /// As with other code block settings, annotations are reset after each code block.
 /// 
@@ -837,6 +864,32 @@
 /// - *Type*: `length`
 /// - *Can be a contextual function*: yes
 /// 
+/// == Reference mode (`reference-by`)
+/// The mode by which references are displayed.
+/// Two modes are available:
+/// - `line`: references are displayed as line numbers
+/// - `item`: references are displayed as items, i.e by the `tag` for highlights
+///   and `content` for annotations
+/// 
+/// - *Default*: `"line"`
+/// - *Type*: `str`
+/// - *Can be a contextual function*: yes
+/// 
+/// == Reference separator (`reference-sep`)
+/// The separator to use between the figure reference and the reference itself.
+/// 
+/// - *Default*: `"-"`
+/// - *Type*: `str`
+/// - *Can be a contextual function*: yes
+/// 
+/// == Reference number format (`reference-number-format`)
+/// The format of the reference number line number, only used if `reference-by`
+/// is set to `"line"`.
+/// 
+/// - *Default*: `numbering.with("1")`
+/// - *Type*: `function`
+/// - *Can be a contextual function*: no
+/// 
 /// == Breakable (`breakable`)
 /// Whether the code block is breakable.
 /// 
@@ -899,6 +952,41 @@
 #let codly-init(
   body,
 ) = {
+  show figure.where(kind: raw): it => {
+    if "label" in it.fields() {
+      state("codly-label").update((_) => it.label)
+      it
+      state("codly-label").update((_) => none)
+    } else {
+      it
+    }
+  }
+
+  let get-parts(heading) = {
+    let num = heading.body.children.at(0)
+    let lbl = heading.body.children.at(1)
+    (num.body, label(lbl.body.text))
+  }
+
+  // Levels chosen randomly.
+  let level-highlight = 39340
+  let level-annot = 30246
+  show ref: it => context if it.element != none and it.element.func() == heading and it.element.level == level-highlight {
+    let sep = (__codly-args.reference-sep.get)()
+    let (tag, label) = get-parts(it.element)
+    link(it.target, (
+      ref(label), sep, tag
+    ).join())
+  } else if it.element != none and it.element.func() == heading and it.element.level == level-annot {
+    let sep = (__codly-args.reference-sep.get)()
+    let (num, label) = get-parts(it.element)
+    link(it.target, (
+      ref(label), sep, num
+    ).join())
+  } else {
+    it
+  }
+
   show raw.where(block: true): it => context {
     let indent_regex = regex("\\s*")
     let args = __codly-args
@@ -916,6 +1004,7 @@
       return it
     }
   
+    let block-label = state("codly-label").get()
     let languages = (args.languages.get)()
     let display-names = (args.display-name.get)()
     let display-icons = (args.display-icon.get)()
@@ -952,6 +1041,14 @@
     let skip-line = (args.skip-line.get)()
     let skip-number = (args.skip-number.get)()
 
+    let reference-by = (args.reference-by.get)()
+    if not reference-by in ("line", "item") {
+      panic("codly: reference-by must be either 'line' or 'item'")
+    }
+
+    let reference-sep = (args.reference-sep.get)()
+    let reference-number-format = (args.reference-number-format.get)()
+
     let annotation-format = {
       let fn = (args.annotation-format.get)()
       if fn == none {
@@ -974,6 +1071,10 @@
 
             if (not "content" in x) {
               x.insert("content", none)
+            }
+
+            if "label" in x and block-label == none {
+              panic("codly: label " + str(x.label) + " is only allowed in a figure block")
             }
 
             x
@@ -1008,8 +1109,13 @@
             if not "start" in x or x.start == none {
               x.insert("start", 0)
             }
+
             if not "end" in x or x.end == none {
               x.insert("end", 999999999)
+            }
+
+            if "label" in x and block-label == none {
+              panic("codly: label " + str(x.label) + " is only allowed in a figure block")
             }
             x
           })
@@ -1053,8 +1159,19 @@
       let annot(extra: none) = if current-annot != none and first-annot {
         let height = line-height * (current-annot.end - current-annot.start + 1)
         let num = annotation-format(annots)
+        let label = if "label" in current-annot and current-annot.label != none {
+          let referenced = if reference-by == "line" {
+            reference-number-format(line.number + offset)
+          } else {
+            num
+          }
+          place(hide[#heading(level: level-annot)[#box(referenced)#box(str(block-label))] #current-annot.label])
+        } else {
+          none
+        }
+
         let annot-content = {
-          $lr(}, size: #height) #num #current-annot.content$
+          $lr(}, size: #height) #num #current-annot.content #label$
         }
 
         (grid.cell(
@@ -1135,6 +1252,17 @@
           if collection != none {
             collection.push(child)
 
+            let label = if "label" in hl and hl.label != none {
+              let referenced = if reference-by == "line" {
+                reference-number-format(line.number + offset)
+              } else {
+                hl.tag
+              }
+              place(hide[#heading(level: level-highlight)[#box(referenced)#box(str(block-label))] #hl.label])
+            } else {
+              none
+            }
+
             if i + len >= hl.end or last {
               if tag == none {
                 children.push(box(
@@ -1144,7 +1272,7 @@
                   stroke: stroke,
                   inset: highlight-inset,
                   baseline: highlight-inset,
-                  collection.join()
+                  collection.join() + label
                 ))
               } else {
                 let col = collection.join()
@@ -1178,7 +1306,7 @@
                   stroke: stroke,
                   inset: highlight-inset,
                   baseline: highlight-inset,
-                  tag
+                  tag + label
                 ))
               }
               collection = none

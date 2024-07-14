@@ -182,7 +182,7 @@
     "highlight-stroke": {
         "description": "The stroke of the highlights.",
         "default": "(color) => 0.5pt + color",
-        "ty": [ "type(none)", "stroke", "function" ],
+        "ty": [ "stroke", "function" ],
         "function": false
     },
     "highlight-inset": {
@@ -190,5 +190,23 @@
         "default": "0.32em",
         "ty": [ "length" ],
         "function": true
+    },
+    "reference-by": {
+        "description": "The reference mode to use.",
+        "default": "\"line\"",
+        "ty": [ "str" ],
+        "function": true
+    },
+    "reference-sep": {
+        "description": "The separator to use when referencing highlights and annotations.",
+        "default": "\"-\"",
+        "ty": [ "str", "content" ],
+        "function": true
+    },
+    "reference-number-format": {
+        "description": "The format of the referenced line.",
+        "default": "numbering.with(\"1\")",
+        "ty": [ "function" ],
+        "function": false
     }
 }
