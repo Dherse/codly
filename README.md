@@ -1,4 +1,4 @@
-# Codly: simple and beautiful code blocks for Typst
+# Codly: simple and powerful code blocks
 
 <p align="center">
   <a href="https://github.com/Dherse/codly/blob/main/docs.pdf">
@@ -10,26 +10,28 @@
   <img src="https://github.com/Dherse/codly/actions/workflows/test.yml/badge.svg" />
 </p>
 
-Codly is a package that lets you easily create beautiful code blocks for your Typst documents.
+Codly is a package that lets you easily create **beautiful** code blocks for your Typst documents.
 It uses the newly added [`raw.line`](https://typst.app/docs/reference/text/raw/#definitions-line)
 function to work across all languages easily. You can customize the icons, colors, and more to
 suit your document's theme. By default it has zebra striping, line numbers, for ease of reading.
 
+A full set of documentation can be found [in the repo](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf).
+
+![Example](./demo.png)
+
 ````typ
 #import "@preview/codly:1.0.0": *
-#let icon(codepoint) = {
-  box(
-    height: 0.8em,
-    baseline: 0.05em,
-    image(codepoint)
-  )
-  h(0.1em)
-}
-
 #show: codly-init.with()
-#codly(languages: (
-  rust: (name: "Rust", icon: icon("brand-rust.svg"), color: rgb("#CE412B")),
-))
+
+#codly(
+  languages: (
+    rust: (
+      name: "Rust",
+      icon: text(font: "tabler-icons", "\u{fa53}),
+      color: rgb("#CE412B")
+    ),
+  )
+)
 
 ```rust
 pub fn main() {
@@ -38,16 +40,6 @@ pub fn main() {
 ```
 ````
 
-Which renders to:
-
-![Example](./demo.png)
-
-You can find all of the documentation in the [example](https://github.com/Dherse/codly/tree/main/example/main.typ) file.
-
-## Short manual
-
-> A full set of documentation can be found [here](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf)
-
 ### Setup
 
 To start using codly, you need to initialize codly using a show rule:
@@ -55,8 +47,10 @@ To start using codly, you need to initialize codly using a show rule:
 ```typ
 #show: codly-init.with()
 ```
+> [!TIP]
+> You only need to do this once at the top of your document!
 
-Then you need to configure codly with your parameters:
+Then you *can* to configure codly with your parameters:
 
 ```typ
 #codly(
@@ -66,8 +60,8 @@ Then you need to configure codly with your parameters:
 )
 ```
 
-Any parameter that you leave blank will be set to its default.
-Therefore calling `codly()` is equivalent to calling with all the default parameters.
+> [!IMPORTANT]
+> Any parameter that you leave blank will use the previous values (or the default value if never set) similar to a `set` rule in regular typst. But the changes are always global unless you use the provided `codly.local` function. To get a full list of all settings, see the [documentation](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf).
 
 Then you just need to add a code block and it will be automatically displayed correctly:
 
@@ -86,6 +80,16 @@ To locally disable codly, you can just do the following, you can then later re-e
 ```typ
 #disable-codly()
 ```
+
+Alternatively, you can use the `no-codly` function to achieve the same effect locally:
+
+````typ
+#no-codly[
+  ```typ
+  I will be displayed using the normal raw blocks.
+  ```
+]
+````
 
 ### Setting an offset
 
@@ -109,30 +113,23 @@ If you wish to select a subset of lines, you can use the `codly-range` function.
 You can configure this with the `codly` function:
 
 ```typ
-#codly(
-  enable-numbers: false,
-)
+#codly(number-format: none)
 ```
 
 ### Disabling zebra striping
 
-You disable zebra striping by setting the `zebra-color` to white.
+You disable zebra striping by setting the `zebra-fill` to white.
 
 ```typ
-#codly(
-  zebra-color: white,
-)
+#codly(zebra-fill: none)
 ```
 
 ### Customize the stroke
 
-You can customize the stroke surrounding the figure using the `stroke-width` and `stroke-color` parameters of the `codly` function:
+You can customize the stroke surrounding the figure using the `stroke` parameter of the `codly` function:
 
 ```typ
-#codly(
-  stroke-width: 1pt,
-  stroke-color: red,
-)
+#codly(stroke: 1pt + red)
 ```
 
 ### Misc
@@ -140,9 +137,7 @@ You can customize the stroke surrounding the figure using the `stroke-width` and
 You can also disable the icon, by setting the `display-icon` parameter to `false`:
 
 ```typ
-#codly(
-  display-icon: false,
-)
+#codly(display-icon: false)
 ```
 
-Same with the name, whether the block is breakable, the radius, the padding, and the width of the numbers columns.
+Same with the name, whether the block is breakable, the radius, the padding, and the width of the numbers columns, and so many more [documentation](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf).
