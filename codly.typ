@@ -837,25 +837,15 @@
             // Calculate the indentation.
             let indent = match.end - match.start
 
-            // We remove from the line the indentation.
-            let children = l.children
-            let indent = children.remove(0).text
-
-            // Keep the text of the first element.
-            let text = indent.slice(match.end, none)
-            let indent = indent.slice(match.start, match.end)
-
-            // We create a new sequence with the indentation.
-            l = ([#text], ..children).join()
-
             // Then we wrap it in a block with a left indent.
+            let indent = first.text.slice(match.start, match.end)
             let width = measure([#indent]).width
 
             // We add the indentation to the line.
-            l = box(
-              inset: (left: width, rest: 0pt),
+            l = {
+              set par(hanging-indent: width)
               l
-            )
+            }
           }
         }
 
