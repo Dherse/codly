@@ -2,8 +2,8 @@
 
 <p align="center">
   <a href="https://github.com/Dherse/codly/blob/main/docs.pdf">
-    <img alt="Documentation" src="https://img.shields.io/website?down_message=offline&label=manual&up_color=007aff&up_message=online&url=https%3A%2F%2Fgithub.com%2FDherse%2Fcodly%2Fblob%2Fmain%2Fdocs.pdf"
-  /></a>
+    <img alt="Documentation" src="https://img.shields.io/website?down_message=offline&label=manual&up_color=007aff&up_message=online&url=https%3A%2F%2Fgithub.com%2FDherse%2Fcodly%2Fblob%2Fmain%2Fdocs.pdf" />
+  </a>
   <a href="https://github.com/Dherse/codly/blob/main/LICENSE">
     <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-brightgreen">
   </a>
