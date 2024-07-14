@@ -46,6 +46,13 @@ Hello, world!
 Hello, world!
 ```
 
+= With highlight
+#codly(highlights: ((line: 0, tag: "Hello, world!"), ))
+#codly(inset: 0.5pt)
+```typst
+Hello, world!
+```
+
 = Locally disabled
 #local(enabled: false)[
   ```typst

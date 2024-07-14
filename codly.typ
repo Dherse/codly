@@ -1114,6 +1114,10 @@
               x.insert("end", 999999999)
             }
 
+            if not "fill" in x {
+              x.insert("fill", default-color)
+            }
+
             if "label" in x and block-label == none {
               panic("codly: label " + str(x.label) + " is only allowed in a figure block")
             }
@@ -1413,7 +1417,7 @@
     let is-complex-fill = ((type(fill) != color and fill != none) 
         or (type(zebra-color) != color and zebra-color != none))
 
-    return block(
+    block(
       breakable: breakable,
       clip: true,
       width: 100%,
