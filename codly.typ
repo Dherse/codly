@@ -183,6 +183,9 @@
 ///    number-format: (number) => [ #number ],
 ///    number-align: left + horizon,
 ///    breakable: false,
+///    smart-indent: false,
+///    annotations: none,
+///    annotation-format: numbering.with("(1)"),
 /// ) = {}
 /// ```
 /// 
@@ -710,6 +713,7 @@
 /// Generally you probably want the `content` to be contained within a `rotate(90deg)`.
 /// 
 /// *Note*: Annotations cannot overlap.
+/// 
 /// *Known issues*:
 /// - Annotations that spread over a page break will not work correctly.
 /// - Annotations on the first line of a code block will not work correctly.
