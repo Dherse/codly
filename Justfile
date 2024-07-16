@@ -8,7 +8,7 @@ default:
 
 # generate manual
 doc:
-	typst compile docs/manual.typ docs/manual.pdf
+	typst compile docs/docs.typ docs.pdf
 
 # run test suite
 test *args:
