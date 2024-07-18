@@ -172,11 +172,19 @@ You can customize the stroke surrounding the figure using the `stroke` parameter
 
 ### Misc
 
-You can also disable the icon, by setting the `display-icon` parameter to `false`:
+You can also disable the icon by setting the `display-icon` parameter to `false`:
 
 ```typ
 #codly(display-icon: false)
 ```
 
-Same with the name, whether the block is breakable, the radius, the padding, and the width of the numbers columns, and so many more.
-For more detailed Information check out the [documentation](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf).
+This applies to:
+- the name
+- the radius
+- whether the block is breakable
+- the padding
+- the width of the numbers columns 
+
+and so many more.
+
+For more detailed information check out the [documentation](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf).
