@@ -156,7 +156,7 @@ You can configure this with the `codly` function:
 
 ### Disabling zebra striping
 
-You disable zebra striping by setting the `zebra-fill` to white.
+You disable zebra striping by setting the `zebra-fill` to white or none.
 
 ```typ
 #codly(zebra-fill: none)
