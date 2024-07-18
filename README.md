@@ -116,6 +116,7 @@ You can add a "fake" skip between lines using the `skips` parameters:
 // Before the 5th line (indexing start at 0), insert a 32 line jump.
 #codly(skips: ((4, 32), ))
 ```
+The code inside your block will be the same (except for the added line containing the … character), but the line numbers will be adjusted to reflect the skip. 
 
 This can be customized using the `skip-line` and `skip-number` to customize what it looks like.
 
