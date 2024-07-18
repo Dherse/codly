@@ -27,7 +27,7 @@ A full set of documentation can be found [in the repo](https://raw.githubusercon
   languages: (
     rust: (
       name: "Rust",
-      icon: text(font: "tabler-icons", "\u{fa53}),
+      icon: text(font: "tabler-icons", "\u{fa53}"),
       color: rgb("#CE412B")
     ),
   )
