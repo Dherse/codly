@@ -50,7 +50,7 @@ To start using codly, you need to initialize codly using a show rule:
 > [!TIP]
 > You only need to do this once at the top of your document!
 
-Then you *can* to configure codly with your parameters:
+Then you *can* configure codly with your parameters:
 
 ```typ
 #codly(
@@ -178,4 +178,5 @@ You can also disable the icon, by setting the `display-icon` parameter to `false
 #codly(display-icon: false)
 ```
 
-Same with the name, whether the block is breakable, the radius, the padding, and the width of the numbers columns, and so many more [documentation](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf).
+Same with the name, whether the block is breakable, the radius, the padding, and the width of the numbers columns, and so many more.
+For more detailed Information check out the [documentation](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf).
