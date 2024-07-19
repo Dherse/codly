@@ -995,8 +995,232 @@
     it
   }
 
+  let highlights-setup() = {
+    let args = __codly-args
+    let highlight-stroke = (args.highlight-stroke.get)()
+    let highlight-fill = (args.highlight-fill.get)()
+    let highlight-radius = (args.highlight-radius.get)()
+    let highlight-inset = (args.highlight-inset.get)()
+    let default-color = (args.default-color.get)()
+    let block-label = state("codly-label").get()
+    let highlights = {
+      let highlights = (args.highlights.get)()
+      if highlights == none {
+        ()
+      } else {
+        highlights
+          .sorted(key: (x) => x.line)
+          .map((x) => {
+            if not "start" in x or x.start == none {
+              x.insert("start", 0)
+            }
+
+            if not "end" in x or x.end == none {
+              x.insert("end", 999999999)
+            }
+
+            if not "fill" in x {
+              x.insert("fill", default-color)
+            }
+            x
+          })
+      }
+    }
+    (highlights, highlight-stroke, highlight-fill, highlight-radius, highlight-inset)
+  }
+
+  show raw.line.where(label: <codly-highlighted>): it => context {
+    let indent-regex = regex("^\\s*")
+    // Using a closure to try and use memoization
+    let (
+      highlights,
+      highlight-stroke,
+      highlight-fill,
+      highlight-radius,
+      highlight-inset,
+    ) = highlights-setup()
+
+    // Filter the highlights to only keep the relevant ones.
+    let highlights = highlights.filter((x) => x.line == (it.number - 1))
+    let highlighted = it.body
+
+    // Smart indentation code.
+    let smart-indent = (__codly-args.smart-indent.get)()
+    let body = if it.body.has("children") {
+      it.body.children
+    } else {
+      (it.body, )
+    }
+
+    if smart-indent {
+      // Check the indentation of the line by taking l,
+      // and checking for the first element in the sequence.
+      let first = for child in body {
+        if "children" in child.fields() {
+          for c in child.fields().children {
+            if "text" in c.fields() {
+              c
+            }
+          }
+        } else if "text" in child.fields() {
+          child
+        }
+      }
+      if first != none and first.has("text") {
+        let match = first.text.match(indent-regex)
+
+        // Ensure there is a match and it starts at the beginning of the line.
+        if match != none and match.start == 0 {
+          // Calculate the indentation.
+          let indent = match.end - match.start
+
+          // Then measure the necessary indent.
+          let indent = first.text.slice(match.start, match.end)
+          let width = measure([#indent]).width
+
+          // We add the indentation to the line.
+          highlighted = {
+            set par(hanging-indent: width)
+            highlighted
+          }
+        }
+      }
+    }
+
+    // If there are no highlights, return the line as is.
+    if highlights.len() == 0 {
+      return raw.line(it.number, it.count, it.text, highlighted)
+    }
+
+    // Apply highlights
+    let l = it.body
+    for hl in highlights {
+      let fill = highlight-fill(hl.fill)
+      let stroke = highlight-stroke(hl.fill)
+      let tag = if "tag" in hl { hl.tag } else { none }
+
+      let get-len(child) = {
+        let len = 0
+        let fields = child.fields()
+
+        if "children" in fields {
+          for c in fields.children {
+            len += get-len(c)
+          }
+        } else if "text" in fields {
+          len += fields.text.len()
+        } else if "child" in fields {
+          len += get-len(fields.child)
+        } else if "body" in fields {
+          len += get-len(fields.body)
+        } else {
+          
+        }
+
+        return len
+      }
+
+      let children = ()
+      let collection = none
+      let i = 0
+      let body = if highlighted.has("children") {
+        highlighted.children
+      } else if highlighted.has("child") {
+        (highlighted.child, )
+      }  else if highlighted.has("body") {
+        (highlighted.body, )
+      } else {
+        (highlighted, )
+      }
+      let len = body.len()
+      for (index, child) in body.enumerate() {
+        let last = index == len - 1
+        let args = child.fields()
+        let len = get-len(child)
+
+        if collection != none {
+          collection.push(child)
+        } else if collection == none and (i >= hl.start or i + len >= hl.start) and (i < hl.end) {
+          collection = (child, )
+        } else {
+          children.push(child)
+        }
+
+        let label = if "label" in hl and hl.label != none {
+          let reference-by = (__codly-args.reference-by.get)()
+          let reference-sep = (__codly-args.reference-sep.get)()
+          let block-label = state("codly-label").get()
+          let referenced = if reference-by == "line" {
+            let reference-number-format = (__codly-args.reference-number-format.get)()
+            reference-number-format(it.number)
+          } else {
+            hl.tag
+          }
+          place(hide[#heading(level: level-highlight)[#box(referenced)#box(str(block-label))] #hl.label])
+        } else {
+          none
+        }
+        
+        if collection != none and (i + len >= hl.end or last) {
+          if tag == none {
+            children.push(box(
+              radius: highlight-radius,
+              clip: true,
+              fill: fill,
+              stroke: stroke,
+              inset: highlight-inset,
+              baseline: highlight-inset,
+              collection.join() + label
+            ))
+          } else {
+            let col = collection.join()
+            let height-col = measure(col).height
+            let height-tag = measure(tag).height
+            let max-height = calc.max(height-col, height-tag) + 2 * highlight-inset
+            let hl-box = box(
+              radius: (
+                top-right: 0pt,
+                bottom-right: 0pt,
+                rest: highlight-radius,
+              ),
+              height: max-height,
+              clip: true,
+              fill: fill,
+              stroke: stroke,
+              inset: highlight-inset,
+              baseline: highlight-inset,
+              collection.join()
+            )
+            let tag-box = box(
+              radius: (
+                top-left: 0pt,
+                bottom-left: 0pt,
+                rest: highlight-radius,
+              ),
+              height: max-height,
+              clip: true,
+              fill: fill,
+              stroke: stroke,
+              inset: highlight-inset,
+              baseline: highlight-inset,
+              tag + label
+            )
+
+            children.push(hl-box + h(0pt, weak: true) + tag-box)
+          }
+          collection = none
+        }
+
+        i += len
+      }
+
+      highlighted = children.join()
+    }
+    
+    raw.line(it.number, it.count, it.text, highlighted)
+  }
+
   show raw.where(block: true): it => context {
-    let indent_regex = regex("\\s*")
     let args = __codly-args
     let range = (args.range.get)()
     let in_range(line) = {
@@ -1037,7 +1261,6 @@
     let padding = (args.inset.get)()
     let breakable = (args.breakable.get)()
     let fill = (args.fill.get)()
-    let smart-indent = (args.smart-indent.get)()
     let skips = {
       let skips = (args.skips.get)()
       if skips == none {
@@ -1101,38 +1324,6 @@
       annotations
     }
     let has-annotations = annotations != none and annotations.len() > 0
-
-    let highlight-stroke = (args.highlight-stroke.get)()
-    let highlight-fill = (args.highlight-fill.get)()
-    let highlight-radius = (args.highlight-radius.get)()
-    let highlight-inset = (args.highlight-inset.get)()
-    let highlights = {
-      let highlights = (args.highlights.get)()
-      if highlights == none {
-        ()
-      } else {
-        highlights
-          .sorted(key: (x) => x.line)
-          .map((x) => {
-            if not "start" in x or x.start == none {
-              x.insert("start", 0)
-            }
-
-            if not "end" in x or x.end == none {
-              x.insert("end", 999999999)
-            }
-
-            if not "fill" in x {
-              x.insert("fill", default-color)
-            }
-
-            if "label" in x and block-label == none {
-              panic("codly: label " + str(x.label) + " is only allowed in a figure block")
-            }
-            x
-          })
-      }
-    }
 
     let start = if range == none { 1 } else { range.at(0) };
 
@@ -1212,7 +1403,7 @@
       }
 
       // Always push the formatted line number
-      let l = line.body
+      let l = [#raw.line(line.number + offset, line.count, line.text, line.body)<codly-highlighted>]
 
       // Must be done before the smart indentation code.
       // Otherwise it results in two paragraphs.
@@ -1222,153 +1413,11 @@
         l += box(height: height, width: 0pt)
       }
 
-      // Apply highlights
-      let hl = highlights.at(0, default: none)
-      let highlighted = l
-      while hl != none and i == hl.line {
-        let fill = highlight-fill(hl.fill)
-        let stroke = highlight-stroke(hl.fill)
-        let tag = if "tag" in hl { hl.tag } else { none }
-        assert(l.has("children"), message: "highlighted line must have children")
-
-        let get-len(child) = {
-          let len = 0
-          let fields = child.fields()
-
-          if "children" in fields {
-            for c in fields.children {
-              len += get-len(c)
-            }
-          } else if "text" in fields {
-            len += fields.text.len()
-          } else if "child" in fields {
-            len += get-len(fields.child)
-          } else if "body" in fields {
-            len += get-len(fields.body)
-          } else {
-            
-          }
-
-          return len
-        }
-
-        let children = ()
-        let collection = none
-        let i = 0
-        let len = highlighted.children.len()
-        for (index, child) in highlighted.children.enumerate() {
-          let last = index == len - 1
-          let args = child.fields()
-          let len = get-len(child)
-
-          if collection != none {
-            collection.push(child)
-
-            let label = if "label" in hl and hl.label != none {
-              let referenced = if reference-by == "line" {
-                reference-number-format(line.number + offset)
-              } else {
-                hl.tag
-              }
-              place(hide[#heading(level: level-highlight)[#box(referenced)#box(str(block-label))] #hl.label])
-            } else {
-              none
-            }
-
-            if i + len >= hl.end or last {
-              if tag == none {
-                children.push(box(
-                  radius: highlight-radius,
-                  clip: true,
-                  fill: fill,
-                  stroke: stroke,
-                  inset: highlight-inset,
-                  baseline: highlight-inset,
-                  collection.join() + label
-                ))
-              } else {
-                let col = collection.join()
-                let height-col = measure(col).height
-                let height-tag = measure(tag).height
-                let max-height = calc.max(height-col, height-tag) + 2 * highlight-inset
-                children.push(box(
-                  radius: (
-                    top-right: 0pt,
-                    bottom-right: 0pt,
-                    rest: highlight-radius,
-                  ),
-                  height: max-height,
-                  clip: true,
-                  fill: fill,
-                  stroke: stroke,
-                  inset: highlight-inset,
-                  baseline: highlight-inset,
-                  collection.join()
-                ))
-                children.push(h(0pt, weak: true))
-                children.push(box(
-                  radius: (
-                    top-left: 0pt,
-                    bottom-left: 0pt,
-                    rest: highlight-radius,
-                  ),
-                  height: max-height,
-                  clip: true,
-                  fill: fill,
-                  stroke: stroke,
-                  inset: highlight-inset,
-                  baseline: highlight-inset,
-                  tag + label
-                ))
-              }
-              collection = none
-            }
-          } else if collection == none and (i >= hl.start or i + len >= hl.start) and (i < hl.end) {
-            collection = (child, )
-          } else {
-            children.push(child)
-          }
-
-          i += len
-        }
-
-        highlighted = children.join()
-        _ = highlights.remove(0)
-        hl = highlights.at(0, default: none)
-      }
-
-
-      // Smart indentation code.
-      if smart-indent and l.has("children") {
-        // Check the indentation of the line by taking l,
-        // and checking for the first element in the sequence.
-        let first = l.children.at(0, default: none)
-        if first != none and first.has("text") {
-          let match = first.text.match(indent_regex)
-
-          // Ensure there is a match and it starts at the beginning of the line.
-          if match != none and match.start == 0 {
-            // Calculate the indentation.
-            let indent = match.end - match.start
-
-            // Then measure the necessary indent.
-            let indent = first.text.slice(match.start, match.end)
-            let width = measure([#indent]).width
-
-            // We add the indentation to the line.
-            highlighted = {
-              set par(hanging-indent: width)
-              highlighted
-            }
-          }
-        }
-      }
-
       if line.number != start or (display-names != true and display-icons != true) {
-        items = (..items, highlighted, ..annot())
+        items = (..items, l, ..annot())
         continue
       } else if it.lang == none {
-        items = (..items, highlighted, ..annot())
+        items = (..items, l, ..annot())
         continue
       }
       
@@ -1401,7 +1450,7 @@
       let lb = measure(language-block);
 
       if has-annotations {
-        items = (..items, highlighted, ..annot(extra: place(
+        items = (..items, l, ..annot(extra: place(
           right + horizon,
           dx: lang-outset.x,
           dy: lang-outset.y,
@@ -1410,7 +1459,7 @@
       } else {
         items.push(grid(
           columns: (1fr, lb.width + 2 * padding),
-          highlighted,
+          l,
           place(
             right + horizon,
             dx: lang-outset.x,
@@ -1495,11 +1544,26 @@
         }
       )
 
-      codly-offset()
-      codly-range(start: 1, end: none)
-      state("codly-skips").update((_) => ())
-      state("codly-annotations").update((_) => ())
-      state("codly-highlights").update((_) => ())
+      if offset != 0 {
+        state("codly-offset").update(0)
+      }
+
+      if range != none {
+        state("codly-range").update(none)
+      }
+
+      if skips != none and skips != () {
+        state("codly-skips").update(())
+      }
+
+      if has-annotations {
+        state("codly-annotations").update(())
+      }
+
+      let highlights = state("codly-highlights").get()
+      if highlights != none and highlights != () {
+        state("codly-highlights").update(())
+      }
     }
   }
 
