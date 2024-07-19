@@ -27,7 +27,7 @@ A full set of documentation can be found [in the repo](https://raw.githubusercon
   languages: (
     rust: (
       name: "Rust",
-      icon: text(font: "tabler-icons", "\u{fa53}),
+      icon: text(font: "tabler-icons", "\u{fa53}"),
       color: rgb("#CE412B")
     ),
   )
@@ -50,7 +50,7 @@ To start using codly, you need to initialize codly using a show rule:
 > [!TIP]
 > You only need to do this once at the top of your document!
 
-Then you *can* to configure codly with your parameters:
+Then you *can* configure codly with your parameters:
 
 ```typ
 #codly(
@@ -116,6 +116,7 @@ You can add a "fake" skip between lines using the `skips` parameters:
 // Before the 5th line (indexing start at 0), insert a 32 line jump.
 #codly(skips: ((4, 32), ))
 ```
+The code inside your block will be the same (except for the added line containing the … character), but the line numbers will be adjusted to reflect the skip. 
 
 This can be customized using the `skip-line` and `skip-number` to customize what it looks like.
 
@@ -156,7 +157,7 @@ You can configure this with the `codly` function:
 
 ### Disabling zebra striping
 
-You disable zebra striping by setting the `zebra-fill` to white.
+You disable zebra striping by setting the `zebra-fill` to white or none.
 
 ```typ
 #codly(zebra-fill: none)
@@ -172,10 +173,19 @@ You can customize the stroke surrounding the figure using the `stroke` parameter
 
 ### Misc
 
-You can also disable the icon, by setting the `display-icon` parameter to `false`:
+You can also disable the icon by setting the `display-icon` parameter to `false`:
 
 ```typ
 #codly(display-icon: false)
 ```
 
-Same with the name, whether the block is breakable, the radius, the padding, and the width of the numbers columns, and so many more [documentation](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf).
+This applies to:
+- the name
+- the radius
+- whether the block is breakable
+- the padding
+- the width of the numbers columns 
+
+and so many more.
+
+For more detailed information check out the [documentation](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf).
