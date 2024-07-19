@@ -25,8 +25,7 @@ jobs:
         with:
           crate: typst-test
           git: https://github.com/tingerrr/typst-test.git
-          branch: cli-lib-separation
-
+          branch: main
       - name: Setup typst
         uses: yusancky/setup-typst@v2
         with:
