@@ -193,6 +193,14 @@
 ///    reference-by: line,
 ///    reference-sep: "-",
 ///    reference-number-format: numbering.with("1"),
+///    header: none,
+///    header-repeat: false,
+///    header-transform: (x) => x,
+///    header-cell-args: (),
+///    footer: none,
+///    footer-repeat: false,
+///    footer-transform: (x) => x,
+///    footer-cell-args: (),
 ///    breakable: false,
 /// ) = {}
 /// ```
@@ -247,7 +255,7 @@
 /// 
 /// This behaviour can be completely customized using the `reference-by`,
 /// `reference-sep`, and `reference-number-format` fields listed below.
-///
+/// 
 /// == Enabled (`enabled`)
 /// Whether codly is enabled or not.
 /// If it is disabled, the code block will be displayed as a normal code block,
@@ -898,6 +906,108 @@
 /// - *Type*: `function`
 /// - *Can be a contextual function*: no
 /// 
+/// == Header (`header`)
+/// The header of the code block.
+/// - *Default*: `none`
+/// - *Type*: `content` or `none`
+/// - *Can be a contextual function*: true
+/// 
+/// Note that the header gets reset automatically after every code block.
+/// 
+/// #pre-example()
+/// #example(````
+///  #codly(header: [*Hello, world!*])
+///  ```
+///  Hello, world!
+///  ```
+/// ````, mode: "markup", scale-preview: 100%)
+/// \
+/// \
+/// \
+/// == Repeat header (`header-repeat`) <header-repeat>
+/// Whether to repeat the header on each new page.
+/// Only useful for breakable code blocks.
+/// - *Default*: `false`
+/// - *Type*: `bool`
+/// - *Can be a contextual function*: true
+/// 
+/// == Header cell arguments (`header-cell-args`) <header-cell-args>
+/// Allows setting additional arguments for the header cell.
+/// Your header is contained in a
+/// #link("https://typst.app/docs/reference/layout/grid/#definitions-cell")[`grid.cell`],
+/// for which you can set additional arguments.
+/// 
+/// Only one argument is always set: `colspan: 2` to make it take the full width
+/// of the code block. You can override this by setting `colspan: 1`. All other
+/// arguments are passed to the cell, overriding the default values (i.e `colspan: 2`).
+/// 
+/// - *Default*: `()`
+/// - *Type*: `array`, `dictionary`, or `arguments`
+/// - *Can be a contextual function*: true
+/// 
+/// #pre-example()
+/// #example(````
+///  // Globally set the header cell to be bold
+///  #codly(
+///    header: [*Hello, world!*],
+///    header-cell-args: (align: center, )
+///  )
+///  ```
+///  Hello, world!
+///  ```
+/// ````, mode: "markup", scale-preview: 100%)
+/// 
+/// == Heade transform (`header-transform`) <header-transform>
+/// Allows setting a transform for the header cell.
+/// This behaves like a show rule and is applied to the contents of the header cell,
+/// i.e the value you set with `codly(header: ...)`.
+/// 
+/// You can use this to globally set common styling for all header cells, such
+/// as making the text bold, or changing the color.
+/// 
+/// - *Default*: `(x) => x`
+/// - *Type*: `function`
+/// - *Can be a contextual function*: false
+/// 
+/// #pre-example()
+/// #example(````
+///  // Globally set the header cell to be bold and blue
+///  #codly(header-transform: (x) => {
+///    set text(fill: blue)
+///    strong(x) 
+///  })
+///  #codly(header: [Hello, world!])
+///  ```
+///  Hello, world!
+///  ```
+/// ````, mode: "markup", scale-preview: 100%)
+/// \
+/// \
+/// == Footer (`footer`)
+/// The footer of the code block.
+/// - *Default*: `none`
+/// - *Type*: `content` or `none`
+/// - *Can be a contextual function*: true
+/// 
+/// Note that the footer gets reset automatically after every code block.
+/// 
+/// #pre-example()
+/// #example(````
+///  #codly(footer: [*Hello, world!*])
+///  ```
+///  Hello, world!
+///  ```
+/// ````, mode: "markup", scale-preview: 100%)
+/// 
+/// == Repeat footer (`footer-repeat`)
+/// See #link(<header-repeat>)[`header-repeat`].
+/// 
+/// == Footer cell arguments (`footer-cell-args`)
+/// See #link(<header-cell-args>)[`header-cell-args`].
+/// 
+/// == Footer transform (`footer-transform`)
+/// See #link(<header-transform>)[`header-transform`].
+/// 
 /// == Breakable (`breakable`)
 /// Whether the code block is breakable.
 /// 
@@ -1507,6 +1617,38 @@
       }
     }
 
+    // prepare the header
+    let header = (args.header.get)()
+    let header-repeat = (args.header-repeat.get)()
+    let header = if header != none {
+      let header-args = (args.header-cell-args.get)()
+      let transform = (args.header-transform.get)()
+      (
+        grid.header(
+          repeat: header-repeat,
+          grid.cell(transform(header), colspan: 2, ..header-args),
+        ),
+      )
+    } else {
+      ()
+    }
+
+    // prepare the header
+    let footer = (args.footer.get)()
+    let footer-repeat = (args.footer-repeat.get)()
+    let footer = if footer != none {
+      let footer-args = (args.footer-cell-args.get)()
+      let transform = (args.footer-transform.get)()
+      (
+        grid.footer(
+          repeat: footer-repeat,
+          grid.cell(transform(footer), colspan: 2, ..footer-args),
+        ),
+      )
+    } else {
+      ()
+    }
+
     // If the fill or zebra color is a gradient, we will draw it on a separate layer.
     let is-complex-fill = ((type(fill) != color and fill != none) 
         or (type(zebra-color) != color and zebra-color != none))
@@ -1535,7 +1677,9 @@
                 } else {
                   fill
                 },
-                ..it.lines.map((line) => hide(line))
+                ..header,
+                ..it.lines.map((line) => hide(line)),
+                ..footer,
               )
             )
           }
@@ -1558,7 +1702,9 @@
                   fill
                 }
               },
+              ..header,
               ..items,
+              ..footer,
             )
           } else {
             grid(
@@ -1575,7 +1721,9 @@
               } else {
                 fill
               },
+              ..header,
               ..items,
+              ..footer,
             )
           }
         }
@@ -1595,6 +1743,14 @@
 
       if has-annotations {
         state("codly-annotations").update(())
+      }
+
+      if header != () {
+        state("codly-header").update(())
+      }
+
+      if footer != () {
+        state("codly-footer").update(())
       }
 
       let highlights = state("codly-highlights").get()

@@ -5,6 +5,54 @@
         "ty": "bool",
         "function": true
     },
+    "header": {
+        "description": "An optional header to display above the code block.",
+        "default": "none",
+        "ty": [ "content", "type(none)" ],
+        "function": true
+    },
+    "header-repeat": {
+        "description": "Whether to repeat the header on each page.",
+        "default": "false",
+        "ty": [ "bool" ],
+        "function": true
+    },
+    "header-cell-args": {
+        "description": "Additional arguments to be provided to the `grid.cell` containing the header.",
+        "default": "()",
+        "ty": [ "array", "dictionary", "arguments" ],
+        "function": true
+    },
+    "header-transform": {
+        "description": "Function that transforms the header into arbitrary content to be stored in the `grid.cell`. Can be seen as a show-rule for the header.",
+        "default": "(x) => x",
+        "ty": [ "function" ],
+        "function": false
+    },
+    "footer": {
+        "description": "An optional footer to display below the code block.",
+        "default": "none",
+        "ty": [ "content", "type(none)" ],
+        "function": true
+    },
+    "footer-repeat": {
+        "description": "Whether to repeat the footer on each page.",
+        "default": "false",
+        "ty": [ "bool" ],
+        "function": true
+    },
+    "footer-cell-args": {
+        "description": "Additional arguments to be provided to the `grid.cell` containing the footer.",
+        "default": "()",
+        "ty": [ "array", "dictionary", "arguments" ],
+        "function": true
+    },
+    "footer-transform": {
+        "description": "Function that transforms the footer into arbitrary content to be stored in the `grid.cell`. Can be seen as a show-rule for the footer.",
+        "default": "(x) => x",
+        "ty": [ "function" ],
+        "function": false
+    },
     "offset": {
         "description": "Offset applied to the line numbers",
         "default": "0",
