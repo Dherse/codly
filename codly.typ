@@ -1052,6 +1052,7 @@
       (it.body, )
     }
 
+    let width = none
     if smart-indent {
       // Check the indentation of the line by taking l,
       // and checking for the first element in the sequence.
@@ -1076,13 +1077,7 @@
 
           // Then measure the necessary indent.
           let indent = first.text.slice(match.start, match.end)
-          let width = measure([#indent]).width
-
-          // We add the indentation to the line.
-          highlighted = {
-            set par(hanging-indent: width)
-            highlighted
-          }
+          width = measure([#indent]).width
         }
       }
     }
@@ -1123,19 +1118,54 @@
       let children = ()
       let collection = none
       let i = 0
-      let body = if highlighted.has("children") {
-        highlighted.children
-      } else if highlighted.has("child") {
-        (highlighted.child, )
-      }  else if highlighted.has("body") {
-        (highlighted.body, )
-      } else {
-        (highlighted, )
+      let ws_regex = regex("\s")
+      let get-flattened-body(elem) = {
+        if elem.has("children") {
+          elem.children.map(get-flattened-body).flatten()
+        } else if elem.has("child") and elem.has("styles") {
+           get-flattened-body(elem.child).map((x) => (elem.func())(x, elem.styles)).flatten()
+        } else if elem.has("child") {
+           get-flattened-body(elem.child)
+        } else if elem.has("body") {
+          get-flattened-body(elem.body)
+        } else if elem.has("text") {
+          // Separate the whitespaces at the start of text
+          let out = ()
+          let ws = none
+          for cluster in elem.text.clusters() {
+            let m = cluster.match(ws_regex)
+            if m != none and ws != none {
+              ws += cluster
+            } else if m != none and ws == none {
+              ws = cluster
+            } else if ws != none {
+              out.push(text(ws))
+              ws = none
+              out.push(text(cluster))
+            } else {
+              out.push(text(cluster))
+            }
+          }
+
+          if ws != none {
+            out.push(text(ws))
+          }
+          out
+        } else {
+          (elem, )
+        }
       }
+      
+      let body = get-flattened-body(highlighted)
+
       let len = body.len()
       for (index, child) in body.enumerate() {
         let last = index == len - 1
         let args = child.fields()
+
+        if child.has("child") {
+          child = (child.func())(child.child, child.styles)
+        }
         let len = get-len(child)
 
         if collection != none {
@@ -1215,6 +1245,13 @@
       }
 
       highlighted = children.join()
+      if width != none {
+          // We add the indentation to the line.
+          highlighted = {
+            set par(hanging-indent: width)
+            highlighted
+          }
+      }
     }
     
     raw.line(it.number, it.count, it.text, highlighted)
