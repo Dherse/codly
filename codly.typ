@@ -2,12 +2,12 @@
 
 // Default language-block style
 #let default-language-block(name, icon, lang-color) = context {
-  let extra = state("codly-extra-args", arguments()).get()
-  let radius = (__codly-args.lang-radius.get)(..extra)
-  let padding = (__codly-args.lang-inset.get)(..extra)
+  let extra = state("codly-extra-args", (:)).get()
+  let radius = (__codly-args.lang-radius.get)(extra: extra)
+  let padding = (__codly-args.lang-inset.get)(extra: extra)
 
-  let lang-stroke = (__codly-args.lang-stroke.get)(..extra)
-  let lang-fill = (__codly-args.lang-fill.get)(..extra)
+  let lang-stroke = (__codly-args.lang-stroke.get)(extra: extra)
+  let lang-fill = (__codly-args.lang-fill.get)(extra: extra)
 
   let fill = if type(lang-fill) == function {
     (lang-fill)((name: name, icon: icon, color: lang-color))
@@ -1074,11 +1074,18 @@
   if type(it) != content or it.func() != raw {
     panic("codly-raw: body must be a raw content")
   }
-  state("codly-extra-args", arguments()).update(extra)
+
+  let extra = extra.named()
+  let current = state("codly-extra-args", (:)).get()
+  state("codly-extra-args", (:)).update((old) => {
+    old + extra
+  })
+
+  let extra = current + extra
 
   set par(justify: false)
   let args = __codly-args
-  let range = (args.range.get)(..extra)
+  let range = (args.range.get)(extra: extra)
   let in_range(line) = {
     if range == none {
       true
@@ -1088,16 +1095,16 @@
       line >= range.at(0) and line <= range.at(1)
     }
   }
-  if (args.enabled.get)(..extra) != true {
+  if (args.enabled.get)(extra: extra) != true {
     return it
   }
 
   let block-label = state("codly-label").get()
-  let display-names = (args.display-name.get)(..extra)
-  let display-icons = (args.display-icon.get)(..extra)
-  let lang-outset = (args.lang-outset.get)(..extra)
+  let display-names = (args.display-name.get)(extra: extra)
+  let display-icons = (args.display-icon.get)(extra: extra)
+  let lang-outset = (args.lang-outset.get)(extra: extra)
   let language-block = {
-    let fn = (args.lang-format.get)(..extra)
+    let fn = (args.lang-format.get)(extra: extra)
     if fn == none {
       (..) => none
     } else if fn == auto {
@@ -1106,37 +1113,37 @@
       fn
     }
   }
-  let default-color = (args.default-color.get)(..extra)
-  let radius = (args.radius.get)(..extra)
-  let offset = (args.offset.get)(..extra)
-  let stroke = (args.stroke.get)(..extra)
-  let zebra-color = (args.zebra-fill.get)(..extra)
-  let numbers-format = (args.number-format.get)(..extra)
-  let numbers-alignment = (args.number-align.get)(..extra)
-  let padding = (args.inset.get)(..extra)
-  let breakable = (args.breakable.get)(..extra)
-  let fill = (args.fill.get)(..extra)
+  let default-color = (args.default-color.get)(extra: extra)
+  let radius = (args.radius.get)(extra: extra)
+  let offset = (args.offset.get)(extra: extra)
+  let stroke = (args.stroke.get)(extra: extra)
+  let zebra-color = (args.zebra-fill.get)(extra: extra)
+  let numbers-format = (args.number-format.get)(extra: extra)
+  let numbers-alignment = (args.number-align.get)(extra: extra)
+  let padding = (args.inset.get)(extra: extra)
+  let breakable = (args.breakable.get)(extra: extra)
+  let fill = (args.fill.get)(extra: extra)
   let skips = {
-    let skips = (args.skips.get)(..extra)
+    let skips = (args.skips.get)(extra: extra)
     if skips == none {
       ()
     } else {
       skips.sorted(key: (x) => x.at(0)).dedup()
     }
   }
-  let skip-line = (args.skip-line.get)(..extra)
-  let skip-number = (args.skip-number.get)(..extra)
+  let skip-line = (args.skip-line.get)(extra: extra)
+  let skip-number = (args.skip-number.get)(extra: extra)
 
-  let reference-by = (args.reference-by.get)(..extra)
+  let reference-by = (args.reference-by.get)(extra: extra)
   if not reference-by in ("line", "item") {
     panic("codly: reference-by must be either 'line' or 'item'")
   }
 
-  let reference-sep = (args.reference-sep.get)(..extra)
-  let reference-number-format = (args.reference-number-format.get)(..extra)
+  let reference-sep = (args.reference-sep.get)(extra: extra)
+  let reference-number-format = (args.reference-number-format.get)(extra: extra)
 
   let annotation-format = {
-    let fn = (args.annotation-format.get)(..extra)
+    let fn = (args.annotation-format.get)(extra: extra)
     if fn == none {
       (_) => none
     } else {
@@ -1144,7 +1151,7 @@
     }
   }
   let annotations = {
-    let annotations = (args.annotations.get)(..extra)
+    let annotations = (args.annotations.get)(extra: extra)
     annotations = if annotations == none {
       ()
     } else {
@@ -1199,11 +1206,11 @@
   
 
   // prepare the header
-  let header = (args.header.get)(..extra)
-  let header-repeat = (args.header-repeat.get)(..extra)
+  let header = (args.header.get)(extra: extra)
+  let header-repeat = (args.header-repeat.get)(extra: extra)
     
   // The language block (icon + name)
-  let languages = (args.languages.get)(..extra)
+  let languages = (args.languages.get)(extra: extra)
   let language-block = if it.lang == none {
     none
   } else if it.lang in languages {
@@ -1240,8 +1247,8 @@
   let lb = measure(language-block);
 
   let header = if header != none {
-    let header-args = (args.header-cell-args.get)(..extra)
-    let transform = (args.header-transform.get)(..extra)
+    let header-args = (args.header-cell-args.get)(extra: extra)
+    let transform = (args.header-transform.get)(extra: extra)
     (
       grid.header(
         repeat: header-repeat,
@@ -1352,11 +1359,11 @@
   }
 
   // prepare the footer
-  let footer = (args.footer.get)(..extra)
-  let footer-repeat = (args.footer-repeat.get)(..extra)
+  let footer = (args.footer.get)(extra: extra)
+  let footer-repeat = (args.footer-repeat.get)(extra: extra)
   let footer = if footer != none {
-    let footer-args = (args.footer-cell-args.get)(..extra)
-    let transform = (args.footer-transform.get)(..extra)
+    let footer-args = (args.footer-cell-args.get)(extra: extra)
+    let transform = (args.footer-transform.get)(extra: extra)
     (
       grid.footer(
         repeat: footer-repeat,
@@ -1371,113 +1378,111 @@
   let is-complex-fill = ((type(fill) != color and fill != none) 
       or (type(zebra-color) != color and zebra-color != none))
 
-  return {
-    block(
-      breakable: breakable,
-      clip: true,
-      width: 100%,
-      radius: radius,
-      stroke: stroke,
-      {
-        if is-complex-fill {
-          // We use place to draw the fill on a separate layer.
-          place(
-            grid(
-              columns: if has-annotations {
-                (1fr, annot-width)
-              } else {
-                (1fr, )
-              },
-              stroke: none,
-              inset: padding * 1.5,
-              fill: (x, y) => if zebra-color != none and calc.rem(y, 2) == 0 {
-                zebra-color
-              } else {
-                fill
-              },
-              ..header,
-              ..it.lines.map((line) => hide(line)),
-              ..footer,
-            )
-          )
-        }
-        if numbers-format != none {
-          grid(
-            columns: if has-annotations {
-              (auto, 1fr, annot-width)
-            } else {
-              (auto, 1fr)
-            },
-            inset: padding * 1.5,
-            stroke: none,
-            align: (numbers-alignment, left + horizon),
-            fill: if is-complex-fill {
-              none
-            } else {
-              (x, y) => if zebra-color != none and calc.rem(y, 2) == 0 {
-                zebra-color
-              } else {
-                fill
-              }
-            },
-            ..header,
-            ..items,
-            ..footer,
-          )
-        } else {
+  block(
+    breakable: breakable,
+    clip: true,
+    width: 100%,
+    radius: radius,
+    stroke: stroke,
+    {
+      if is-complex-fill {
+        // We use place to draw the fill on a separate layer.
+        place(
           grid(
             columns: if has-annotations {
               (1fr, annot-width)
             } else {
-              (1fr)
+              (1fr, )
             },
-            inset: padding * 1.5,
             stroke: none,
-            align: (numbers-alignment, left + horizon),
+            inset: padding * 1.5,
             fill: (x, y) => if zebra-color != none and calc.rem(y, 2) == 0 {
               zebra-color
             } else {
               fill
             },
             ..header,
-            ..items,
+            ..it.lines.map((line) => hide(line)),
             ..footer,
           )
-        }
+        )
       }
-    )
-
-    if offset != 0 {
-      state("codly-offset").update(0)
+      if numbers-format != none {
+        grid(
+          columns: if has-annotations {
+            (auto, 1fr, annot-width)
+          } else {
+            (auto, 1fr)
+          },
+          inset: padding * 1.5,
+          stroke: none,
+          align: (numbers-alignment, left + horizon),
+          fill: if is-complex-fill {
+            none
+          } else {
+            (x, y) => if zebra-color != none and calc.rem(y, 2) == 0 {
+              zebra-color
+            } else {
+              fill
+            }
+          },
+          ..header,
+          ..items,
+          ..footer,
+        )
+      } else {
+        grid(
+          columns: if has-annotations {
+            (1fr, annot-width)
+          } else {
+            (1fr)
+          },
+          inset: padding * 1.5,
+          stroke: none,
+          align: (numbers-alignment, left + horizon),
+          fill: (x, y) => if zebra-color != none and calc.rem(y, 2) == 0 {
+            zebra-color
+          } else {
+            fill
+          },
+          ..header,
+          ..items,
+          ..footer,
+        )
+      }
     }
+  )
 
-    if range != none {
-      state("codly-range").update(none)
-    }
-
-    if skips != none and skips != () {
-      state("codly-skips").update(())
-    }
-
-    if has-annotations {
-      state("codly-annotations").update(())
-    }
-
-    if header != () {
-      state("codly-header").update(none)
-    }
-
-    if footer != () {
-      state("codly-footer").update(none)
-    }
-
-    let highlights = state("codly-highlights").get()
-    if highlights != none and highlights != () {
-      state("codly-highlights").update(())
-    }
+  if offset != 0 {
+    state("codly-offset").update(0)
   }
 
-  state("codly-extra-args").update(arguments())
+  if range != none {
+    state("codly-range").update(none)
+  }
+
+  if skips != none and skips != () {
+    state("codly-skips").update(())
+  }
+
+  if has-annotations {
+    state("codly-annotations").update(())
+  }
+
+  if header != () {
+    state("codly-header").update(none)
+  }
+
+  if footer != () {
+    state("codly-footer").update(none)
+  }
+
+  let highlights = state("codly-highlights").get()
+  if highlights != none and highlights != () {
+    state("codly-highlights").update(())
+  }
+
+  state("codly-extra-args").update((:))
 }
 
 /// Initializes the codly show rule.
@@ -1508,14 +1513,14 @@
   let level-highlight = 39340
   let level-annot = 30246
   show ref: it => context if it.element != none and it.element.func() == heading and it.element.level == level-highlight {
-    let extra = state("codly-extra-args", arguments()).at(it.element.loc())
-    let sep = (__codly-args.reference-sep.get)(..extra)
+    let extra = state("codly-extra-args", (:)).at(it.element.loc())
+    let sep = (__codly-args.reference-sep.get)(extra: extra)
     let (tag, label) = get-parts(it.element)
     link(it.target, (
       ref(label), sep, tag
     ).join())
   } else if it.element != none and it.element.func() == heading and it.element.level == level-annot {
-    let sep = (__codly-args.reference-sep.get)(..extra)
+    let sep = (__codly-args.reference-sep.get)(extra: extra)
     let (num, label) = get-parts(it.element)
     link(it.target, (
       ref(label), sep, num
@@ -1524,16 +1529,16 @@
     it
   }
 
-  let highlights-setup(..extra) = {
+  let highlights-setup(extra: (:)) = {
     let args = __codly-args
-    let highlight-stroke = (args.highlight-stroke.get)(..extra)
-    let highlight-fill = (args.highlight-fill.get)(..extra)
-    let highlight-radius = (args.highlight-radius.get)(..extra)
-    let highlight-inset = (args.highlight-inset.get)(..extra)
-    let default-color = (args.default-color.get)(..extra)
+    let highlight-stroke = (args.highlight-stroke.get)(extra: extra)
+    let highlight-fill = (args.highlight-fill.get)(extra: extra)
+    let highlight-radius = (args.highlight-radius.get)(extra: extra)
+    let highlight-inset = (args.highlight-inset.get)(extra: extra)
+    let default-color = (args.default-color.get)(extra: extra)
     let block-label = state("codly-label").get()
     let highlights = {
-      let highlights = (args.highlights.get)(..extra)
+      let highlights = (args.highlights.get)(extra: extra)
       if highlights == none {
         ()
       } else {
@@ -1560,7 +1565,7 @@
 
   show raw.line.where(label: <codly-highlighted>): it => context {
     let indent-regex = regex("^\\s*")
-    let extra = state("codly-extra-args", arguments()).get()
+    let extra = state("codly-extra-args", (:)).get()
     // Using a closure to try and use memoization
     let (
       highlights,
@@ -1568,14 +1573,14 @@
       highlight-fill,
       highlight-radius,
       highlight-inset,
-    ) = highlights-setup(..extra)
+    ) = highlights-setup(extra: extra)
 
     // Filter the highlights to only keep the relevant ones.
     let highlights = highlights.filter((x) => x.line == (it.number - 1))
     let highlighted = it.body
 
     // Smart indentation code.
-    let smart-indent = (__codly-args.smart-indent.get)(..extra)
+    let smart-indent = (__codly-args.smart-indent.get)(extra: extra)
     let body = if it.body.has("children") {
       it.body.children
     } else {
@@ -1722,11 +1727,11 @@
         }
 
         let label = if "label" in hl and hl.label != none {
-          let reference-by = (__codly-args.reference-by.get)(..extra)
-          let reference-sep = (__codly-args.reference-sep.get)(..extra)
+          let reference-by = (__codly-args.reference-by.get)(extra: extra)
+          let reference-sep = (__codly-args.reference-sep.get)(extra: extra)
           let block-label = state("codly-label").get()
           let referenced = if reference-by == "line" {
-            let reference-number-format = (__codly-args.reference-number-format.get)(..extra)
+            let reference-number-format = (__codly-args.reference-number-format.get)(extra: extra)
             reference-number-format(it.number)
           } else {
             hl.tag

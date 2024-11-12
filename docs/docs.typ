@@ -229,6 +229,8 @@ The codly functions acts like a set-rule, this means that calling it will set th
     "https://typst.app/docs/reference/visualize/stroke/"
   } else if ty == "alignment" {
     "https://typst.app/docs/reference/layout/alignment/"
+  } else if ty == "int" {
+    "https://typst.app/docs/reference/foundations/int/"
   } else {
     panic("unknown type: " + ty)
   }
@@ -258,7 +260,7 @@ The codly functions acts like a set-rule, this means that calling it will set th
       .map(((key, value)) => link(link-map(key), value))
       .join(", ", last: if long { ", or " } else { " or "})
   } else {
-    raw(lang: "typc", ty_map(arg.ty))
+    link(link-map(arg.ty), raw(lang: "typc", ty_map(arg.ty)))
   }
 
   let paint = luma(0)
@@ -276,7 +278,7 @@ The codly functions acts like a set-rule, this means that calling it will set th
     bool_yes_no(arg.function),
     table.hline(stroke: (thickness: 1pt, dash: "dashed", paint: paint)),
     strong[ #icon-rst Automatically reset ],
-    if "reset" in arg { bool_yes_no(arg.reset) } else { "no" },
+    if "reset" in arg { bool_yes_no(arg.reset) } else { bool_yes_no(false) },
   ))
 
   block(breakable: false, {
@@ -332,6 +334,46 @@ Codly provides a convenience function called `local` that allows you to locally 
   ```
 )
 * It's back to being red*
+```typ
+= Example
+*Hello, World!*
+```
+````)
+
+=== Nested local state
+
+Codly does support nested local state, the innermost local state will override the outermost local state. This allows you to have different styles for different parts of your code block.
+
+#example(````typ
+*Global state with red color*
+#codly(fill: red)
+```typ
+= Example
+*Hello, World!*
+```
+*Locally set it to blue*
+#local(
+  fill: blue,
+)[
+  ```typ
+  = Example
+  *Hello, World!*
+  ```
+  *Now it's green:*
+  #local(fill: green)[
+    ```typ
+    = Example
+    *Hello, World!*
+    ```
+  ]
+
+  *Back to blue:*
+  ```typ
+  = Example
+  *Hello, World!*
+  ```
+]
+*Back to red:*
 ```typ
 = Example
 *Hello, World!*

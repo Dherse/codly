@@ -60,10 +60,9 @@
   let state = state("codly-" + name, default)
 
   (
-    get: (..args) => {
-      let named = args.named()
-      let value = if name in named {
-        named.at(name)
+    get: (extra: (:)) => {
+      let value = if name in extra {
+        extra.at(name)
       } else {
         state.get()
       }
