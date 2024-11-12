@@ -366,6 +366,13 @@ Codly does support nested local state, the innermost local state will override t
     *Hello, World!*
     ```
   ]
+  *Now it's zebras are also blue:*
+  #local(zebra-fill: blue)[
+    ```typ
+    = Example
+    *Hello, World!*
+    ```
+  ]
 
   *Back to blue:*
   ```typ

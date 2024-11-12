@@ -1069,19 +1069,11 @@
 
 #let codly-raw(
   it,
-  ..extra,
+  extra: (:),
 ) = context {
   if type(it) != content or it.func() != raw {
     panic("codly-raw: body must be a raw content")
   }
-
-  let extra = extra.named()
-  let current = state("codly-extra-args", (:)).get()
-  state("codly-extra-args", (:)).update((old) => {
-    old + extra
-  })
-
-  let extra = current + extra
 
   set par(justify: false)
   let args = __codly-args
@@ -1481,8 +1473,6 @@
   if highlights != none and highlights != () {
     state("codly-highlights").update(())
   }
-
-  state("codly-extra-args").update((:))
 }
 
 /// Initializes the codly show rule.
@@ -1832,8 +1822,17 @@
 ///  ```
 /// `````, mode: "markup", scale-preview: 100%)
 #let local(body, ..args) = context {
-  show raw.where(block: true): it => codly-raw(it, ..args)
+  let extra = args.named()
+  let current = state("codly-extra-args", (:)).get()
+  state("codly-extra-args", (:)).update((old) => {
+    old + extra
+  })
+
+  let args = current + extra
+  show raw.where(block: true): it => codly-raw(it, extra: args)
+
   body
+  state("codly-extra-args").update(current)
 }
 
 #let typst-icon = (
