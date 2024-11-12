@@ -1,7 +1,7 @@
 #import "args.typ": __codly-args, __codly-save, __codly-load
 
 // Default language-block style
-#let default-language-block(name, icon, color) = {
+#let default-language-block(name, icon, lang-color) = context {
   let radius = (__codly-args.lang-radius.get)()
   let padding = (__codly-args.lang-inset.get)()
 
@@ -9,23 +9,27 @@
   let lang-fill = (__codly-args.lang-fill.get)()
 
   let fill = if type(lang-fill) == function {
-    (lang-fill)((name: name, icon: icon, color: color))
+    (lang-fill)((name: name, icon: icon, color: lang-color))
+  } else if type(lang-fill) == color or type(lang-fill) == gradient or type(lang-fill) == pattern {
+    lang-fill
   } else {
-    color
+    lang-color
   }
 
   let stroke = if type(lang-stroke) == function {
-    (lang-stroke)((name: name, icon: icon, color: color))
+    (lang-stroke)((name: name, icon: icon, color: lang-color))
   } else {
     lang-stroke
   }
 
+  let b = measure(icon + name)
   box(
     radius: radius,
     fill: fill,
     inset: padding,
     stroke: stroke,
     outset: 0pt,
+    height: b.height + padding * 2,
     icon + name,
   )
 }
@@ -371,7 +375,7 @@
 /// == Languages (`languages`)
 /// The language definitions to use for language block formatting.
 /// 
-/// It is defined as a dictionary where the keys are the language names  and
+/// It is defined as a dictionary where the keys are the language names and
 /// each value is another dictionary containing the following keys:
 /// - `name`: the "pretty" name of the language as a content/showable value
 /// - `color`: the color of the language, if omitted uses the default color
@@ -822,9 +826,9 @@
 /// #pre-example()
 /// #example(````
 ///  #codly(highlights: (
-///   (line: 3, start: 4, end: none, fill: red),
+///   (line: 3, start: 3, end: none, fill: red),
 ///   (line: 4, start: 14, end: 22, fill: green, tag: "(a)"),
-///   (line: 4, start: 29, end: 38, fill: blue, tag: "(b)"),
+///   (line: 4, start: 28, end: 38, fill: blue, tag: "(b)"),
 ///  ))
 ///  ```py
 ///  def fib(n):
@@ -1194,6 +1198,14 @@
 
     // If there are no highlights, return the line as is.
     if highlights.len() == 0 {
+      if width != none {
+        // We add the indentation to the line.
+        highlighted = {
+          set par(hanging-indent: width)
+          highlighted
+        }
+      }
+      
       return raw.line(it.number, it.count, it.text, highlighted)
     }
 
@@ -1234,10 +1246,6 @@
           elem.children.map(get-flattened-body).flatten()
         } else if elem.has("child") and elem.has("styles") {
            get-flattened-body(elem.child).map((x) => (elem.func())(x, elem.styles)).flatten()
-        } else if elem.has("child") {
-           get-flattened-body(elem.child)
-        } else if elem.has("body") {
-          get-flattened-body(elem.body)
         } else if elem.has("text") {
           // Separate the whitespaces at the start of text
           let out = ()
@@ -1273,9 +1281,6 @@
         let last = index == len - 1
         let args = child.fields()
 
-        if child.has("child") {
-          child = (child.func())(child.child, child.styles)
-        }
         let len = get-len(child)
 
         if collection != none {
@@ -1355,19 +1360,20 @@
       }
 
       highlighted = children.join()
-      if width != none {
-          // We add the indentation to the line.
-          highlighted = {
-            set par(hanging-indent: width)
-            highlighted
-          }
+    }
+
+    if width != none {
+      // We add the indentation to the line.
+      highlighted = {
+        set par(hanging-indent: width)
+        highlighted
       }
     }
-    
     raw.line(it.number, it.count, it.text, highlighted)
   }
 
   show raw.where(block: true): it => context {
+    set par(justify: false)
     let args = __codly-args
     let range = (args.range.get)()
     let in_range(line) = {
@@ -1384,7 +1390,6 @@
     }
   
     let block-label = state("codly-label").get()
-    let languages = (args.languages.get)()
     let display-names = (args.display-name.get)()
     let display-icons = (args.display-icon.get)()
     let lang-outset = (args.lang-outset.get)()
@@ -1488,6 +1493,62 @@
     let current-annot = none
     let first-annot = false
     let annots = 0
+    
+
+    // prepare the header
+    let header = (args.header.get)()
+    let header-repeat = (args.header-repeat.get)()
+      
+    // The language block (icon + name)
+    let languages = (args.languages.get)()
+    let language-block = if it.lang == none {
+      none
+    } else if it.lang in languages {
+      let lang = languages.at(it.lang);
+      let name = if type(lang) == str {
+        lang
+      } else if display-names and "name" in lang  {
+        lang.name
+      } else {
+        []
+      }
+      let icon = if display-icons and "icon" in lang {
+        lang.icon
+      } else {
+        []
+      }
+      let color = if "color" in lang {
+        lang.color
+      } else {
+        default-color
+      }
+      (language-block)(name, icon, color)
+    } else if display-names {
+      (language-block)(it.lang, [], default-color)
+    }
+
+    // Push the line and the language block in a grid for alignment
+    let language-block-final = place(
+      right + horizon,
+      dx: lang-outset.x,
+      dy: lang-outset.y,
+      language-block
+    )
+    let lb = measure(language-block);
+
+    let header = if header != none {
+      let header-args = (args.header-cell-args.get)()
+      let transform = (args.header-transform.get)()
+      (
+        grid.header(
+          repeat: header-repeat,
+          grid.cell(transform(header) + language-block-final, colspan: 2, ..header-args),
+        ),
+      )
+    } else {
+      none
+    }
+    
     for (i, line) in it.lines.enumerate() {
       first-annot = false
 
@@ -1567,73 +1628,27 @@
         items = (..items, l, ..annot())
         continue
       }
-      
-      // The language block (icon + name)
-      let language-block = if it.lang in languages {
-        let lang = languages.at(it.lang);
-        let name = if type(lang) == str {
-          lang
-        } else if display-names and "name" in lang  {
-          lang.name
-        } else {
-          []
-        }
-        let icon = if display-icons and "icon" in lang {
-          lang.icon
-        } else {
-          []
-        }
-        let color = if "color" in lang {
-          lang.color
-        } else {
-          default-color
-        }
-        (language-block)(name, icon, color)
-      } else if display-names {
-        (language-block)(it.lang, [], default-color)
-      }
-
-      // Push the line and the language block in a grid for alignment
-      let lb = measure(language-block);
 
       if has-annotations {
-        items = (..items, l, ..annot(extra: place(
-          right + horizon,
-          dx: lang-outset.x,
-          dy: lang-outset.y,
-          language-block
-        )))
+        if header != none {
+          items = (..items, l, ..annot())
+        } else {
+          items = (..items, l, ..annot(extra: language-block-final))
+        }
       } else {
-        items.push(grid(
-          columns: (1fr, lb.width + 2 * padding),
-          l,
-          place(
-            right + horizon,
-            dx: lang-outset.x,
-            dy: lang-outset.y,
-            language-block
-          ),
-        ))
+        if header != none {
+          items.push(l)
+        } else {
+          items.push(grid(
+            columns: (1fr, lb.width + 2 * padding),
+            l,
+            language-block-final,
+          ))
+        }
       }
     }
 
-    // prepare the header
-    let header = (args.header.get)()
-    let header-repeat = (args.header-repeat.get)()
-    let header = if header != none {
-      let header-args = (args.header-cell-args.get)()
-      let transform = (args.header-transform.get)()
-      (
-        grid.header(
-          repeat: header-repeat,
-          grid.cell(transform(header), colspan: 2, ..header-args),
-        ),
-      )
-    } else {
-      ()
-    }
-
-    // prepare the header
+    // prepare the footer
     let footer = (args.footer.get)()
     let footer-repeat = (args.footer-repeat.get)()
     let footer = if footer != none {
@@ -1746,11 +1761,11 @@
       }
 
       if header != () {
-        state("codly-header").update(())
+        state("codly-header").update(none)
       }
 
       if footer != () {
-        state("codly-footer").update(())
+        state("codly-footer").update(none)
       }
 
       let highlights = state("codly-highlights").get()
