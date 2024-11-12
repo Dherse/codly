@@ -1176,20 +1176,25 @@
           for c in child.children {
             if "text" in c.fields() {
               c
+              break
             }
           }
         } else if "child" in fields {
           if "text" in fields.child.fields() {
             fields.child
+            break
           }
         } else if "body" in fields {
           if "text" in fields.body.fields() {
             fields.body
+            break
           }
         } else if "text" in fields {
           child
+            break
         }
       }
+
       if first != none and first.has("text") {
         let match = first.text.match(indent-regex)
 
@@ -1627,7 +1632,7 @@
       if numbers-format != none {
         items.push(numbers-format(line.number + offset))
       } else {
-        l = box(height: height) + l
+        l = [#raw.line(line.number + offset, line.count, line.text, box(height: height, width: 0pt) + line.body)<codly-highlighted>]
       }
 
       if line.number != start or (display-names != true and display-icons != true) {
