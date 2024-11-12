@@ -55,7 +55,7 @@
         grid.header(grid.cell(align: center, strong[Rendered output])),
         {
           codly-reset()
-          scale(scale-factor, reflow: true, eval(raw.text, scope: (codly: codly), mode: "markup"))
+          scale(scale-factor, reflow: true, eval(raw.text, scope: (codly: codly, local: local), mode: "markup"))
           codly-reset()
           codly(..codly-args)
         },
@@ -309,11 +309,36 @@ The codly functions acts like a set-rule, this means that calling it will set th
 
 = Other functions
 
-== Reset (`codly-reset`) <codly-reset>
 == Skip (`codly-skip`) <codly-skip>
 == Range (`codly-range`) <codly-range>
 == Offset (`codly-offset`) <codly-offset>
 == Local (`local`) <local>
+
+Codly provides a convenience function called `local` that allows you to locally override the global settings for a specific code block. This is useful when you want to apply a specific style to a code block without affecting the rest of the code blocks in your document. It works by overriding the default codly show rule locally with an override of the arguments by those you provide. It does not rely on states (much) and should no longer add layout passes to the rendering which could cause documents to not converge.
+
+#example(````typ
+*Global state with red color*
+#codly(fill: red)
+```typ
+= Example
+*Hello, World!*
+```
+*Locally set it to gray*
+#local(
+  fill: luma(240),
+  ```typ
+  = Example
+  *Hello, World!*
+  ```
+)
+* It's back to being red*
+```typ
+= Example
+*Hello, World!*
+```
+````)
+
 == No codly (`no-codly`) <no-codly>
 == Enable (`codly-enable`) <codly-enable>
 == Disable (`codly-disable`) <codly-disable>
+== Reset (`codly-reset`) <codly-reset>

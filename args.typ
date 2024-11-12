@@ -60,8 +60,14 @@
   let state = state("codly-" + name, default)
 
   (
-    get: () => {
-      let value = state.get()
+    get: (..args) => {
+      let named = args.named()
+      let value = if name in named {
+        named.at(name)
+      } else {
+        state.get()
+      }
+
       assert(
         type_check(value, true),
         message: "codly: `" + name + "` must be " + type_check_str(true) + ", found: " + str(type(value)),
