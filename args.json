@@ -285,29 +285,30 @@
     },
     "highlights": {
         "title": "Highlights",
-        "description": "You can apply highlights to the code block using the `highlights` argument. It consists of a list of dictionaries, each with the following keys:\n- `line`: the line number to start highlighting\n - `start`: the character position to start highlighting, zero if omitted or `none`\n- `end`: the character position to end highlighting, the end of the line if omitted or `none`\n- `fill`: the fill of the highlight, defaults to the default color\n- `tag`: an optional tag to be displayed alongside the highlight.\n- `label`: *if and only if* the code block is in a `figure`, and it has a `tag`, sets the label by which the highlight can be referenced.\n\nAs with other code block settings, annotations are reset after each code block.\n\n*Note*: This feature performs what I loosely call \"globbing\", this means that instead of highlighting individual characters, it highlights the whole word or sequence of characters that the start and end positions are part of. This is done to avoid having to deal with the complexity of highlighting individual characters, and needing to re-style them manually. While also making the API a tad less error prone at the cost of sometimes goofy looking highlights if they overlap.",
+        "description": "You can apply highlights to the code block using the `highlights` argument. It consists of a list of dictionaries, each with the following keys:\n- `line`: the line number to start highlighting\n - `start`: the character position to start highlighting, zero if omitted or `none`\n- `end`: the character position to end highlighting, the end of the line if omitted or `none`\n- `fill`: the fill of the highlight, defaults to the default color\n- `tag`: an optional tag to be displayed alongside the highlight.\n- `label`: *if and only if* the code block is in a `figure`, sets the label by which the highlight can be referenced.\n\nAs with other code block settings, annotations are reset after each code block.\n\n*Note*: This feature performs what I loosely call \"globbing\", this means that instead of highlighting individual characters, it highlights the whole word or sequence of characters that the start and end positions are part of. This is done to avoid having to deal with the complexity of highlighting individual characters, and needing to re-style them manually. While also making the API a tad less error prone at the cost of sometimes goofy looking highlights if they overlap.",
         "default": "none",
         "ty": [ "array", "type(none)" ],
         "function": true,
-        "example": "#codly(highlights: (\n  (line: 3, start: 3, end: none, fill: red),\n  (line: 4, start: 12, end: 22, fill: green, tag: \"(a)\"),\n   (line: 4, start: 29, end: 38, fill: blue, tag: \"(b)\"),\n))\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nprint(fib(25))\n```"
+        "example": "#codly(highlights: (\n  (line: 3, start: 3, end: none, fill: red),\n  (line: 4, start: 12, end: 21, fill: green, tag: \"(a)\"),\n  (line: 4, start: 28, end: 38, fill: blue, tag: \"(b)\"),\n))\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nprint(fib(25))\n```"
     },
     "highlight-radius": {
         "title": "Highlight radius",
         "description": "The radius of the highlights.",
         "default": "0.32em",
         "ty": [ "length" ],
-        "function": true
+        "function": true,
+        "reset": true
     },
     "highlight-fill": {
         "title": "Highlight fill",
-        "description": "The fill transformer of the highlights.",
+        "description": "The fill transformer of the highlights, is a function that  takes in the highlight color and returns a fill.",
         "default": "(color) => color.lighten(80%)",
         "ty": [ "function" ],
         "function": false
     },
     "highlight-stroke": {
         "title": "Highlight stroke",
-        "description": "The stroke of the highlights.",
+        "description": "The stroke transformer of the highlights, is a function that takes in the highlight color and returns a stroke.",
         "default": "(color) => 0.5pt + color",
         "ty": [ "stroke", "function" ],
         "function": false
@@ -321,7 +322,7 @@
     },
     "reference-by": {
         "title": "Reference by",
-        "description": "The reference mode to use.",
+        "description": "The mode by which references are displayed. Two modes are available:\n- `line`: references are displayed as line numbers\n- `item`: references are displayed as items, i.e by the `tag` for highlights and `content` for annotations.",
         "default": "\"line\"",
         "ty": [ "str" ],
         "function": true
@@ -335,7 +336,7 @@
     },
     "reference-number-format": {
         "title": "Reference number format",
-        "description": "The format of the referenced line.",
+        "description": "The format of the reference number line number, only used if `reference-by` is set to `\"line\"`.",
         "default": "numbering.with(\"1\")",
         "ty": [ "function" ],
         "function": false

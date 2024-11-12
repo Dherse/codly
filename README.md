@@ -20,7 +20,7 @@ A full set of documentation can be found [in the repo](https://raw.githubusercon
 ![Example](./demo.png)
 
 ````typ
-#import "@preview/codly:1.0.0": *
+#import "@preview/codly:1.1.0": *
 #show: codly-init.with()
 
 #codly(
