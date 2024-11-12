@@ -1803,3 +1803,22 @@
   body
   __codly-load(old)
 }
+
+#let typst-icon = (
+  typ: (
+    name: "Typst",
+    icon: box(
+      image("typst-small.png", height: 0.8em),
+      baseline: 0.1em, inset: 0pt, outset: 0pt) + h(0.2em
+    ),
+    color: rgb("#239DAD"),
+  ),
+  typc: (
+    name: "Typst code",
+    icon: box(
+      image("typst-small.png", height: 0.8em),
+      baseline: 0.1em, inset: 0pt, outset: 0pt) + h(0.2em
+    ),
+    color: rgb("#239DAD"),
+  )
+)

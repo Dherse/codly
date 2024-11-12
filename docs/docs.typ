@@ -1,7 +1,7 @@
 #import "@preview/gentle-clues:1.0.0": *
 #import "orly.typ": orly
 #import "../args.typ": *
-#import "../codly.typ": codly, codly-init, codly-reset, no-codly, codly-enable, codly-disable, codly-range, codly-offset, local, codly-skip
+#import "../codly.typ": codly, codly-init, codly-reset, no-codly, codly-enable, codly-disable, codly-range, codly-offset, local, codly-skip, typst-icon
 
 #show: codly-init
 #show raw.where(block: false): set raw(lang: "typc")
@@ -11,8 +11,6 @@
   outset: (y: 3pt),
   radius: 2pt,
 )
-
-#let img = image("typst-small.png", height: 0.8em)
 
 // Start with a cover page
 #orly(
@@ -30,18 +28,7 @@
   header-cell-args: (align: center, ),
   header-transform: strong,
   enabled: true,
-  languages: (
-    typ: (
-      name: "Typst",
-      icon: box(img, baseline: 0.1em, inset: 0pt, outset: 0pt) + h(0.2em),
-        color: rgb("#239DAD"),
-    ),
-    typc: (
-      name: "Typst code",
-      icon: box(img, baseline: 0.1em, inset: 0pt, outset: 0pt) + h(0.2em),
-      color: rgb("#239DAD"),
-    )
-  ),
+  languages: typst-icon,
 )
 #codly(..codly-args)
 
@@ -317,6 +304,7 @@ The codly functions acts like a set-rule, this means that calling it will set th
 
 = Getting nice icons
 
+== Typst language icon (`typst-icon`) <typst-icon>
 
 
 = Other functions
