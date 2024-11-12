@@ -1171,13 +1171,22 @@
       // Check the indentation of the line by taking l,
       // and checking for the first element in the sequence.
       let first = for child in body {
-        if "children" in child.fields() {
-          for c in child.fields().children {
+        let fields = child.fields()
+        if "children" in fields {
+          for c in child.children {
             if "text" in c.fields() {
               c
             }
           }
-        } else if "text" in child.fields() {
+        } else if "child" in fields {
+          if "text" in fields.child.fields() {
+            fields.child
+          }
+        } else if "body" in fields {
+          if "text" in fields.body.fields() {
+            fields.body
+          }
+        } else if "text" in fields {
           child
         }
       }
@@ -1618,7 +1627,7 @@
       if numbers-format != none {
         items.push(numbers-format(line.number + offset))
       } else {
-        l += box(height: height, width: 0pt)
+        l = box(height: height) + l
       }
 
       if line.number != start or (display-names != true and display-icons != true) {
