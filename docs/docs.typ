@@ -292,31 +292,27 @@ The codly functions acts like a set-rule, this means that calling it will set th
     if "reset" in arg { bool_yes_no(arg.reset) } else { "no" },
   ))
 
-  if calc.rem(i, 2) == 0 {
-    pagebreak(weak: true)
-  } else {
-    align(center, line(length: 90%, stroke: (thickness: 1pt, dash: "dashed", paint: paint)))
-  }
+  block(breakable: false, {
+    [
+      #header #label
+      #card
+      #eval(arg.description, mode: "markup", scope: (experiment: experiment))
 
-  [
-    #header #label
-    #card
-    #eval(arg.description, mode: "markup", scope: (experiment: experiment))
+      #if "experimental" in arg and arg.experimental {
+        experiment[
+          This feature should be considered experimental. Please report any issues you encounter on GitHub: https://github.com/Dherse/codly.
+        ]
+      }
 
-    #if "experimental" in arg and arg.experimental {
-      experiment[
-        This feature should be considered experimental. Please report any issues you encounter on GitHub: https://github.com/Dherse/codly.
-      ]
-    }
-
-    #if "example" in arg {
-      [=== Example]
-      example(
-        raw(block: true, lang: "typ", arg.example),
-        scale-factor: if "scale" in arg { eval(arg.scale) } else { 100% }
-      )
-    }
-  ]
+      #if "example" in arg {
+        [=== Example]
+        example(
+          raw(block: true, lang: "typ", arg.example),
+          scale-factor: if "scale" in arg { eval(arg.scale) } else { 100% }
+        )
+      }
+    ]
+  })
 }
 
 = Getting nice icons
