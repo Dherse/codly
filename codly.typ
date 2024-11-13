@@ -1385,11 +1385,11 @@
 ///  Hello, world!
 ///  ```
 /// `````, mode: "markup", scale-preview: 100%)
-#let local(body, ..args, nested: false) = (
-  context {
-    assert(type(nested) == bool, message: "local: nested must be a boolean")
-    if nested {
-      let extra = args.named()
+#let local(body, ..args, nested: false) = {
+  assert(type(nested) == bool, message: "local: nested must be a boolean")
+  if nested {
+    let extra = args.named()
+    context {
       let current = state("codly-extra-args", (:)).get()
       state("codly-extra-args", (:)).update(old => {
         old + extra
@@ -1404,19 +1404,19 @@
 
       body
       state("codly-extra-args").update(current)
-    } else {
-      let extra = args.named()
-      state("codly-extra-args").update(extra)
-      show raw.line.where(label: <codly-highlighted>): it => codly-line(
-        it,
-        extra: extra,
-      )
-      show raw.where(block: true): it => codly-raw(it, extra: extra)
-      body
-      state("codly-extra-args").update((:))
     }
+  } else {
+    let extra = args.named()
+    state("codly-extra-args").update(extra)
+    show raw.line.where(label: <codly-highlighted>): it => codly-line(
+      it,
+      extra: extra,
+    )
+    show raw.where(block: true): it => codly-raw(it, extra: extra)
+    body
+    state("codly-extra-args").update((:))
   }
-)
+}
 
 #let typst-icon = (
   typ: (
