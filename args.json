@@ -295,7 +295,7 @@
         "default": "none",
         "ty": [ "array", "type(none)" ],
         "function": true,
-        "example": "#codly(highlights: (\n  (line: 3, start: 3, end: none, fill: red),\n  (line: 4, start: 12, end: 21, fill: green, tag: \"(a)\"),\n  (line: 4, start: 28, end: 38, fill: blue, tag: \"(b)\"),\n))\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nprint(fib(25))\n```"
+        "example": "#codly(highlights: (\n  (line: 3, start: 2, end: none, fill: red),\n  (line: 4, start: 13, end: 19, fill: green, tag: \"(a)\"),\n  (line: 4, start: 26, fill: blue, tag: \"(b)\"),\n))\n```py\ndef fib(n):\n if n <= 1:\n  return n\n else:\n  return fib(n - 1) + fib(n - 2)\nprint(fib(25))\n```"
     },
     "highlight-radius": {
         "title": "Highlight radius",

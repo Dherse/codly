@@ -57,7 +57,7 @@
           codly-reset()
           eval(
             raw.text,
-            scope: (codly: codly, local: local, no-codly: no-codly, codly-enable: codly-enable, codly-disable: codly-disable, codly-range: codly-range, codly-offset: codly-offset, codly-skip: codly-skip, codly-reset: codly-reset),
+            scope: (codly: codly, local: local, no-codly: no-codly, codly-enable: codly-enable, codly-disable: codly-disable, codly-range: codly-range, codly-offset: codly-offset, codly-skip: codly-skip, codly-reset: codly-reset, typst-icon: typst-icon),
             mode: "markup"
           )
           codly-reset()
@@ -334,8 +334,36 @@ This is a short, non-exhaustive guide on how to get nicer icons for the language
   ```typc
   text(font: "tabler-icons", size: 1em, "\u{ebbe}")
   ```
++ You can store it the `languages` argument of the `codly` function to use it for all code blocks in your document: #example(````typc
+  #let icon = text(font: "tabler-icons", size: 1em, "\u{ebbe}")
+  #codly(languages: (text: (icon: icon, name: "Text")))
+  ```text
+  Hello, world!
+  ```
+````)
++ Congrats, you now have fancy icons!
++ ...
++ But you can notice that the baseline of the icon is wrong, I find that this is generally the case with tabler, you can set the baseline to `0.1em` in the icon to fix it: #example(````typc
+  #let icon = text(font: "tabler-icons", size: 1em, "\u{ebbe}", baseline: 0.1em)
+  #codly(languages: (text: (icon: icon, name: "Text")))
+  ```text
+  Hello, world!
+  ```
+````)
 
 == Typst language icon (`typst-icon`) <typst-icon>
+
+Additionally, codly ships with language definitions for the Typst language. You can use the `typst-icon` function to get the Typst icon for your code blocks. This function takes no arguments and returns the proper settings for codly to use the Typst icon.
+
+#info[You can use the `..` spread operator to spread it into your own `languages` dictionary.]
+
+#example(````typc
+  #codly(languages: typst-icon)
+  ```typ
+  = Here's a title
+  Hello, world!
+  ```
+````)
 
 #pagebreak(weak: true)
 = Other functions
