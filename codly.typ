@@ -1240,7 +1240,7 @@
           children.push([#hl-box #h(
               0pt,
               weak: true,
-            ) #tag-box <codly-highlight>])
+            ) #tag-box<codly-highlight>])
         }
         collection = none
       }
