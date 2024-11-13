@@ -295,7 +295,7 @@ The codly functions acts like a set-rule, this means that calling it will set th
     [
       #header #label
       #card
-      #eval(arg.description, mode: "markup", scope: (experiment: experiment))
+      #eval(arg.description, mode: "markup", scope: (experiment: experiment, info: info))
 
       #if "experimental" in arg and arg.experimental {
         experiment[
@@ -321,6 +321,9 @@ The codly functions acts like a set-rule, this means that calling it will set th
     ]
   })
 }
+
+#pagebreak(weak: true)
+= Referencing code blocks, highlights, and annotations
 
 #pagebreak(weak: true)
 = Getting nice icons
@@ -536,3 +539,6 @@ Resets all codly settings to their default values. This is useful when you want 
 *Hello, World!*
 ```
 ````)
+
+#pagebreak(weak: true)
+= Codly performance

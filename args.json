@@ -194,7 +194,7 @@
     },
     "lang-format": {
         "title": "Language box formatter",
-        "description": "The formatter for the language block. A value of `none` will not display the language block. To use the default formatter, set to `auto`. The function takes three arguments:\n - `lang`: the language key (e.g. `py`)\n - `icon`: the language icon, can be none or empty content\n - `color`: the language color\n\n The function should return a content/showable value.",
+        "description": "The formatter for the language block. A value of `none` will not display the language block. To use the default formatter, set to `auto`. The function takes three arguments:\n - `lang`: the language key (e.g. `py`)\n - `icon`: the language icon, can be none or empty content\n - `color`: the language color\n\n The function should return a content/showable value.\n#info[The language formatter should avoid using #link(\"https://typst.app/docs/reference/introspection/state/\")[`state`] as this can lead to quadratic execution time, see #link(\"https://github.com/typst/typst/issues/5220\")[typst/typst \\#5220] for more information. Internally, when set to `auto`, codly uses an inlined function to avoid using states.]",
         "default": "auto",
         "ty": [ "type(auto)", "type(none)", "function" ],
         "function": false,

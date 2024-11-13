@@ -14,65 +14,6 @@
   }
 }
 
-// Default language-block style
-#let default-language-block(name, icon, lang-color) = {
-  let extra = state("codly-extra-args", (:)).get()
-  let radius = (
-    __codly-args.lang-radius.type_check
-  )(if "lang-radius" in extra {
-    extra.lang-radius
-  } else {
-    state("codly-lang-radius", __codly-args.lang-radius.default).get()
-  })
-  let padding = __codly-inset(
-    (__codly-args.lang-inset.type_check)(if "lang-inset" in extra {
-      extra.lang-inset
-    } else {
-      state("codly-lang-inset", __codly-args.lang-inset.default).get()
-    }),
-  )
-
-  let lang-stroke = (
-    __codly-args.lang-stroke.type_check
-  )(if "lang-stroke" in extra {
-    extra.lang-stroke
-  } else {
-    state("codly-lang-stroke", __codly-args.lang-stroke.default).get()
-  })
-  let lang-fill = (
-    __codly-args.lang-fill.type_check
-  )(if "lang-fill" in extra {
-    extra.lang-fill
-  } else {
-    state("codly-lang-fill", __codly-args.lang-fill.default).get()
-  })
-
-  let fill = if type(lang-fill) == function {
-    (lang-fill)((name: name, icon: icon, color: lang-color))
-  } else if type(lang-fill) == color or type(lang-fill) == gradient or type(lang-fill) == pattern {
-    lang-fill
-  } else {
-    lang-color
-  }
-
-  let stroke = if type(lang-stroke) == function {
-    (lang-stroke)((name: name, icon: icon, color: lang-color))
-  } else {
-    lang-stroke
-  }
-
-  let b = measure(icon + name)
-  box(
-    radius: radius,
-    fill: fill,
-    inset: padding,
-    stroke: stroke,
-    outset: 0pt,
-    height: b.height + padding.top + padding.bottom,
-    icon + name,
-  )
-}
-
 /// Lets you set a line number offset.
 ///
 /// #pre-example()
@@ -222,7 +163,7 @@
 ///    lang-radius: 0.32em,
 ///    lang-stroke: (lang) => lang.color + 0.5pt,
 ///    lang-fill: (lang) => lang.color.lighten(80%),
-///    lang-format: codly.default-language-block,
+///    lang-format: auto,
 ///    number-format: (number) => [ #number ],
 ///    number-align: left + horizon,
 ///    smart-indent: false,
@@ -308,6 +249,7 @@
   } else {
     state("codly-range", __codly-args.range.default).get()
   })
+
   let in_range(line) = {
     if range == none {
       true
@@ -318,7 +260,7 @@
     }
   }
 
-  let block-label = state("codly-label").get()
+  let block-label = auto
   let display-names = (
     __codly-args.display-name.type_check
   )(if "display-name" in extra {
@@ -326,6 +268,7 @@
   } else {
     state("codly-display-name", __codly-args.display-name.default).get()
   })
+
   let display-icons = (
     __codly-args.display-icon.type_check
   )(if "display-icon" in extra {
@@ -333,6 +276,7 @@
   } else {
     state("codly-display-icon", __codly-args.display-icon.default).get()
   })
+
   let lang-outset = (
     __codly-args.lang-outset.type_check
   )(if "lang-outset" in extra {
@@ -340,16 +284,18 @@
   } else {
     state("codly-lang-outset", __codly-args.lang-outset.default).get()
   })
+
   let language-block = {
     let fn = (__codly-args.lang-format.type_check)(if "lang-format" in extra {
       extra.lang-format
     } else {
       state("codly-lang-format", __codly-args.lang-format.default).get()
     })
+
     if fn == none {
       (..) => none
     } else if fn == auto {
-      default-language-block
+      auto
     } else {
       fn
     }
@@ -361,21 +307,25 @@
   } else {
     state("codly-default-color", __codly-args.default-color.default).get()
   })
+
   let radius = (__codly-args.radius.type_check)(if "radius" in extra {
     extra.radius
   } else {
     state("codly-radius", __codly-args.radius.default).get()
   })
+
   let offset = (__codly-args.offset.type_check)(if "offset" in extra {
     extra.offset
   } else {
     state("codly-offset", __codly-args.offset.default).get()
   })
+
   let stroke = (__codly-args.stroke.type_check)(if "stroke" in extra {
     extra.stroke
   } else {
     state("codly-stroke", __codly-args.stroke.default).get()
   })
+
   let zebra-color = (
     __codly-args.zebra-fill.type_check
   )(if "zebra-fill" in extra {
@@ -383,6 +333,7 @@
   } else {
     state("codly-zebra-fill", __codly-args.zebra-fill.default).get()
   })
+
   let numbers-format = (
     __codly-args.number-format.type_check
   )(if "number-format" in extra {
@@ -390,6 +341,7 @@
   } else {
     state("codly-number-format", __codly-args.number-format.default).get()
   })
+
   let numbers-alignment = (
     __codly-args.number-align.type_check
   )(if "number-align" in extra {
@@ -397,6 +349,7 @@
   } else {
     state("codly-number-align", __codly-args.number-align.default).get()
   })
+
   let padding = __codly-inset(
     (__codly-args.inset.type_check)(if "inset" in extra {
       extrainset
@@ -404,6 +357,7 @@
       state("codly-inset", __codly-args.inset.default).get()
     }),
   )
+
   let breakable = (
     __codly-args.breakable.type_check
   )(if "breakable" in extra {
@@ -411,11 +365,13 @@
   } else {
     state("codly-breakable", __codly-args.breakable.default).get()
   })
+
   let fill = (__codly-args.fill.type_check)(if "fill" in extra {
     extra.fill
   } else {
     state("codly-fill", __codly-args.fill.default).get()
   })
+
   let skips = {
     let skips = (__codly-args.skips.type_check)(if "skips" in extra {
       extra.skips
@@ -428,6 +384,7 @@
       skips.sorted(key: x => x.at(0)).dedup()
     }
   }
+
   let skip-line = (
     __codly-args.skip-line.type_check
   )(if "skip-line" in extra {
@@ -435,6 +392,7 @@
   } else {
     state("codly-skip-line", __codly-args.skip-line.default).get()
   })
+
   let skip-number = (
     __codly-args.skip-number.type_check
   )(if "skip-number" in extra {
@@ -450,6 +408,7 @@
   } else {
     state("codly-reference-by", __codly-args.reference-by.default).get()
   })
+
   if not reference-by in ("line", "item") {
     panic("codly: reference-by must be either 'line' or 'item'")
   }
@@ -461,6 +420,7 @@
   } else {
     state("codly-reference-sep", __codly-args.reference-sep.default).get()
   })
+
   let reference-number-format = (
     __codly-args.reference-number-format.type_check
   )(if "reference-number-format" in extra {
@@ -487,6 +447,7 @@
       fn
     }
   }
+
   let annotations = {
     let annotations = (
       __codly-args.annotations.type_check
@@ -507,10 +468,16 @@
           x.insert("content", none)
         }
 
-        if "label" in x and block-label == none {
-          panic("codly: label " + str(x.label) + " is only allowed in a figure block")
-        }
+        if "label" in x {
+          if block-label == auto {
+            block-label = state("codly-label").get()
+          }
 
+          if block-label == none {
+            panic("codly: label " + str(x.label) + " is only allowed in a figure block")
+          }
+        }
+        
         x
       })
     }
@@ -540,24 +507,27 @@
     .map(measure)
     .map(x => x.width)
   let num = annotation-format(annotations.len())
-  let lr-width = measure(math.lr("}", size: 5em) + num).width
+  let lr-width = if annotations.len() > 0 {
+    measure(math.lr("}", size: 5em) + num).width
+  } else {
+    0pt
+  }
+
   let annot-width = annot-bodies-width.fold(
     0pt,
     (a, b) => calc.max(a, b),
   ) + padding.left + padding.right + lr-width
 
   // Get the height of an individual line.
-  let line-height = measure(it.lines.at(
-      0,
-      default: [`Hello, world!`],
-    )).height + padding.top + padding.bottom
+  let line-height = measure(
+    raw.line(1, 1, "Hello, World!", [Hello, World!])
+  ).height + padding.top + padding.bottom
 
   let items = ()
   let height = measure[1].height
   let current-annot = none
   let first-annot = false
   let annots = 0
-
 
   // prepare the header
   let header = (__codly-args.header.type_check)(if "header" in extra {
@@ -602,9 +572,126 @@
     } else {
       default-color
     }
-    (language-block)(name, icon, color)
+
+    if language-block == auto {
+      let radius = (
+        __codly-args.lang-radius.type_check
+      )(if "lang-radius" in extra {
+        extra.lang-radius
+      } else {
+        state("codly-lang-radius", __codly-args.lang-radius.default).get()
+      })
+      let padding = __codly-inset(
+        (__codly-args.lang-inset.type_check)(if "lang-inset" in extra {
+          extra.lang-inset
+        } else {
+          state("codly-lang-inset", __codly-args.lang-inset.default).get()
+        }),
+      )
+
+      let lang-stroke = (
+        __codly-args.lang-stroke.type_check
+      )(if "lang-stroke" in extra {
+        extra.lang-stroke
+      } else {
+        state("codly-lang-stroke", __codly-args.lang-stroke.default).get()
+      })
+      let lang-fill = (
+        __codly-args.lang-fill.type_check
+      )(if "lang-fill" in extra {
+        extra.lang-fill
+      } else {
+        state("codly-lang-fill", __codly-args.lang-fill.default).get()
+      })
+
+      let fill = if type(lang-fill) == function {
+        (lang-fill)((name: name, icon: icon, color: color))
+      } else if type(lang-fill) == color or type(lang-fill) == gradient or type(lang-fill) == pattern {
+        lang-fill
+      } else {
+        color
+      }
+
+      let stroke = if type(lang-stroke) == function {
+        (lang-stroke)((name: name, icon: icon, color: color))
+      } else {
+        lang-stroke
+      }
+
+      let b = measure(icon + name)
+      box(
+        radius: radius,
+        fill: fill,
+        inset: padding,
+        stroke: stroke,
+        outset: 0pt,
+        height: b.height + padding.top + padding.bottom,
+        icon + name,
+      )
+    } else {
+      (language-block)(name, icon, color)
+    }
   } else if display-names {
-    (language-block)(it.lang, [], default-color)
+    if language-block == auto {
+      let radius = (
+        __codly-args.lang-radius.type_check
+      )(if "lang-radius" in extra {
+        extra.lang-radius
+      } else {
+        state("codly-lang-radius", __codly-args.lang-radius.default).get()
+      })
+
+      let padding = __codly-inset(
+        (__codly-args.lang-inset.type_check)(if "lang-inset" in extra {
+          extra.lang-inset
+        } else {
+          state("codly-lang-inset", __codly-args.lang-inset.default).get()
+        }),
+      )
+
+      let lang-stroke = (
+        __codly-args.lang-stroke.type_check
+      )(if "lang-stroke" in extra {
+        extra.lang-stroke
+      } else {
+        state("codly-lang-stroke", __codly-args.lang-stroke.default).get()
+      })
+      
+      let lang-fill = (
+        __codly-args.lang-fill.type_check
+      )(if "lang-fill" in extra {
+        extra.lang-fill
+      } else {
+        state("codly-lang-fill", __codly-args.lang-fill.default).get()
+      })
+
+      let fill = if type(lang-fill) == function {
+        (lang-fill)((name: it.lang, icon: [], color: default-color))
+      } else if type(lang-fill) == color or type(lang-fill) == gradient or type(lang-fill) == pattern {
+        lang-fill
+      } else {
+        default-color
+      }
+
+      let stroke = if type(lang-stroke) == function {
+        (lang-stroke)((name: it.lang, icon: [], color: default-color))
+      } else {
+        lang-stroke
+      }
+
+      let b = measure(it.lang)
+      box(
+        radius: radius,
+        fill: fill,
+        inset: padding,
+        stroke: stroke,
+        outset: 0pt,
+        height: b.height + padding.top + padding.bottom,
+        it.lang,
+      )
+    } else {
+      (language-block)(it.lang, [], default-color)
+    }
   }
 
   // Push the line and the language block in a grid for alignment
@@ -933,6 +1020,7 @@
         .highlight-stroke
         .default).get()
   })
+
   let highlight-fill = (
     __codly-args.highlight-fill.type_check
   )(if "highlight-fill" in extra {
@@ -940,6 +1028,7 @@
   } else {
     state("codly-highlight-fill", __codly-args.highlight-fill.default).get()
   })
+
   let highlight-radius = (
     __codly-args.highlight-radius.type_check
   )(if "highlight-radius" in extra {
@@ -949,6 +1038,7 @@
         .highlight-radius
         .default).get()
   })
+
   let highlight-inset = (
     __codly-args.highlight-inset.type_check
   )(if "highlight-inset" in extra {
@@ -956,6 +1046,7 @@
   } else {
     state("codly-highlight-inset", __codly-args.highlight-inset.default).get()
   })
+
   let default-color = (
     __codly-args.default-color.type_check
   )(if "default-color" in extra {
@@ -963,7 +1054,7 @@
   } else {
     state("codly-default-color", __codly-args.default-color.default).get()
   })
-  let block-label = state("codly-label").get()
+  
   let highlights = {
     let highlights = (
       __codly-args.highlights.type_check
@@ -1142,6 +1233,7 @@
     let body = get-flattened-body(highlighted)
 
     let len = body.len()
+    let block_label = auto
     for (index, child) in body.enumerate() {
       let last = index == len - 1
       let args = child.fields()
@@ -1167,7 +1259,10 @@
           "reference-sep" in extra,
           extra.at("reference-sep", default: none),
         )
-        let block-label = state("codly-label").get()
+
+        if block-label == auto {
+          block_label = state("codly-label").get()
+        }
         let referenced = if reference-by == "line" {
           let reference-number-format = (
             __codly-args.reference-number-format.get
@@ -1237,10 +1332,10 @@
             tag + label,
           )
 
-          children.push([#hl-box #h(
-              0pt,
-              weak: true,
-            ) #tag-box<codly-highlight>])
+          children.push([#hl-box#h(
+            0pt,
+            weak: true,
+          )#tag-box<codly-highlight>])
         }
         collection = none
       }
