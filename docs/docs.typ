@@ -172,6 +172,12 @@ let codly(
 
 The codly functions acts like a set-rule, this means that calling it will set the configuration for all code blocks that follow it, with the exception of a few arguments that are explicitly set for each code block. To perform changes locally, you can use the #link(<local>)[`local`] function, or set the arguments before the code block and reset them after to their previous values.
 
+#warning[
+  Unlike regular set-rules in native Typst, there are two considerations:
+  - The `codly` function uses states to store the configuration, this means that it is dependent on layout order for the order in which settings are applied.
+  - The `codly` function is not local, it sets the configuration for all code blocks that follow it in layout order, unless overriden by another `codly` call. This means that you cannot use it to set the configuration for a specific code block. To perform this, use the #link(<local>)[`local`] function to set the configuration for a specific "section".
+]
+
 #let code-icon(icon, ..args) = text(
   font: "tabler-icons",
   fallback: false,

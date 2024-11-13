@@ -283,7 +283,7 @@
   }
 }
 
-#let codly-raw(
+#let __codly-raw(
   it,
   extra: (:),
 ) = context {
@@ -1336,7 +1336,7 @@
     it,
     extra: (:),
   )
-  show raw.where(block: true): it => codly-raw(it)
+  show raw.where(block: true): it => __codly-raw(it)
 
   body
 }
@@ -1375,7 +1375,7 @@
         it,
         extra: extra,
       )
-      show raw.where(block: true): it => codly-raw(it, extra: args)
+      show raw.where(block: true): it => __codly-raw(it, extra: args)
 
       body
       state("codly-extra-args").update(current)
@@ -1387,7 +1387,7 @@
       it,
       extra: extra,
     )
-    show raw.where(block: true): it => codly-raw(it, extra: extra)
+    show raw.where(block: true): it => __codly-raw(it, extra: extra)
     body
     state("codly-extra-args").update((:))
   }
