@@ -336,11 +336,11 @@ This is a short, non-exhaustive guide on how to get nicer icons for the language
 + Using your font selector, select the icon you wish to use
   - For example, the language icon in Tabler Icons is `ebbe` (the unicode value of the icon, which you can find in the documentation of the font)
   - Use the #link("https://typst.app/docs/reference/text/text/")[`text`] function to display the icon in your document by setting the font, size, and the unicode value of the icon:
-  #codly(highlights: ((line: 0, start: 13, end: 24), (line: 0, start: 43, end: 46, fill: green)))
+  #codly(highlights: ((line: 0, start: 13, end: 24), (line: 0, start: 31, end: 34, fill: green)))
   ```typc
   text(font: "tabler-icons", size: 1em, "\u{ebbe}")
   ```
-+ You can store it the `languages` argument of the `codly` function to use it for all code blocks in your document: #example(````typc
++ You can store it the `languages` argument of the `codly` function to use it for all code blocks in your document: #example(````typ
   #let icon = text(font: "tabler-icons", size: 1em, "\u{ebbe}")
   #codly(languages: (text: (icon: icon, name: "Text")))
   ```text
@@ -349,7 +349,7 @@ This is a short, non-exhaustive guide on how to get nicer icons for the language
 ````)
 + Congrats, you now have fancy icons!
 + ...
-+ But you can notice that the baseline of the icon is wrong, I find that this is generally the case with tabler, you can set the baseline to `0.1em` in the icon to fix it: #example(````typc
++ But you can notice that the baseline of the icon is wrong, I find that this is generally the case with tabler, you can set the baseline to `0.1em` in the icon to fix it: #example(````typ
   #let icon = text(font: "tabler-icons", size: 1em, "\u{ebbe}", baseline: 0.1em)
   #codly(languages: (text: (icon: icon, name: "Text")))
   ```text
@@ -363,7 +363,7 @@ Additionally, codly ships with language definitions for the Typst language. You 
 
 #info[You can use the `..` spread operator to spread it into your own `languages` dictionary.]
 
-#example(````typc
+#example(````typ
   #codly(languages: typst-icon)
   ```typ
   = Here's a title
@@ -389,7 +389,7 @@ Codly provides a convenience function called `local` that allows you to locally 
 
 #warning[Local states can slow down documents significantly if over-used or when using nested local states (explicitly set `nested: true`). Use them sparingly and only when necessary. Another solution is to use the normal `codly` function before and after your code block. You can also use the the argument `nested: false` on `local` to prevent nested local states, which significantly reduces the performance impact.]
 
-#warning[When using `nested: false` on your local states, the outermost local state will be overriden by the innermost local state. This means that the innermost local state will be the only one that is applied to the code block. And that any previous local states (in the same hierarchy) will be ignored for subsequent code blocks.]
+#warning[When using `nested: false` on your local states, the outermost local state will be overriden by the inner local state(s). This means that the inner local state will be the only one that is applied to the code block. And that any previous local states (in the same hierarchy) will be ignored for subsequent code blocks.]
 
 #info[Once custom elements become available in Typst, and codly moves to using those and set rules, this limitation will be lifted and you will be able to use nested local states without performance impact.]
 

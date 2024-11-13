@@ -1199,7 +1199,7 @@
             baseline: highlight-inset,
             collection.join() + label,
           )
-          children.push([#content <codly-highlight>])
+          children.push([#content<codly-highlight>])
         } else {
           let col = collection.join()
           let height-col = measure(col).height
