@@ -116,11 +116,17 @@
     },
     "inset": {
         "title": "Inset",
-        "description": "Inset of the code lines, that is the distance between the border and the code lines.",
+        "description": "Inset of the code lines, that is the distance between the border and the code lines. It can also be a dictionary with the keys same keys as in the Tyspt built-in #link(\"https://typst.app/docs/reference/layout/block/#parameters-inset\")[`block.inset`].",
         "default": "0.32em",
-        "ty": [ "length" ],
+        "ty": [ "length", "dictionary" ],
         "function": true,
-        "example": "*Default inset:*\n```py\nprint('Hello, world!')\n```\n*Overriden inset:*\n#codly(inset: 1em)\n```py\nprint('Hello, world!')\n```"
+        "example": "*Default inset:*\n```py\nprint('Hello, world!')\n```\n*Overriden inset:*\n#codly(inset: 1em)\n```py\nprint('Hello, world!')\n```",
+        "examples":[
+            {
+                "title": "Dictionary inset",
+                "code": "*Default inset:*\n```py\nprint('Hello, world!')\n```\n*Overriden inset:*\n#codly(inset: (x: 0.32em, y: 0.1em))\n```py\nprint('Hello, world!')\n```"
+            }
+        ]
     },
     "fill": {
         "title": "Fill",
@@ -148,7 +154,7 @@
     },
     "lang-inset": {
         "title": "Language box inset",
-        "description": "The inset of the language block. This only applies if you're using the default language block formatter.",
+        "description": "The inset of the language block. This only applies if you're using the default language block formatter.  It can also be a dictionary with the keys same keys as in the Tyspt built-in #link(\"https://typst.app/docs/reference/layout/block/#parameters-inset\")[`block.inset`]",
         "default": "0.32em",
         "ty": [ "length", "dictionary" ],
         "function": true,

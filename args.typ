@@ -5,14 +5,12 @@
 ) = {
   if type(ty) == array {
     let tys = ty.map(t => eval(t, mode: "code"))
-    (value, use) => {
-      let value_ty = type(value)
+    (value_ty, use) => {
       value_ty in tys or (function and (not use) and value_ty == function)
     }
   } else {
     let ty = eval(ty, mode: "code")
-    (value, use) => {
-      let value_ty = type(value)
+    (value_ty, use) => {
       value_ty == ty or (function and (not use) and value_ty == function)
     }
   }
@@ -60,40 +58,28 @@
   let state = state("codly-" + name, default)
 
   (
-    get: (extra: (:)) => {
-      let value = if name in extra {
-        extra.at(name)
-      } else {
-        state.get()
-      }
-
-      assert(
-        type_check(value, true),
-        message: "codly: `" + name + "` must be " + type_check_str(true) + ", found: " + str(type(value)),
-      )
-
-      if type(value) == function and allow-fn {
-        value()
-      } else {
-        value
-      }
-    },
-    get-raw: () => {
-      state.get()
-    },
     set-raw: (value) => {
       state.update((_) => value)
     },
     update: (value) => {
       assert(
-        type_check(value, false),
+        type_check(type(value), false),
         message: "codly: `" + name + "` must be " + type_check_str(false) + ", found: " + str(type(value)),
       )
       state.update((_) => value)
     },
+    type_check: (value) => {
+      assert(
+        type_check(type(value), false),
+        message: "codly: `" + name + "` must be " + type_check_str(false) + ", found: " + str(type(value)),
+      )
+
+      value
+    },
     reset: () => {
       state.update((_) => default)
     },
+    default: default,
   )
 }
 
@@ -118,6 +104,11 @@
   }
 
   out
+}
+
+#let __codly-defaults = {
+  let out = (:)
+  __codly-args.pairs().map(((key, value)) =>(key, value.default)).to-dict()
 }
 
 // Must be called in a context!

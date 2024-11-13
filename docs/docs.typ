@@ -43,7 +43,7 @@
       radius: 0.32em,
       inset: 0.32em,
       stroke: 1pt + luma(120),
-      scale(scale-factor, reflow: true, raw)
+      raw
     ),
     box(
       radius: 0.32em,
@@ -55,7 +55,11 @@
         grid.header(grid.cell(align: center, strong[Rendered output])),
         {
           codly-reset()
-          scale(scale-factor, reflow: true, eval(raw.text, scope: (codly: codly, local: local), mode: "markup"))
+          eval(
+            raw.text,
+            scope: (codly: codly, local: local, no-codly: no-codly, codly-enable: codly-enable, codly-disable: codly-disable, codly-range: codly-range, codly-offset: codly-offset, codly-skip: codly-skip, codly-reset: codly-reset),
+            mode: "markup"
+          )
           codly-reset()
           codly(..codly-args)
         },
@@ -296,27 +300,64 @@ The codly functions acts like a set-rule, this means that calling it will set th
       #if "example" in arg {
         [=== Example]
         example(
-          raw(block: true, lang: "typ", arg.example),
-          scale-factor: if "scale" in arg { eval(arg.scale) } else { 100% }
+          raw(block: true, lang: "typ", arg.example)
         )
+      }
+
+      #if "examples" in arg {
+        for ex in arg.examples {
+          [=== Example: #ex.title]
+          example(
+            raw(block: true, lang: "typ", ex.code)
+          )
+        }
       }
     ]
   })
 }
 
+#pagebreak(weak: true)
 = Getting nice icons
+
+This is a short, non-exhaustive guide on how to get nicer icons for the languages of your code blocks. In the documentation, codly makes use of tabler-icons to display the language icons. But a more general approach is the following:
+
++ Chose a font that contains icons, such as:
+  - #link("https://tabler.io/icons")[Tabler Icons]
+  - #link("https://fontawesome.com/")[Font Awesome]
+  - #link("https://material.io/resources/icons/")[Material Icons]
+  - Look on #link("https://fonts.google.com/")[Google Fonts] for more options
++ Download the font and put it in your project (if using the _CLI_, you need to set the `--font` argument)
++ Using your font selector, select the icon you wish to use
+  - For example, the language icon in Tabler Icons is `ebbe` (the unicode value of the icon, which you can find in the documentation of the font)
+  - Use the #link("https://typst.app/docs/reference/text/text/")[`text`] function to display the icon in your document by setting the font, size, and the unicode value of the icon:
+  #codly(highlights: ((line: 0, start: 13, end: 24), (line: 0, start: 43, end: 46, fill: green)))
+  ```typc
+  text(font: "tabler-icons", size: 1em, "\u{ebbe}")
+  ```
 
 == Typst language icon (`typst-icon`) <typst-icon>
 
-
+#pagebreak(weak: true)
 = Other functions
 
 == Skip (`codly-skip`) <codly-skip>
+Convenience function for setting the skips, see the #link(<arg-skips>)[`skips`] argument of the `codly` function.
+
 == Range (`codly-range`) <codly-range>
+Convenience function for setting the range, see the #link(<arg-range>)[`range`] argument of the `codly` function.
+
 == Offset (`codly-offset`) <codly-offset>
+Convenience function for setting the offset, see the #link(<arg-offset>)[`offset`] argument of the `codly` function.
+
 == Local (`local`) <local>
 
 Codly provides a convenience function called `local` that allows you to locally override the global settings for a specific code block. This is useful when you want to apply a specific style to a code block without affecting the rest of the code blocks in your document. It works by overriding the default codly show rule locally with an override of the arguments by those you provide. It does not rely on states (much) and should no longer add layout passes to the rendering which could cause documents to not converge.
+
+#warning[Local states can slow down documents significantly if over-used or when using nested local states (explicitly set `nested: true`). Use them sparingly and only when necessary. Another solution is to use the normal `codly` function before and after your code block. You can also use the the argument `nested: false` on `local` to prevent nested local states, which significantly reduces the performance impact.]
+
+#warning[When using `nested: false` on your local states, the outermost local state will be overriden by the innermost local state. This means that the innermost local state will be the only one that is applied to the code block. And that any previous local states (in the same hierarchy) will be ignored for subsequent code blocks.]
+
+#info[Once custom elements become available in Typst, and codly moves to using those and set rules, this limitation will be lifted and you will be able to use nested local states without performance impact.]
 
 #example(````typ
 *Global state with red color*
@@ -340,9 +381,9 @@ Codly provides a convenience function called `local` that allows you to locally 
 ```
 ````)
 
+#pagebreak(weak: true)
 === Nested local state
-
-Codly does support nested local state, the innermost local state will override the outermost local state. This allows you to have different styles for different parts of your code block.
+Codly does support nested local state, the innermost local state will override the outermost local state. This allows you to have different styles for different parts of your code block. This function takes the same arguments as the `codly` function, but only the arguments that are different from the global settings need to be provided.
 
 #example(````typ
 *Global state with red color*
@@ -353,6 +394,7 @@ Codly does support nested local state, the innermost local state will override t
 ```
 *Locally set it to blue*
 #local(
+  nested: true,
   fill: blue,
 )[
   ```typ
@@ -360,14 +402,14 @@ Codly does support nested local state, the innermost local state will override t
   *Hello, World!*
   ```
   *Now it's green:*
-  #local(fill: green)[
+  #local(nested: true, fill: green)[
     ```typ
     = Example
     *Hello, World!*
     ```
   ]
-  *Now it's zebras are also blue:*
-  #local(zebra-fill: blue)[
+  *Now its zebras are also blue:*
+  #local(nested: true, zebra-fill: blue)[
     ```typ
     = Example
     *Hello, World!*
@@ -387,7 +429,76 @@ Codly does support nested local state, the innermost local state will override t
 ```
 ````)
 
+#pagebreak(weak: true)
 == No codly (`no-codly`) <no-codly>
+This is a convenience function equivalent to `local(enabled: false, body)`.
+
+#example(````typ
+*Enabled codly*
+```typ
+= Example
+*Hello, World!*
+```
+
+*Disabled codly*
+#no-codly[
+  ```typ
+  = Example
+  *Hello, World!*
+  ```
+]
+````)
+
 == Enable (`codly-enable`) <codly-enable>
+Enables codly globally, equivalent to `codly(enabled: true)`.
+#example(````typ
+*Disabled codly*
+#codly-disable()
+```typ
+= Example
+*Hello, World!*
+```
+#codly-enable()
+*Enabled codly*
+```typ
+= Example
+*Hello, World!*
+```
+````)
+
 == Disable (`codly-disable`) <codly-disable>
+Disables codly globally, equivalent to `codly(enabled: false)`.
+#example(````typ
+*Enabled codly*
+```typ
+= Example
+*Hello, World!*
+```
+
+*Disabled codly*
+#codly-disable()
+```typ
+= Example
+*Hello, World!*
+```
+````)
+
+#pagebreak(weak: true)
+
 == Reset (`codly-reset`) <codly-reset>
+Resets all codly settings to their default values. This is useful when you want to reset the settings of a code block to the default values after applying local settings.
+
+#example(````typ
+*Global state with red color*
+#codly(fill: red)
+```typ
+= Example
+*Hello, World!*
+```
+*Reset it*
+#codly-reset()
+```typ
+= Example
+*Hello, World!*
+```
+````)
