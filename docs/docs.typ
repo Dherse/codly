@@ -118,7 +118,7 @@ From this point on, any code block that is included in your Typst project will b
 
 == Enabling and disabling codly
 
-By defauly Codly will be enabled after initialization. However, disabling codly can be done using the #link(<codly-disable>)[`codly-disable`] function, the #link(<arg-enabled>)[`enabled`] argument of the `codly` function, or the #link(<no-codly>)[`no-codly`] function. To enable Codly again, use the #link(<codly-enable>)[`codly-enable`] function or by setting the #link(<arg-enabled>)[`enabled`] parameter again.
+By default Codly will be enabled after initialization. However, disabling codly can be done using the #link(<codly-disable>)[`codly-disable`] function, the #link(<arg-enabled>)[`enabled`] argument of the `codly` function, or the #link(<no-codly>)[`no-codly`] function. To enable Codly again, use the #link(<codly-enable>)[`codly-enable`] function or by setting the #link(<arg-enabled>)[`enabled`] parameter again.
 
 #pagebreak()
 
