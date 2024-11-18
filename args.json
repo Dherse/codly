@@ -90,6 +90,15 @@
         "reset": true,
         "example": "#codly(range: (2, 4))\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\nfib(25)\n```"
     },
+    "ranges": {
+        "title": "Ranges",
+        "description": "The ranges of line numbers to display, zero-indexed. If set to `none`, all lines are displayed. Can also be achieved using the convenience function #link(<codly-range>)[`codly-range`] if provided with more than one range. If set to `none`, all lines are displayed.\n\n#info[Overrides the #link(<arg-range>)[`range`] argument.]",
+        "default": "none",
+        "ty": [ "type(none)", "array"],
+        "function": true,
+        "reset": true,
+        "example": "#codly(ranges: ((2, 2), (4, 4)))\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\nfib(25)\n```"
+    },
     "languages": {
         "title": "Languages",
         "description": "The language definitions to use for language block formatting. It is defined as a dictionary where the keys are the language names andeach value is another dictionary containing the following keys:\n - `name`: the \"pretty\" name of the language as a content/showable value\n - `color`: the color of the language, if omitted uses the default color\n - `icon`: the icon of the language, if omitted no icon is shown.\nIf an entry is missing, and language blocks are enabled, will show the \"un-prettified\" language name, with the default color.",
@@ -280,7 +289,7 @@
         "function": true,
         "reset": true,
         "experimental": true,
-        "example": "#codly(\n  annotations:(\n    (\n      start: 1, end: 4,\n      content: block(\n        width: 2em,\n        rotate(-90deg,align(center, box(width: 100pt)[Function body])\n      )\n    ),\n  ),)\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```"
+        "example": "#codly(\n  annotations:(\n    (\n      start: 1, end: 4,\n      content: block(\n        width: 2em,\n        rotate(-90deg, reflow: true, \n          align(center)[Function body])\n      )\n    ),\n  ),\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```"
     },
     "annotation-format": {
         "title": "Annotation formatter",

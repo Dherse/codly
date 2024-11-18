@@ -32,7 +32,7 @@
 )
 #codly(..codly-args)
 
-#let example(raw, scale-factor: 100%) = context {
+#let example(raw, pre: none, scale-factor: 100%) = context {
   codly(
     header: [ Example code ],
   )
@@ -43,7 +43,10 @@
       radius: 0.32em,
       inset: 0.32em,
       stroke: 1pt + luma(120),
-      raw
+      {
+        pre
+        raw
+      }
     ),
     box(
       radius: 0.32em,
@@ -52,7 +55,19 @@
       grid(
         columns: (1fr, ),
         inset: 0.32em,
-        grid.header(grid.cell(align: center, strong[Rendered output])),
+        grid.header(
+          grid.cell(
+            inset: 0pt,
+            align: center, box(
+              fill: luma(240),
+              stroke: 1pt + luma(120),
+              inset: 0.32em,
+              radius: (top-left: 0.32em, top-right: 0.32em),
+              width: 1fr,
+              strong[Rendered output]
+            )
+          )
+        ),
         {
           codly-reset()
           eval(
@@ -324,6 +339,93 @@ The codly functions acts like a set-rule, this means that calling it will set th
 
 #pagebreak(weak: true)
 = Referencing code blocks, highlights, and annotations
+
+This section of the documentation will detail how you can use codly to reference: lines, highlights, and annotations in your code blocks. To do this, here are the requirements that must be met *for each code block*:
+#list(marker: sym.square)[
+Numbering of figures must be turned on: `set figure(numbering: ...)`.
+][
+The code block must be contained within a raw figure: `figure(kind: raw)`.
+][
+The figure must have a label of its own: `figure(...)[...] <my-label>`.
+]
+
+== Shorthand line references
+You can references lines directly, if you have set a label correctly, using the shorthand syntax `@my-label:1` to reference the second line (zero-based index) of the code block with the label `<my-label>`. It will always use the #link(<arg-reference-number-format>)[`reference-number-format`] argument of the `codly` function to format the line number.
+
+#experiment[
+  You might notice that the second reference in the example below is formatted like a #link("https://typst.app/docs/reference/model/link/")[`link`]. This is because it internally uses a `show ref: ..` show-rule which produces a link. This is a limitation of Typst and cannot be easily changed.
+]
+
+#example(
+  ````typ
+  #figure(
+    caption: "A code block with a label"
+  )[
+    ```typ
+    = Example
+    *Hello, world!*
+    ```
+  ] <my-label>
+
+  I can reference my code block: @my-label. But I can also reference a specific line of the label: @my-label:1.
+  ````,
+  pre: codly(
+    ranges: ((1, 3), (8, 10)),
+    skips: ((4, 0), )
+  )
+)
+
+== Highlight references
+
+You can also highlight by reference, to do this, you need to set a label for your highlight in the #link(<arg-highlights>)[`highlights`] argument of the `codly` function. You can then reference the highlight using the shorthand syntax `@my-highlight` to reference the highlight with the label `<my-highlight>`. There are two supported #link(<arg-reference-by>)[`reference-by`] modes:
+- `"line"`: references the line of the highlight
+- `"item"`: references the tag of the highlight, this requires that the `tag` be set *for each highlight*.
+
+#example(
+  ````typ
+  #codly(
+    highlights: ((line: 1, start: 2, end: 7, label: <hl-1>),
+  ))
+  #figure(
+    caption: "A code block with a label"
+  )[
+    ```typ
+    = Example
+    *Hello, world!*
+    ```
+  ] <my-code>
+
+  I can also reference a specific highlight by its label: @hl-1.
+  ````,
+  pre: codly(
+    ranges: ((1, 3), (13, 13)),
+    skips: ((4, 0), )
+  )
+)
+
+And using #link(<arg-reference-by>)[`"item"`] mode:
+#example(
+  ````typ
+  #codly(
+    highlights: ((line: 1, start: 2, end: 7, label: <hl-2>, tag: [ Highlight ]), ),
+    reference-by: "item",
+  )
+  #figure(
+    caption: "A code block with a label"
+  )[
+    ```typ
+    = Example
+    *Hello, world!*
+    ```
+  ] <more-code>
+
+  I can also reference a specific highlight by its label: @hl-2.
+  ````,
+  pre: codly(
+    ranges: ((1, 4), (14, 14)),
+    skips: ((5, 0), )
+  )
+)
 
 #pagebreak(weak: true)
 = Getting nice icons

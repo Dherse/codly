@@ -224,10 +224,387 @@
   }
 }
 
+#let codly-line(it, block-label: none, extra: (:)) = {
+  let indent-regex = regex("^\\s*")
+  let args = __codly-args
+  let highlight-stroke = (
+    __codly-args.highlight-stroke.type_check
+  )(if "highlight-stroke" in extra {
+    extra.highlight-stroke
+  } else {
+    state("codly-highlight-stroke", __codly-args
+        .highlight-stroke
+        .default).get()
+  })
+
+  let highlight-fill = (
+    __codly-args.highlight-fill.type_check
+  )(if "highlight-fill" in extra {
+    extra.highlight-fill
+  } else {
+    state("codly-highlight-fill", __codly-args.highlight-fill.default).get()
+  })
+
+  let highlight-radius = (
+    __codly-args.highlight-radius.type_check
+  )(if "highlight-radius" in extra {
+    extra.highlight-radius
+  } else {
+    state("codly-highlight-radius", __codly-args
+        .highlight-radius
+        .default).get()
+  })
+
+  let highlight-inset = (
+    __codly-args.highlight-inset.type_check
+  )(if "highlight-inset" in extra {
+    extra.highlight-inset
+  } else {
+    state("codly-highlight-inset", __codly-args.highlight-inset.default).get()
+  })
+
+  let default-color = (
+    __codly-args.default-color.type_check
+  )(if "default-color" in extra {
+    extra.default-color
+  } else {
+    state("codly-default-color", __codly-args.default-color.default).get()
+  })
+  
+  let highlights = {
+    let highlights = (
+      __codly-args.highlights.type_check
+    )(if "highlights" in extra {
+      extra.highlights
+    } else {
+      state("codly-highlights", __codly-args.highlights.default).get()
+    })
+    if highlights == none {
+      ()
+    } else {
+      highlights.sorted(key: x => x.line).map(x => {
+        if not "start" in x or x.start == none {
+          x.insert("start", 0)
+        }
+
+        if not "end" in x or x.end == none {
+          x.insert("end", 999999999)
+        }
+
+        if not "fill" in x {
+          x.insert("fill", default-color)
+        }
+        x
+      })
+    }
+  }
+
+  // Filter the highlights to only keep the relevant ones.
+  let highlights = highlights.filter(x => x.line == (it.number - 1))
+  let highlighted = it.body
+
+  // Smart indentation code.
+  let smart-indent = (
+    __codly-args.smart-indent.type_check
+  )(if "smart-indent" in extra {
+    extra.smart-indent
+  } else {
+    state("codly-smart-indent", __codly-args.smart-indent.default).get()
+  })
+  let body = if it.body.has("children") {
+    it.body.children
+  } else {
+    (it.body,)
+  }
+
+  let width = none
+  if smart-indent {
+    // Check the indentation of the line by taking l,
+    // and checking for the first element in the sequence.
+    let first = for child in body {
+      let fields = child.fields()
+      if "children" in fields {
+        for c in child.children {
+          if "text" in c.fields() {
+            c
+            break
+          }
+        }
+      } else if "child" in fields {
+        if "text" in fields.child.fields() {
+          fields.child
+          break
+        }
+      } else if "body" in fields {
+        if "text" in fields.body.fields() {
+          fields.body
+          break
+        }
+      } else if "text" in fields {
+        child
+        break
+      }
+    }
+
+    if first != none and first.has("text") {
+      let match = first.text.match(indent-regex)
+
+      // Ensure there is a match and it starts at the beginning of the line.
+      if match != none and match.start == 0 {
+        // Calculate the indentation.
+        let indent = match.end - match.start
+
+        // Then measure the necessary indent.
+        let indent = first.text.slice(match.start, match.end)
+        width = measure([#indent]).width
+      }
+    }
+  }
+
+  // If there are no highlights, return the line as is.
+  if highlights.len() == 0 {
+    if width != none {
+      // We add the indentation to the line.
+      highlighted = {
+        set par(hanging-indent: width)
+        highlighted
+      }
+    }
+
+    let l = raw.line(it.number, it.count, it.text, highlighted)
+
+    // Build a label if the code block has one.
+    if block-label != none {
+      let lab = label(str(block-label) + ":" + str(it.number))
+
+      return [#l#lab]
+    } else {
+      return l
+    }
+  }
+
+  // Apply highlights
+  let l = it.body
+  for hl in highlights {
+    let fill = highlight-fill(hl.fill)
+    let stroke = highlight-stroke(hl.fill)
+    let tag = if "tag" in hl {
+      hl.tag
+    } else {
+      none
+    }
+
+    let get-len(child) = {
+      let fields = child.fields()
+
+      if child.has("label") and child.label == <codly-highlight> {
+        0
+      } else if "children" in fields {
+        fields.children.map(get-len).sum()
+      } else if "text" in fields {
+        fields.text.len()
+      } else if "child" in fields {
+        get-len(fields.child)
+      } else if "body" in fields {
+        get-len(fields.body)
+      } else {
+        0
+      }
+    }
+
+    let children = ()
+    let collection = none
+    let i = 0
+    let ws_regex = regex("\s")
+    let get-flattened-body(elem) = {
+      if elem.has("label") and elem.label == <codly-highlight> {
+        return (elem,)
+      }
+
+      if elem.has("children") {
+        elem.children.map(get-flattened-body).flatten()
+      } else if elem.has("child") and elem.has("styles") {
+        get-flattened-body(elem.child)
+          .map(x => (elem.func())(x, elem.styles))
+          .flatten()
+      } else if elem.has("text") {
+        // Separate the whitespaces at the start of text
+        let out = ()
+        let ws = none
+        for cluster in elem.text.clusters() {
+          let m = cluster.match(ws_regex)
+          if m != none and ws != none {
+            ws += cluster
+          } else if m != none and ws == none {
+            ws = cluster
+          } else if ws != none {
+            out.push(text(ws))
+            ws = none
+            out.push(text(cluster))
+          } else {
+            out.push(text(cluster))
+          }
+        }
+
+        if ws != none {
+          out.push(text(ws))
+        }
+        out
+      } else {
+        (elem,)
+      }
+    }
+
+    let body = get-flattened-body(highlighted)
+
+    let len = body.len()
+    for (index, child) in body.enumerate() {
+      let last = index == len - 1
+      let args = child.fields()
+
+      let len = get-len(child)
+
+      if collection != none {
+        collection.push(child)
+      } else if collection == none and (
+        i >= hl.start or i + len >= hl.start
+      ) and (i < hl.end) {
+        collection = (child,)
+      } else {
+        children.push(child)
+      }
+
+      let label = if "label" in hl and hl.label != none {
+        let reference-by = (
+          __codly-args.reference-by.type_check
+        )(if "reference-by" in extra {
+          extra.reference-by
+        } else {
+          state("codly-reference-by", __codly-args.reference-by.default).get()
+        })
+        let reference-sep = (
+          __codly-args.reference-sep.type_check
+        )(if "reference-sep" in extra {
+          extra.reference-sep
+        } else {
+          state("codly-reference-sep", __codly-args.reference-sep.default).get()
+        })
+
+        let referenced = if reference-by == "line" {
+          let reference-number-format = (
+            __codly-args.reference-number-format.type_check
+          )(if "reference-number-format" in extra {
+            extra.reference-number-format
+          } else {
+            state("codly-reference-number-format", __codly-args.reference-number-format.default).get()
+          })
+
+          reference-number-format(it.number)
+        } else {
+          assert("tag" in hl, message: "codly: tag is required for item reference")
+          hl.tag
+        }
+        place(
+          hide[#figure(kind: "codly-referencer", supplement: none)[#box(referenced)#box(str(block-label))]#hl.label],
+        )
+      } else {
+        none
+      }
+
+      if collection != none and (i + len >= hl.end or last) {
+        if tag == none {
+          let content = box(
+            radius: highlight-radius,
+            clip: true,
+            fill: fill,
+            stroke: stroke,
+            inset: highlight-inset,
+            baseline: highlight-inset,
+            collection.join() + label,
+          )
+          children.push([#content<codly-highlight>])
+        } else {
+          let col = collection.join()
+          let height-col = measure(col).height
+          let height-tag = measure(tag).height
+          let max-height = calc.max(
+            height-col,
+            height-tag,
+          ) + 2 * highlight-inset
+          let hl-box = box(
+            radius: (
+              top-right: 0pt,
+              bottom-right: 0pt,
+              rest: highlight-radius,
+            ),
+            height: max-height,
+            clip: true,
+            fill: fill,
+            stroke: stroke,
+            inset: highlight-inset,
+            baseline: highlight-inset,
+            collection.join(),
+          )
+          let tag-box = box(
+            radius: (
+              top-left: 0pt,
+              bottom-left: 0pt,
+              rest: highlight-radius,
+            ),
+            height: max-height,
+            clip: true,
+            fill: fill,
+            stroke: stroke,
+            inset: highlight-inset,
+            baseline: highlight-inset,
+            tag + label,
+          )
+
+          children.push([#hl-box#h(
+            0pt,
+            weak: true,
+          )#tag-box<codly-highlight>])
+        }
+        collection = none
+      }
+
+      i += len
+    }
+
+    highlighted = children.join()
+  }
+
+  if width != none {
+    // We add the indentation to the line.
+    highlighted = {
+      set par(hanging-indent: width)
+      highlighted
+    }
+  }
+
+  let l = raw.line(it.number, it.count, it.text, highlighted)
+
+  // Build a label if the code block has one.
+  if block-label != none {
+    let lab = label(str(block-label) + ":" + str(it.number))
+
+    return [#l#lab]
+  } else {
+    return l
+  }
+}
+
 #let __codly-raw(
   it,
+  block-label: none,
   extra: (:),
 ) = context {
+  show raw.line.where(label: <codly-highlighted>): it => codly-line(
+    it,
+    block-label: block-label,
+    extra: (:),
+  )
+
   if type(it) != content or it.func() != raw {
     panic("codly-raw: body must be a raw content")
   }
@@ -250,14 +627,33 @@
     state("codly-range", __codly-args.range.default).get()
   })
 
+  let ranges = (__codly-args.ranges.type_check)(if "ranges" in extra {
+    extra.ranges
+  } else {
+    state("codly-ranges", __codly-args.ranges.default).get()
+  })
+
+  if ranges == none and range != none {
+    ranges = (range, )
+  }
+
+
   let in_range(line) = {
-    if range == none {
-      true
-    } else if range.at(1) == none {
-      line >= range.at(0)
-    } else {
-      line >= range.at(0) and line <= range.at(1)
+    if ranges == none {
+      return true
     }
+    
+    // Return true if the line is contained in any of the ranges.
+    for r in ranges {
+      assert(type(r) == array, message: "codly: ranges must be an array of arrays")
+      assert(r.len() == 2, message: "codly: ranges must be an array of arrays with two elements")
+      if r.at(0) <= line and line <= r.at(1) {
+        let s = str(r.at(0)) + " <= " + str(line) + " <= " + str(r.at(1))
+        return true
+      }
+    }
+
+    return false
   }
 
   let block-label = auto
@@ -469,10 +865,6 @@
         }
 
         if "label" in x {
-          if block-label == auto {
-            block-label = state("codly-label").get()
-          }
-
           if block-label == none {
             panic("codly: label " + str(x.label) + " is only allowed in a figure block")
           }
@@ -764,9 +1156,7 @@
           num
         }
         place(
-          hide[#heading(level: level-annot)[#box(referenced)#box(
-                str(block-label),
-              )] #current-annot.label],
+          hide[#figure(kind: "codly-referencer", supplement: none)[#box(referenced)#box(str(block-label))]#current-annot.label],
         )
       } else {
         none
@@ -1008,352 +1398,85 @@
   }
 }
 
-#let codly-line(it, extra: (:)) = {
-  let indent-regex = regex("^\\s*")
-  let args = __codly-args
-  let highlight-stroke = (
-    __codly-args.highlight-stroke.type_check
-  )(if "highlight-stroke" in extra {
-    extra.highlight-stroke
-  } else {
-    state("codly-highlight-stroke", __codly-args
-        .highlight-stroke
-        .default).get()
-  })
+#let __codly-get-parts(heading) = {
+  let num = heading.body.children.at(0)
+  let lbl = heading.body.children.at(1)
+  (num.body, label(lbl.body.text))
+}
 
-  let highlight-fill = (
-    __codly-args.highlight-fill.type_check
-  )(if "highlight-fill" in extra {
-    extra.highlight-fill
-  } else {
-    state("codly-highlight-fill", __codly-args.highlight-fill.default).get()
-  })
-
-  let highlight-radius = (
-    __codly-args.highlight-radius.type_check
-  )(if "highlight-radius" in extra {
-    extra.highlight-radius
-  } else {
-    state("codly-highlight-radius", __codly-args
-        .highlight-radius
-        .default).get()
-  })
-
-  let highlight-inset = (
-    __codly-args.highlight-inset.type_check
-  )(if "highlight-inset" in extra {
-    extra.highlight-inset
-  } else {
-    state("codly-highlight-inset", __codly-args.highlight-inset.default).get()
-  })
-
-  let default-color = (
-    __codly-args.default-color.type_check
-  )(if "default-color" in extra {
-    extra.default-color
-  } else {
-    state("codly-default-color", __codly-args.default-color.default).get()
-  })
-  
-  let highlights = {
-    let highlights = (
-      __codly-args.highlights.type_check
-    )(if "highlights" in extra {
-      extra.highlights
+#let __codly-ref(it, extra: (:)) = context {
+  if it.element != none and it.element.func() == heading and it
+    .element
+    .level == level-highlight {
+    let sep = (
+      __codly-args.reference-sep.type_check
+    )(if "reference-sep" in extra {
+      extra.reference-sep
     } else {
-      state("codly-highlights", __codly-args.highlights.default).get()
+      state("codly-reference-sep", __codly-args.reference-sep.default).get()
     })
-    if highlights == none {
-      ()
+    let (tag, label) = __codly-get-parts(it.element)
+    link(
+      it.target,
+      (
+        ref(label),
+        sep,
+        tag,
+      ).join(),
+    )
+  } else if it.element != none and it.element.func() == figure and it
+    .element
+    .kind == "codly-referencer" {
+    let sep = (
+      __codly-args.reference-sep.type_check
+    )(if "reference-sep" in extra {
+      extra.reference-sep
     } else {
-      highlights.sorted(key: x => x.line).map(x => {
-        if not "start" in x or x.start == none {
-          x.insert("start", 0)
-        }
+      state("codly-reference-sep", __codly-args.reference-sep.default).get()
+    })
+    let (num, label) = __codly-get-parts(it.element)
+    link(
+      it.target,
+      (
+        ref(label),
+        sep,
+        num,
+      ).join(),
+    )
+  } else if it.element != none and it.element.func() == raw.line and type(it.target) == "label" {
+    let segments = str(it.target).split(":")
+    assert(segments.len() > 1, message: "codly: invalid label")
+    let lab = label(segments.slice(0, -1).join(":"))
 
-        if not "end" in x or x.end == none {
-          x.insert("end", 999999999)
-        }
-
-        if not "fill" in x {
-          x.insert("fill", default-color)
-        }
-        x
-      })
-    }
-  }
-
-  // Filter the highlights to only keep the relevant ones.
-  let highlights = highlights.filter(x => x.line == (it.number - 1))
-  let highlighted = it.body
-
-  // Smart indentation code.
-  let smart-indent = (
-    __codly-args.smart-indent.type_check
-  )(if "smart-indent" in extra {
-    extra.smart-indent
-  } else {
-    state("codly-smart-indent", __codly-args.smart-indent.default).get()
-  })
-  let body = if it.body.has("children") {
-    it.body.children
-  } else {
-    (it.body,)
-  }
-
-  let width = none
-  if smart-indent {
-    // Check the indentation of the line by taking l,
-    // and checking for the first element in the sequence.
-    let first = for child in body {
-      let fields = child.fields()
-      if "children" in fields {
-        for c in child.children {
-          if "text" in c.fields() {
-            c
-            break
-          }
-        }
-      } else if "child" in fields {
-        if "text" in fields.child.fields() {
-          fields.child
-          break
-        }
-      } else if "body" in fields {
-        if "text" in fields.body.fields() {
-          fields.body
-          break
-        }
-      } else if "text" in fields {
-        child
-        break
-      }
-    }
-
-    if first != none and first.has("text") {
-      let match = first.text.match(indent-regex)
-
-      // Ensure there is a match and it starts at the beginning of the line.
-      if match != none and match.start == 0 {
-        // Calculate the indentation.
-        let indent = match.end - match.start
-
-        // Then measure the necessary indent.
-        let indent = first.text.slice(match.start, match.end)
-        width = measure([#indent]).width
-      }
-    }
-  }
-
-  // If there are no highlights, return the line as is.
-  if highlights.len() == 0 {
-    if width != none {
-      // We add the indentation to the line.
-      highlighted = {
-        set par(hanging-indent: width)
-        highlighted
-      }
-    }
-
-    return raw.line(it.number, it.count, it.text, highlighted)
-  }
-
-  // Apply highlights
-  let l = it.body
-  for hl in highlights {
-    let fill = highlight-fill(hl.fill)
-    let stroke = highlight-stroke(hl.fill)
-    let tag = if "tag" in hl {
-      hl.tag
+    let sep = (
+      __codly-args.reference-sep.type_check
+    )(if "reference-sep" in extra {
+      extra.reference-sep
     } else {
-      none
-    }
+      state("codly-reference-sep", __codly-args.reference-sep.default).get()
+    })
 
-    let get-len(child) = {
-      let fields = child.fields()
-
-      if child.has("label") and child.label == <codly-highlight> {
-        0
-      } else if "children" in fields {
-        fields.children.map(get-len).sum()
-      } else if "text" in fields {
-        fields.text.len()
-      } else if "child" in fields {
-        get-len(fields.child)
-      } else if "body" in fields {
-        get-len(fields.body)
-      } else {
-        0
-      }
-    }
-
-    let children = ()
-    let collection = none
-    let i = 0
-    let ws_regex = regex("\s")
-    let get-flattened-body(elem) = {
-      if elem.has("label") and elem.label == <codly-highlight> {
-        return (elem,)
-      }
-
-      if elem.has("children") {
-        elem.children.map(get-flattened-body).flatten()
-      } else if elem.has("child") and elem.has("styles") {
-        get-flattened-body(elem.child)
-          .map(x => (elem.func())(x, elem.styles))
-          .flatten()
-      } else if elem.has("text") {
-        // Separate the whitespaces at the start of text
-        let out = ()
-        let ws = none
-        for cluster in elem.text.clusters() {
-          let m = cluster.match(ws_regex)
-          if m != none and ws != none {
-            ws += cluster
-          } else if m != none and ws == none {
-            ws = cluster
-          } else if ws != none {
-            out.push(text(ws))
-            ws = none
-            out.push(text(cluster))
-          } else {
-            out.push(text(cluster))
-          }
-        }
-
-        if ws != none {
-          out.push(text(ws))
-        }
-        out
-      } else {
-        (elem,)
-      }
-    }
-
-    let body = get-flattened-body(highlighted)
-
-    let len = body.len()
-    let block_label = auto
-    for (index, child) in body.enumerate() {
-      let last = index == len - 1
-      let args = child.fields()
-
-      let len = get-len(child)
-
-      if collection != none {
-        collection.push(child)
-      } else if collection == none and (
-        i >= hl.start or i + len >= hl.start
-      ) and (i < hl.end) {
-        collection = (child,)
-      } else {
-        children.push(child)
-      }
-
-      let label = if "label" in hl and hl.label != none {
-        let reference-by = (__codly-args.reference-by.get)(
-          "reference-by" in extra,
-          extra.at("reference-by", default: none),
-        )
-        let reference-sep = (__codly-args.reference-sep.get)(
-          "reference-sep" in extra,
-          extra.at("reference-sep", default: none),
-        )
-
-        if block-label == auto {
-          block_label = state("codly-label").get()
-        }
-        let referenced = if reference-by == "line" {
-          let reference-number-format = (
-            __codly-args.reference-number-format.get
-          )(
-            "reference-number-format" in extra,
-            extra.at("reference-number-format", default: none),
-          )
-          reference-number-format(it.number)
-        } else {
-          hl.tag
-        }
-        place(
-          hide[#heading(level: level-highlight)[#box(referenced)#box(
-                str(block-label),
-              )] #hl.label],
-        )
-      } else {
-        none
-      }
-
-      if collection != none and (i + len >= hl.end or last) {
-        if tag == none {
-          let content = box(
-            radius: highlight-radius,
-            clip: true,
-            fill: fill,
-            stroke: stroke,
-            inset: highlight-inset,
-            baseline: highlight-inset,
-            collection.join() + label,
-          )
-          children.push([#content<codly-highlight>])
-        } else {
-          let col = collection.join()
-          let height-col = measure(col).height
-          let height-tag = measure(tag).height
-          let max-height = calc.max(
-            height-col,
-            height-tag,
-          ) + 2 * highlight-inset
-          let hl-box = box(
-            radius: (
-              top-right: 0pt,
-              bottom-right: 0pt,
-              rest: highlight-radius,
-            ),
-            height: max-height,
-            clip: true,
-            fill: fill,
-            stroke: stroke,
-            inset: highlight-inset,
-            baseline: highlight-inset,
-            collection.join(),
-          )
-          let tag-box = box(
-            radius: (
-              top-left: 0pt,
-              bottom-left: 0pt,
-              rest: highlight-radius,
-            ),
-            height: max-height,
-            clip: true,
-            fill: fill,
-            stroke: stroke,
-            inset: highlight-inset,
-            baseline: highlight-inset,
-            tag + label,
-          )
-
-          children.push([#hl-box#h(
-            0pt,
-            weak: true,
-          )#tag-box<codly-highlight>])
-        }
-        collection = none
-      }
-
-      i += len
-    }
-
-    highlighted = children.join()
+    let reference-number-format = (
+      __codly-args.reference-number-format.type_check
+    )(if "reference-number-format" in extra {
+      extra.reference-number-format
+    } else {
+      state("codly-reference-number-format", __codly-args
+          .reference-number-format
+          .default).get()
+    })
+    
+    link(
+      it.target,
+      (
+        ref(lab),
+        sep,
+        reference-number-format(it.element.number),
+      ).join()
+    )
+  } else {
+    it
   }
-
-  if width != none {
-    // We add the indentation to the line.
-    highlighted = {
-      set par(hanging-indent: width)
-      highlighted
-    }
-  }
-  raw.line(it.number, it.count, it.text, highlighted)
 }
 
 /// Initializes the codly show rule.
@@ -1364,73 +1487,18 @@
 #let codly-init(
   body,
 ) = {
-  show figure.where(kind: raw): it => {
-    if "label" in it.fields() {
-      state("codly-label").update(_ => it.label)
-      it
-      state("codly-label").update(_ => none)
+  show figure.where(kind: raw): fig => {
+    if "label" in fig.fields() {
+      show raw.where(block: true): it => __codly-raw(it, block-label: fig.label)
+      fig
     } else {
-      it
+      fig
     }
-  }
-
-  let get-parts(heading) = {
-    let num = heading.body.children.at(0)
-    let lbl = heading.body.children.at(1)
-    (num.body, label(lbl.body.text))
   }
 
   // Levels chosen randomly.
   let level-highlight = 39340
-  let level-annot = 30246
-  show ref: it => (
-    context if it.element != none and it.element.func() == heading and it
-      .element
-      .level == level-highlight {
-      let extra = state("codly-extra-args", (:)).at(it.element.loc())
-      let sep = (
-        __codly-args.reference-sep.type_check
-      )(if "reference-sep" in extra {
-        extra.reference-sep
-      } else {
-        state("codly-reference-sep", __codly-args.reference-sep.default).get()
-      })
-      let (tag, label) = get-parts(it.element)
-      link(
-        it.target,
-        (
-          ref(label),
-          sep,
-          tag,
-        ).join(),
-      )
-    } else if it.element != none and it.element.func() == heading and it
-      .element
-      .level == level-annot {
-      let sep = (
-        __codly-args.reference-sep.type_check
-      )(if "reference-sep" in extra {
-        extra.reference-sep
-      } else {
-        state("codly-reference-sep", __codly-args.reference-sep.default).get()
-      })
-      let (num, label) = get-parts(it.element)
-      link(
-        it.target,
-        (
-          ref(label),
-          sep,
-          num,
-        ).join(),
-      )
-    } else {
-      it
-    }
-  )
-  show raw.line.where(label: <codly-highlighted>): it => codly-line(
-    it,
-    extra: (:),
-  )
+  show ref: it => __codly-ref(it)
   show raw.where(block: true): it => __codly-raw(it)
 
   body
@@ -1466,11 +1534,16 @@
       })
 
       let args = current + extra
-      show raw.line.where(label: <codly-highlighted>): it => codly-line(
-        it,
-        extra: extra,
-      )
+      show ref: it => __codly-ref(it, extra: args)
       show raw.where(block: true): it => __codly-raw(it, extra: args)
+      show figure.where(kind: raw): fig => {
+        if "label" in fig.fields() {
+          show raw.where(block: true, extra: args): it => __codly-raw(it, block-label: fig.label)
+          fig
+        } else {
+          fig
+        }
+      }
 
       body
       state("codly-extra-args").update(current)
@@ -1478,11 +1551,16 @@
   } else {
     let extra = args.named()
     state("codly-extra-args").update(extra)
-    show raw.line.where(label: <codly-highlighted>): it => codly-line(
-      it,
-      extra: extra,
-    )
+    show ref: it => __codly-ref(it, extra: args)
     show raw.where(block: true): it => __codly-raw(it, extra: extra)
+    show figure.where(kind: raw): fig => {
+      if "label" in fig.fields() {
+        show raw.where(block: true, extra: args): it => __codly-raw(it, block-label: fig.label)
+        fig
+      } else {
+        fig
+      }
+    }
     body
     state("codly-extra-args").update((:))
   }
