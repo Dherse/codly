@@ -46,10 +46,16 @@
 ///  ```
 /// ````, mode: "markup", scale-preview: 100%)
 #let codly-range(
-  start: 1,
+  start,
   end: none,
+  ..rest,
 ) = {
-  (__codly-args.range.update)((start, end))
+  let pos = rest.pos();
+  if pos.len() > 0 {
+    (__codly-args.ranges.update)(((start, end), ..pos))
+  } else {
+    (__codly-args.range.update)((start, end))
+  }
 }
 
 /// Disables codly.
@@ -645,10 +651,18 @@
     
     // Return true if the line is contained in any of the ranges.
     for r in ranges {
-      assert(type(r) == array, message: "codly: ranges must be an array of arrays")
+      assert(type(r) == array, message: "codly: ranges must be an array of arrays, found " + type(r))
       assert(r.len() == 2, message: "codly: ranges must be an array of arrays with two elements")
-      if r.at(0) <= line and line <= r.at(1) {
-        let s = str(r.at(0)) + " <= " + str(line) + " <= " + str(r.at(1))
+
+      if r.at(0) == none {
+        if line <= r.at(1) {
+          return true
+        }
+      } else if r.at(1) == none {
+        if r.at(0) <= line {
+          return true
+        }
+      } else if r.at(0) <= line and line <= r.at(1) {
         return true
       }
     }
@@ -1374,6 +1388,10 @@
 
   if range != none {
     state("codly-range").update(none)
+  }
+
+  if ranges != none {
+    state("codly-ranges").update(none)
   }
 
   if skips != none and skips != () {

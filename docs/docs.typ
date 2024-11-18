@@ -483,11 +483,36 @@ Additionally, codly ships with language definitions for the Typst language. You 
 Convenience function for setting the skips, see the #link(<arg-skips>)[`skips`] argument of the `codly` function.
 
 == Range (`codly-range`) <codly-range>
-Convenience function for setting the range, see the #link(<arg-range>)[`range`] argument of the `codly` function.
+Convenience function for setting the range, see the #link(<arg-range>)[`range`] argument of the `codly` function. If you provide more than one range, as a list of arguments, it will set the #link(<arg-ranges>)[`ranges`] argument instead.
+
+With a single range:
+#example(````typ
+#codly-range(2, end: 2)
+```py
+def fib(n):
+  if n <= 1:
+      return n
+  return fib(n - 1) + fib(n - 2)
+fib(25)
+```
+````)
+
+With more than one range:
+#example(````typ
+#codly-range(2, end: 2, (4, 5))
+```py
+def fib(n):
+  if n <= 1:
+      return n
+  return fib(n - 1) + fib(n - 2)
+fib(25)
+```
+````)
 
 == Offset (`codly-offset`) <codly-offset>
 Convenience function for setting the offset, see the #link(<arg-offset>)[`offset`] argument of the `codly` function.
 
+#pagebreak(weak: true)
 == Local (`local`) <local>
 
 Codly provides a convenience function called `local` that allows you to locally override the global settings for a specific code block. This is useful when you want to apply a specific style to a code block without affecting the rest of the code blocks in your document. It works by overriding the default codly show rule locally with an override of the arguments by those you provide. It does not rely on states (much) and should no longer add layout passes to the rendering which could cause documents to not converge.
