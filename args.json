@@ -102,6 +102,7 @@
     "languages": {
         "title": "Languages",
         "description": "The language definitions to use for language block formatting. It is defined as a dictionary where the keys are the language names andeach value is another dictionary containing the following keys:\n - `name`: the \"pretty\" name of the language as a content/showable value\n - `color`: the color of the language, if omitted uses the default color\n - `icon`: the icon of the language, if omitted no icon is shown.\nIf an entry is missing, and language blocks are enabled, will show the \"un-prettified\" language name, with the default color.",
+        "post": "=== Pre-existing language definitions\n#info[Check out the #link(\"https://typst.app/universe/package/codly-languages\")[`codly-languages`] package on Typst universe. It contains pre-definition for many language and is extremely easy to use. You can consider it officially endorsed by the codly author as of the 19th of November 2024.]\n\n#example(````typ\n#import \"@preview/codly-languages:0.1.1\": *\n#codly(languages: codly-languages)\n```rust\nfn main() {\n  println!(\"Hello, world!\");\n}\n```\n```zig\nconst std = @import(\"std\");\n\npub fn main() void {\n  std.debug.print(\"Hello, world!\", .{});\n}\n```\n````)",
         "default": "(:)",
         "ty": [ "dictionary" ],
         "function": true,

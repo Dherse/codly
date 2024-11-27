@@ -10,10 +10,7 @@
   <img src="https://github.com/Dherse/codly/actions/workflows/test.yml/badge.svg" />
 </p>
 
-Codly is a package that lets you easily create **beautiful** code blocks for your Typst documents.
-It uses the newly added [`raw.line`](https://typst.app/docs/reference/text/raw/#definitions-line)
-function to work across all languages easily. You can customize the icons, colors, and more to
-suit your document's theme. By default it has zebra striping, line numbers, for ease of reading.
+Codly superchargescode blocks for your Typst documents. It allows you to add annotations, skip lines, and much more.
 
 A full set of documentation can be found [in the repo](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf).
 

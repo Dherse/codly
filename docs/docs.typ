@@ -333,6 +333,10 @@ The codly functions acts like a set-rule, this means that calling it will set th
           )
         }
       }
+
+      #if "post" in arg {
+        eval(arg.post, mode: "markup", scope: (experiment: experiment, info: info, example: example))
+      }
     ]
   })
 }
@@ -517,8 +521,6 @@ Convenience function for setting the offset, see the #link(<arg-offset>)[`offset
 
 Codly provides a convenience function called `local` that allows you to locally override the global settings for a specific code block. This is useful when you want to apply a specific style to a code block without affecting the rest of the code blocks in your document. It works by overriding the default codly show rule locally with an override of the arguments by those you provide. It does not rely on states (much) and should no longer add layout passes to the rendering which could cause documents to not converge.
 
-#warning[Local states can slow down documents significantly if over-used or when using nested local states (explicitly set `nested: true`). Use them sparingly and only when necessary. Another solution is to use the normal `codly` function before and after your code block. You can also use the the argument `nested: false` on `local` to prevent nested local states, which significantly reduces the performance impact.]
-
 #warning[When using `nested: false` on your local states, the outermost local state will be overriden by the inner local state(s). This means that the inner local state will be the only one that is applied to the code block. And that any previous local states (in the same hierarchy) will be ignored for subsequent code blocks.]
 
 #info[Once custom elements become available in Typst, and codly moves to using those and set rules, this limitation will be lifted and you will be able to use nested local states without performance impact.]
@@ -548,6 +550,8 @@ Codly provides a convenience function called `local` that allows you to locally 
 #pagebreak(weak: true)
 === Nested local state
 Codly does support nested local state, the innermost local state will override the outermost local state. This allows you to have different styles for different parts of your code block. This function takes the same arguments as the `codly` function, but only the arguments that are different from the global settings need to be provided.
+
+#warning[Nested local states can slow down documents significantly if over-used (explicitly set `nested: true`). Use them sparingly and only when necessary. Another solution is to use the normal `codly` function before and after your code block. You can also use the the argument `nested: false` on `local` to prevent nested local states, which significantly reduces the performance impact.]
 
 #example(````typ
 *Global state with red color*

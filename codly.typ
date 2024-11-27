@@ -1119,6 +1119,7 @@
           .header-cell-args
           .default).get()
     })
+
     let transform = (
       __codly-args.header-transform.type_check
     )(if "header-transform" in extra {
@@ -1128,12 +1129,13 @@
           .header-transform
           .default).get()
     })
+
     (
       grid.header(
         repeat: header-repeat,
         grid.cell(
           transform(header) + language-block-final,
-          colspan: 2,
+          colspan: if numbers-format == none { 1 } else { 2 },
           ..header-args,
         ),
       ),
@@ -1293,7 +1295,11 @@
     (
       grid.footer(
         repeat: footer-repeat,
-        grid.cell(transform(footer), colspan: 2, ..footer-args),
+        grid.cell(
+          transform(footer),
+          colspan: if numbers-format == none { 1 } else { 2 },
+          ..footer-args
+        ),
       ),
     )
   } else {
