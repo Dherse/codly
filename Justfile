@@ -8,7 +8,7 @@ default:
 
 # generate manual
 doc:
-	typst compile docs/docs.typ docs.pdf
+	typst compile docs/docs.typ docs.pdf --root . --font-path ./fonts
 
 # run test suite
 test *args:
