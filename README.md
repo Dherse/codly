@@ -1,3 +1,5 @@
+# Codly: simple yet beautiful and powerful code blocks
+
 <p align="center">
   <a href="https://github.com/Dherse/codly/blob/main/docs.pdf">
     <img alt="Documentation" src="https://img.shields.io/website?down_message=offline&label=manual&up_color=007aff&up_message=online&url=https%3A%2F%2Fgithub.com%2FDherse%2Fcodly%2Fblob%2Fmain%2Fdocs.pdf" />
@@ -7,8 +9,6 @@
   </a>
   <img src="https://github.com/Dherse/codly/actions/workflows/test.yml/badge.svg" />
 </p>
-
-# Codly: simple yet beautiful and powerful code blocks
 
 Codly superchargescode blocks for your Typst documents. It allows you to add annotations, skip lines, customize numberings, add language icons, and much more. Codly is even better with its companion package [`codly-languages`](https://typst.app/universe/package/codly-languages) which provides a wide range of language icons and colors to choose from.
 
