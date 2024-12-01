@@ -10,7 +10,7 @@
   <img src="https://github.com/Dherse/codly/actions/workflows/test.yml/badge.svg" />
 </p>
 
-Codly superchargescode blocks for your Typst documents. It allows you to add annotations, skip lines, customize numberings, add language icons, and much more.
+Codly superchargescode blocks for your Typst documents. It allows you to add annotations, skip lines, customize numberings, add language icons, and much more. Codly is even better with its companion package [`codly-languages`](https://typst.app/universe/package/codly-languages) which provides a wide range of language icons and colors to choose from.
 
 A full set of documentation can be found [in the repo](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf).
 
