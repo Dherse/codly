@@ -1,7 +1,5 @@
 #set page(height: auto, width: 300pt, margin: 10pt)
 
-*Before Codly:*
-
 #let replace-at(str, colors) = {
   for (i, c) in str.clusters().enumerate() {
     let found = false
@@ -48,8 +46,6 @@
     pass
   ```
 ]
-
-*After Codly:*
 
 #import "../../codly.typ": *
 #show: codly-init.with()

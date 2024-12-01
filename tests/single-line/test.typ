@@ -4,42 +4,35 @@
 
 #show: codly-init
 
-= Default
 ```typst
 Hello, world!
 ```
 
-= Disabled
 #codly-disable()
 ```typst
 Hello, world!
 ```
 
-= Re-enabled
 #codly-enable()
 ```typst
 Hello, world!
 ```
 
-= No line numbers
 #codly(number-format: none)
 ```typst
 Hello, world!
 ```
 
-= No language icon
 #codly(lang-format: none)
 ```typst
 Hello, world!
 ```
 
-= With annotation
 #codly(annotations: ((start: 0, content: "Hello, world!"), ))
 ```typst
 Hello, world!
 ```
 
-= With annotation & lang icon
 #codly(lang-format: auto)
 #codly(annotations: ((start: 0, content: "Hello, world!"), ))
 ```typst
@@ -53,26 +46,22 @@ Hello, world!
 Hello, world!
 ```
 
-= Locally disabled
-#local(enabled: false)[
+#no-codly[
   ```typst
   Hello, world!
   ```
 ]
 
-= With large inset
 #codly(inset: 10pt)
 ```typst
 Hello, world!
 ```
 
-= With small inset
 #codly(inset: 0.5pt)
 ```typst
 Hello, world!
 ```
 
-= Wrap-around line
 #codly-reset()
 #codly(languages: (py: (name: "Python", icon: "Sss ", color: rgb("#4584b6")), ))
 ```py

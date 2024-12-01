@@ -1,4 +1,4 @@
-#import "../codly.typ": codly-init, codly
+#import "../../codly.typ": codly-init, codly
 
 #show: codly-init
 

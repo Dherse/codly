@@ -1,4 +1,4 @@
-#import "../codly.typ": *
+#import "../../codly.typ": *
 
 #set page(height: auto, width: 10cm, margin: 1em)
 #show: codly-init.with()

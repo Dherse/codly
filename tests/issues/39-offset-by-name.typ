@@ -1,10 +1,10 @@
-#import "../codly.typ": *
+#import "../../codly.typ": *
 
-// Remove these lines to see the difference
 #show: codly-init.with()
-#codly(number-format: none, stroke: none, display-icon: false, display-name: false, inset: 0.205em)
 
-#let code = ```py
+= First part
+#codly(offset: 10)
+```py
 import pandas as pd
 
 def preprocess_headers(data: pd.DataFrame) -> None:
@@ -27,7 +27,11 @@ def preprocess_headers(data: pd.DataFrame) -> None:
         inplace=True,
         errors="raise",
     )
+``` <first-part>
 
+= Second part
+#codly(offset-from: <first-part>)
+```py
     # Replace values with correct ones
     data.loc[data["Relation"] == "Mum", "Relation"] = "Mother"
     data.loc[data["Nationality"] == "KW", "Nationality"] = "Kuwait"
@@ -48,9 +52,11 @@ def preprocess_headers(data: pd.DataFrame) -> None:
     data["Class"] = pd.Categorical(data["Class"], ordered=True, categories=["L", "M", "H"])
 ```
 
-#set page("a3")
-#columns(2)[
-  #code
-  #colbreak()
-  #no-codly(code)
-]
+= No offset
+```py
+def fib(n):
+  if n <= 1:
+      return n
+  return fib(n - 1) + fib(n - 2)
+fib(11)
+```
