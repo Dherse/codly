@@ -256,6 +256,8 @@ The codly functions acts like a set-rule, this means that calling it will set th
     "https://typst.app/docs/reference/layout/alignment/"
   } else if ty == "int" {
     "https://typst.app/docs/reference/foundations/int/"
+  } else if ty == "label" {
+    "https://typst.app/docs/reference/foundations/label/"
   } else {
     panic("unknown type: " + ty)
   }
@@ -310,7 +312,7 @@ The codly functions acts like a set-rule, this means that calling it will set th
     [
       #header #label
       #card
-      #eval(arg.description, mode: "markup", scope: (experiment: experiment, info: info))
+      #eval(arg.description, mode: "markup", scope: (experiment: experiment, info: info, warning: warning))
 
       #if "experimental" in arg and arg.experimental {
         experiment[

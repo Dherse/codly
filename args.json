@@ -81,6 +81,16 @@
         "reset": true,
         "example": "*No offset:*\n```typ\nHello, world!\n```\n\n*Offset by 5:*\n#codly(offset: 5)\n```typ\nHello, world!\n```"
     },
+    "offset-from": {
+        "title": "Offset from other code block",
+        "description": "The offset to apply to line numbers, relative to another code block. This is useful when you want to match line numbers between two code blocks. This code block will continue the line numbers from the other code block, with the specified offset.\n\n This is done by giving a `label` to the parent raw block, and then setting it as the `offset-from` on the second code block.\n#info[Note that the offset obtained from the other code block is added to the offset specified in the `offset` argument.]\n#warning[*Important*: this feature works with any `offset` set on the other code block, including `offset-from` but may give unexpected results if both code blocks have `offset-from` set to each other or if the preceeding code block has #link(<arg-range>)[`range`] or #link(<arg-skips>)[`skips`] set.]",
+        "default": "none",
+        "ty": [ "type(none)", "label" ],
+        "experimental": true,
+        "function": true,
+        "reset": true,
+        "example": "```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\n``` <fib-fn>\n\n*Will continue at line 5*\n#codly(offset-from: <fib-fn>)\n```py\nfib(25)\n```"
+    },
     "range": {
         "title": "Range",
         "description": "The range of line numbers to display, zero-indexed. If set to `none`, all lines are displayed. Can also be achieved using the convenience function #link(<codly-range>)[`codly-range`]. If set to `none`, all lines are displayed.",

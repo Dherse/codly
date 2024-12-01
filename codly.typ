@@ -611,6 +611,13 @@
     extra: (:),
   )
 
+  show figure.where(kind: "__codly-raw-line"): it => {
+    set align(left + horizon)
+    it.body
+  }
+
+  show figure.where(kind: "__codly-end-block"): it => none
+
   if type(it) != content or it.func() != raw {
     panic("codly-raw: body must be a raw content")
   }
@@ -729,6 +736,30 @@
   } else {
     state("codly-offset", __codly-args.offset.default).get()
   })
+
+  let offset-from = (
+    __codly-args.offset-from.type_check
+  )(if "offset-from" in extra {
+    extra.offset-from
+  } else {
+    state("codly-offset-from", __codly-args.offset-from.default).get()
+  })
+
+  if offset-from != none {
+    let origin = query(offset-from)
+    if origin.len() == 0 {
+      panic("codly: offset-from must be used with a valid label, could not find: " + str(offset-from))
+    } else if origin.len() > 1 {
+      panic("codly: offset-from must be used with a unique label, found multiple: " + str(offset-from))
+    }
+
+    let origin = origin.first()
+    let end = query(figure.where(kind: "__codly-end-block").after(origin.location())).first()
+    let lines = query(figure.where(kind: "__codly-raw-line").after(origin.location()).before(end.location()))
+    if lines.len() > 0 {
+      offset += lines.last().body.children.at(0).number
+    }
+  }
 
   let stroke = (__codly-args.stroke.type_check)(if "stroke" in extra {
     extra.stroke
@@ -1210,24 +1241,25 @@
     }
 
     // Always push the formatted line number
-    let l = [#raw.line(
+    let l = figure(
+      kind: "__codly-raw-line",
+      numbering: none,
+      placement: none,
+      outlined: false,
+      gap: 0pt,
+      caption: none,
+      [#raw.line(
         line.number + offset,
         line.count,
         line.text,
-        line.body,
-      )<codly-highlighted>]
+        box(height: height, width: 0pt) + line.body,
+      ) <codly-highlighted>]
+    )
 
     // Must be done before the smart indentation code.
     // Otherwise it results in two paragraphs.
     if numbers-format != none {
       items.push(numbers-format(line.number + offset))
-    } else {
-      l = [#raw.line(
-          line.number + offset,
-          line.count,
-          line.text,
-          box(height: height, width: 0pt) + line.body,
-        )<codly-highlighted>]
     }
 
     if line.number != start or (
@@ -1388,8 +1420,22 @@
     },
   )
 
+  figure(
+    kind: "__codly-end-block",
+    supplement: none,
+    numbering: none,
+    placement: none,
+    outlined: false,
+    gap: 0pt,
+    caption: none,
+  )[]
+
   if offset != 0 {
     state("codly-offset").update(0)
+  }
+
+  if offset-from != none {
+    state("codly-offset-from").update(none)
   }
 
   if range != none {
