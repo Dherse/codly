@@ -10,26 +10,18 @@
   <img src="https://github.com/Dherse/codly/actions/workflows/test.yml/badge.svg" />
 </p>
 
-Codly superchargescode blocks for your Typst documents. It allows you to add annotations, skip lines, and much more.
+Codly superchargescode blocks for your Typst documents. It allows you to add annotations, skip lines, customize numberings, add language icons, and much more.
 
 A full set of documentation can be found [in the repo](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf).
 
-![Example](./demo.png)
+![Example](./assets/demo.png)
 
 ````typ
 #import "@preview/codly:1.1.0": *
+#import "@preview/codly-languages:0.1.1": *
 #show: codly-init.with()
 
-#codly(
-  languages: (
-    rust: (
-      name: "Rust",
-      icon: text(font: "tabler-icons", "\u{fa53}"),
-      color: rgb("#CE412B")
-    ),
-  )
-)
-
+#codly(languages: codly-languages)
 ```rust
 pub fn main() {
     println!("Hello, world!");
@@ -39,26 +31,22 @@ pub fn main() {
 
 ### Setup
 
-To start using codly, you need to initialize codly using a show rule:
+To start using codly, you need to initialize codly using a show rule, this need only be done once per document:
 
 ```typ
 #show: codly-init.with()
 ```
-> [!TIP]
-> You only need to do this once at the top of your document!
 
 Then you *can* configure codly with your parameters:
 
 ```typ
 #codly(
   languages: (
-    rust: (name: "Rust", icon: "\u{fa53}", color: rgb("#CE412B")),
+    rust: (name: "Rust", icon: "🦀", color: rgb("#CE412B")),
   )
 )
 ```
-
-> [!IMPORTANT]
-> Any parameter that you leave blank will use the previous values (or the default value if never set) similar to a `set` rule in regular typst. But the changes are always global unless you use the provided `codly.local` function. To get a full list of all settings, see the [documentation](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf).
+> **Note**: Any parameter that you leave blank will use the previous values (or the default value if never set) similar to a `set` rule in regular typst. But the changes are always global unless you use the provided `codly.local` function. To get a full list of all settings, see the [documentation](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf).
 
 Then you just need to add a code block and it will be automatically displayed correctly:
 
@@ -70,13 +58,17 @@ pub fn main() {
 ```
 ````
 
-### Disabling
+![Crab](./assets/crab.png)
+
+### Disabling & Enabling
 
 To locally disable codly, you can just do the following, you can then later re-enable it using the `codly` configuration function.
 
 ```typ
-#disable-codly()
+#codly-disable()
 ```
+
+![codly-disable](./assets/codly-disable.png)
 
 Alternatively, you can use the `no-codly` function to achieve the same effect locally:
 
@@ -88,6 +80,26 @@ Alternatively, you can use the `no-codly` function to achieve the same effect lo
 ]
 ````
 
+### Smart indentation
+
+By default Codly ships with `smart-indent` enabled, this means that Codly will automatically detect the indentation of your code block and adjust the horizontal offset on line wrapping accordingly. This can be disabled using the `smart-indent` parameter.
+
+```typ
+#codly(smart-indent: false)
+```
+
+![smart-ident](./assets/smart-indent.png)
+
+### Referencing code blocks
+
+Codly offers a wide range of features for referencing code blocks, lines, highlights, and annotations. This is done using:
+- the line shorthand `@<label>:<line>`
+- the highlight or annotation label `@<highlight>`
+
+![line-ref](./assets/line-ref.png)
+
+![highlight-ref](./assets/highlight-ref.png)
+
 ### Setting an offset
 
 If you wish to add an offset to your code block, but without selecting a subset of lines, you can use the `codly-offset` function:
@@ -97,6 +109,18 @@ If you wish to add an offset to your code block, but without selecting a subset 
 #codly-offset(5)
 ```
 
+![codly-offset](./assets/codly-offset.png)
+
+### Setting an offset relative to another code block
+
+This is done by using the `offset-from` argument and by specifying a Typst `label` to the "parent" code block:
+
+````typ
+#codly(offset-from: <parent>)
+````
+
+![offset-from](./assets/offset-from.png)
+
 ### Selecting a subset of lines
 
 If you wish to select a subset of lines, you can use the `codly-range` function. By setting the start to 1 and the end to `none` you can select all lines from the start to the end of the code block.
@@ -104,6 +128,8 @@ If you wish to select a subset of lines, you can use the `codly-range` function.
 ```typ
 #codly-range(start: 5, end: 10)
 ```
+
+![codly-range](./assets/codly-range.png)
 
 ### Adding a "skip"
 
@@ -117,10 +143,29 @@ The code inside your block will be the same (except for the added line containin
 
 This can be customized using the `skip-line` and `skip-number` to customize what it looks like.
 
-### Adding annotations
+### Adding highlights
 
-> [!IMPORTANT]
-> This is a Beta feature and has a few quirks, refer to [the documentation](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf) for those
+You can highlight part of lines using the `highlights` parameters:
+
+````typ
+#codly(highlights: (
+  (line: 3, start: 2, end: none, fill: red),
+  (line: 4, start: 13, end: 19, fill: green, tag: "(a)"),
+  (line: 4, start: 26, fill: blue, tag: "(b)"),
+))
+```py
+def fib(n):
+  if n <= 1:
+    return n
+  else:
+    return fib(n - 1) + fib(n - 2)
+print(fib(25))
+```
+````
+
+![highlights](./assets/highlights.png)
+
+### Adding annotations
 
 You can annotate a line/group of lines using the `annotations` parameters :
 
@@ -143,6 +188,8 @@ You can annotate a line/group of lines using the `annotations` parameters :
   )
 )
 ```
+
+![annotations](./assets/annotations.png)
 
 ### Disabling line numbers
 
