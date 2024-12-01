@@ -2,10 +2,10 @@ name: Tests
 on:
   push:
     # ensures this is not run for PRs too
-    branches: [ master, main ]
+    branches: [ main ]
   pull_request:
     # optional but a good default
-    branches: [ master, main ]
+    branches: [ main ]
 
 jobs:
   tests:
@@ -25,13 +25,13 @@ jobs:
         with:
           crate: typst-test
           git: https://github.com/tingerrr/typst-test.git
-          branch: main
+          tag: ci-semi-stable
       - name: Setup typst
         uses: yusancky/setup-typst@v2
         with:
-          version: 'v0.11.1'
+          version: 'v0.12'
       - name: Run test suite
-        run: typst-test run --max-delta 128 --max-deviation 64
+        run: typst-test run
       - name: Archive diffs
         uses: actions/upload-artifact@v4
         if: always()
