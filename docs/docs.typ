@@ -144,7 +144,9 @@ Codly uses a function called `codly` to create a kind of show-rule which you can
 let codly(
   enabled: true,
   offset: 0,
+  offset-from: none,
   range: none,
+  ranges: (),
   languages: (:),
   display-name: true,
   display-icon: true,
@@ -447,7 +449,7 @@ This is a short, non-exhaustive guide on how to get nicer icons for the language
 + Using your font selector, select the icon you wish to use
   - For example, the language icon in Tabler Icons is `ebbe` (the unicode value of the icon, which you can find in the documentation of the font)
   - Use the #link("https://typst.app/docs/reference/text/text/")[`text`] function to display the icon in your document by setting the font, size, and the unicode value of the icon:
-  #codly(highlights: ((line: 0, start: 13, end: 24), (line: 0, start: 31, end: 34, fill: green)))
+  #codly(highlights: ((line: 0, start: 12, end: 25, tag: [ Font name ]), (line: 0, start: 43, end: 46, fill: green, tag: [ UTF-8 icon code])))
   ```typc
   text(font: "tabler-icons", size: 1em, "\u{ebbe}")
   ```
@@ -547,6 +549,55 @@ Codly provides a convenience function called `local` that allows you to locally 
 = Example
 *Hello, World!*
 ```
+````)
+
+#pagebreak(weak: true)
+=== Local state for per-language configuration
+
+Additionally, local settings can be used to set per-language configuration using a show rule on your #link("https://typst.app/docs/reference/text/raw/")[`raw`] blocks. This can be done in one of two ways: by using a show rule on `raw.where(block: true, lang: "<lang>")` and calling the #link(<local>)[`local`] function, or by using the `codly` function. The main differentiators are that the `local` function is faster and does not rely on states, while the `codly` function is more flexible, but slower and *will also style all following blocks*, you must therefore manually reset the changes.
+
+#experiment[
+  This should work in most cases, but this feature should be considered experimental. Please report any issues you encounter on GitHub:  https://github.com/Dherse/codly.
+]
+
+#info[
+  Note that you only want to do show rules on `raw` blocks where `block: true`, otherwise this will make your document slow.
+]
+
+#warning[
+ If you use the `local` function in a show rule, nested `local` states *will not work* with the settings you have set! Use the `codly` method instead. If using the `codly` method, and you *must* manually reset the changed settings in the show rule!
+]
+
+#example(````typ
+#show raw.where(block: true, lang: "rust"): local.with(
+  number-format: numbering.with("I")
+)
+
+#show raw.where(block: true, lang: "py"): it => {
+  codly(number-format: numbering.with("①"))
+  it
+  codly(number-format: numbering.with("1"))
+}
+
+*Numbered with Roman numerals*
+```rust
+fn main() {
+  println!("Rust code has Roman numbers");
+}
+
+```
+*Numbered with circled numbers*
+```py
+print("Python code has circled numbers")
+```
+
+*Override with local state*
+#local(
+  fill: blue.lighten(80%),
+  ```py
+  print("Python code is green")
+  ```
+)
 ````)
 
 #pagebreak(weak: true)

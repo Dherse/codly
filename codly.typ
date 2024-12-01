@@ -468,6 +468,16 @@
       let last = index == len - 1
       let args = child.fields()
 
+      if child.has("label") and child.label == <codly-highlight> {
+        if collection != none {
+          collection.push(child)
+          continue
+        } else {
+          children.push(child)
+          continue
+        }
+      }
+
       let len = get-len(child)
 
       if collection != none {
@@ -528,7 +538,7 @@
             baseline: highlight-inset,
             collection.join() + label,
           )
-          children.push([#content<codly-highlight>])
+          children.push(content)
         } else {
           let col = collection.join()
           let height-col = measure(col).height
@@ -793,7 +803,7 @@
 
   let padding = __codly-inset(
     (__codly-args.inset.type_check)(if "inset" in extra {
-      extrainset
+      extra.inset
     } else {
       state("codly-inset", __codly-args.inset.default).get()
     }),
@@ -1593,7 +1603,7 @@
 ///  Hello, world!
 ///  ```
 /// `````, mode: "markup", scale-preview: 100%)
-#let local(body, ..args, nested: false) = {
+#let local(body, nested: false, ..args) = {
   assert(type(nested) == bool, message: "local: nested must be a boolean")
   if nested {
     let extra = args.named()
