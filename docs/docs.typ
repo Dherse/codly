@@ -83,7 +83,7 @@
   )
 }
 
-#set text(font: "Source Sans Pro", size: 10pt)
+#set text(font: "Source Sans 3", size: 10pt)
 #set par(justify: true, spacing: 1.5em)
 #counter(page).update(1)
 #set heading(numbering: "1.1.")
