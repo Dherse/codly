@@ -1,4 +1,4 @@
-# Codly: simple and powerful code blocks
+# Codly: simple yet beautiful and powerful code blocks
 
 <p align="center">
   <a href="https://github.com/Dherse/codly/blob/main/docs.pdf">
