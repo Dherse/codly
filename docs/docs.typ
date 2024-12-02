@@ -32,7 +32,7 @@
 )
 #codly(..codly-args)
 
-#let example(raw, pre: none, scale-factor: 100%) = context {
+#let example(raw, actual: none, pre: none, scale-factor: 100%) = context {
   codly(
     header: [ Example code ],
   )
@@ -71,7 +71,11 @@
         {
           codly-reset()
           eval(
-            raw.text,
+            if actual != none {
+              actual.text
+            } else { 
+              raw.text
+            },
             scope: (codly: codly, local: local, no-codly: no-codly, codly-enable: codly-enable, codly-disable: codly-disable, codly-range: codly-range, codly-offset: codly-offset, codly-skip: codly-skip, codly-reset: codly-reset, typst-icon: typst-icon),
             mode: "markup"
           )
@@ -112,10 +116,15 @@ To start using Codly, you must first import it into your Typst project.
 
 #example(
   ```typ
+  #import "@preview/codly:1.1.0": *
+
+  #show: codly-init
+  ```,
+  actual: ```typ
   #import "@preview/codly:1.0.0": *
 
   #show: codly-init
-  ```
+  ```,
 )
 
 As you can see, this does nothing but initialize codly. You can also import it with a specific version, as shown in the example above. For the latest version, always refer to the #link("https://typst.app/universe/package/codly")[Typst Universe page].
