@@ -112,7 +112,7 @@ To start using Codly, you must first import it into your Typst project.
 
 #example(
   ```typ
-  #import "@preview/codly:1.0.0": *
+  #import "@preview/codly:1.1.0": *
 
   #show: codly-init
   ```
