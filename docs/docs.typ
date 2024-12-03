@@ -3,6 +3,9 @@
 #import "../args.typ": *
 #import "../codly.typ": codly, codly-init, codly-reset, no-codly, codly-enable, codly-disable, codly-range, codly-offset, local, codly-skip, typst-icon
 
+// Set this to the relevant version
+#let current_version = "1.1.0"
+
 #show: codly-init
 #show raw.where(block: false): set raw(lang: "typc")
 #show raw.where(block: false): box.with(
@@ -11,6 +14,91 @@
   outset: (y: 3pt),
   radius: 2pt,
 )
+
+#let code-icon(icon, ..args) = text(
+  font: "tabler-icons",
+  fallback: false,
+  weight: "regular",
+  size: 1em,
+  icon,
+  ..args,
+)
+#let icon-ty = code-icon("\u{ea77}", fill: rgb("#B300B3"))
+#let icon-val = code-icon("\u{f312}", fill: rgb("#007ACC"))
+#let icon-con = code-icon("\u{eb20}", fill: rgb("#FFC72C"))
+#let icon-rst = code-icon("\u{fafd}", fill: rgb("#A3A300"))
+#let icon-new = code-icon("\u{fd12}", fill: rgb("#49C39E"))
+#let icon-yes = code-icon("\u{ea5e}", fill: green, baseline: 0.15em)
+#let icon-no = code-icon("\u{eb55}", fill: red, baseline: 0.15em)
+#let paint = luma(0)
+
+#let ty_map(ty) = {
+  if ty == "type(none)" {
+    "none"
+  } else {
+    ty
+  }
+}
+#let bool_yes_no(b) = {
+  if b {
+    icon-yes + [ yes]
+  } else {
+    icon-no + [ no]
+  }
+}
+
+#let link-map(ty) = {
+  if ty == "array" {
+    "https://typst.app/docs/reference/foundations/array/"
+  } else if ty == "string" or ty == "str" {
+    "https://typst.app/docs/reference/foundations/str/"
+  } else if ty == "dictionary" {
+    "https://typst.app/docs/reference/foundations/dictionary/"
+  } else if ty == "type(none)" or ty == "none" {
+    "https://typst.app/docs/reference/foundations/none/"
+  } else if ty == "type(auto)" {
+    "https://typst.app/docs/reference/foundations/auto/"
+  } else if ty == "content" {
+    "https://typst.app/docs/reference/foundations/content/"
+  } else if ty == "bool" {
+    "https://typst.app/docs/reference/foundations/bool/"
+  } else if ty == "arguments" {
+    "https://typst.app/docs/reference/foundations/arguments/"
+  } else if ty == "function" {
+    "https://typst.app/docs/reference/foundations/function/"
+  } else if ty == "color" {
+    "https://typst.app/docs/reference/visualize/color/"
+  } else if ty == "gradient" {
+    "https://typst.app/docs/reference/visualize/gradient/"
+  } else if ty == "pattern" {
+    "https://typst.app/docs/reference/visualize/pattern/"
+  } else if ty == "length" {
+    "https://typst.app/docs/reference/layout/length/"
+  } else if ty == "stroke" {
+    "https://typst.app/docs/reference/visualize/stroke/"
+  } else if ty == "alignment" {
+    "https://typst.app/docs/reference/layout/alignment/"
+  } else if ty == "int" {
+    "https://typst.app/docs/reference/foundations/int/"
+  } else if ty == "label" {
+    "https://typst.app/docs/reference/foundations/label/"
+  } else {
+    panic("unknown type: " + ty)
+  }
+}
+#let format-default(value) = {
+  let e = eval(value)
+  raw(lang: "typc", value)
+
+  if type(e) == color {
+    h(0.32em)
+    box(height: 0.9em, width: 1.32em, fill: e, baseline: 0.1em)
+  } else if type(e) == stroke {
+    h(0.32em)
+    box(width: 1.32em, height: 0.9em, baseline: 0.1em, stroke: e)
+  }
+}
+
 
 // Start with a cover page
 #orly(
@@ -144,6 +232,37 @@ From this point on, any code block that is included in your Typst project will b
 
 By default Codly will be enabled after initialization. However, disabling codly can be done using the #link(<codly-disable>)[`codly-disable`] function, the #link(<arg-enabled>)[`enabled`] argument of the `codly` function, or the #link(<no-codly>)[`no-codly`] function. To enable Codly again, use the #link(<codly-enable>)[`codly-enable`] function or by setting the #link(<arg-enabled>)[`enabled`] parameter again.
 
+== Short guide to this manual
+
+Codly can take a lot of different argument to configure your code blocks. Some of these arguments can have pretty complex behaviour, so this manual is here to help you understand how to use them. Each argument is acompagnied by a card that gives you important information about its usage. The card contains the following information:
+- the type(s) of values accepted ;
+- the default value that is pre-set ;
+- whether the argument can take a contextual function: if it can, you can pass it a function that will be called within a typst #link("https://typst.app/docs/reference/context/")[`context`] block to customize the value of the argument yourself #footnote[This is mostly intended for libraries that wish to extend Codly, or for users that wish to have dynamic control over argument values using their own logic.] ;
+- whether the argument is automatically reset after the code block is rendered ;
+- whether the argument is already released in the current version of Codly or will be released in the next version.
+
+#block(stroke: 1pt + paint, radius: 0.32em, table(
+  columns: (auto, 1fr),
+  stroke: none,
+  align: (left + horizon, left + horizon),
+  strong[ #icon-ty Type ],
+  [ #link(link-map("bool"), raw(lang: "typc", "bool")) or #link(link-map("type(auto)"), raw(lang: "typc", "auto")) ],
+  table.hline(stroke: (thickness: 1pt, dash: "dashed", paint: paint)),
+  strong[ #icon-val Default value],
+  format-default("true"),
+  table.hline(stroke: (thickness: 1pt, dash: "dashed", paint: paint)),
+  strong[ #icon-con Contextual function ],
+  bool_yes_no(true),
+  table.hline(stroke: (thickness: 1pt, dash: "dashed", paint: paint)),
+  strong[ #icon-rst Automatically reset ],
+  bool_yes_no(true),
+  table.hline(stroke: (thickness: 1pt, dash: "dashed", paint: paint)),
+  strong[ #icon-new Already released in #current_version ],
+  bool_yes_no(false),
+))
+
+Additionally to the card, most arguments are accompanied by an example that shows how to use the argument in a code block. The example is followed by a rendered output of the code block, which shows how the argument affects the code block.
+
 #pagebreak()
 
 = A primer on Codly's show-rule like system
@@ -204,87 +323,6 @@ The codly functions acts like a set-rule, this means that calling it will set th
   - The `codly` function is not local, it sets the configuration for all code blocks that follow it in layout order, unless overriden by another `codly` call. This means that you cannot use it to set the configuration for a specific code block. To perform this, use the #link(<local>)[`local`] function to set the configuration for a specific "section".
 ]
 
-#let code-icon(icon, ..args) = text(
-  font: "tabler-icons",
-  fallback: false,
-  weight: "regular",
-  size: 1em,
-  icon,
-  ..args,
-)
-#let icon-ty = code-icon("\u{ea77}")
-#let icon-val = code-icon("\u{f312}")
-#let icon-con = code-icon("\u{eb20}")
-#let icon-rst = code-icon("\u{fafd}")
-#let icon-yes = code-icon("\u{ea5e}", fill: green, baseline: 0.15em)
-#let icon-no = code-icon("\u{eb55}", fill: red, baseline: 0.15em)
-
-#let ty_map(ty) = {
-  if ty == "type(none)" {
-    "none"
-  } else {
-    ty
-  }
-}
-#let bool_yes_no(b) = {
-  if b {
-    icon-yes + [ yes]
-  } else {
-    icon-no + [ no]
-  }
-}
-
-#let link-map(ty) = {
-  if ty == "array" {
-    "https://typst.app/docs/reference/foundations/array/"
-  } else if ty == "string" or ty == "str" {
-    "https://typst.app/docs/reference/foundations/str/"
-  } else if ty == "dictionary" {
-    "https://typst.app/docs/reference/foundations/dictionary/"
-  } else if ty == "type(none)" or ty == "none" {
-    "https://typst.app/docs/reference/foundations/none/"
-  } else if ty == "type(auto)" {
-    "https://typst.app/docs/reference/foundations/auto/"
-  } else if ty == "content" {
-    "https://typst.app/docs/reference/foundations/content/"
-  } else if ty == "bool" {
-    "https://typst.app/docs/reference/foundations/bool/"
-  } else if ty == "arguments" {
-    "https://typst.app/docs/reference/foundations/arguments/"
-  } else if ty == "function" {
-    "https://typst.app/docs/reference/foundations/function/"
-  } else if ty == "color" {
-    "https://typst.app/docs/reference/visualize/color/"
-  } else if ty == "gradient" {
-    "https://typst.app/docs/reference/visualize/gradient/"
-  } else if ty == "pattern" {
-    "https://typst.app/docs/reference/visualize/pattern/"
-  } else if ty == "length" {
-    "https://typst.app/docs/reference/layout/length/"
-  } else if ty == "stroke" {
-    "https://typst.app/docs/reference/visualize/stroke/"
-  } else if ty == "alignment" {
-    "https://typst.app/docs/reference/layout/alignment/"
-  } else if ty == "int" {
-    "https://typst.app/docs/reference/foundations/int/"
-  } else if ty == "label" {
-    "https://typst.app/docs/reference/foundations/label/"
-  } else {
-    panic("unknown type: " + ty)
-  }
-}
-#let format-default(value) = {
-  let e = eval(value)
-  raw(lang: "typc", value)
-
-  if type(e) == color {
-    h(0.32em)
-    box(height: 0.9em, width: 1.32em, fill: e, baseline: 0.1em)
-  } else if type(e) == stroke {
-    h(0.32em)
-    box(width: 1.32em, height: 0.9em, baseline: 0.1em, stroke: e)
-  }
-}
 #for (i, (key, arg)) in args.pairs().enumerate() {
   let header = heading(level: 2)[
     #arg.title (#raw(key))
@@ -301,7 +339,6 @@ The codly functions acts like a set-rule, this means that calling it will set th
     link(link-map(arg.ty), raw(lang: "typc", ty_map(arg.ty)))
   }
 
-  let paint = luma(0)
   let card = block(stroke: 1pt + paint, radius: 0.32em, table(
     columns: (auto, 1fr),
     stroke: none,
@@ -317,6 +354,9 @@ The codly functions acts like a set-rule, this means that calling it will set th
     table.hline(stroke: (thickness: 1pt, dash: "dashed", paint: paint)),
     strong[ #icon-rst Automatically reset ],
     if "reset" in arg { bool_yes_no(arg.reset) } else { bool_yes_no(false) },
+    table.hline(stroke: (thickness: 1pt, dash: "dashed", paint: paint)),
+    strong[ #icon-new Already released in #current_version ],
+    if "upcoming" in arg { bool_yes_no(not arg.upcoming) } else { bool_yes_no(true) },
   ))
 
   block(breakable: false, {

@@ -266,7 +266,8 @@
         "default": "true",
         "ty": [ "bool" ],
         "function": true,
-        "example": "*Enabled (default):*\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\n\n```\n*Disabled:*\n#codly(skip-last-empty: false)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\n\n```"
+        "example": "*Enabled (default):*\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\n\n```\n*Disabled:*\n#codly(skip-last-empty: false)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\n\n```",
+        "upcoming": true
     },
     "breakable": {
         "title": "Breakable",
