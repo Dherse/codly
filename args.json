@@ -260,6 +260,14 @@
         "function": false,
         "example": "*Enabled (default):*\n```py\ndef quicksort(L):\n  qsort = lambda L: [] if L==[] else qsort([x for x in L[1:] if x< L[0]]) + L[0:1] + qsort([x for x in L[1:] if x>=L[0]])\n  qsort(L)\n```\n*Disabled:*\n#codly(smart-indent: false)\n```py\ndef quicksort(L):\n  qsort = lambda L: [] if L==[] else qsort([x for x in L[1:] if x< L[0]]) + L[0:1] + qsort([x for x in L[1:] if x>=L[0]])\n  qsort(L))\n```"
     },
+    "skip-last-empty": {
+        "title": "Skip last line if empty",
+        "description": "Whether to automatically skip the last line of the code block if it is empty. This avoids having an unnecessary empty line at the end of the code block.",
+        "default": "true",
+        "ty": [ "bool" ],
+        "function": true,
+        "example": "*Enabled (default):*\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\n\n```\n*Disabled:*\n#codly(skip-last-empty: false)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\n\n```"
+    },
     "breakable": {
         "title": "Breakable",
         "description": "Whether the codeblocks are breakable across page and column breaks.",

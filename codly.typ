@@ -852,6 +852,14 @@
     state("codly-skip-number", __codly-args.skip-number.default).get()
   })
 
+  let skip-last-empty = (
+    __codly-args.skip-last-empty.type_check
+  )(if "skip-last-empty" in extra {
+    extra.skip-last-empty
+  } else {
+    state("codly-skip-last-empty", __codly-args.skip-last-empty.default).get()
+  })
+
   let reference-by = (
     __codly-args.reference-by.type_check
   )(if "reference-by" in extra {
@@ -1246,7 +1254,13 @@
       _ = skips.remove(0)
     }
 
+    // Don't include if not in range
     if not in_range(line.number) {
+      continue
+    }
+
+    // Remove the last line if it's empty
+    if skip-last-empty and line.text.trim().len() == 0 and line.number == line.count {
       continue
     }
 
