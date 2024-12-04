@@ -10,6 +10,10 @@ default:
 doc:
 	typst compile docs/docs.typ docs.pdf --root . --font-path ./docs/fonts --ignore-system-fonts
 
+# watch the manual
+doc-watch:
+	typst watch docs/docs.typ docs.pdf --root . --font-path ./docs/fonts --ignore-system-fonts
+
 # run test suite
 test *args:
 	typst-test run {{ args }}

@@ -1492,33 +1492,14 @@
   }
 }
 
-#let __codly-get-parts(heading) = {
-  let num = heading.body.children.at(0)
-  let lbl = heading.body.children.at(1)
+#let __codly-get-parts(fig) = {
+  let num = fig.body.children.at(0)
+  let lbl = fig.body.children.at(1)
   (num.body, label(lbl.body.text))
 }
 
 #let __codly-ref(it, extra: (:)) = context {
-  if it.element != none and it.element.func() == heading and it
-    .element
-    .level == level-highlight {
-    let sep = (
-      __codly-args.reference-sep.type_check
-    )(if "reference-sep" in extra {
-      extra.reference-sep
-    } else {
-      state("codly-reference-sep", __codly-args.reference-sep.default).get()
-    })
-    let (tag, label) = __codly-get-parts(it.element)
-    link(
-      it.target,
-      (
-        ref(label),
-        sep,
-        tag,
-      ).join(),
-    )
-  } else if it.element != none and it.element.func() == figure and it
+  if it.element != none and it.element.func() == figure and it
     .element
     .kind == "codly-referencer" {
     let sep = (
@@ -1591,7 +1572,6 @@
   }
 
   // Levels chosen randomly.
-  let level-highlight = 39340
   show ref: it => __codly-ref(it)
   show raw.where(block: true): it => __codly-raw(it)
 
