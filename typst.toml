@@ -1,6 +1,6 @@
 [package]
 name = "codly"
-version = "1.1.0"
+version = "1.1.1"
 entrypoint = "codly.typ"
 authors = [
     "Dherse <https://github.com/Dherse>"

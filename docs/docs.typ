@@ -4,7 +4,7 @@
 #import "../codly.typ": codly, codly-init, codly-reset, no-codly, codly-enable, codly-disable, codly-range, codly-offset, local, codly-skip, typst-icon
 
 // Set this to the relevant version
-#let current_version = "1.1.0"
+#let current_version = "1.1.1"
 
 #show: codly-init
 #show raw.where(block: false): set raw(lang: "typc")
@@ -103,7 +103,7 @@
 // Start with a cover page
 #orly(
     color: rgb("#85144b"),
-    title: "Codly v1.1.0 manual",
+    title: "Codly v1.1.1 manual",
     top-text: "Always start a new Typst project by importing codly",
     subtitle: "Your code blocks on steroids",
     pic: "/docs/codly.png",
@@ -204,12 +204,12 @@ To start using Codly, you must first import it into your Typst project.
 
 #example(
   ```typ
-  #import "@preview/codly:1.1.0": *
+  #import "@preview/codly:1.1.1": *
 
   #show: codly-init
   ```,
   actual: ```typ
-  #import "@preview/codly:1.0.0": *
+  #import "@preview/codly:1.1.0": *
 
   #show: codly-init
   ```,
