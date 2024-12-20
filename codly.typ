@@ -180,6 +180,8 @@
 ///    highlight-fill: (color) => color.lighten(80%),
 ///    highlight-stroke: (color) => 0.5pt + color,
 ///    highlight-inset: 0.32em,
+///    highlight-outset: 0em,
+///    highlight-clip: true,
 ///    reference-by: line,
 ///    reference-sep: "-",
 ///    reference-number-format: numbering.with("1"),
@@ -267,6 +269,22 @@
     extra.highlight-inset
   } else {
     state("codly-highlight-inset", __codly-args.highlight-inset.default).get()
+  })
+
+  let highlight-outset = (
+    __codly-args.highlight-outset.type_check
+  )(if "highlight-outset" in extra {
+    extra.highlight-outset
+  } else {
+    state("codly-highlight-outset", __codly-args.highlight-outset.default).get()
+  })
+
+  let highlight-clip = (
+    __codly-args.highlight-clip.type_check
+  )(if "highlight-clip" in extra {
+    extra.highlight-clip
+  } else {
+    state("codly-highlight-clip", __codly-args.highlight-clip.default).get()
   })
 
   let default-color = (
@@ -531,10 +549,11 @@
         if tag == none {
           let content = box(
             radius: highlight-radius,
-            clip: true,
+            clip: highlight-clip,
             fill: fill,
             stroke: stroke,
             inset: highlight-inset,
+            outset: highlight-outset,
             baseline: highlight-inset,
             collection.join() + label,
           )
@@ -554,10 +573,11 @@
               rest: highlight-radius,
             ),
             height: max-height,
-            clip: true,
+            clip: highlight-clip,
             fill: fill,
             stroke: stroke,
             inset: highlight-inset,
+            outset: highlight-outset,
             baseline: highlight-inset,
             collection.join(),
           )
@@ -568,10 +588,11 @@
               rest: highlight-radius,
             ),
             height: max-height,
-            clip: true,
+            clip: highlight-clip,
             fill: fill,
             stroke: stroke,
             inset: highlight-inset,
+            outset: highlight-outset,
             baseline: highlight-inset,
             tag + label,
           )

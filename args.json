@@ -355,6 +355,20 @@
         "ty": [ "length" ],
         "function": true
     },
+    "highlight-outset": {
+        "title": "Highlight outset",
+        "description": "The outset of the highlights.",
+        "default": "0em",
+        "ty": [ "length" ],
+        "function": true
+    },
+    "highlight-clip": {
+        "title": "Highlight clip",
+        "description": "Whether highlight box clips code",
+        "default": "true",
+        "ty": [ "bool" ],
+        "function": true
+    },
     "reference-by": {
         "title": "Reference by",
         "description": "The mode by which references are displayed. Two modes are available:\n- `line`: references are displayed as line numbers\n- `item`: references are displayed as items, i.e by the `tag` for highlights and `content` for annotations.",
