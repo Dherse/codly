@@ -276,7 +276,7 @@
   } else {
     state("codly-default-color", __codly-args.default-color.default).get()
   })
-  
+
   let highlights = {
     let highlights = (
       __codly-args.highlights.type_check
@@ -665,7 +665,7 @@
     if ranges == none {
       return true
     }
-    
+
     // Return true if the line is contained in any of the ranges.
     for r in ranges {
       assert(type(r) == array, message: "codly: ranges must be an array of arrays, found " + type(r))
@@ -932,7 +932,7 @@
             panic("codly: label " + str(x.label) + " is only allowed in a figure block")
           }
         }
-        
+
         x
       })
     }
@@ -1111,7 +1111,7 @@
       } else {
         state("codly-lang-stroke", __codly-args.lang-stroke.default).get()
       })
-      
+
       let lang-fill = (
         __codly-args.lang-fill.type_check
       )(if "lang-fill" in extra {
@@ -1540,7 +1540,7 @@
           .reference-number-format
           .default).get()
     })
-    
+
     link(
       it.target,
       (
