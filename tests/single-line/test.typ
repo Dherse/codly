@@ -28,19 +28,19 @@ Hello, world!
 Hello, world!
 ```
 
-#codly(annotations: ((start: 0, content: "Hello, world!"), ))
+#codly(annotations: ((start: 1, content: "Hello, world!"), ))
 ```typst
 Hello, world!
 ```
 
 #codly(lang-format: auto)
-#codly(annotations: ((start: 0, content: "Hello, world!"), ))
+#codly(annotations: ((start: 1, content: "Hello, world!"), ))
 ```typst
 Hello, world!
 ```
 
 = With highlight
-#codly(highlights: ((line: 0, tag: "Hello, world!"), ))
+#codly(highlights: ((line: 1, tag: "Hello, world!"), ))
 #codly(inset: 0.5pt)
 ```typst
 Hello, world!

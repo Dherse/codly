@@ -5,9 +5,9 @@
 
 #codly(
   highlights: (
-    (line: 0, start: 14, end: 18, fill: blue),
-    (line: 2, start: 5, end:10, fill: green),
-    (line: 2, start: 24, end:38, fill: blue),
+    (line: 1, start: 14, end: 18, fill: blue),
+    (line: 3, start: 5, end:10, fill: green),
+    (line: 3, start: 24, end:38, fill: blue),
   ),
 )
 
