@@ -859,6 +859,8 @@
     }
   }
 
+  let has-skips = skips != none and skips != ()
+
   let skip-line = (
     __codly-args.skip-line.type_check
   )(if "skip-line" in extra {
@@ -1493,7 +1495,7 @@
     state("codly-ranges").update(none)
   }
 
-  if skips != none and skips != () {
+  if has-skips {
     state("codly-skips").update(())
   }
 
