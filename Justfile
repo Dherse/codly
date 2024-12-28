@@ -17,6 +17,10 @@ doc:
 doc-watch:
 	typst watch docs/docs.typ docs.pdf --root . --font-path ./docs/fonts --ignore-system-fonts
 
+# generate the codly function signature in codly.typ
+signature:
+	python3 ./scripts/gen-signature.py
+
 # run test suite
 test *args:
 	typst-test run {{ args }}

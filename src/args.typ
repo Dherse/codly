@@ -1,4 +1,3 @@
-
 #let type_check(
   ty,
   function,

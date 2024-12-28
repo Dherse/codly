@@ -1,6 +1,6 @@
 #import "@preview/gentle-clues:1.0.0": *
 #import "orly.typ": orly
-#import "../args.typ": *
+#import "../src/args.typ": *
 #import "../codly.typ": codly, codly-init, codly-reset, no-codly, codly-enable, codly-disable, codly-range, codly-offset, local, codly-skip, typst-icon
 
 // Set this to the relevant version
@@ -110,7 +110,7 @@
     signature: "Dherse"
 )
 
-#let args = json("../args.json")
+#let args = json("../src/args.json")
 
 #let codly-args = arguments(
   header-cell-args: (align: center, ),

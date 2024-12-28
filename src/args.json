@@ -3,7 +3,7 @@
         "title": "Enabled",
         "description": "Whether codly is enabled or not.\nIf it is disabled, the code block will be displayed as a normal code block, without any additional codly-specific formatting. This is useful if you want to disable codly for a specific block. You can also disable codly locally using the #link(<no-codly>)[`no-codly`] function, or disable it and enable it again using the #link(<codly-disable>)[`codly-disable`] and #link(<codly-enable>)[`codly-enable`] functions.",
         "default": "true",
-        "ty": "bool",
+        "ty": [ "bool" ],
         "function": true,
         "reset": false,
         "example": "*Enabled = true*:\n#codly(enabled: true)\n```typ\nHello, world!\n``` \n \n*Enabled = false*:\n#codly(enabled: false)\n```typ\nHello, world!\n```"
@@ -76,7 +76,7 @@
         "title": "Offset",
         "description": "The offset to apply to line numbers.\n\n This is purely cosmetic, only impacting the shown line numbers in the final output.",
         "default": "0",
-        "ty": "int",
+        "ty": [ "int" ],
         "function": true,
         "reset": true,
         "example": "*No offset:*\n```typ\nHello, world!\n```\n\n*Offset by 5:*\n#codly(offset: 5)\n```typ\nHello, world!\n```"
