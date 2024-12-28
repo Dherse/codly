@@ -93,7 +93,7 @@
     },
     "range": {
         "title": "Range",
-        "description": "The range of line numbers to display, zero-indexed. If set to `none`, all lines are displayed. Can also be achieved using the convenience function #link(<codly-range>)[`codly-range`]. If set to `none`, all lines are displayed.",
+        "description": "The range of line numbers to display, zero-indexed. If set to `none`, all lines are displayed. Can also be achieved using the convenience function #link(<codly-range>)[`codly-range`]. If set to `none`, all lines are displayed.#one-indexed",
         "default": "none",
         "ty": [ "type(none)", "array"],
         "function": true,
@@ -102,7 +102,7 @@
     },
     "ranges": {
         "title": "Ranges",
-        "description": "The ranges of line numbers to display, zero-indexed. If set to `none`, all lines are displayed. Can also be achieved using the convenience function #link(<codly-range>)[`codly-range`] if provided with more than one range. If set to `none`, all lines are displayed.\n\n#info[Overrides the #link(<arg-range>)[`range`] argument.]",
+        "description": "The ranges of line numbers to display, zero-indexed. If set to `none`, all lines are displayed. Can also be achieved using the convenience function #link(<codly-range>)[`codly-range`] if provided with more than one range. If set to `none`, all lines are displayed. Note that it override the #link(<arg-range>)[`range`] argument. #one-indexed",
         "default": "none",
         "ty": [ "type(none)", "array"],
         "function": true,
@@ -320,13 +320,13 @@
     },
     "annotations": {
         "title": "Annotations",
-        "description": "The annotations to display on the code block. A list of annotations that are automatically numbered and displayed on the right side of the code block.\n\nEach entry is a dictionary with the following keys:\n - `start`: the line number to start the annotation\n- `end`: the line number to end the annotation, if missing or `none` the annotation will only contain the start line\n - `content`: the content of the annotation as a showable value, if missing or `none` the annotation will only contain the number\n - `label`: *if and only if* the code block is in a `figure`, sets the label by which the annotation can be referenced.\n\nGenerally you probably want the `content` to be contained within a `rotate(90deg)`.\n\n*Note*: Annotations cannot overlap.\n*Known issues*:\n - Annotations that spread over a page break will not work correctly\n - Annotations on the first line of a code block will not work correctly.\n - Annotations that span lines that overflow (one line of code <-> two lines of text) will not work correctly.",
+        "description": "The annotations to display on the code block. A list of annotations that are automatically numbered and displayed on the right side of the code block.\n\nEach entry is a dictionary with the following keys:\n - `start`: the line number to start the annotation\n- `end`: the line number to end the annotation, if missing or `none` the annotation will only contain the start line\n - `content`: the content of the annotation as a showable value, if missing or `none` the annotation will only contain the number\n - `label`: *if and only if* the code block is in a `figure`, sets the label by which the annotation can be referenced.\n\nGenerally you probably want the `content` to be contained within a `rotate(90deg)`.\n\n*Note*: Annotations cannot overlap.\n*Known issues*:\n - Annotations that spread over a page break will not work correctly\n - Annotations on the first line of a code block will not work correctly.\n - Annotations that span lines that overflow (one line of code <-> two lines of text) will not work correctly.\n#one-indexed",
         "default": "none",
         "ty": [ "array", "type(none)" ],
         "function": true,
         "reset": true,
         "experimental": true,
-        "example": "#codly(\n  annotations:(\n    (\n      start: 1, end: 4,\n      content: block(\n        width: 2em,\n        rotate(-90deg, reflow: true, \n          align(center)[Function body])\n      )\n    ),\n  ),\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```"
+        "example": "#codly(\n  annotations: (\n    (\n      start: 2, end: 5,\n      content: block(\n        width: 2em,\n        rotate(-90deg, reflow: true, \n          align(center)[Function body])\n      )\n    ),\n  ),\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```"
     },
     "annotation-format": {
         "title": "Annotation formatter",
@@ -337,11 +337,11 @@
     },
     "highlights": {
         "title": "Highlights",
-        "description": "You can apply highlights to the code block using the `highlights` argument. It consists of a list of dictionaries, each with the following keys:\n- `line`: the line number to start highlighting\n - `start`: the character position to start highlighting, zero if omitted or `none`\n- `end`: the character position to end highlighting, the end of the line if omitted or `none`\n- `fill`: the fill of the highlight, defaults to the default color\n- `tag`: an optional tag to be displayed alongside the highlight.\n- `label`: *if and only if* the code block is in a `figure`, sets the label by which the highlight can be referenced.\n\nAs with other code block settings, annotations are reset after each code block.",
+        "description": "You can apply highlights to the code block using the `highlights` argument. It consists of a list of dictionaries, each with the following keys:\n- `line`: the line number to start highlighting\n- `start`: the character position to start highlighting, zero if omitted or `none`\n- `end`: the character position to end highlighting, the end of the line if omitted or `none`\n- `fill`: the fill of the highlight, defaults to the default color\n- `tag`: an optional tag to be displayed alongside the highlight.\n- `label`: *if and only if* the code block is in a `figure`, sets the label by which the highlight can be referenced.\n\nAs with other code block settings, annotations are reset after each code block. #one-indexed #zero-indexed",
         "default": "none",
         "ty": [ "array", "type(none)" ],
         "function": true,
-        "example": "#codly(highlights: (\n  (line: 3, start: 2, end: none, fill: red),\n  (line: 4, start: 13, end: 19, fill: green, tag: \"(a)\"),\n  (line: 4, start: 26, fill: blue, tag: \"(b)\"),\n))\n```py\ndef fib(n):\n if n <= 1:\n  return n\n else:\n  return fib(n - 1) + fib(n - 2)\nprint(fib(25))\n```"
+        "example": "#codly(highlights: (\n  (line: 4, start: 2, end: none, fill: red),\n  (line: 5, start: 13, end: 19, fill: green, tag: \"(a)\"),\n  (line: 5, start: 26, fill: blue, tag: \"(b)\"),\n))\n```py\ndef fib(n):\n if n <= 1:\n  return n\n else:\n  return fib(n - 1) + fib(n - 2)\nprint(fib(25))\n```"
     },
     "highlight-radius": {
         "title": "Highlight radius",
@@ -374,7 +374,7 @@
         "examples": [{
             "title": "Alignment of lines",
             "desc": "If alignment between highlighted and non-highlighted lines is critical for your use case, as could be the case in presentation, you can set the horizontal inset to be zero, or close to zero, to maintain alignment between the lines.",
-            "code": "#codly(\n  highlight-inset: (x: 0pt, y: 0.32em),\n  highlights: ((line: 1, start: 0), )\n)\n```kotlin\nprivate val n = 0\nprivate val n = 0\n```"
+            "code": "#codly(\n  highlight-inset: (x: 0pt, y: 0.32em),\n  highlights: ((line: 2, start: 0), )\n)\n```kotlin\nprivate val n = 0\nprivate val n = 0\n```"
         }],
         "upcoming": true
     },

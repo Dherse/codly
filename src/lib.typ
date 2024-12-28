@@ -331,7 +331,7 @@
   }
 
   // Filter the highlights to only keep the relevant ones.
-  let highlights = highlights.filter(x => x.line == (it.number - 1))
+  let highlights = highlights.filter(x => x.line == it.number)
   let highlighted = it.body
 
   // Smart indentation code.
@@ -1276,19 +1276,19 @@
 
   let in-skip = false
   let in-first = true
-  for (i, line) in it.lines.enumerate() {
+  for line in it.lines {
     first-annot = false
 
     // Check for annotations
     let annot = annotations.at(0, default: none)
-    if annot != none and i == annot.start {
+    if annot != none and line.number == annot.start {
       current-annot = annot
       first-annot = true
       annots += 1
     }
 
     // Cleanup annotations
-    if current-annot != none and i > current-annot.end {
+    if current-annot != none and line.number > current-annot.end {
       current-annot = none
       _ = annotations.remove(0)
     }
@@ -1329,7 +1329,7 @@
 
     // Try and look for a skip
     let skip = skips.at(0, default: none)
-    if skip != none and i == skip.at(0) {
+    if skip != none and line.number == skip.at(0) {
       if numbers-format != none { 
         items.push(skip-number)
       }

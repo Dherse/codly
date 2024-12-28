@@ -120,6 +120,9 @@
 )
 #codly(..codly-args)
 
+#let one-indexed = info[ Line numbers are one-indexed, meaning that to reference the fourth line, you use the number `4`. ]
+#let zero-indexed = info[ Character positions are zero-indexed, meaning that to reference the fourth character, you use the number `3`. ]
+
 #let example(raw, actual: none, pre: none, scale-factor: 100%) = context {
   codly(
     header: [ Example code ],
@@ -164,7 +167,7 @@
             } else { 
               raw.text
             },
-            scope: (codly: codly, local: local, no-codly: no-codly, codly-enable: codly-enable, codly-disable: codly-disable, codly-range: codly-range, codly-offset: codly-offset, codly-skip: codly-skip, codly-reset: codly-reset, typst-icon: typst-icon),
+            scope: (codly: codly, local: local, no-codly: no-codly, codly-enable: codly-enable, codly-disable: codly-disable, codly-range: codly-range, codly-offset: codly-offset, codly-skip: codly-skip, codly-reset: codly-reset, typst-icon: typst-icon, one-indexed: one-indexed, zero-indexed: zero-indexed),
             mode: "markup"
           )
           codly-reset()
@@ -365,7 +368,7 @@ The codly functions acts like a set-rule, this means that calling it will set th
     [
       #header #label
       #card
-      #eval(arg.description, mode: "markup", scope: (experiment: experiment, info: info, warning: warning))
+      #eval(arg.description, mode: "markup", scope: (experiment: experiment, info: info, warning: warning, one-indexed: one-indexed, zero-indexed: zero-indexed))
 
       #if "experimental" in arg and arg.experimental {
         experiment[
@@ -412,7 +415,9 @@ The figure must have a label of its own: `figure(...)[...] <my-label>`.
 ]
 
 == Shorthand line references
-You can references lines directly, if you have set a label correctly, using the shorthand syntax `@my-label:1` to reference the second line (zero-based index) of the code block with the label `<my-label>`. It will always use the #link(<arg-reference-number-format>)[`reference-number-format`] argument of the `codly` function to format the line number.
+You can reference lines directly, if you have set a label correctly, using the shorthand syntax `@my-label:2` to reference the second line (one-indexed) of the code block with the label `<my-label>`. It will always use the #link(<arg-reference-number-format>)[`reference-number-format`] argument of the `codly` function to format the line number.
+
+#one-indexed
 
 #experiment[
   You might notice that the second reference in the example below is formatted like a #link("https://typst.app/docs/reference/model/link/")[`link`]. This is because it internally uses a `show ref: ..` show-rule which produces a link. This is a limitation of Typst and cannot be easily changed.
@@ -428,8 +433,7 @@ You can references lines directly, if you have set a label correctly, using the 
     *Hello, world!*
     ```
   ] <my-label>
-
-  I can reference my code block: @my-label. But I can also reference a specific line of the label: @my-label:1.
+  I can reference my code block: @my-label. Or a specific line: @my-label:2.
   ````,
   pre: codly(
     ranges: ((1, 3), (8, 10)),
@@ -441,12 +445,12 @@ You can references lines directly, if you have set a label correctly, using the 
 
 You can also highlight by reference, to do this, you need to set a label for your highlight in the #link(<arg-highlights>)[`highlights`] argument of the `codly` function. You can then reference the highlight using the shorthand syntax `@my-highlight` to reference the highlight with the label `<my-highlight>`. There are two supported #link(<arg-reference-by>)[`reference-by`] modes:
 - `"line"`: references the line of the highlight
-- `"item"`: references the tag of the highlight, this requires that the `tag` be set *for each highlight*.
+- `"item"`: references the tag of the highlight, this requires that the `tag` be set *for each tagged highlight*.
 
 #example(
   ````typ
   #codly(
-    highlights: ((line: 1, start: 2, end: 7, label: <hl-1>),
+    highlights: ((line: 2, start: 2, end: 7, label: <hl-1>),
   ))
   #figure(
     caption: "A code block with a label"
@@ -457,7 +461,7 @@ You can also highlight by reference, to do this, you need to set a label for you
     ```
   ] <my-code>
 
-  I can also reference a specific highlight by its label: @hl-1.
+  Reference a highlight by its label: @hl-1.
   ````,
   pre: codly(
     ranges: ((1, 3), (13, 13)),
@@ -469,7 +473,7 @@ And using #link(<arg-reference-by>)[`"item"`] mode:
 #example(
   ````typ
   #codly(
-    highlights: ((line: 1, start: 2, end: 7, label: <hl-2>, tag: [ Highlight ]), ),
+    highlights: ((line: 2, start: 2, end: 7, label: <hl-2>, tag: [ Highlight ]), ),
     reference-by: "item",
   )
   #figure(
@@ -481,7 +485,7 @@ And using #link(<arg-reference-by>)[`"item"`] mode:
     ```
   ] <more-code>
 
-  I can also reference a specific highlight by its label: @hl-2.
+  Reference a highlight by its label: @hl-2.
   ````,
   pre: codly(
     ranges: ((1, 4), (14, 14)),
@@ -503,7 +507,7 @@ This is a short, non-exhaustive guide on how to get nicer icons for the language
 + Using your font selector, select the icon you wish to use
   - For example, the language icon in Tabler Icons is `ebbe` (the unicode value of the icon, which you can find in the documentation of the font)
   - Use the #link("https://typst.app/docs/reference/text/text/")[`text`] function to display the icon in your document by setting the font, size, and the unicode value of the icon:
-  #codly(highlights: ((line: 0, start: 12, end: 25, tag: [ Font name ]), (line: 0, start: 43, end: 46, fill: green, tag: [ UTF-8 icon code])))
+  #codly(highlights: ((line: 1, start: 12, end: 25, tag: [ Font name ]), (line: 1, start: 43, end: 46, fill: green, tag: [ UTF-8 icon code])))
   ```typc
   text(font: "tabler-icons", size: 1em, "\u{ebbe}")
   ```
