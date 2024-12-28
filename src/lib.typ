@@ -1042,6 +1042,7 @@
   } else {
     state("codly-languages", __codly-args.languages.default).get()
   })
+
   let language-block = if it.lang == none {
     none
   } else if it.lang in languages {
@@ -1329,7 +1330,10 @@
     // Try and look for a skip
     let skip = skips.at(0, default: none)
     if skip != none and i == skip.at(0) {
-      items.push(skip-number)
+      if numbers-format != none { 
+        items.push(skip-number)
+      }
+
       items.push(skip-line)
       // Advance the offset.
       offset += skip.at(1)
@@ -1337,17 +1341,23 @@
     } else if smart-skip-enabled and not in_range(line.number) and not in-skip {
       if in-first {
         if smart-skip-top {
-          items.push(skip-number)
+          if numbers-format != none { 
+            items.push(skip-number)
+          }
           items.push(skip-line)
         }
       } else if array.range(line.number, line.count).any((i) => in_range(i)) {
         if smart-skip-rest {
-          items.push(skip-number)
+          if numbers-format != none { 
+            items.push(skip-number)
+          }
           items.push(skip-line)
         }
       } else {
         if smart-skip-bot {
-          items.push(skip-number)
+          if numbers-format != none { 
+            items.push(skip-number)
+          }
           items.push(skip-line)
         }
       }
