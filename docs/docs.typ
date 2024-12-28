@@ -300,6 +300,8 @@ let codly(
   highlight-fill: (color) => color.lighten(80%),
   highlight-stroke: (color) => 0.5pt + color,
   highlight-inset: 0.32em,
+  highlight-outset: 0pt,
+  highlight-clip: true,
   reference-by: line,
   reference-sep: "-",
   reference-number-format: numbering.with("1"),
@@ -381,6 +383,9 @@ The codly functions acts like a set-rule, this means that calling it will set th
       #if "examples" in arg {
         for ex in arg.examples {
           [=== Example: #ex.title]
+          if "desc" in ex {
+            ex.desc
+          }
           example(
             raw(block: true, lang: "typ", ex.code)
           )

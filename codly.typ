@@ -271,6 +271,8 @@
     state("codly-highlight-inset", __codly-args.highlight-inset.default).get()
   })
 
+  let highlight-baseline = __codly-inset(highlight-inset).bottom
+
   let highlight-outset = (
     __codly-args.highlight-outset.type_check
   )(if "highlight-outset" in extra {
@@ -554,7 +556,7 @@
             stroke: stroke,
             inset: highlight-inset,
             outset: highlight-outset,
-            baseline: highlight-inset,
+            baseline: highlight-baseline,
             collection.join() + label,
           )
           children.push(content)
@@ -578,7 +580,7 @@
             stroke: stroke,
             inset: highlight-inset,
             outset: highlight-outset,
-            baseline: highlight-inset,
+            baseline: highlight-baseline,
             collection.join(),
           )
           let tag-box = box(
@@ -593,7 +595,7 @@
             stroke: stroke,
             inset: highlight-inset,
             outset: highlight-outset,
-            baseline: highlight-inset,
+            baseline: highlight-baseline,
             tag + label,
           )
 
