@@ -174,7 +174,7 @@
     },
     "lang-inset": {
         "title": "Language box inset",
-        "description": "The inset of the language block. This only applies if you're using the default language block formatter.  It can also be a dictionary with the keys same keys as in the Tyspt built-in #link(\"https://typst.app/docs/reference/layout/block/#parameters-inset\")[`block.inset`]",
+        "description": "The inset of the language block. This only applies if you're using the default language block formatter. It can also be a dictionary with the keys same keys as in the Tyspt built-in #link(\"https://typst.app/docs/reference/layout/block/#parameters-inset\")[`block.inset`]",
         "default": "0.32em",
         "ty": [ "length", "dictionary" ],
         "function": true,
@@ -350,10 +350,32 @@
     },
     "highlight-inset": {
         "title": "Highlight inset",
-        "description": "The inset of the highlights.",
+        "description": "The inset of the highlight blocks. It can also be a dictionary with the keys same keys as in the Tyspt built-in #link(\"https://typst.app/docs/reference/layout/block/#parameters-inset\")[`block.inset`].",
         "default": "0.32em",
-        "ty": [ "length" ],
-        "function": true
+        "ty": [ "length", "dictionary" ],
+        "function": true,
+        "examples": [{
+            "title": "Alignment of lines",
+            "desc": "If alignment between highlighted and non-highlighted lines is critical for your use case, as could be the case in presentation, you can set the horizontal inset to be zero, or close to zero, to maintain alignment between the lines.",
+            "code": "#codly(\n  highlight-inset: (x: 0pt, y: 0.32em),\n  highlights: ((line: 1, start: 0), )\n)\n```kotlin\nprivate val n = 0\nprivate val n = 0\n```"
+        }],
+        "upcoming": true
+    },
+    "highlight-outset": {
+        "title": "Highlight outset",
+        "description": "The outset of the highlight blocks. It can also be a dictionary with the keys same keys as in the Tyspt built-in #link(\"https://typst.app/docs/reference/layout/block/#parameters-outset\")[`block.outset`].",
+        "default": "0em",
+        "ty": [ "length", "dictionary" ],
+        "function": true,
+        "upcoming": true
+    },
+    "highlight-clip": {
+        "title": "Highlight clip",
+        "description": "Whether highlight box clips code. See the documentation of the Tyspt built-in #link(\"https://typst.app/docs/reference/layout/block/#parameters-clip\")[`block.clip`].",
+        "default": "true",
+        "ty": [ "bool" ],
+        "function": true,
+        "upcoming": true
     },
     "reference-by": {
         "title": "Reference by",

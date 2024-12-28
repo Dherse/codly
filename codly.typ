@@ -180,6 +180,8 @@
 ///    highlight-fill: (color) => color.lighten(80%),
 ///    highlight-stroke: (color) => 0.5pt + color,
 ///    highlight-inset: 0.32em,
+///    highlight-outset: 0em,
+///    highlight-clip: true,
 ///    reference-by: line,
 ///    reference-sep: "-",
 ///    reference-number-format: numbering.with("1"),
@@ -269,6 +271,24 @@
     state("codly-highlight-inset", __codly-args.highlight-inset.default).get()
   })
 
+  let highlight-baseline = __codly-inset(highlight-inset).bottom
+
+  let highlight-outset = (
+    __codly-args.highlight-outset.type_check
+  )(if "highlight-outset" in extra {
+    extra.highlight-outset
+  } else {
+    state("codly-highlight-outset", __codly-args.highlight-outset.default).get()
+  })
+
+  let highlight-clip = (
+    __codly-args.highlight-clip.type_check
+  )(if "highlight-clip" in extra {
+    extra.highlight-clip
+  } else {
+    state("codly-highlight-clip", __codly-args.highlight-clip.default).get()
+  })
+
   let default-color = (
     __codly-args.default-color.type_check
   )(if "default-color" in extra {
@@ -276,7 +296,7 @@
   } else {
     state("codly-default-color", __codly-args.default-color.default).get()
   })
-  
+
   let highlights = {
     let highlights = (
       __codly-args.highlights.type_check
@@ -531,11 +551,12 @@
         if tag == none {
           let content = box(
             radius: highlight-radius,
-            clip: true,
+            clip: highlight-clip,
             fill: fill,
             stroke: stroke,
             inset: highlight-inset,
-            baseline: highlight-inset,
+            outset: highlight-outset,
+            baseline: highlight-baseline,
             collection.join() + label,
           )
           children.push(content)
@@ -554,11 +575,12 @@
               rest: highlight-radius,
             ),
             height: max-height,
-            clip: true,
+            clip: highlight-clip,
             fill: fill,
             stroke: stroke,
             inset: highlight-inset,
-            baseline: highlight-inset,
+            outset: highlight-outset,
+            baseline: highlight-baseline,
             collection.join(),
           )
           let tag-box = box(
@@ -568,11 +590,12 @@
               rest: highlight-radius,
             ),
             height: max-height,
-            clip: true,
+            clip: highlight-clip,
             fill: fill,
             stroke: stroke,
             inset: highlight-inset,
-            baseline: highlight-inset,
+            outset: highlight-outset,
+            baseline: highlight-baseline,
             tag + label,
           )
 
@@ -665,7 +688,7 @@
     if ranges == none {
       return true
     }
-    
+
     // Return true if the line is contained in any of the ranges.
     for r in ranges {
       assert(type(r) == array, message: "codly: ranges must be an array of arrays, found " + type(r))
@@ -932,7 +955,7 @@
             panic("codly: label " + str(x.label) + " is only allowed in a figure block")
           }
         }
-        
+
         x
       })
     }
@@ -1111,7 +1134,7 @@
       } else {
         state("codly-lang-stroke", __codly-args.lang-stroke.default).get()
       })
-      
+
       let lang-fill = (
         __codly-args.lang-fill.type_check
       )(if "lang-fill" in extra {
@@ -1540,7 +1563,7 @@
           .reference-number-format
           .default).get()
     })
-    
+
     link(
       it.target,
       (

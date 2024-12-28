@@ -1,5 +1,8 @@
 root := justfile_directory()
 
+# Set the shell on Windows to using PowerShell.
+set windows-shell := ["powershell.exe", "-c"]
+
 export TYPST_ROOT := root
 
 [private]
