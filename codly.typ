@@ -511,6 +511,12 @@
       }
 
       let label = if "label" in hl and hl.label != none {
+        assert.ne(block-label, none, message: {
+          "codly: for labels on highlights to work, "
+          "you must have the code block contained within a figure "
+          "and that figure must have a label."
+        })
+        
         let reference-by = (
           __codly-args.reference-by.type_check
         )(if "reference-by" in extra {
