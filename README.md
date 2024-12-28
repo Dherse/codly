@@ -141,7 +141,7 @@ You can add a "fake" skip between lines using the `skips` parameters:
 
 ```typ
 // Before the 5th line (indexing start at 0), insert a 32 line jump.
-#codly(skips: ((4, 32), ))
+#codly(skips: ((5, 32), ))
 ```
 The code inside your block will be the same (except for the added line containing the … character), but the line numbers will be adjusted to reflect the skip. 
 
@@ -153,9 +153,9 @@ You can highlight part of lines using the `highlights` parameters:
 
 ````typ
 #codly(highlights: (
-  (line: 3, start: 2, end: none, fill: red),
-  (line: 4, start: 13, end: 19, fill: green, tag: "(a)"),
-  (line: 4, start: 26, fill: blue, tag: "(b)"),
+  (line: 4, start: 2, end: none, fill: red),
+  (line: 5, start: 13, end: 19, fill: green, tag: "(a)"),
+  (line: 5, start: 26, fill: blue, tag: "(b)"),
 ))
 ```py
 def fib(n):
@@ -178,7 +178,7 @@ You can annotate a line/group of lines using the `annotations` parameters :
 #codly(
   annotations: (
     (
-      start: 1,
+      start: 2,
       end: 4,
       content: block(
         width: 2em,
