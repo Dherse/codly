@@ -109,6 +109,23 @@
         "reset": true,
         "example": "#codly(ranges: ((2, 2), (4, 4)))\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\nfib(25)\n```"
     },
+    "smart-skip": {
+        "title": "Smart skip",
+        "description": "Whether to automatically insert a #link(<arg-skips>)[`skips`] entry between ranges of displayed values. They must be discontinuous for a skip to be added. The skip will be the size of the discontinuity. It can also be a dictionary with the keys:\n- `first`: whether to include a skip if the start of the block is outside of the ranges\n- `last`: whether to include a skip if the end of the code block is outside of the ranges\n- `rest`: whether to include a skip for unspecified values and/or in the middle of the code block.\nYou can specify one or more of these keys, if the `rest` is not specified, it defaults to `none`.",
+        "default": "false",
+        "ty": [ "bool", "dictionary" ],
+        "function": true,
+        "reset": false,
+        "example": "#codly(\n  smart-skip: true,\n  ranges: ((2, 2), (4, 4))\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\nfib(25)\n```",
+        "examples": [
+            {
+                "title": "Using a dictionary",
+                "code": "#codly(\n  smart-skip: (\n    first: false,\n    last: false,\n    rest: true\n  ),\n  ranges: ((2, 2), (4, 4))\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\nfib(25)\n```"
+            }
+        ],
+        "experimental": true,
+        "upcoming": true
+    },
     "languages": {
         "title": "Languages",
         "description": "The language definitions to use for language block formatting. It is defined as a dictionary where the keys are the language names andeach value is another dictionary containing the following keys:\n - `name`: the \"pretty\" name of the language as a content/showable value\n - `color`: the color of the language, if omitted uses the default color\n - `icon`: the icon of the language, if omitted no icon is shown.\nIf an entry is missing, and language blocks are enabled, will show the \"un-prettified\" language name, with the default color.",

@@ -1224,6 +1224,52 @@
     none
   }
 
+  let smart-skip = (
+    __codly-args.smart-skip.type_check
+  )(if "smart-skip" in extra {
+    extra.smart-skip
+  } else {
+    state("codly-smart-skip", __codly-args
+        .smart-skip
+        .default).get()
+  })
+
+  let smart-skip-top = if type(smart-skip) == bool {
+    smart-skip
+  } else if "first" in smart-skip {
+    smart-skip.first
+  } else if "rest" in smart-skip {
+    smart-skip.rest
+  } else {
+    false
+  }
+
+  let smart-skip-bot = if type(smart-skip) == bool {
+    smart-skip
+  } else if "last" in smart-skip {
+    smart-skip.last
+  } else if "rest" in smart-skip {
+    smart-skip.rest
+  } else {
+    false
+  }
+
+  let smart-skip-rest = if type(smart-skip) == bool {
+    smart-skip
+  } else if "rest" in smart-skip {
+    smart-skip.rest
+  } else {
+    false
+  }
+
+  let smart-skip-enabled = if type(smart-skip) == bool {
+    smart-skip
+  } else {
+    smart-skip.values().any((v) => v) 
+  }
+
+  let in-skip = false
+  let in-first = true
   for (i, line) in it.lines.enumerate() {
     first-annot = false
 
@@ -1283,12 +1329,34 @@
       // Advance the offset.
       offset += skip.at(1)
       _ = skips.remove(0)
+    } else if smart-skip-enabled and not in_range(line.number) and not in-skip {
+      if in-first {
+        if smart-skip-top {
+          items.push(skip-number)
+          items.push(skip-line)
+        }
+      } else if array.range(line.number, line.count).any((i) => in_range(i)) {
+        if smart-skip-rest {
+          items.push(skip-number)
+          items.push(skip-line)
+        }
+      } else {
+        if smart-skip-bot {
+          items.push(skip-number)
+          items.push(skip-line)
+        }
+      }
     }
 
     // Don't include if not in range
     if not in_range(line.number) {
+      in-skip = true
       continue
+    } else {
+      in-skip = false
     }
+
+    in-first = false
 
     // Remove the last line if it's empty
     if skip-last-empty and line.text.trim().len() == 0 and line.number == line.count {
