@@ -191,7 +191,7 @@
 
 #codly(lang-format: none)
 
-#outline(depth: 2, indent: true)
+#outline(depth: 2, indent: auto)
 
 #pagebreak()
 
@@ -420,7 +420,7 @@ You can reference lines directly, if you have set a label correctly, using the s
 #one-indexed
 
 #experiment[
-  You might notice that the second reference in the example below is formatted like a #link("https://typst.app/docs/reference/model/link/")[`link`]. This is because it internally uses a `show ref: ..` show-rule which produces a link. This is a limitation of Typst and cannot be easily changed.
+  Due to upcoming changes to v0.13 of Typst, this entire feature has been re-done to be more robust, but that means that the styling might have changed slightly and it might have introduced new issues. If you find any issues, report them on https://github.com/Dherse/codly.
 ]
 
 #example(
@@ -512,20 +512,20 @@ This is a short, non-exhaustive guide on how to get nicer icons for the language
   text(font: "tabler-icons", size: 1em, "\u{ebbe}")
   ```
 + You can store it the `languages` argument of the `codly` function to use it for all code blocks in your document: #example(````typ
-  #let icon = text(font: "tabler-icons", size: 1em, "\u{ebbe}")
-  #codly(languages: (text: (icon: icon, name: "Text")))
-  ```text
-  Hello, world!
-  ```
+#let icon = text(font: "tabler-icons", size: 1em, "\u{ebbe}")
+#codly(languages: (text: (icon: icon, name: "Text")))
+```text
+Hello, world!
+```
 ````)
 + Congrats, you now have fancy icons!
 + ...
 + But you can notice that the baseline of the icon is wrong, I find that this is generally the case with tabler, you can set the baseline to `0.1em` in the icon to fix it: #example(````typ
-  #let icon = text(font: "tabler-icons", size: 1em, "\u{ebbe}", baseline: 0.1em)
-  #codly(languages: (text: (icon: icon, name: "Text")))
-  ```text
-  Hello, world!
-  ```
+#let icon = text(font: "tabler-icons", size: 1em, "\u{ebbe}", baseline: 0.1em)
+#codly(languages: (text: (icon: icon, name: "Text")))
+```text
+Hello, world!
+```
 ````)
 
 == Typst language icon (`typst-icon`) <typst-icon>
@@ -535,11 +535,11 @@ Additionally, codly ships with language definitions for the Typst language. You 
 #info[You can use the `..` spread operator to spread it into your own `languages` dictionary.]
 
 #example(````typ
-  #codly(languages: typst-icon)
-  ```typ
-  = Here's a title
-  Hello, world!
-  ```
+#codly(languages: typst-icon)
+```typ
+= Here's a title
+Hello, world!
+```
 ````)
 
 #pagebreak(weak: true)
