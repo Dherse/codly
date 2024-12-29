@@ -31,27 +31,24 @@ with open("codly.typ", "w", encoding="utf-8") as out:
 /// The pre-existing settings will be restored after the block. This is useful
 /// if you want to apply settings to a specific block only.
 ///
-/// #pre-example()
-/// #example(`````
-///  *Special:*
-///  #local(default-color: red)[
-///    ```
-///    Hello, world!
-///    ```
-///  ]
+/// *Special:*
+/// #local(default-color: red)[
+///   ```
+///   Hello, world!
+///   ```
+/// ]
 ///
-///  *Normal:*
-///  ```
-///  Hello, world!
-///  ```
-/// `````, mode: "markup", scale-preview: 100%)
+/// *Normal:*
+/// ```
+/// Hello, world!
+/// ```
 ///
 """)
     out.write("/// See the full documentation: https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf\n")
     out.write("/// \n")
 
-    out.write("/// - body (content): the content to be locally styled")
-    out.write("/// - nested (bool): whether to enable nested local states")
+    out.write("/// - body (content): the content to be locally styled\n")
+    out.write("/// - nested (bool): whether to enable nested local states\n")
     for name, arg in args.items():
         ty = ", ".join(arg["ty"]).replace("type(none)", "none").replace("type(auto)", "auto")
         if arg["function"]:
