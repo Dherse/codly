@@ -200,6 +200,7 @@
 ///    lang-format: auto,
 ///    number-format: (number) => [ #number ],
 ///    number-align: left + horizon,
+///    number-outside-margin: false,
 ///    smart-indent: false,
 ///    annotations: none,
 ///    annotation-format: numbering.with("(1)"),
@@ -934,6 +935,14 @@
     state("codly-number-align", __codly-args.number-align.default).get()
   })
 
+  let number-outside-margin = (
+    __codly-args.number-outside-margin.type_check
+  )(if "number-outside-margin" in extra {
+    extra.number-outside-margin
+  } else {
+    state("codly-number-outside-margin", __codly-args.number-outside-margin.default).get()
+  })
+
   let padding = __codly-inset(
     (__codly-args.inset.type_check)(if "inset" in extra {
       extra.inset
@@ -1504,9 +1513,11 @@
     // Must be done before the smart indentation code.
     // Otherwise it results in two paragraphs.
     if numbers-format != none {
-      items.push(numbers-format(line.number + offset))
+      let line_number_txt = numbers-format(line.number + offset)
+      //line-numbersize = measure(line_number_txt).width
+      items.push(line_number_txt)      
     }
-
+    
     if line.number != start or (
       display-names != true and display-icons != true
     ) {
@@ -1590,12 +1601,12 @@
     )
   )
 
-  block(
+  let block_content = block(
     breakable: breakable,
     clip: true,
     width: 100%,
-    radius: radius,
-    stroke: stroke,
+    radius: radius,        
+    stroke: if number-outside-margin {none} else {stroke},    
     {
       if is-complex-fill {
         // We use place to draw the fill on a separate layer.
@@ -1627,16 +1638,19 @@
             (auto, 1fr)
           },
           inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
-          stroke: none,
+          stroke: (x,y) => if(number-outside-margin and x == 1) {stroke} else {none},          
+          // stroke: none,          
           align: (numbers-alignment, left + horizon),
           fill: if is-complex-fill {
             none
           } else {
-            (x, y) => if zebra-color != none and calc.rem(y, 2) == 0 {
-              zebra-color
-            } else {
-              fill
-            }
+            (x, y) => if(number-outside-margin and x == 0) {
+                        none 
+                      } else if zebra-color != none and calc.rem(y, 2) == 0 {
+                        zebra-color
+                      } else {
+                        fill
+                      }
           },
           ..header,
           ..items,
@@ -1664,6 +1678,15 @@
       }
     },
   )
+
+  if(number-outside-margin) {    
+    move(dx: 0pt - 2*(measure(block_content.body.children.at(0)).width),     block_content
+    )
+  }
+  else{
+    block_content
+  } 
+  
 
   figure(
     kind: "__codly-end-block",
