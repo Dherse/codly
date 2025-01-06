@@ -6,12 +6,21 @@
 
 #show: codly-init
 
-
+= Normal Codly 
+#codly(number-format: none)
 ```java
 public static void main(String args[]) {
     System.out.println("Hello, world!");
 }
 ```
+
+#codly(number-format: numbering.with("1"))
+```java
+public static void main(String args[]) {
+    System.out.println("Hello, world!");
+}
+```
+
 
 = Numbers outside margin options
 
@@ -53,7 +62,7 @@ public static void main(String args[]) {
 }
 ```
 == With number format but with number outside margin disabled as well
-#codly(number-format: none, number-outside-margin: false)
+#codly(number-format: numbering.with("1"), number-outside-margin: false)
 ```java
 public static void main(String args[]) {
     System.out.println("Hello, world!");
@@ -61,13 +70,6 @@ public static void main(String args[]) {
 ```
 
 = Annotations side effects
-
-```java
-public static void main(String args[]) {
-    System.out.println("Hello, world!");
-}
-```
-
 #codly(annotations: ((start: 1, content: "Begin with that!"), ))
 ```java
 public static void main(String args[]) {
