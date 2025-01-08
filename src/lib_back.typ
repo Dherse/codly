@@ -943,10 +943,6 @@
     state("codly-number-outside-margin", __codly-args.number-outside-margin.default).get()
   })
 
-  if(numbers-format == none){
-    number-outside-margin = false
-  }
-
   let padding = __codly-inset(
     (__codly-args.inset.type_check)(if "inset" in extra {
       extra.inset
@@ -1388,8 +1384,12 @@
 
   let in-skip = false
   let in-first = true
+
+  let lines_numbers = ()// Stores the line numbers content when working in numbers-out-margin mode
+  // Constructing every line
   for line in it.lines {
     first-annot = false
+
 
     // Check for annotations
     let annot = annotations.at(0, default: none)
@@ -1519,9 +1519,14 @@
     if numbers-format != none {
       let line_number_txt = numbers-format(line.number + offset)
       //line-numbersize = measure(line_number_txt).width
-      items.push(line_number_txt)      
+      // if(number-outside-margin == false){
+        items.push(line_number_txt)
+      // }
+      // else{
+      //   lines_numbers.push(box(height:line-height, width: 0pt, line_number_txt))
+      // }
     }
-    
+
     if line.number != start or (
       display-names != true and display-icons != true
     ) {
@@ -1605,6 +1610,12 @@
     )
   )
 
+  set rect(
+    radius : 5pt,
+    width: 100%,
+    fill: yellow
+  )
+
   let block_content = block(
     breakable: breakable,
     clip: true,
@@ -1637,9 +1648,17 @@
       if numbers-format != none {
           grid(
             columns: if has-annotations {
-              (auto, 1fr, annot-width)
+              if number-outside-margin == false {
+                (auto, 1fr, annot-width)
+              } else {
+                (1fr, annot-width)
+              }
             } else {
-              (auto, 1fr)
+              if number-outside-margin == false {
+                (auto, 1fr)
+              } else {
+                (1fr)
+              }
             },
             inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
             stroke: none,          
@@ -1679,18 +1698,14 @@
       }
     },
   )
-  
-  let width_lines_number = (calc.ceil(calc.log(it.lines.len())) + 1) * 1em // TODO does it work with long numbers?
 
-  // repr(width_lines_number)
-
-  if(number-outside-margin){   
+  if number-outside-margin{    
     block_content = block(
       breakable: breakable,
       clip: true,
-      width: 100%,//+width_lines_number,
+      width: 100%,
       radius: radius,        
-      stroke: if number-outside-margin {none} else {stroke},    
+      stroke: none,    
       {
         if is-complex-fill {
           // We use place to draw the fill on a separate layer.
@@ -1715,41 +1730,15 @@
           )
         }
         if numbers-format != none {
-          if(number-outside-margin){
             grid(
-              columns: if has-annotations {
-                (width_lines_number, 1fr, annot-width)
-              } else {
-                (width_lines_number, 1fr)
-              },
+              columns: 
+                if has-annotations {
+                  (auto, 1fr, annot-width)        
+                } else {
+                  (auto, 1fr)
+                },              
               inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
-              stroke: (x,y) => if(number-outside-margin and x == 1) {stroke} else {none},          
-              // stroke: none,          
-              align: (numbers-alignment, left + horizon),
-              fill: if is-complex-fill {
-                none
-              } else {
-                (x, y) => if(number-outside-margin and x == 0) {
-                            none 
-                          } else if zebra-color != none and calc.rem(y, 2) == 0 {
-                            zebra-color
-                          } else {
-                            fill
-                          }
-              },
-              ..header,
-              ..items,
-              ..footer,
-            )
-          }else{        
-            grid(
-              columns: if has-annotations {
-                (auto, 1fr, annot-width)
-              } else {
-                (auto, 1fr)
-              },
-              inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
-              stroke: none,          
+              stroke: (x,y) => if (y == 0) {none} else {stroke},          
               align: (numbers-alignment, left + horizon),
               fill: if is-complex-fill {
                 none
@@ -1763,8 +1752,7 @@
               ..header,
               ..items,
               ..footer,
-            )
-          }
+        )
         } else {
           grid(
             columns: if has-annotations {
@@ -1788,18 +1776,67 @@
       },
     )
   }
+  
+  let width_lines_number = (calc.ceil(calc.log(it.lines.len())) + 1) * 1em // TODO does it work with long numbers?
 
-  let left_offset = false
+  // repr(items)
 
-  if(number-outside-margin and left_offset) {    
-    move(dx: 0pt - 2*(measure(block_content.body.children.at(0)).width),     block_content
-    )    
-    // place(auto, float:true, scope:"parent", dx: 0pt - width_lines_number, block_content)
-  }
-  else{
-    block_content
-  } 
+  // let nCols = block_content.body.columns.len()
     
+  // let a = block_content.body.children
+  // repr(a)
+
+  // let lines = query(figure.where(kind: "__codly-raw-line"))
+  // repr(lines.map(x => measure(x.figure).height))
+
+  // for i in array.range(a.len()) {
+  //   let x = a.at(i)
+  //   if calc.odd(i) {
+  //     let h = measure(x).height          
+  //     repr(h)
+  //   }
+  // }
+  // repr(block_content.body.children.filter(x => (x.index() == 0).map(x => measure(x).height)))
+  
+  // repr(items.map(x => measure(x).height))
+
+
+  let number_block = block(
+    breakable: breakable,
+    clip: true,
+    width: width_lines_number,    
+    stroke: 1pt + white,
+    
+    grid(          
+      columns: 1,
+      inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),          
+      stroke: none,  
+      // stroke: 0.5pt + black,          
+      align: (center, center),
+      fill: none,      
+      ..lines_numbers
+    )
+  )
+
+
+  //repr(number_block)
+
+  let block_with_numbers = stack(
+      dir: ltr,
+      // number_block,
+      block_content
+  )
+  
+  // Move aside the complete block to maintain align when numbers are outside
+  // if(number-outside-margin) {    
+  //   move(dx: 0pt - (number_block.width), block_with_numbers)
+  // }
+  // else {
+  //   block_content
+  // }
+
+  block_content
+
   figure(
     kind: "__codly-end-block",
     supplement: none,

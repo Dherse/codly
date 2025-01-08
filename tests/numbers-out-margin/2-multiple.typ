@@ -6,7 +6,7 @@
 
 #show: codly-init
 
-= Normal Codly 
+= Standard simple
 #codly(number-format: none)
 ```java
 public static void main(String args[]) {
@@ -21,25 +21,14 @@ public static void main(String args[]) {
 }
 ```
 
-
-= Numbers outside margin options
-
-// Alignment is not good, neither total width
-#codly(number-outside-margin: true)
+#codly(number-format: numbering.with("1"), number-outside-margin: true)
 ```java
 public static void main(String args[]) {
     System.out.println("Hello, world!");
 }
 ```
 
-#codly(number-outside-margin: false)
-```java
-public static void main(String args[]) {
-    System.out.println("Hello, world!");
-}
-```
-
-== Zebra fill effect
+== Without zebra fill
 #codly(zebra-fill: none, number-outside-margin: false)
 ```java
 public static void main(String args[]) {
@@ -53,6 +42,8 @@ public static void main(String args[]) {
     System.out.println("Hello, world!");
 }
 ```
+
+#codly(zebra-fill: luma(240))
 
 == Disabling number format but number outside margin enabled
 #codly(number-format: none, number-outside-margin: true)
@@ -85,31 +76,46 @@ public static void main(String args[]) {
 }
 ```
 
+#codly(lang-format: auto)
+#codly(number-outside-margin: true, annotations: ((start: 1, content: "Begin with that!"), ))
+```java
+public static void main(String args[]) {
+    System.out.println("Hello, world!");
+}
+```
+
 = With highlight
-#codly(highlights: ((line: 1, tag: "Hello, world!"), ))
-#codly(inset: 0.5pt)
-```typst
-Hello, world!
+
+#codly(
+  highlights: (
+    (line: 1, start: 14, end: 18, fill: blue),
+    (line: 3, start: 5, end:10, fill: green),
+    (line: 3, start: 24, end:38, fill: blue),
+  ),
+)
+
+```java
+public class MyApp {
+  public static void main(String[] args) {
+    System.out.println("Hello, world!");
+  }
+}
 ```
 
-#no-codly[
-  ```typst
-  Hello, world!
-  ```
-]
+#codly(number-outside-margin: false)
 
-#codly(inset: 10pt)
-```typst
-Hello, world!
-```
+#codly(
+  highlights: (
+    (line: 1, start: 14, end: 18, fill: blue),
+    (line: 3, start: 5, end:10, fill: green),
+    (line: 3, start: 24, end:38, fill: blue),
+  ),
+)
 
-#codly(inset: 0.5pt)
-```typst
-Hello, world!
-```
-
-#codly-reset()
-#codly(languages: (py: (name: "Python", icon: "Sss ", color: rgb("#4584b6")), ))
-```py
-# Example code that calculates the sum of the first 10 natural numbers squares
+```java
+public class MyApp {
+  public static void main(String[] args) {
+    System.out.println("Hello, world!");
+  }
+}
 ```
