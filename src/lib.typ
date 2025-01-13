@@ -1638,11 +1638,13 @@
       }
       if numbers-format != none {
           grid(
-              columns: if has-annotations {
-                (width_lines_number, 1fr, annot-width)
-              } else {
-                (width_lines_number, 1fr)
-              },
+              columns:
+                if has-annotations {
+                  (auto, 1fr, annot-width)
+                } else {
+                  (auto, 1fr)
+                }
+              ,
               inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
               stroke: (x,y) => 
                 if(number-outside-margin) {                  
