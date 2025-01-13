@@ -1604,13 +1604,15 @@
       type(zebra-color) != color and zebra-color != none
     )
   )
+  
+  let width_lines_number = calc.max(2, (calc.ceil(calc.log(it.lines.len())) + 1)) * 1em
 
   let block_content = block(
     breakable: breakable,
     clip: true,
     width: 100%,
     radius: radius,
-    stroke: stroke,
+    stroke: if number-outside-margin {none} else {stroke},
     {
       if is-complex-fill {
         // We use place to draw the fill on a separate layer.
@@ -1636,85 +1638,6 @@
       }
       if numbers-format != none {
           grid(
-            columns: if has-annotations {
-              (auto, 1fr, annot-width)
-            } else {
-              (auto, 1fr)
-            },
-            inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
-            stroke: none,          
-            align: (numbers-alignment, left + horizon),
-            fill: if is-complex-fill {
-              none
-            } else {
-              (x, y) => if zebra-color != none and calc.rem(y, 2) == 0 {
-                          zebra-color
-                        } else {
-                          fill
-                        }
-            },
-            ..header,
-            ..items,
-            ..footer,
-          )
-      } else {
-        grid(
-          columns: if has-annotations {
-            (1fr, annot-width)
-          } else {
-            (1fr)
-          },
-          inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
-          stroke: none,
-          align: (numbers-alignment, left + horizon),
-          fill: (x, y) => if zebra-color != none and calc.rem(y, 2) == 0 {
-            zebra-color
-          } else {
-            fill
-          },
-          ..header,
-          ..items,
-          ..footer,
-        )
-      }
-    },
-  )
-  
-  let width_lines_number = calc.max(2, (calc.ceil(calc.log(it.lines.len())) + 1)) * 1em
-
-  if(number-outside-margin){   
-    block_content = block(
-      breakable: breakable,
-      clip: true,
-      width: 100%,//+width_lines_number,
-      radius: radius,        
-      stroke: if number-outside-margin {none} else {stroke},    
-      {
-        if is-complex-fill {
-          // We use place to draw the fill on a separate layer.
-          place(
-            grid(
-              columns: if has-annotations {
-                (1fr, annot-width)
-              } else {
-                (1fr,)
-              },
-              stroke: none,
-              inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
-              fill: (x, y) => if zebra-color != none and calc.rem(y, 2) == 0 {
-                zebra-color
-              } else {
-                fill
-              },
-              ..header,
-              ..it.lines.map(line => hide(line)),
-              ..footer,
-            ),
-          )
-        }
-        if numbers-format != none {
-          if(number-outside-margin){
-            grid(
               columns: if has-annotations {
                 (width_lines_number, 1fr, annot-width)
               } else {
@@ -1772,58 +1695,34 @@
               ..items,
               ..footer,
             )
-          }else{        
-            grid(
-              columns: if has-annotations {
-                (auto, 1fr, annot-width)
-              } else {
-                (auto, 1fr)
-              },
-              inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
-              stroke: none,          
-              align: (numbers-alignment, left + horizon),
-              fill: if is-complex-fill {
-                none
-              } else {
-                (x, y) => if zebra-color != none and calc.rem(y, 2) == 0 {
-                            zebra-color
-                          } else {
-                            fill
-                          }
-              },
-              ..header,
-              ..items,
-              ..footer,
-            )
-          }
-        } else {
-          grid(
-            columns: if has-annotations {
-              (1fr, annot-width)
-            } else {
-              (1fr)
-            },
-            inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
-            stroke: none,
-            align: (numbers-alignment, left + horizon),
-            fill: (x, y) => if zebra-color != none and calc.rem(y, 2) == 0 {
-              zebra-color
-            } else {
-              fill
-            },
-            ..header,
-            ..items,
-            ..footer,
-          )
-        }
-      },
-    )
-  }
+      } else {
+        grid(
+          columns: if has-annotations {
+            (1fr, annot-width)
+          } else {
+            (1fr)
+          },
+          inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
+          stroke: none,
+          align: (numbers-alignment, left + horizon),
+          fill: (x, y) => if zebra-color != none and calc.rem(y, 2) == 0 {
+            zebra-color
+          } else {
+            fill
+          },
+          ..header,
+          ..items,
+          ..footer,
+        )
+      }
+    },
+  )
+  
 
   let left_offset = false
 
   if(number-outside-margin and left_offset) {    
-    move(dx: 0pt - 2*(measure(block_content.body.children.at(0)).width),     block_content
+    move(dx: 0pt - 2*(measure(block_content.body.children.at(0)).width), block_content
     )    
   }
   else{
