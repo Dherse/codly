@@ -6,38 +6,54 @@
 
 #show: codly-init
 
-= With highlight
+= Code skips
 
-#codly(
-  highlights: (
-    (line: 1, start: 14, end: 18, fill: blue),
-    (line: 3, start: 5, end:10, fill: green),
-    (line: 3, start: 24, end:38, fill: blue),
-  ),
-)
+#codly(skips: ((4, 32), ))
+```py
+def fib(n):
+    if n <= 1:
+        return n
+    return fib(n - 1) + fib(n - 2)
 
-```java
-public class MyApp {
-  public static void main(String[] args) {
-    System.out.println("Hello, world!");
-  }
-}
+fib(25)
 ```
 
 #codly(number-outside-margin: true)
+#codly(skips: ((4, 32), ))
+```py
+def fib(n):
+    if n <= 1:
+        return n
+    return fib(n - 1) + fib(n - 2)
+
+fib(25)
+```
 
 #codly(
-  highlights: (
-    (line: 1, start: 14, end: 18, fill: blue),
-    (line: 3, start: 5, end:10, fill: green),
-    (line: 3, start: 24, end:38, fill: blue),
-  ),
+skips: ((4, 120), ),
+skip-number: align(center,
+emoji.face.shock)
 )
+```py
+def fib(n):
+  if n <= 1:
+    return n
+  return fib(n - 1) + fib(n - 2)
 
-```java
-public class MyApp {
-  public static void main(String[] args) {
-    System.out.println("Hello, world!");
-  }
-}
+fib(25)
+```
+
+#codly(
+  skips: ((4, 120), ),
+  skip-number: align(
+      center,
+      emoji.face.shock),
+  number-outside-margin: false)
+```py
+def fib(n):
+  if n <= 1:
+    return n
+  return fib(n - 1) + fib(n - 2)
+
+fib(25)
 ```

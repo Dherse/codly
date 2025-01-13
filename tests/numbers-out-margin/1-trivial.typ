@@ -8,15 +8,13 @@
 
 = First test
 
-// Alignment is not good, neither total width
 #codly(number-outside-margin: true)
+
 ```java
 System.out.println("Hello, world!");
 ```
 
 = Second test
-// Alignment is not good, neither total width
-#codly(number-outside-margin: true)
 ```java
 System.out.println("Hello, world!");
 System.out.println("Hello, world!");

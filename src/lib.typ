@@ -1609,8 +1609,8 @@
     breakable: breakable,
     clip: true,
     width: 100%,
-    radius: radius,        
-    stroke: stroke,    
+    radius: radius,
+    stroke: stroke,
     {
       if is-complex-fill {
         // We use place to draw the fill on a separate layer.
@@ -1680,9 +1680,7 @@
     },
   )
   
-  let width_lines_number = (calc.ceil(calc.log(it.lines.len())) + 1) * 1em // TODO does it work with long numbers?
-
-  // repr(width_lines_number)
+  let width_lines_number = calc.max(2, (calc.ceil(calc.log(it.lines.len())) + 1)) * 1em
 
   if(number-outside-margin){   
     block_content = block(
@@ -1723,8 +1721,41 @@
                 (width_lines_number, 1fr)
               },
               inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
-              stroke: (x,y) => if(number-outside-margin and x == 1) {stroke} else {none},          
-              // stroke: none,          
+              stroke: (x,y) => 
+                if(number-outside-margin) {                  
+                  if(zebra-color != none and x != 0) {stroke}
+                  else {
+                    if(x == 1 and y == 0){
+                        let special_stroke = (
+                         right: stroke,
+                         left: stroke,
+                         top: stroke,
+                         bottom: none,
+                        )
+                        special_stroke
+                    }
+                    else if(x == 1 and y < it.lines.len()-1){
+                      let special_stroke = (
+                         right: stroke,
+                         left: stroke,
+                         top: none,
+                         bottom: none,
+                        )
+                        special_stroke
+                    }
+                    else if(x == 1 and y == it.lines.len()-1){
+                      let special_stroke = (
+                         right: stroke,
+                         left: stroke,
+                         top: none,
+                         bottom: stroke,
+                        )
+                        special_stroke
+                    }
+                    else {none}
+                  }
+                }
+                else {none},
               align: (numbers-alignment, left + horizon),
               fill: if is-complex-fill {
                 none
@@ -1794,7 +1825,6 @@
   if(number-outside-margin and left_offset) {    
     move(dx: 0pt - 2*(measure(block_content.body.children.at(0)).width),     block_content
     )    
-    // place(auto, float:true, scope:"parent", dx: 0pt - width_lines_number, block_content)
   }
   else{
     block_content
