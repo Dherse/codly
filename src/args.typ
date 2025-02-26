@@ -86,7 +86,7 @@
   let out = (:)
   let args = json("args.json")
   for (key, arg) in args {
-    if arg.function and function in arg.ty {
+    if arg.function and str(function) in arg.ty {
       panic("codly: `function` is not a valid type for an argument")
     }
     
