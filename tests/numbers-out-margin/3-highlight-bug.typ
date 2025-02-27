@@ -24,7 +24,7 @@ public class MyApp {
 }
 ```
 
-#codly(number-outside-margin: true)
+#codly(number-placement: "outside")
 
 #codly(
   highlights: (

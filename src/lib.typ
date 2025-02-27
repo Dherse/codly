@@ -200,7 +200,7 @@
 ///    lang-format: auto,
 ///    number-format: (number) => [ #number ],
 ///    number-align: left + horizon,
-///    number-outside-margin: false,
+///    number-placement: false,
 ///    smart-indent: false,
 ///    annotations: none,
 ///    annotation-format: numbering.with("(1)"),
@@ -935,17 +935,20 @@
     state("codly-number-align", __codly-args.number-align.default).get()
   })
 
-  let number-outside-margin = (
-    __codly-args.number-outside-margin.type_check
-  )(if "number-outside-margin" in extra {
-    extra.number-outside-margin
+  let number-placement = (
+    __codly-args.number-placement.type_check
+  )(if "number-placement" in extra {
+    extra.number-placement
   } else {
-    state("codly-number-outside-margin", __codly-args.number-outside-margin.default).get()
+    state("codly-number-placement", __codly-args.number-placement.default).get()
   })
 
-  if(numbers-format == none){
-    number-outside-margin = false
+
+  if number-placement != "inside" and number-placement != "outside" {
+    panic("codly: number-placement must be either `\"inside\"` or `\"outside\"`")
   }
+
+  let numbers-outside = (number-placement == "outside") and numbers-format != none
 
   let padding = __codly-inset(
     (__codly-args.inset.type_check)(if "inset" in extra {
@@ -1612,7 +1615,7 @@
     clip: true,
     width: 100%,
     radius: radius,
-    stroke: if number-outside-margin {none} else {stroke},
+    stroke: if numbers-outside { none } else { stroke },
     {
       if is-complex-fill {
         // We use place to draw the fill on a separate layer.
@@ -1637,66 +1640,63 @@
         )
       }
       if numbers-format != none {
-          grid(
-              columns:
-                if has-annotations {
-                  (auto, 1fr, annot-width)
-                } else {
-                  (auto, 1fr)
-                }
-              ,
-              inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
-              stroke: (x,y) => 
-                if(number-outside-margin) {                  
-                  if(zebra-color != none and x != 0) {stroke}
-                  else {
-                    if(x == 1 and y == 0){
-                        let special_stroke = (
-                         right: stroke,
-                         left: stroke,
-                         top: stroke,
-                         bottom: none,
-                        )
-                        special_stroke
-                    }
-                    else if(x == 1 and y < it.lines.len()-1){
-                      let special_stroke = (
-                         right: stroke,
-                         left: stroke,
-                         top: none,
-                         bottom: none,
-                        )
-                        special_stroke
-                    }
-                    else if(x == 1 and y == it.lines.len()-1){
-                      let special_stroke = (
-                         right: stroke,
-                         left: stroke,
-                         top: none,
-                         bottom: stroke,
-                        )
-                        special_stroke
-                    }
-                    else {none}
-                  }
-                }
-                else {none},
-              align: (numbers-alignment, left + horizon),
-              fill: if is-complex-fill {
-                none
+        grid(
+          columns: if has-annotations {
+            (auto, 1fr, annot-width)
+          } else {
+            (auto, 1fr)
+          } ,
+          inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
+          stroke: (x,y) => 
+            if(numbers-outside) {                  
+              if zebra-color != none and x != 0 {
+                stroke
+              } else if x == 1 and y == 0{
+                let special_stroke = (
+                  right: stroke,
+                  left: stroke,
+                  top: stroke,
+                  bottom: none,
+                )
+                special_stroke
+              } else if(x == 1 and y < it.lines.len()-1){
+                let special_stroke = (
+                  right: stroke,
+                  left: stroke,
+                  top: none,
+                  bottom: none,
+                )
+                special_stroke
+              } else if(x == 1 and y == it.lines.len()-1){
+                let special_stroke = (
+                  right: stroke,
+                  left: stroke,
+                  top: none,
+                  bottom: stroke,
+                )
+                special_stroke
               } else {
-                (x, y) => if(number-outside-margin and x == 0) {
-                            none 
-                          } else if zebra-color != none and calc.rem(y, 2) == 0 {
-                            zebra-color
-                          } else {
-                            fill
-                          }
-              },
-              ..header,
-              ..items,
-              ..footer,
-            )
+                none
+              }
+            } else {
+              none
+            },
+          align: (numbers-alignment, left + horizon),
+          fill: if is-complex-fill {
+            none
+          } else {
+            (x, y) => if(numbers-outside and x == 0) {
+              none 
+            } else if zebra-color != none and calc.rem(y, 2) == 0 {
+              zebra-color
+            } else {
+              fill
+            }
+          },
+          ..header,
+          ..items,
+          ..footer,
+        )
       } else {
         grid(
           columns: if has-annotations {
@@ -1723,8 +1723,10 @@
 
   let left_offset = false
 
-  if(number-outside-margin and left_offset) {    
-    move(dx: 0pt - 2*(measure(block_content.body.children.at(0)).width), block_content
+  if(numbers-outside and left_offset) {    
+    move(
+      dx: 0pt - 2*(measure(block_content.body.children.at(0)).width),
+      block_content
     )    
   }
   else{

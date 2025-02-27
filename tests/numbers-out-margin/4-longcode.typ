@@ -9,7 +9,7 @@
 = Long code
 
 #codly(
-  number-outside-margin: true, breakable : true, number-align: right
+  number-placement: "outside", breakable : true, number-align: right
 )
 
 ```scala

@@ -8,7 +8,7 @@
 
 = First test
 
-#codly(number-outside-margin: true)
+#codly(number-placement: "outside")
 
 ```java
 System.out.println("Hello, world!");

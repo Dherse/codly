@@ -18,7 +18,7 @@ def fib(n):
 fib(25)
 ```
 
-#codly(number-outside-margin: true)
+#codly(number-placement: "outside")
 #codly(skips: ((4, 32), ))
 ```py
 def fib(n):
@@ -48,7 +48,7 @@ fib(25)
   skip-number: align(
       center,
       emoji.face.shock),
-  number-outside-margin: false)
+  number-placement: "inside")
 ```py
 def fib(n):
   if n <= 1:

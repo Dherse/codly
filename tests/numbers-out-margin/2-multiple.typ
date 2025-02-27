@@ -21,7 +21,7 @@ public static void main(String args[]) {
 }
 ```
 
-#codly(number-format: numbering.with("1"), number-outside-margin: true)
+#codly(number-format: numbering.with("1"), number-placement: "outside")
 ```java
 public static void main(String args[]) {
     System.out.println("Hello, world!");
@@ -29,14 +29,14 @@ public static void main(String args[]) {
 ```
 
 == Without zebra fill
-#codly(zebra-fill: none, number-outside-margin: false)
+#codly(zebra-fill: none, number-placement: "inside")
 ```java
 public static void main(String args[]) {
     System.out.println("Hello, world!");
 }
 ```
 
-#codly(zebra-fill: none, number-outside-margin: true)
+#codly(zebra-fill: none, number-placement: "outside")
 ```java
 public static void main(String args[]) {
     System.out.println("Hello, world!");
@@ -46,14 +46,14 @@ public static void main(String args[]) {
 #codly(zebra-fill: luma(240))
 
 == Disabling number format but number outside margin enabled
-#codly(number-format: none, number-outside-margin: true)
+#codly(number-format: none, number-placement: "outside")
 ```java
 public static void main(String args[]) {
     System.out.println("Hello, world!");
 }
 ```
 == With number format but with number outside margin disabled as well
-#codly(number-format: numbering.with("1"), number-outside-margin: false)
+#codly(number-format: numbering.with("1"), number-placement: "inside")
 ```java
 public static void main(String args[]) {
     System.out.println("Hello, world!");
@@ -77,7 +77,7 @@ public static void main(String args[]) {
 ```
 
 #codly(lang-format: auto)
-#codly(number-outside-margin: true, annotations: ((start: 1, content: "Begin with that!"), ))
+#codly(number-placement: "outside", annotations: ((start: 1, content: "Begin with that!"), ))
 ```java
 public static void main(String args[]) {
     System.out.println("Hello, world!");
@@ -102,7 +102,7 @@ public class MyApp {
 }
 ```
 
-#codly(number-outside-margin: false)
+#codly(number-placement: "inside")
 
 #codly(
   highlights: (

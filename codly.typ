@@ -45,7 +45,7 @@
 /// - display-icon (bool, function): display-icon
 /// - number-format (function, none): number-format
 /// - number-align (alignment, function): number-align
-/// - number-outside-margin(bool): number-outside-margin
+/// - number-placement (str): number-placement
 /// - smart-indent (bool): smart-indent
 /// - skip-last-empty (bool, function): skip-last-empty
 /// - breakable (bool): breakable
@@ -97,7 +97,7 @@
   display-icon: __codly-default,
   number-format: __codly-default,
   number-align: __codly-default,
-  number-outside-margin: __codly-default,
+  number-placement: __codly-default,
   smart-indent: __codly-default,
   skip-last-empty: __codly-default,
   breakable: __codly-default,
@@ -212,8 +212,8 @@
   if number-align != __codly-default {
     out.insert("number-align", number-align)
   }
-  if number-outside-margin != __codly-default {
-    out.insert("number-outside-margin", number-outside-margin)
+  if number-placement != __codly-default {
+    out.insert("number-placement", number-placement)
   }
   if smart-indent != __codly-default {
     out.insert("smart-indent", smart-indent)
@@ -325,7 +325,7 @@
 /// - display-icon (bool, function): display-icon
 /// - number-format (function, none): number-format
 /// - number-align (alignment, function): number-align
-/// - number-outside-margin(bool): number-outside-margin
+/// - number-placement (str): number-placement
 /// - smart-indent (bool): smart-indent
 /// - skip-last-empty (bool, function): skip-last-empty
 /// - breakable (bool): breakable
@@ -379,7 +379,7 @@
   display-icon: __codly-default,
   number-format: __codly-default,
   number-align: __codly-default,
-  number-outside-margin: __codly-default,
+  number-placement: __codly-default,
   smart-indent: __codly-default,
   skip-last-empty: __codly-default,
   breakable: __codly-default,
@@ -494,8 +494,8 @@
   if number-align != __codly-default {
     out.insert("number-align", number-align)
   }
-  if number-outside-margin != __codly-default {
-    out.insert("number-outside-margin", number-outside-margin)
+  if number-placement != __codly-default {
+    out.insert("number-placement", number-placement)
   }
   if smart-indent != __codly-default {
     out.insert("smart-indent", smart-indent)
