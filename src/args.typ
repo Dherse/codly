@@ -68,6 +68,10 @@
       state.update((_) => value)
     },
     type_check: (value) => {
+      if allow-fn and type(value) == function {
+        value = value()
+      }
+      
       assert(
         type_check(type(value), false),
         message: "codly: `" + name + "` must be " + type_check_str(false) + ", found: " + str(type(value)),

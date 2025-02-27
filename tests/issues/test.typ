@@ -36,3 +36,7 @@ contained within a figure and that figure must have a label.")*/
 #include "52-skip-line-disabled.typ"
 #pagebreak()
 #codly-reset()
+
+#include "56-contextual-funcs.typ"
+#pagebreak()
+#codly-reset()
