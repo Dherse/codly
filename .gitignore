@@ -2,3 +2,4 @@
 tests/*/out/**
 tests/*/diff/**
 test*.png
+record-*.json

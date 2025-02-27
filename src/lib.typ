@@ -376,6 +376,8 @@
       return [#figure(
         kind: "codly-line",
         supplement: none,
+        caption: none,
+        outlined: false,
         numbering: (..) => {
           ref(block-label)
           reference-sep
@@ -616,6 +618,15 @@
   block-label: none,
   extra: (:),
 ) = context {
+  let enabled = (__codly-args.enabled.type_check)(if "enabled" in extra {
+    extra.enabled
+  } else {
+    state("codly-enabled", __codly-args.enabled.default).get()
+  })
+
+  if not enabled {
+    return it
+  }
 
   let highlight-inset = (
     __codly-args.highlight-inset.type_check
@@ -625,21 +636,6 @@
     state("highlight-inset", __codly-args.highlight-inset.default).get()
   });
 
-  /*
-  
-  highlight-stroke,
-  highlight-fill,
-  highlight-radius,
-  highlight-inset,
-  highlight-baseline,
-  highlight-outset,
-  highlight-clip,
-  default-color,
-  highlights,
-  smart-indent,
-  reference-sep,
-  reference-number-format,
-  */
   show raw.line.where(label: <codly-highlighted>): codly-line.with(
     (__codly-args.highlight-stroke.type_check)(if "highlight-stroke" in extra {
       extra.highlight-stroke
@@ -718,15 +714,6 @@
   }
 
   set par(justify: false)
-  let enabled = (__codly-args.enabled.type_check)(if "enabled" in extra {
-    extra.enabled
-  } else {
-    state("codly-enabled", __codly-args.enabled.default).get()
-  })
-
-  if not enabled {
-    return it
-  }
 
   let args = __codly-args
   let range = (__codly-args.range.type_check)(if "range" in extra {
@@ -745,6 +732,13 @@
     ranges = (range, )
   }
 
+  // Pre-check ranges (skips range check in every iter)
+  if ranges != none {
+    for r in ranges {
+      assert(type(r) == array, message: "codly: ranges must be an array of arrays, found " + str(type(r)))
+      assert(r.len() == 2, message: "codly: ranges must be an array of arrays with two elements")
+    }
+  }
 
   let in_range(line) = {
     if ranges == none {
@@ -753,9 +747,6 @@
 
     // Return true if the line is contained in any of the ranges.
     for r in ranges {
-      assert(type(r) == array, message: "codly: ranges must be an array of arrays, found " + str(type(r)))
-      assert(r.len() == 2, message: "codly: ranges must be an array of arrays with two elements")
-
       if r.at(0) == none {
         if line <= r.at(1) {
           return true
@@ -1077,7 +1068,7 @@
 
   // Get the height of an individual line.
   let line-height = measure(
-    raw.line(1, 1, "Hello, World!", [Hello, World!])
+    raw.line(1, 1, "X", [X])
   ).height + padding.top + padding.bottom
 
   let items = ()
@@ -1472,7 +1463,6 @@
     // Otherwise it results in two paragraphs.
     if numbers-format != none {
       let line_number_txt = numbers-format(line.number + offset)
-      //line-numbersize = measure(line_number_txt).width
       items.push(line_number_txt)      
     }
     
@@ -1599,10 +1589,10 @@
           } ,
           inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
           stroke: (x,y) => 
-            if(numbers-outside) {                  
+            if numbers-outside {
               if zebra-color != none and x != 0 {
                 stroke
-              } else if x == 1 and y == 0{
+              } else if x == 1 and y == 0 {
                 let special_stroke = (
                   right: stroke,
                   left: stroke,
@@ -1610,7 +1600,7 @@
                   bottom: none,
                 )
                 special_stroke
-              } else if(x == 1 and y < it.lines.len()-1){
+              } else if x == 1 and y < it.lines.len()-1 {
                 let special_stroke = (
                   right: stroke,
                   left: stroke,
@@ -1618,7 +1608,7 @@
                   bottom: none,
                 )
                 special_stroke
-              } else if(x == 1 and y == it.lines.len()-1){
+              } else if x == 1 and y == it.lines.len()-1 {
                 let special_stroke = (
                   right: stroke,
                   left: stroke,
@@ -1636,7 +1626,7 @@
           fill: if is-complex-fill {
             none
           } else {
-            (x, y) => if(numbers-outside and x == 0) {
+            (x, y) => if numbers-outside and x == 0 {
               none 
             } else if zebra-color != none and calc.rem(y, 2) == 0 {
               zebra-color
@@ -1674,7 +1664,7 @@
 
   let left_offset = false
 
-  if(numbers-outside and left_offset) {    
+  if numbers-outside and left_offset {    
     move(
       dx: 0pt - 2*(measure(block_content.body.children.at(0)).width),
       block_content

@@ -31,9 +31,9 @@
     }
   })
   
-  let out = "either a " + tys.join(", a ", last: ", or a ")
+  let out = "either a " + tys.map(str).join(", a ", last: ", or a ")
   let out_function = if function {
-    "either a " + tys.join(", a ") + ", or a function that returns one of the previous types"
+    "either a " + tys.map(str).join(", a ") + ", or a function that returns one of the previous types"
   } else {
     out
   }

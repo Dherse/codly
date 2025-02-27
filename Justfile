@@ -10,8 +10,8 @@ default:
 	@just --list --unsorted
 
 # generate manual
-doc:
-	typst compile docs/docs.typ docs.pdf --root . --font-path ./docs/fonts --ignore-system-fonts
+doc *args:
+	typst compile docs/docs.typ docs.pdf --root . --font-path ./docs/fonts --ignore-system-fonts {{ args }}
 
 # watch the manual
 doc-watch:

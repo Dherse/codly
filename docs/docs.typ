@@ -1,4 +1,4 @@
-#import "@preview/gentle-clues:1.0.0": *
+#import "@preview/gentle-clues:1.2.0": *
 #import "orly.typ": orly
 #import "../src/args.typ": *
 #import "../codly.typ": codly, codly-init, codly-reset, no-codly, codly-enable, codly-disable, codly-range, codly-offset, local, codly-skip, typst-icon
@@ -295,6 +295,7 @@ let codly(
   lang-format: codly.default-language-block,
   number-format: (number) => [ #number ],
   number-align: left + horizon,
+  number-placement: "outside",
   smart-indent: false,
   annotations: none,
   annotation-format: numbering.with("(1)"),
