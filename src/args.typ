@@ -25,9 +25,9 @@
   let tys = ty.map(t => {
     let t = eval(t, mode: "code");
     if t == none {
-      "none"
+      type(none)
     } else {
-      str(t)
+      t
     }
   })
   
