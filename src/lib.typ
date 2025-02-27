@@ -1112,12 +1112,6 @@
   }
   let has-annotations = annotations != none and annotations.len() > 0
 
-  let start = if range == none {
-    1
-  } else {
-    range.at(0)
-  }
-
   // Get the widest annotation.
   let annot-bodies-width = annotations
     .map(x => x.content)
@@ -1404,6 +1398,7 @@
 
   let in-skip = false
   let in-first = true
+  let had-first = false
   for line in it.lines {
     first-annot = false
 
@@ -1542,7 +1537,7 @@
       items.push(numbers-format(line.number + offset))      
     }
     
-    if line.number != start or (
+    if had-first or (
       display-names != true and display-icons != true
     ) {
       items = (..items, l, ..annot())
@@ -1552,6 +1547,7 @@
       continue
     }
 
+    had-first = true
     if has-annotations {
       if header != none {
         items = (..items, l, ..annot())
