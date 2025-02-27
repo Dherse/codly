@@ -616,6 +616,7 @@
 #let __codly-raw(
   it,
   block-label: none,
+  alias: none,
   extra: (:),
 ) = context {
   let enabled = (__codly-args.enabled.type_check)(if "enabled" in extra {
@@ -626,6 +627,37 @@
 
   if not enabled {
     return it
+  }
+
+  if type(it) != content or it.func() != raw {
+    panic("codly-raw: body must be a raw content")
+  }
+
+  let aliases = (__codly-args.aliases.type_check)(if "aliases" in extra {
+    extra.aliases
+  } else {
+    state("codly-aliases", __codly-args.aliases.default).get()
+  })
+
+  let alias = if it.lang != none and it.lang in aliases {
+    let real = aliases.at(it.lang)
+    return {
+      show raw.where(block: true): __codly-raw.with(alias: it.lang, extra: extra, block-label: block-label)
+
+      raw(
+        it.text,
+        block: true,
+        align: it.align,
+        lang: real,
+        theme: it.theme,
+        syntaxes: it.syntaxes,
+        tab-size: it.tab-size,
+      )
+    }
+  } else if alias == none {
+    it.lang
+  } else {
+    alias
   }
 
   let highlight-inset = (
@@ -708,10 +740,6 @@
   }
 
   show figure.where(kind: "__codly-end-block"): it => none
-
-  if type(it) != content or it.func() != raw {
-    panic("codly-raw: body must be a raw content")
-  }
 
   set par(justify: false)
 
@@ -885,7 +913,6 @@
     state("codly-number-placement", __codly-args.number-placement.default).get()
   })
 
-
   if number-placement != "inside" and number-placement != "outside" {
     panic("codly: number-placement must be either `\"inside\"` or `\"outside\"`")
   }
@@ -925,6 +952,48 @@
     } else {
       skips.sorted(key: x => x.at(0)).dedup()
     }
+  }
+  
+  let highlighted-lines = (
+    __codly-args.highlighted-lines.type_check
+  )(if "highlighted-lines" in extra {
+    extra.highlighted-lines
+  } else {
+    state("codly-highlighted-lines", __codly-args.highlighted-lines.default).get()
+  });
+
+  let highlighted-default-color = (
+    __codly-args.highlighted-default-color.type_check
+  )(if "highlighted-default-color" in extra {
+    extra.highlighted-default-color
+  } else {
+    state("codly-highlighted-default-color", __codly-args.highlighted-default-color.default).get()
+  });
+
+  highlighted-lines = if type(highlighted-lines) == type(none) {
+    ()
+  } else if type(highlighted-lines) == array {
+    highlighted-lines.map(
+      l => {
+        if type(l) == int {
+          (l, highlighted-default-color)
+        } else if type(l) == array {
+          assert(l.len() == 2, message: "codly: a highlighted line definition must be an integer or an array of two elements: the line, and the highlight color (array length mismatch)")
+          let ln = l.at(0)
+          assert(type(ln) == int, message: "codly: the type of a `highlighted-lines` line must be either an integer, found: " + str(type(ln)));
+          
+          let col = l.at(1)
+          assert(
+            type(col) == color or type(col) == gradient or type(col) == pattern,
+            message: "codly: the type of a `highlighted-lines` color must be either a color, a gradient, or a pattern, found: " + str(type(col))
+          )
+
+          (ln, col)
+        }
+      }
+    )
+  } else {
+    panic("codly: incorrect type for highlighted-lines, this shouldn't happen")
   }
 
   let has-skips = skips != none and skips != ()
@@ -1072,6 +1141,7 @@
   ).height + padding.top + padding.bottom
 
   let items = ()
+  let lines_to_number = ()
   let height = measure[1].height
   let current-annot = none
   let first-annot = false
@@ -1100,10 +1170,10 @@
     state("codly-languages", __codly-args.languages.default).get()
   })
 
-  let language-block = if it.lang == none {
+  let language-block = if alias == none {
     none
-  } else if it.lang in languages {
-    let lang = languages.at(it.lang)
+  } else if alias in languages {
+    let lang = languages.at(alias)
     let name = if type(lang) == str {
       lang
     } else if display-names and "name" in lang {
@@ -1215,7 +1285,7 @@
       })
 
       let fill = if type(lang-fill) == function {
-        (lang-fill)((name: it.lang, icon: [], color: default-color))
+        (lang-fill)((name: alias, icon: [], color: default-color))
       } else if type(lang-fill) == color or type(lang-fill) == gradient or type(lang-fill) == pattern {
         lang-fill
       } else {
@@ -1223,12 +1293,12 @@
       }
 
       let stroke = if type(lang-stroke) == function {
-        (lang-stroke)((name: it.lang, icon: [], color: default-color))
+        (lang-stroke)((name: alias, icon: [], color: default-color))
       } else {
         lang-stroke
       }
 
-      let b = measure(it.lang)
+      let b = measure(alias)
       box(
         radius: radius,
         fill: fill,
@@ -1236,10 +1306,10 @@
         stroke: stroke,
         outset: 0pt,
         height: b.height + padding.top + padding.bottom,
-        it.lang,
+        alias,
       )
     } else {
-      (language-block)(it.lang, [], default-color)
+      (language-block)(alias, [], default-color)
     }
   }
 
@@ -1273,6 +1343,7 @@
           .default).get()
     })
 
+    lines_to_number.push(-999999999)
     (
       grid.header(
         repeat: header-repeat,
@@ -1400,6 +1471,7 @@
       }
 
       items.push(skip-line)
+      lines_to_number.push(-99999999);
       // Advance the offset.
       offset += skip.at(1)
       _ = skips.remove(0)
@@ -1410,6 +1482,7 @@
             items.push(skip-number)
           }
           items.push(skip-line)
+          lines_to_number.push(-99999999);
         }
       } else if array.range(line.number, line.count).any((i) => in_range(i)) {
         if smart-skip-rest {
@@ -1417,6 +1490,7 @@
             items.push(skip-number)
           }
           items.push(skip-line)
+          lines_to_number.push(-99999999);
         }
       } else {
         if smart-skip-bot {
@@ -1424,6 +1498,7 @@
             items.push(skip-number)
           }
           items.push(skip-line)
+          lines_to_number.push(-99999999);
         }
       }
     }
@@ -1459,11 +1534,12 @@
       ) <codly-highlighted>]
     )
 
+    lines_to_number.push(line.number + offset)
+
     // Must be done before the smart indentation code.
     // Otherwise it results in two paragraphs.
     if numbers-format != none {
-      let line_number_txt = numbers-format(line.number + offset)
-      items.push(line_number_txt)      
+      items.push(numbers-format(line.number + offset))      
     }
     
     if line.number != start or (
@@ -1471,7 +1547,7 @@
     ) {
       items = (..items, l, ..annot())
       continue
-    } else if it.lang == none {
+    } else if alias == none {
       items = (..items, l, ..annot())
       continue
     }
@@ -1528,6 +1604,7 @@
           .footer-transform
           .default).get()
     })
+
     (
       grid.footer(
         repeat: footer-repeat,
@@ -1550,6 +1627,18 @@
   )
   
   let width_lines_number = calc.max(2, (calc.ceil(calc.log(it.lines.len())) + 1)) * 1em
+
+  let line_colors = ()
+  for (i, line) in lines_to_number.enumerate() {
+    let highlighted = highlighted-lines.find(((l, _)) => l == line)
+    if highlighted != none {
+      line_colors.push(highlighted.at(1))
+    } else if zebra-color != none and calc.rem(i, 2) == 0 {
+      line_colors.push(zebra-color)
+    } else {
+      line_colors.push(fill)
+    }
+  }
 
   let block_content = block(
     breakable: breakable,
@@ -1580,6 +1669,7 @@
           ),
         )
       }
+
       if numbers-format != none {
         grid(
           columns: if has-annotations {
@@ -1628,10 +1718,8 @@
           } else {
             (x, y) => if numbers-outside and x == 0 {
               none 
-            } else if zebra-color != none and calc.rem(y, 2) == 0 {
-              zebra-color
             } else {
-              fill
+              line_colors.at(y, default: fill)
             }
           },
           ..header,
@@ -1719,6 +1807,11 @@
   let highlights = state("codly-highlights").get()
   if highlights != none and highlights != () {
     state("codly-highlights").update(())
+  }
+
+  let highlighted = state("codly-highlighted-lines").get()
+  if highlighted != none and highlighted != () {
+    state("codly-highlighted-lines").update(())
   }
 }
 

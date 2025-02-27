@@ -4,7 +4,7 @@
 #import "../codly.typ": codly, codly-init, codly-reset, no-codly, codly-enable, codly-disable, codly-range, codly-offset, local, codly-skip, typst-icon
 
 // Set this to the relevant version
-#let current_version = "1.3.0"
+#let current_version = "1.2.0"
 
 #show: codly-init
 #show raw.where(block: false): set raw(lang: "typc")

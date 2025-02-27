@@ -54,6 +54,8 @@
 /// - skip-number (content, none, function): skip-number
 /// - annotations (array, none, function): annotations
 /// - annotation-format (none, function): annotation-format
+/// - highlighted-lines (array, none, function): highlighted-lines
+/// - highlighted-default-color (color, pattern, gradient, function): highlighted-default-color
 /// - highlights (array, none, function): highlights
 /// - highlight-radius (length, function): highlight-radius
 /// - highlight-fill (function): highlight-fill
@@ -64,6 +66,7 @@
 /// - reference-by (str, function): reference-by
 /// - reference-sep (str, content, function): reference-sep
 /// - reference-number-format (function): reference-number-format
+/// - aliases (dictionary): aliases
 /// -> content
 #let codly(
   enabled: __codly-default,
@@ -106,6 +109,8 @@
   skip-number: __codly-default,
   annotations: __codly-default,
   annotation-format: __codly-default,
+  highlighted-lines: __codly-default,
+  highlighted-default-color: __codly-default,
   highlights: __codly-default,
   highlight-radius: __codly-default,
   highlight-fill: __codly-default,
@@ -116,6 +121,7 @@
   reference-by: __codly-default,
   reference-sep: __codly-default,
   reference-number-format: __codly-default,
+  aliases: __codly-default,
 ) = {
   import "src/lib.typ": __codly-inner
   let out = (:)
@@ -239,6 +245,12 @@
   if annotation-format != __codly-default {
     out.insert("annotation-format", annotation-format)
   }
+  if highlighted-lines != __codly-default {
+    out.insert("highlighted-lines", highlighted-lines)
+  }
+  if highlighted-default-color != __codly-default {
+    out.insert("highlighted-default-color", highlighted-default-color)
+  }
   if highlights != __codly-default {
     out.insert("highlights", highlights)
   }
@@ -268,6 +280,9 @@
   }
   if reference-number-format != __codly-default {
     out.insert("reference-number-format", reference-number-format)
+  }
+  if aliases != __codly-default {
+    out.insert("aliases", aliases)
   }
 
   __codly-inner(..out)
@@ -334,6 +349,8 @@
 /// - skip-number (content, none, function): skip-number
 /// - annotations (array, none, function): annotations
 /// - annotation-format (none, function): annotation-format
+/// - highlighted-lines (array, none, function): highlighted-lines
+/// - highlighted-default-color (color, pattern, gradient, function): highlighted-default-color
 /// - highlights (array, none, function): highlights
 /// - highlight-radius (length, function): highlight-radius
 /// - highlight-fill (function): highlight-fill
@@ -344,6 +361,7 @@
 /// - reference-by (str, function): reference-by
 /// - reference-sep (str, content, function): reference-sep
 /// - reference-number-format (function): reference-number-format
+/// - aliases (dictionary): aliases
 /// -> content
 #let local(
   body,
@@ -388,6 +406,8 @@
   skip-number: __codly-default,
   annotations: __codly-default,
   annotation-format: __codly-default,
+  highlighted-lines: __codly-default,
+  highlighted-default-color: __codly-default,
   highlights: __codly-default,
   highlight-radius: __codly-default,
   highlight-fill: __codly-default,
@@ -398,6 +418,7 @@
   reference-by: __codly-default,
   reference-sep: __codly-default,
   reference-number-format: __codly-default,
+  aliases: __codly-default,
 ) = {
   import "src/lib.typ": __local-inner
   let out = (:)
@@ -521,6 +542,12 @@
   if annotation-format != __codly-default {
     out.insert("annotation-format", annotation-format)
   }
+  if highlighted-lines != __codly-default {
+    out.insert("highlighted-lines", highlighted-lines)
+  }
+  if highlighted-default-color != __codly-default {
+    out.insert("highlighted-default-color", highlighted-default-color)
+  }
   if highlights != __codly-default {
     out.insert("highlights", highlights)
   }
@@ -550,6 +577,9 @@
   }
   if reference-number-format != __codly-default {
     out.insert("reference-number-format", reference-number-format)
+  }
+  if aliases != __codly-default {
+    out.insert("aliases", aliases)
   }
 
   __local-inner(body, nested: nested, ..out)
