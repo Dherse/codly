@@ -263,79 +263,25 @@
   }
 }
 
-#let codly-line(it, block-label: none, extra: (:)) = {
+#let codly-line(
+  highlight-stroke,
+  highlight-fill,
+  highlight-radius,
+  highlight-inset,
+  highlight-baseline,
+  highlight-outset,
+  highlight-clip,
+  default-color,
+  highlights,
+  smart-indent,
+  reference-by,
+  reference-sep,
+  reference-number-format,
+  it,
+  block-label: none
+) = {
   let indent-regex = regex("^\\s*")
-  let args = __codly-args
-  let highlight-stroke = (
-    __codly-args.highlight-stroke.type_check
-  )(if "highlight-stroke" in extra {
-    extra.highlight-stroke
-  } else {
-    state("codly-highlight-stroke", __codly-args
-        .highlight-stroke
-        .default).get()
-  })
-
-  let highlight-fill = (
-    __codly-args.highlight-fill.type_check
-  )(if "highlight-fill" in extra {
-    extra.highlight-fill
-  } else {
-    state("codly-highlight-fill", __codly-args.highlight-fill.default).get()
-  })
-
-  let highlight-radius = (
-    __codly-args.highlight-radius.type_check
-  )(if "highlight-radius" in extra {
-    extra.highlight-radius
-  } else {
-    state("codly-highlight-radius", __codly-args
-        .highlight-radius
-        .default).get()
-  })
-
-  let highlight-inset = (
-    __codly-args.highlight-inset.type_check
-  )(if "highlight-inset" in extra {
-    extra.highlight-inset
-  } else {
-    state("codly-highlight-inset", __codly-args.highlight-inset.default).get()
-  })
-
-  let highlight-baseline = __codly-inset(highlight-inset).bottom
-
-  let highlight-outset = (
-    __codly-args.highlight-outset.type_check
-  )(if "highlight-outset" in extra {
-    extra.highlight-outset
-  } else {
-    state("codly-highlight-outset", __codly-args.highlight-outset.default).get()
-  })
-
-  let highlight-clip = (
-    __codly-args.highlight-clip.type_check
-  )(if "highlight-clip" in extra {
-    extra.highlight-clip
-  } else {
-    state("codly-highlight-clip", __codly-args.highlight-clip.default).get()
-  })
-
-  let default-color = (
-    __codly-args.default-color.type_check
-  )(if "default-color" in extra {
-    extra.default-color
-  } else {
-    state("codly-default-color", __codly-args.default-color.default).get()
-  })
-
   let highlights = {
-    let highlights = (
-      __codly-args.highlights.type_check
-    )(if "highlights" in extra {
-      extra.highlights
-    } else {
-      state("codly-highlights", __codly-args.highlights.default).get()
-    })
     if highlights == none {
       ()
     } else {
@@ -361,13 +307,6 @@
   let highlighted = it.body
 
   // Smart indentation code.
-  let smart-indent = (
-    __codly-args.smart-indent.type_check
-  )(if "smart-indent" in extra {
-    extra.smart-indent
-  } else {
-    state("codly-smart-indent", __codly-args.smart-indent.default).get()
-  })
   let body = if it.body.has("children") {
     it.body.children
   } else {
@@ -434,30 +373,12 @@
     if block-label != none {
       let lab = label(str(block-label) + ":" + str(it.number))
 
-      let sep = (
-        __codly-args.reference-sep.type_check
-      )(if "reference-sep" in extra {
-        extra.reference-sep
-      } else {
-        state("codly-reference-sep", __codly-args.reference-sep.default).get()
-      })
-
-      let reference-number-format = (
-        __codly-args.reference-number-format.type_check
-      )(if "reference-number-format" in extra {
-        extra.reference-number-format
-      } else {
-        state("codly-reference-number-format", __codly-args
-            .reference-number-format
-            .default).get()
-      })
-
       return [#figure(
         kind: "codly-line",
         supplement: none,
         numbering: (..) => {
           ref(block-label)
-          sep
+          reference-sep
           reference-number-format(it.number)
         },
         l
@@ -574,51 +495,20 @@
           "you must have the code block contained within a figure "
           "and that figure must have a label."
         })
-        
-        let reference-by = (
-          __codly-args.reference-by.type_check
-        )(if "reference-by" in extra {
-          extra.reference-by
-        } else {
-          state("codly-reference-by", __codly-args.reference-by.default).get()
-        })
-        let reference-sep = (
-          __codly-args.reference-sep.type_check
-        )(if "reference-sep" in extra {
-          extra.reference-sep
-        } else {
-          state("codly-reference-sep", __codly-args.reference-sep.default).get()
-        })
 
         let referenced = if reference-by == "line" {
-          let reference-number-format = (
-            __codly-args.reference-number-format.type_check
-          )(if "reference-number-format" in extra {
-            extra.reference-number-format
-          } else {
-            state("codly-reference-number-format", __codly-args.reference-number-format.default).get()
-          })
-
           reference-number-format(it.number)
         } else {
           assert("tag" in hl, message: "codly: tag is required for item reference")
           hl.tag
         }
 
-        let sep = (
-          __codly-args.reference-sep.type_check
-        )(if "reference-sep" in extra {
-          extra.reference-sep
-        } else {
-          state("codly-reference-sep", __codly-args.reference-sep.default).get()
-        })
-
         place(hide[#figure(
           kind: "codly-referencer",
           supplement: none,
           numbering: (..) => {
             ref(block-label)
-            sep
+            reference-sep
             __codly-trim(referenced)
           },
           []
@@ -706,30 +596,12 @@
   // Build a label if the code block has one.
   if block-label != none {
     let lab = label(str(block-label) + ":" + str(it.number))
-    let sep = (
-      __codly-args.reference-sep.type_check
-    )(if "reference-sep" in extra {
-      extra.reference-sep
-    } else {
-      state("codly-reference-sep", __codly-args.reference-sep.default).get()
-    })
-
-    let reference-number-format = (
-      __codly-args.reference-number-format.type_check
-    )(if "reference-number-format" in extra {
-      extra.reference-number-format
-    } else {
-      state("codly-reference-number-format", __codly-args
-          .reference-number-format
-          .default).get()
-    })
-    
     return [#figure(
       kind: "codly-line",
       supplement: none,
       numbering: (..) => {
         ref(block-label)
-        sep
+        reference-sep
         reference-number-format(it.number)
       },
       l
@@ -744,10 +616,89 @@
   block-label: none,
   extra: (:),
 ) = context {
-  show raw.line.where(label: <codly-highlighted>): it => codly-line(
-    it,
+
+  let highlight-inset = (
+    __codly-args.highlight-inset.type_check
+  )(if "highlight-inset" in extra {
+    extra.highlight-inset
+  } else {
+    state("highlight-inset", __codly-args.highlight-inset.default).get()
+  });
+
+  /*
+  
+  highlight-stroke,
+  highlight-fill,
+  highlight-radius,
+  highlight-inset,
+  highlight-baseline,
+  highlight-outset,
+  highlight-clip,
+  default-color,
+  highlights,
+  smart-indent,
+  reference-sep,
+  reference-number-format,
+  */
+  show raw.line.where(label: <codly-highlighted>): codly-line.with(
+    (__codly-args.highlight-stroke.type_check)(if "highlight-stroke" in extra {
+      extra.highlight-stroke
+    } else {
+      state("codly-highlight-stroke", __codly-args.highlight-stroke.default).get()
+    }),
+    (__codly-args.highlight-fill.type_check)(if "highlight-fill" in extra {
+      extra.highlight-fill
+    } else {
+      state("codly-highlight-fill", __codly-args.highlight-fill.default).get()
+    }),
+    (__codly-args.highlight-radius.type_check)(if "highlight-radius" in extra {
+      extra.highlight-radius
+    } else {
+      state("codly-highlight-radius", __codly-args.highlight-radius.default).get()
+    }),
+    highlight-inset,
+    __codly-inset(highlight-inset).bottom,
+    (__codly-args.highlight-outset.type_check)(if "highlight-outset" in extra {
+      extra.highlight-outset
+    } else {
+      state("codly-highlight-outset", __codly-args.highlight-outset.default).get()
+    }),
+    (__codly-args.highlight-clip.type_check)(if "highlight-clip" in extra {
+      extra.highlight-clip
+    } else {
+      state("codly-highlight-clip", __codly-args.highlight-clip.default).get()
+    }),
+    (__codly-args.default-color.type_check)(if "default-color" in extra {
+      extra.default-color
+    } else {
+      state("codly-default-color", __codly-args.default-color.default).get()
+    }),
+    (__codly-args.highlights.type_check)(if "highlights" in extra {
+      extra.highlights
+    } else {
+      state("codly-highlights", __codly-args.highlights.default).get()
+    }),
+    (__codly-args.smart-indent.type_check)(if "smart-indent" in extra {
+      extra.smart-indent
+    } else {
+      state("codly-smart-indent", __codly-args.smart-indent.default).get()
+    }),
+    (__codly-args.reference-by.type_check)(if "reference-by" in extra {
+      extra.reference-by
+    } else {
+      state("codly-reference-by", __codly-args.reference-by.default).get()
+    }),
+    (__codly-args.reference-sep.type_check)(if "reference-sep" in extra {
+      extra.reference-sep
+    } else {
+      state("codly-reference-sep", __codly-args.reference-sep.default).get()
+    }),
+    (__codly-args.reference-number-format.type_check)(if "reference-number-format" in extra {
+      extra.reference-number-format
+    } else {
+      state("codly-reference-number-format", __codly-args.reference-number-format.default).get()
+    }),
     block-label: block-label,
-    extra: (:),
   )
 
   show figure.where(kind: "codly-line"): it => {
