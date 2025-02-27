@@ -269,6 +269,14 @@
         "function": true,
         "example": "#codly(number-align: right + top)\n```py\n# Iterative Fibonacci\n# As opposed to the recursive\n# version\ndef fib(n):\n  if n <= 1:\n    return n\n  last, current = 0, 1\n  for _ in range(2, n + 1):\n  last, current = current, last + current\n  return current\nfib(25)\n```"
     },
+    "number-outside-margin": {
+        "title": "Insert line numbers outside the code block",
+        "description": "Whether to insert the line numbers outside of the code block or not.",
+        "default": "false",
+        "ty": [ "bool" ],
+        "function": false,
+        "example": "TODO"
+    },
     "smart-indent": {
         "title": "Smart indentation",
         "description": "Whether to use smart indentation, which will check for indentation on a line and use a bigger left side inset instead of spaces. This allows for linebreaks to continue at the same level of indentation. This is on by default, but disabling it can improve performance.",

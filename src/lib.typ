@@ -200,6 +200,7 @@
 ///    lang-format: auto,
 ///    number-format: (number) => [ #number ],
 ///    number-align: left + horizon,
+///    number-outside-margin: false,
 ///    smart-indent: false,
 ///    annotations: none,
 ///    annotation-format: numbering.with("(1)"),
@@ -934,6 +935,18 @@
     state("codly-number-align", __codly-args.number-align.default).get()
   })
 
+  let number-outside-margin = (
+    __codly-args.number-outside-margin.type_check
+  )(if "number-outside-margin" in extra {
+    extra.number-outside-margin
+  } else {
+    state("codly-number-outside-margin", __codly-args.number-outside-margin.default).get()
+  })
+
+  if(numbers-format == none){
+    number-outside-margin = false
+  }
+
   let padding = __codly-inset(
     (__codly-args.inset.type_check)(if "inset" in extra {
       extra.inset
@@ -1504,9 +1517,11 @@
     // Must be done before the smart indentation code.
     // Otherwise it results in two paragraphs.
     if numbers-format != none {
-      items.push(numbers-format(line.number + offset))
+      let line_number_txt = numbers-format(line.number + offset)
+      //line-numbersize = measure(line_number_txt).width
+      items.push(line_number_txt)      
     }
-
+    
     if line.number != start or (
       display-names != true and display-icons != true
     ) {
@@ -1589,13 +1604,15 @@
       type(zebra-color) != color and zebra-color != none
     )
   )
+  
+  let width_lines_number = calc.max(2, (calc.ceil(calc.log(it.lines.len())) + 1)) * 1em
 
-  block(
+  let block_content = block(
     breakable: breakable,
     clip: true,
     width: 100%,
     radius: radius,
-    stroke: stroke,
+    stroke: if number-outside-margin {none} else {stroke},
     {
       if is-complex-fill {
         // We use place to draw the fill on a separate layer.
@@ -1620,28 +1637,66 @@
         )
       }
       if numbers-format != none {
-        grid(
-          columns: if has-annotations {
-            (auto, 1fr, annot-width)
-          } else {
-            (auto, 1fr)
-          },
-          inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
-          stroke: none,
-          align: (numbers-alignment, left + horizon),
-          fill: if is-complex-fill {
-            none
-          } else {
-            (x, y) => if zebra-color != none and calc.rem(y, 2) == 0 {
-              zebra-color
-            } else {
-              fill
-            }
-          },
-          ..header,
-          ..items,
-          ..footer,
-        )
+          grid(
+              columns:
+                if has-annotations {
+                  (auto, 1fr, annot-width)
+                } else {
+                  (auto, 1fr)
+                }
+              ,
+              inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
+              stroke: (x,y) => 
+                if(number-outside-margin) {                  
+                  if(zebra-color != none and x != 0) {stroke}
+                  else {
+                    if(x == 1 and y == 0){
+                        let special_stroke = (
+                         right: stroke,
+                         left: stroke,
+                         top: stroke,
+                         bottom: none,
+                        )
+                        special_stroke
+                    }
+                    else if(x == 1 and y < it.lines.len()-1){
+                      let special_stroke = (
+                         right: stroke,
+                         left: stroke,
+                         top: none,
+                         bottom: none,
+                        )
+                        special_stroke
+                    }
+                    else if(x == 1 and y == it.lines.len()-1){
+                      let special_stroke = (
+                         right: stroke,
+                         left: stroke,
+                         top: none,
+                         bottom: stroke,
+                        )
+                        special_stroke
+                    }
+                    else {none}
+                  }
+                }
+                else {none},
+              align: (numbers-alignment, left + horizon),
+              fill: if is-complex-fill {
+                none
+              } else {
+                (x, y) => if(number-outside-margin and x == 0) {
+                            none 
+                          } else if zebra-color != none and calc.rem(y, 2) == 0 {
+                            zebra-color
+                          } else {
+                            fill
+                          }
+              },
+              ..header,
+              ..items,
+              ..footer,
+            )
       } else {
         grid(
           columns: if has-annotations {
@@ -1664,7 +1719,18 @@
       }
     },
   )
+  
 
+  let left_offset = false
+
+  if(number-outside-margin and left_offset) {    
+    move(dx: 0pt - 2*(measure(block_content.body.children.at(0)).width), block_content
+    )    
+  }
+  else{
+    block_content
+  } 
+    
   figure(
     kind: "__codly-end-block",
     supplement: none,
