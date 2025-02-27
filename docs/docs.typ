@@ -1,7 +1,11 @@
 #import "@preview/gentle-clues:1.2.0": *
 #import "orly.typ": orly
 #import "../src/args.typ": *
-#import "../codly.typ": codly, codly-init, codly-reset, no-codly, codly-enable, codly-disable, codly-range, codly-offset, local, codly-skip, typst-icon
+#import "../codly.typ": (
+  codly, codly-init, codly-reset, no-codly, yes-codly, codly-enable,
+  codly-disable, codly-range, codly-offset, local, codly-skip,
+  typst-icon
+)
 
 // Set this to the relevant version
 #let current_version = "1.2.0"
@@ -167,7 +171,7 @@
             } else { 
               raw.text
             },
-            scope: (codly: codly, local: local, no-codly: no-codly, codly-enable: codly-enable, codly-disable: codly-disable, codly-range: codly-range, codly-offset: codly-offset, codly-skip: codly-skip, codly-reset: codly-reset, typst-icon: typst-icon, one-indexed: one-indexed, zero-indexed: zero-indexed),
+            scope: (codly: codly, local: local, no-codly: no-codly, yes-codly: yes-codly, codly-enable: codly-enable, codly-disable: codly-disable, codly-range: codly-range, codly-offset: codly-offset, codly-skip: codly-skip, codly-reset: codly-reset, typst-icon: typst-icon, one-indexed: one-indexed, zero-indexed: zero-indexed),
             mode: "markup"
           )
           codly-reset()
@@ -233,7 +237,7 @@ From this point on, any code block that is included in your Typst project will b
 
 == Enabling and disabling codly
 
-By default Codly will be enabled after initialization. However, disabling codly can be done using the #link(<codly-disable>)[`codly-disable`] function, the #link(<arg-enabled>)[`enabled`] argument of the `codly` function, or the #link(<no-codly>)[`no-codly`] function. To enable Codly again, use the #link(<codly-enable>)[`codly-enable`] function or by setting the #link(<arg-enabled>)[`enabled`] parameter again.
+By default Codly will be enabled after initialization. However, disabling codly can be done using the #link(<codly-disable>)[`codly-disable`] function, the #link(<arg-enabled>)[`enabled`] argument of the `codly` function, or the #link(<no-codly>)[`no-codly`] and #link(<yes-codly>)[`yes-codly`] functions. To enable Codly again, use the #link(<codly-enable>)[`codly-enable`] function or by setting the #link(<arg-enabled>)[`enabled`] parameter again.
 
 == Short guide to this manual
 
@@ -710,7 +714,7 @@ Codly does support nested local state, the innermost local state will override t
 ````)
 
 #pagebreak(weak: true)
-== No codly (`no-codly`) <no-codly>
+== No Codly (`no-codly`) <no-codly>
 This is a convenience function equivalent to `local(enabled: false, body)`.
 
 #example(````typ
@@ -722,6 +726,25 @@ This is a convenience function equivalent to `local(enabled: false, body)`.
 
 *Disabled codly*
 #no-codly[
+  ```typ
+  = Example
+  *Hello, World!*
+  ```
+]
+````)
+== Yes Codly (`yes-codly`) <yes-codly>
+This is a convenience function equivalent to `local(enabled: false, body)`.
+
+#example(````typ
+*Disabled codly*
+#codly(enabled: false)
+```typ
+= Example
+*Hello, World!*
+```
+
+*Enabled codly*
+#yes-codly[
   ```typ
   = Example
   *Hello, World!*

@@ -147,6 +147,27 @@
   (__codly-args.enabled.update)(true)
 }
 
+/// Enable codly locally.
+///
+/// ````
+///  *Disabled:*
+///  #codly(enabled: false)
+///  ```
+///  Hello, world!
+///  ```
+///
+///  *Enabled:*
+///  #yes-codly(```
+///  Hello, world!
+///  ```)
+/// 
+/// -> content
+#let yes-codly(body) = {
+  (__codly-args.enabled.update)(true)
+  body
+  (__codly-args.enabled.update)(false)
+}
+
 /// Appends a skip to the list of skips.
 ///
 ///  #codly-skip(4, 32)

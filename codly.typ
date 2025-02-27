@@ -2,6 +2,7 @@
   codly-init,
   codly-reset,
   no-codly,
+  yes-codly,
   codly-enable,
   codly-disable,
   codly-range,
