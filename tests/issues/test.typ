@@ -40,3 +40,6 @@ contained within a figure and that figure must have a label.")*/
 #include "56-contextual-funcs.typ"
 #pagebreak()
 #codly-reset()
+
+#include "63-continue-highlights.typ"
+#codly-reset()

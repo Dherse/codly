@@ -1444,6 +1444,14 @@
     if current-annot != none and line.number > current-annot.end {
       current-annot = none
       _ = annotations.remove(0)
+
+      // Check for annotations again
+      let annot = annotations.at(0, default: none)
+      if annot != none and line.number == annot.start {
+        current-annot = annot
+        first-annot = true
+        annots += 1
+      }
     }
 
     // Try and look for a skip
