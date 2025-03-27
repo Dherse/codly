@@ -30,9 +30,8 @@ fib(25)
 ```
 
 #codly(
-skips: ((4, 120), ),
-skip-number: align(center,
-emoji.face.shock)
+  skips: ((4, 120), ),
+  skip-number: align(center, emoji.face.shock)
 )
 ```py
 def fib(n):

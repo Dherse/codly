@@ -1,35 +1,25 @@
 #let type_check(
-  ty,
+  tys,
   function,
 ) = {
   assert(
-    type(ty) == array,
+    type(tys) == array,
     message: "codly: the type of a codly argument must be an array"
   )
 
-  let tys = ty.map(t => eval(t, mode: "code"))
   (value_ty, use) => {
     value_ty in tys or (function and (not use) and value_ty == function)
   }
 }
 
 #let type_check_str(
-  ty,
+  tys,
   function,
 ) = {
   assert(
-    type(ty) == array,
+    type(tys) == array,
     message: "codly: the type of a codly argument must be an array"
   )
-
-  let tys = ty.map(t => {
-    let t = eval(t, mode: "code");
-    if t == none {
-      type(none)
-    } else {
-      t
-    }
-  })
   
   let out = "either a " + tys.map(str).join(", a ", last: ", or a ")
   let out_function = if function {
@@ -90,7 +80,15 @@
   let out = (:)
   let args = json("args.json")
   for (key, arg) in args {
-    if arg.function and function in arg.ty {
+    let tys = arg.ty.map(t => {
+      let t = eval(t, mode: "code");
+      if t == none {
+        type(none)
+      } else {
+        t
+      }
+    })
+    if arg.function and function in tys {
       panic("codly: `function` is not a valid type for an argument")
     }
     
@@ -98,8 +96,8 @@
       key,
       state_with_type(
         key,
-        type_check(arg.ty, arg.function),
-        type_check_str(arg.ty, arg.function),
+        type_check(tys, arg.function),
+        type_check_str(tys, arg.function),
         eval(arg.default, mode: "code"),
         arg.function,
       )

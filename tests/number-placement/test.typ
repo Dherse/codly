@@ -1,5 +1,7 @@
 #import "../../codly.typ": codly-reset
 
+#set text(font: ("libertinus serif", "Noto Color Emoji"))
+
 #include "1-trivial.typ"
 #pagebreak()
 #codly-reset()

@@ -23,11 +23,11 @@ signature:
 
 # run test suite
 test *args:
-	typst-test run {{ args }}
+	tt run --no-fail-fast --font-path ./docs/fonts {{ args }}
 
 # update test cases
 update *args:
-	typst-test update {{ args }}
+	tt update --font-path ./docs/fonts {{ args }}
 
 # package the library into the specified destination folder
 package target:
