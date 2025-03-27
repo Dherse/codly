@@ -14,8 +14,8 @@ doc *args:
 	typst compile docs/docs.typ docs.pdf --root . --font-path ./docs/fonts --ignore-system-fonts {{ args }}
 
 # watch the manual
-doc-watch:
-	typst watch docs/docs.typ docs.pdf --root . --font-path ./docs/fonts --ignore-system-fonts
+doc-watch *args:
+	typst watch docs/docs.typ docs.pdf --root . --font-path ./docs/fonts --ignore-system-fonts {{ args }}
 
 # generate the codly function signature in codly.typ
 signature:

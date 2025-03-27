@@ -4,7 +4,7 @@ f = open("src/args.json", encoding="utf-8")
 args = json.load(f)
 
 with open("codly.typ", "w", encoding="utf-8") as out:
-    out.write("#import \"src/lib.typ\": (\n  codly-init,\n  codly-reset,\n  no-codly,\n  codly-enable,\n  codly-disable,\n  codly-range,\n  codly-offset,\n  codly-skip,\n  typst-icon,\n)\n\n")
+    out.write("#import \"src/lib.typ\": (\n  codly-init,\n  codly-reset,\n  no-codly,\n  yes-codly,\n  codly-enable,\n  codly-disable,\n  codly-range,\n  codly-offset,\n  codly-skip,\n  typst-icon,\n)\n\n")
     out.write("#let __codly-default = context [ Codly Default ]\n\n")
 
     out.write("/// See the full documentation: https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf\n")

@@ -284,6 +284,63 @@
   }
 }
 
+#let get-len(child) = {
+  if child.has("label") and child.label == <codly-highlight> {
+    0
+  } else if child.has("text") {
+    child.text.len()
+  } else if child.has("children") {
+    child.children.map(get-len).sum()
+  } else if child.has("child") {
+    get-len(child.child)
+  } else if child.has("body") {
+    get-len(child.body)
+  } else {
+    0
+  }
+}
+
+#let ws_regex = regex("\s")
+#let indent-regex = regex("^\\s*")
+#let get-flattened-body(elem) = {
+  if elem.has("label") and elem.label == <codly-highlight> {
+    return (elem,)
+  }
+
+  if elem.has("children") {
+    elem.children.map(get-flattened-body).flatten()
+  } else if elem.has("child") and elem.has("styles") {
+    get-flattened-body(elem.child)
+      .map(x => (elem.func())(x, elem.styles))
+      .flatten()
+  } else if elem.has("text") {
+    // Separate the whitespaces at the start of text
+    let out = ()
+    let ws = none
+    for cluster in elem.text.clusters() {
+      let m = cluster.match(ws_regex)
+      if m != none and ws != none {
+        ws += cluster
+      } else if m != none and ws == none {
+        ws = cluster
+      } else if ws != none {
+        out.push(text(ws))
+        ws = none
+        out.push(text(cluster))
+      } else {
+        out.push(text(cluster))
+      }
+    }
+
+    if ws != none {
+      out.push(text(ws))
+    }
+    out
+  } else {
+    (elem,)
+  }
+}
+
 #let codly-line(
   highlight-stroke,
   highlight-fill,
@@ -301,37 +358,36 @@
   it,
   block-label: none
 ) = {
-  let indent-regex = regex("^\\s*")
+  let highlighted = it.body
   let highlights = {
     if highlights == none {
       ()
     } else {
-      highlights.sorted(key: x => x.line).map(x => {
-        if not "start" in x or x.start == none {
-          x.insert("start", 0)
-        }
+      highlights
+        .filter(x => x.line == it.number)
+        .map(x => {
+          if not "start" in x or x.start == none {
+            x.insert("start", 0)
+          }
 
-        if not "end" in x or x.end == none {
-          x.insert("end", 999999999)
-        }
+          if not "end" in x or x.end == none {
+            x.insert("end", 999999999)
+          }
 
-        if not "fill" in x {
-          x.insert("fill", default-color)
-        }
-        x
-      })
+          if not "fill" in x {
+            x.insert("fill", default-color)
+          }
+          x
+        })
+        .sorted(key: x => x.start)
     }
   }
-
-  // Filter the highlights to only keep the relevant ones.
-  let highlights = highlights.filter(x => x.line == it.number)
-  let highlighted = it.body
 
   // Smart indentation code.
   let body = if it.body.has("children") {
     it.body.children
   } else {
-    (it.body,)
+    (body, )
   }
 
   let width = none
@@ -339,25 +395,24 @@
     // Check the indentation of the line by taking l,
     // and checking for the first element in the sequence.
     let first = for child in body {
-      let fields = child.fields()
-      if "children" in fields {
+      if child.has("children") {
         for c in child.children {
-          if "text" in c.fields() {
+          if c.has("text") {
             c
             break
           }
         }
-      } else if "child" in fields {
-        if "text" in fields.child.fields() {
-          fields.child
+      } else if child.has("child") {
+        if child.child.has("text") {
+          child.child
           break
         }
-      } else if "body" in fields {
-        if "text" in fields.body.fields() {
-          fields.body
+      } else if child.has("body") {
+        if child.body.has("text") {
+          child.body
           break
         }
-      } else if "text" in fields {
+      } else if child.has("text") {
         child
         break
       }
@@ -422,74 +477,15 @@
       none
     }
 
-    let get-len(child) = {
-      let fields = child.fields()
-
-      if child.has("label") and child.label == <codly-highlight> {
-        0
-      } else if "children" in fields {
-        fields.children.map(get-len).sum()
-      } else if "text" in fields {
-        fields.text.len()
-      } else if "child" in fields {
-        get-len(fields.child)
-      } else if "body" in fields {
-        get-len(fields.body)
-      } else {
-        0
-      }
-    }
-
     let children = ()
     let collection = none
     let i = 0
-    let ws_regex = regex("\s")
-    let get-flattened-body(elem) = {
-      if elem.has("label") and elem.label == <codly-highlight> {
-        return (elem,)
-      }
-
-      if elem.has("children") {
-        elem.children.map(get-flattened-body).flatten()
-      } else if elem.has("child") and elem.has("styles") {
-        get-flattened-body(elem.child)
-          .map(x => (elem.func())(x, elem.styles))
-          .flatten()
-      } else if elem.has("text") {
-        // Separate the whitespaces at the start of text
-        let out = ()
-        let ws = none
-        for cluster in elem.text.clusters() {
-          let m = cluster.match(ws_regex)
-          if m != none and ws != none {
-            ws += cluster
-          } else if m != none and ws == none {
-            ws = cluster
-          } else if ws != none {
-            out.push(text(ws))
-            ws = none
-            out.push(text(cluster))
-          } else {
-            out.push(text(cluster))
-          }
-        }
-
-        if ws != none {
-          out.push(text(ws))
-        }
-        out
-      } else {
-        (elem,)
-      }
-    }
 
     let body = get-flattened-body(highlighted)
 
     let len = body.len()
     for (index, child) in body.enumerate() {
       let last = index == len - 1
-      let args = child.fields()
-
       if child.has("label") and child.label == <codly-highlight> {
         if collection != none {
           collection.push(child)
@@ -634,6 +630,29 @@
   }
 }
 
+#let in_range(ranges, line) = {
+  if ranges == none or ranges.len() == 0 {
+    return true
+  }
+
+  // Return true if the line is contained in any of the ranges.
+  for r in ranges {
+    if r.at(0) == none {
+      if line <= r.at(1) {
+        return true
+      }
+    } else if r.at(1) == none {
+      if r.at(0) <= line {
+        return true
+      }
+    } else if r.at(0) <= line and line <= r.at(1) {
+      return true
+    }
+  }
+
+  return false
+}
+
 #let __codly-raw(
   it,
   block-label: none,
@@ -654,11 +673,16 @@
     panic("codly-raw: body must be a raw content")
   }
 
-  let aliases = (__codly-args.aliases.type_check)(if "aliases" in extra {
-    extra.aliases
+  // Optimization: skip alises checking if `alias` already set
+  let aliases = if alias == none {
+    (__codly-args.aliases.type_check)(if "aliases" in extra {
+      extra.aliases
+    } else {
+      state("codly-aliases", __codly-args.aliases.default).get()
+    })
   } else {
-    state("codly-aliases", __codly-args.aliases.default).get()
-  })
+    (:)
+  }
 
   let alias = if it.lang != none and it.lang in aliases {
     let real = aliases.at(it.lang)
@@ -764,7 +788,6 @@
 
   set par(justify: false)
 
-  let args = __codly-args
   let range = (__codly-args.range.type_check)(if "range" in extra {
     extra.range
   } else {
@@ -787,29 +810,6 @@
       assert(type(r) == array, message: "codly: ranges must be an array of arrays, found " + str(type(r)))
       assert(r.len() == 2, message: "codly: ranges must be an array of arrays with two elements")
     }
-  }
-
-  let in_range(line) = {
-    if ranges == none {
-      return true
-    }
-
-    // Return true if the line is contained in any of the ranges.
-    for r in ranges {
-      if r.at(0) == none {
-        if line <= r.at(1) {
-          return true
-        }
-      } else if r.at(1) == none {
-        if r.at(0) <= line {
-          return true
-        }
-      } else if r.at(0) <= line and line <= r.at(1) {
-        return true
-      }
-    }
-
-    return false
   }
 
   let block-label = auto
@@ -991,12 +991,14 @@
     state("codly-highlighted-default-color", __codly-args.highlighted-default-color.default).get()
   });
 
-  highlighted-lines = if type(highlighted-lines) == type(none) {
-    ()
+  let highlighted-by-line = ()
+  if highlighted-lines == none {
+    
   } else if type(highlighted-lines) == array {
-    highlighted-lines.map(
-      l => {
-        if type(l) == int {
+    if highlighted-lines.len() > 0 {
+      let ix = 1
+      for l in highlighted-lines.sorted(key: (x) => if type(x) == int { x } else { x.at(0) }) {
+        let (ln, col) =  if type(l) == int {
           (l, highlighted-default-color)
         } else if type(l) == array {
           assert(l.len() == 2, message: "codly: a highlighted line definition must be an integer or an array of two elements: the line, and the highlight color (array length mismatch)")
@@ -1011,14 +1013,21 @@
 
           (ln, col)
         }
+
+        while ix < ln {
+          ix += 1
+          highlighted-by-line.push(none)
+        }
+
+        highlighted-by-line.push(col)
+        ix += 1
       }
-    )
+    }
   } else {
     panic("codly: incorrect type for highlighted-lines, this shouldn't happen")
   }
 
   let has-skips = skips != none and skips != ()
-
   let skip-line = (
     __codly-args.skip-line.type_check
   )(if "skip-line" in extra {
@@ -1098,7 +1107,7 @@
     } else {
       state("codly-annotations", __codly-args.annotations.default).get()
     })
-    annotations = if annotations == none {
+    annotations = if annotations == none or annotations.len() == 0 {
       ()
     } else {
       annotations.sorted(key: x => x.start).map(x => {
@@ -1437,48 +1446,6 @@
       _ = annotations.remove(0)
     }
 
-    // Annotation printing
-    let annot(extra: none) = if current-annot != none and first-annot {
-      let height = line-height * (current-annot.end - current-annot.start + 1)
-      let num = annotation-format(annots)
-      let label = if "label" in current-annot and current-annot.label != none {
-        let referenced = if reference-by == "line" {
-          reference-number-format(line.number + offset)
-        } else {
-          num
-        }
-
-        place(hide[#figure(
-          kind: "codly-referencer",
-          supplement: none,
-          numbering: (..) => {
-            ref(block-label)
-            sep
-            referenced
-          },
-          []
-        )#current-annot.label])
-      } else {
-        none
-      }
-
-      let annot-content = {
-        $lr(}, size: #height) #num #current-annot.content #label$
-      }
-
-      (
-        grid.cell(
-          rowspan: current-annot.end - current-annot.start + 1,
-          align: left + horizon,
-          annot-content + extra,
-        ),
-      )
-    } else if current-annot != none or not has-annotations {
-      ()
-    } else {
-      (extra,)
-    }
-
     // Try and look for a skip
     let skip = skips.at(0, default: none)
     if skip != none and line.number == skip.at(0) {
@@ -1491,7 +1458,7 @@
       // Advance the offset.
       offset += skip.at(1)
       _ = skips.remove(0)
-    } else if smart-skip-enabled and not in_range(line.number) and not in-skip {
+    } else if smart-skip-enabled and not in_range(ranges, line.number) and not in-skip {
       if in-first {
         if smart-skip-top {
           if numbers-format != none { 
@@ -1500,7 +1467,7 @@
           items.push(skip-line)
           lines_to_number.push(-99999999);
         }
-      } else if array.range(line.number, line.count).any((i) => in_range(i)) {
+      } else if array.range(line.number, line.count).any((i) => in_range(ranges, i)) {
         if smart-skip-rest {
           if numbers-format != none { 
             items.push(skip-number)
@@ -1520,7 +1487,7 @@
     }
 
     // Don't include if not in range
-    if not in_range(line.number) {
+    if not in_range(ranges, line.number) {
       in-skip = true
       continue
     } else {
@@ -1557,23 +1524,101 @@
     if numbers-format != none {
       items.push(numbers-format(line.number + offset))      
     }
+
+    let annot = none
+    if current-annot != none and first-annot {
+      let height = line-height * (current-annot.end - current-annot.start + 1)
+      let num = annotation-format(annots)
+      let label = if "label" in current-annot and current-annot.label != none {
+        let referenced = if reference-by == "line" {
+          reference-number-format(line.number + offset)
+        } else {
+          num
+        }
+
+        place(hide[#figure(
+          kind: "codly-referencer",
+          supplement: none,
+          numbering: (..) => {
+            ref(block-label)
+            sep
+            referenced
+          },
+          []
+        )#current-annot.label])
+      } else {
+        none
+      }
+
+      let annot-content = {
+        $lr(}, size: #height) #num #current-annot.content #label$
+      }
+
+      annot = grid.cell(
+        rowspan: current-annot.end - current-annot.start + 1,
+        align: left + horizon,
+        annot-content,
+      )
+    }
     
     if had-first or (
       display-names != true and display-icons != true
     ) {
-      items = (..items, l, ..annot())
+      if annot == none and has-annotations {
+        items.push(grid.cell(l, colspan: if current-annot == none { 2 } else { 1 }))
+      } else if annot == none {
+        items.push(l)
+      } else {
+        items.push(l)
+        items.push(annot)
+      }
       continue
     } else if alias == none {
-      items = (..items, l, ..annot())
+      if annot == none and has-annotations {
+        items.push(grid.cell(l, colspan: if current-annot == none { 2 } else { 1 }))
+      } else if annot == none {
+        items.push(l)
+      } else {
+        items.push(l)
+        items.push(annot)
+      }
       continue
     }
 
     had-first = true
     if has-annotations {
       if header != none {
-        items = (..items, l, ..annot())
+        if annot == none and has-annotations {
+          items.push(grid.cell(l, colspan: if current-annot == none { 2 } else { 1 }))
+        } else if annot == none {
+          items.push(annot)
+        } else {
+          items.push(l)
+          items.push(annot)
+        }
       } else {
-        items = (..items, l, ..annot(extra: language-block-final))
+        // Annotation printing
+        if annot == none and has-annotations {
+          items.push(grid.cell(grid(
+            columns: (1fr, lb.width + padding.left + padding.right),
+            l, language-block-final,
+          ), colspan: if current-annot == none { 2 } else { 1 }))
+        } else if annot == none {
+          items.push(grid(
+            columns: (1fr, lb.width + padding.left + padding.right),
+            l, language-block-final,
+          ))
+          items = (..items, grid(
+            columns: (1fr, lb.width + padding.left + padding.right),
+            l, language-block-final,
+          ))
+        } else {
+          items.push(grid(
+            columns: (1fr, lb.width + padding.left + padding.right),
+            l, language-block-final,
+          ))
+          items.push(annot)
+        }
       }
     } else {
       if header != none {
@@ -1647,9 +1692,9 @@
 
   let line_colors = ()
   for (i, line) in lines_to_number.enumerate() {
-    let highlighted = highlighted-lines.find(((l, _)) => l == line)
+    let highlighted = highlighted-by-line.at(line - 1, default: none)
     if highlighted != none {
-      line_colors.push(highlighted.at(1))
+      line_colors.push(highlighted)
     } else if zebra-color != none and calc.rem(i, 2) == 0 {
       line_colors.push(zebra-color)
     } else {
@@ -1693,39 +1738,22 @@
             (auto, 1fr, annot-width)
           } else {
             (auto, 1fr)
-          } ,
+          },
           inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
           stroke: (x,y) => 
             if numbers-outside {
-              if zebra-color != none and x != 0 {
-                stroke
-              } else if x == 1 and y == 0 {
-                let special_stroke = (
-                  right: stroke,
-                  left: stroke,
-                  top: stroke,
-                  bottom: none,
-                )
-                special_stroke
-              } else if x == 1 and y < it.lines.len()-1 {
-                let special_stroke = (
-                  right: stroke,
-                  left: stroke,
-                  top: none,
-                  bottom: none,
-                )
-                special_stroke
-              } else if x == 1 and y == it.lines.len()-1 {
-                let special_stroke = (
-                  right: stroke,
-                  left: stroke,
-                  top: none,
-                  bottom: stroke,
-                )
-                special_stroke
+              let idx_end = if has-annotations {
+                2
               } else {
-                none
+                1
               }
+
+              (
+                left: if x == 1 { stroke } else { none },
+                right: if x == idx_end { stroke } else { none },
+                top: if x != 0 and y == 0 { stroke } else { none },
+                bottom: if x != 0 and y == it.lines.len() - 1 { stroke } else { none },
+              )
             } else {
               none
             },
@@ -1766,18 +1794,7 @@
     },
   )
   
-
-  let left_offset = false
-
-  if numbers-outside and left_offset {    
-    move(
-      dx: 0pt - 2*(measure(block_content.body.children.at(0)).width),
-      block_content
-    )    
-  }
-  else{
-    block_content
-  } 
+  block_content
     
   figure(
     kind: "__codly-end-block",
@@ -1851,7 +1868,7 @@
   body,
 ) = {
   show figure.where(kind: raw): fig => {
-    if "label" in fig.fields() {
+    if fig.has("label") {
       show raw.where(block: true): it => __codly-raw(it, block-label: fig.label)
       fig
     } else {
@@ -1859,7 +1876,6 @@
     }
   }
 
-  // Levels chosen randomly.
   show raw.where(block: true): it => __codly-raw(it)
 
   body
@@ -1897,7 +1913,7 @@
       let args = current + extra
       show raw.where(block: true): it => __codly-raw(it, extra: args)
       show figure.where(kind: raw): fig => {
-        if "label" in fig.fields() {
+        if fig.has("label") {
           show raw.where(block: true, extra: args): it => __codly-raw(it, block-label: fig.label)
           fig
         } else {
@@ -1913,7 +1929,7 @@
     state("codly-extra-args").update(extra)
     show raw.where(block: true): it => __codly-raw(it, extra: extra)
     show figure.where(kind: raw): fig => {
-      if "label" in fig.fields() {
+      if fig.has("label") {
         show raw.where(block: true, extra: args): it => __codly-raw(it, block-label: fig.label)
         fig
       } else {

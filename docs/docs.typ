@@ -1,4 +1,5 @@
 #import "@preview/gentle-clues:1.2.0": *
+#import "@preview/codly-languages:0.1.8": *
 #import "orly.typ": orly
 #import "../src/args.typ": *
 #import "../codly.typ": (
@@ -96,18 +97,20 @@
 
   if type(e) == color {
     h(0.32em)
-    box(height: 0.9em, width: 1.32em, fill: e, baseline: 0.1em)
+    box(width: 1.32em, height: 0.9em, fill: e, baseline: 0.1em)
+  } else if type(e) == gradient {
+    h(0.32em)
+    box(width: 12em, height: 0.9em, fill: e, baseline: 0.1em)
   } else if type(e) == stroke {
     h(0.32em)
-    box(width: 1.32em, height: 0.9em, baseline: 0.1em, stroke: e)
+    box(width: 1.32em, height: 0.9em, stroke: e, baseline: 0.1em)
   }
 }
-
 
 // Start with a cover page
 #orly(
     color: rgb("#85144b"),
-    title: "Codly v1.3.0 manual",
+    title: "Codly " + current_version + " manual",
     top-text: "Always start a new Typst project by importing codly",
     subtitle: "Your code blocks on steroids",
     pic: "/docs/codly.png",
