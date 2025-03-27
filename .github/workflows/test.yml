@@ -20,24 +20,24 @@ jobs:
           packages: cargo
           version: 1.0
 
-      - name: Install typst-test from github
+      - name: Install tytanic from github
         uses: baptiste0928/cargo-install@v3.0.0
         with:
-          crate: typst-test
-          git: https://github.com/tingerrr/typst-test.git
-          tag: ci-semi-stable
+          crate: tytanic
+          version: '0.2.1'
       - name: Setup typst
-        uses: yusancky/setup-typst@v2
+        uses: typst-community/setup-typst@v4
         with:
-          version: 'v0.12.0'
+          version: 'v0.13.1'
       - name: Run test suite
-        run: typst-test run
+        run: tt run --no-fail-fast --font-path ./docs/fonts
       - name: Archive diffs
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: diffs
+          name: artifacts
           path: |
             tests/**/diff/*.png
             tests/**/out/*.png
+            tests/**/ref/*.png
           retention-days: 5
