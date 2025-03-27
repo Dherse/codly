@@ -30,7 +30,7 @@ jobs:
         with:
           version: 'v0.13.1'
       - name: Run test suite
-        run: tt run --no-fail-fast
+        run: tt run --no-fail-fast --font-path ./docs/fonts
       - name: Archive diffs
         uses: actions/upload-artifact@v4
         if: always()
