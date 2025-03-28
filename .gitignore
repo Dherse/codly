@@ -5,3 +5,4 @@ test*.png
 record-*.json
 _*@bench/
 report/
+.DS_STORE
