@@ -253,26 +253,6 @@
         "function": true,
         "example": "#codly(\n  display-icon: false,\n  languages: (\n    py: (\n      name: [Python], color: green,\n      icon: \"🐍\"\n    ),\n  ),\n)\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```"
     },
-    "filename": {
-        "title": "File name",
-        "description": "Changes the background fill of certain lines to give them the appearance of being hihglighted. This is done by specifying an array of a combination of:\n - *line numbers*: the line number (one-indexed) as it is shown in the document (including offsets, skips, etc.)\n - *array of line number & fill*: an array of strictly two elements containing the line number (same as before) and a color, gradient, or pattern fill. \n\n The default highlighting color is controlled by the #link(<arg-highlighted-default-color>)[`highlighted-default-color`] argument. \n#one-indexed",
-        "default": "none",
-        "ty": [ "str", "content", "type(none)" ],
-        "function": true,
-        "reset": true,
-        "example": "*Using default highlight color:*\n#codly(\n  highlighted-lines: (1, 3)\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```\n*Per-line color selection:*\n#codly(\n  highlighted-lines: ((1, red.lighten(60%)), 2, 3)\n)```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```",
-        "upcoming": true
-    },
-    "filename-separator": {
-        "title": "File name separator",
-        "description": "Changes the background fill of certain lines to give them the appearance of being hihglighted. This is done by specifying an array of a combination of:\n - *line numbers*: the line number (one-indexed) as it is shown in the document (including offsets, skips, etc.)\n - *array of line number & fill*: an array of strictly two elements containing the line number (same as before) and a color, gradient, or pattern fill. \n\n The default highlighting color is controlled by the #link(<arg-highlighted-default-color>)[`highlighted-default-color`] argument. \n#one-indexed",
-        "default": "[ | ]",
-        "ty": [ "str", "content" ],
-        "function": true,
-        "reset": false,
-        "example": "*Using default highlight color:*\n#codly(\n  highlighted-lines: (1, 3)\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```\n*Per-line color selection:*\n#codly(\n  highlighted-lines: ((1, red.lighten(60%)), 2, 3)\n)```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```",
-        "upcoming": true
-    },
     "number-format": {
         "title": "Line number format",
         "description": "The format of the line numbers, a function that takes in number and returns a content. If set to none, disables line numbers.",
@@ -296,7 +276,7 @@
         "ty": [ "str" ],
         "function": false,
         "example": "*Line number outside of the block:*\n#codly(number-placement: \"outside\")\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```\n*Line number inside of the block:*\n#codly(number-placement: \"inside\")\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```",
-        "upcoming": true
+        "upcoming": false
     },
     "smart-indent": {
         "title": "Smart indentation",
@@ -372,7 +352,7 @@
         "function": true,
         "reset": true,
         "example": "*Using default highlight color:*\n#codly(\n  highlighted-lines: (1, 3)\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```\n*Per-line color selection:*\n#codly(\n  highlighted-lines: ((1, red.lighten(60%)), 2, 3)\n)```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```",
-        "upcoming": true
+        "upcoming": false
     },
     "highlighted-default-color": {
         "title": "Highlight lines default color",
@@ -381,7 +361,7 @@
         "ty": [ "color", "tiling", "gradient" ],
         "function": true,
         "example": "*Using default highlight color:*\n#codly(\n  highlighted-default-color: green.lighten(60%),\n  highlighted-lines: (1, 3)\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```\n*Per-line color selection still works:*\n#codly(\n  highlighted-lines: ((1, red.lighten(60%)), 2, 3)\n)```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```",
-        "upcoming": true
+        "upcoming": false
     },
     "highlights": {
         "title": "Highlights",
@@ -469,7 +449,7 @@
         "default": "(:)",
         "ty": [ "dictionary" ],
         "function": false,
-        "upcoming": true,
+        "upcoming": false,
         "example": "#import \"@preview/codly-languages:0.1.7\": *\n\n#codly(\n  languages: codly-languages,\n  aliases: (\"cuda\": \"c++\")\n)\n```cuda\nint main() {\n  std::cout << \"Hello, World!\" << std::endl;\n  return 0;\n}```"
     }
 }
