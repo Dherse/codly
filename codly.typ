@@ -30,20 +30,22 @@
 /// - ranges (none, array, function): ranges
 /// - smart-skip (bool, dictionary, function): smart-skip
 /// - languages (dictionary, function): languages
-/// - default-color (color, gradient, pattern, function): default-color
+/// - default-color (color, gradient, tiling, function): default-color
 /// - radius (length, function): radius
 /// - inset (length, dictionary, function): inset
-/// - fill (none, color, gradient, pattern, function): fill
-/// - zebra-fill (none, color, gradient, pattern, function): zebra-fill
+/// - fill (none, color, gradient, tiling, function): fill
+/// - zebra-fill (none, color, gradient, tiling, function): zebra-fill
 /// - stroke (none, stroke, function): stroke
 /// - lang-inset (length, dictionary, function): lang-inset
 /// - lang-outset (dictionary, function): lang-outset
 /// - lang-radius (length, function): lang-radius
 /// - lang-stroke (none, stroke, function): lang-stroke
-/// - lang-fill (none, color, gradient, pattern, function): lang-fill
+/// - lang-fill (none, color, gradient, tiling, function): lang-fill
 /// - lang-format (auto, none, function): lang-format
 /// - display-name (bool, function): display-name
 /// - display-icon (bool, function): display-icon
+/// - filename (str, content, none, function): filename
+/// - filename-separator (str, content, function): filename-separator
 /// - number-format (function, none): number-format
 /// - number-align (alignment, function): number-align
 /// - number-placement (str): number-placement
@@ -56,7 +58,7 @@
 /// - annotations (array, none, function): annotations
 /// - annotation-format (none, function): annotation-format
 /// - highlighted-lines (array, none, function): highlighted-lines
-/// - highlighted-default-color (color, pattern, gradient, function): highlighted-default-color
+/// - highlighted-default-color (color, tiling, gradient, function): highlighted-default-color
 /// - highlights (array, none, function): highlights
 /// - highlight-radius (length, function): highlight-radius
 /// - highlight-fill (function): highlight-fill
@@ -99,6 +101,8 @@
   lang-format: __codly-default,
   display-name: __codly-default,
   display-icon: __codly-default,
+  filename: __codly-default,
+  filename-separator: __codly-default,
   number-format: __codly-default,
   number-align: __codly-default,
   number-placement: __codly-default,
@@ -213,6 +217,12 @@
   if display-icon != __codly-default {
     out.insert("display-icon", display-icon)
   }
+  if filename != __codly-default {
+    out.insert("filename", filename)
+  }
+  if filename-separator != __codly-default {
+    out.insert("filename-separator", filename-separator)
+  }
   if number-format != __codly-default {
     out.insert("number-format", number-format)
   }
@@ -325,20 +335,22 @@
 /// - ranges (none, array, function): ranges
 /// - smart-skip (bool, dictionary, function): smart-skip
 /// - languages (dictionary, function): languages
-/// - default-color (color, gradient, pattern, function): default-color
+/// - default-color (color, gradient, tiling, function): default-color
 /// - radius (length, function): radius
 /// - inset (length, dictionary, function): inset
-/// - fill (none, color, gradient, pattern, function): fill
-/// - zebra-fill (none, color, gradient, pattern, function): zebra-fill
+/// - fill (none, color, gradient, tiling, function): fill
+/// - zebra-fill (none, color, gradient, tiling, function): zebra-fill
 /// - stroke (none, stroke, function): stroke
 /// - lang-inset (length, dictionary, function): lang-inset
 /// - lang-outset (dictionary, function): lang-outset
 /// - lang-radius (length, function): lang-radius
 /// - lang-stroke (none, stroke, function): lang-stroke
-/// - lang-fill (none, color, gradient, pattern, function): lang-fill
+/// - lang-fill (none, color, gradient, tiling, function): lang-fill
 /// - lang-format (auto, none, function): lang-format
 /// - display-name (bool, function): display-name
 /// - display-icon (bool, function): display-icon
+/// - filename (str, content, none, function): filename
+/// - filename-separator (str, content, function): filename-separator
 /// - number-format (function, none): number-format
 /// - number-align (alignment, function): number-align
 /// - number-placement (str): number-placement
@@ -351,7 +363,7 @@
 /// - annotations (array, none, function): annotations
 /// - annotation-format (none, function): annotation-format
 /// - highlighted-lines (array, none, function): highlighted-lines
-/// - highlighted-default-color (color, pattern, gradient, function): highlighted-default-color
+/// - highlighted-default-color (color, tiling, gradient, function): highlighted-default-color
 /// - highlights (array, none, function): highlights
 /// - highlight-radius (length, function): highlight-radius
 /// - highlight-fill (function): highlight-fill
@@ -396,6 +408,8 @@
   lang-format: __codly-default,
   display-name: __codly-default,
   display-icon: __codly-default,
+  filename: __codly-default,
+  filename-separator: __codly-default,
   number-format: __codly-default,
   number-align: __codly-default,
   number-placement: __codly-default,
@@ -509,6 +523,12 @@
   }
   if display-icon != __codly-default {
     out.insert("display-icon", display-icon)
+  }
+  if filename != __codly-default {
+    out.insert("filename", filename)
+  }
+  if filename-separator != __codly-default {
+    out.insert("filename-separator", filename-separator)
   }
   if number-format != __codly-default {
     out.insert("number-format", number-format)

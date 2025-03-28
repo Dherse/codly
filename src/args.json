@@ -139,7 +139,7 @@
         "title": "Default language color",
         "description": "The default color to use for language blocks. Used when a language is not defined in the #link(<arg-languages>)[`languages`] argument. Also note that it is only used when the #link(<arg-lang-format>)[`lang-format`] is its `auto` or you are using it in a custom formatter. If you are using a custom formatter, it is passed to the formatter as a named argument `color`.",
         "default": "rgb(\"#283593\")",
-        "ty": [ "color", "gradient", "pattern" ],
+        "ty": [ "color", "gradient", "tiling" ],
         "function": true,
         "example": "*Default color:*\n```py\nprint('Hello, world!')\nprint('Hello, world!')\n```\n*Overriden default color:*\n#codly(default-color: orange)\n```py\nprint('Hello, world!')\nprint('Hello, world!')\n```"
     },
@@ -169,7 +169,7 @@
         "title": "Fill",
         "description": "The fill of the code block when not zebra-striped.",
         "default": "none",
-        "ty": [ "type(none)", "color", "gradient", "pattern" ],
+        "ty": [ "type(none)", "color", "gradient", "tiling" ],
         "function": true,
         "example": "*Default fill:*\n```py\nprint('Hello, world!')\nprint('Hello, world!')\n```\n*Overriden fill:*\n#codly(fill: gradient.linear(..color.map.flare))\n```py\nprint('Hello, world!')\nprint('Hello, world!')\n```\n*No fill:*\n#codly(fill: none)\n```py\nprint('Hello, world!')\nprint('Hello, world!')\n```"
     },
@@ -177,7 +177,7 @@
         "title": "Zebra fill",
         "description": "Background color of the code lines when zebra-stripped. If set to `none`, no zebra-striping is applied.",
         "default": "luma(240)",
-        "ty": [ "type(none)", "color", "gradient", "pattern" ],
+        "ty": [ "type(none)", "color", "gradient", "tiling" ],
         "function": true,
         "example": "*Default zebra:*\n```py\nprint('Hello, world!')\nprint('Hello, world!')\n```\n*No zebra:*\n#codly(zebra-fill: none)\n```py\nprint('Hello, world!')\nprint('Hello, world!')\n```\n*Overriden zebra:*\n#codly(zebra-fill: gradient.linear(..color.map.flare))\n```py\nprint('Hello, world!')\n```"
     },
@@ -225,7 +225,7 @@
         "title": "Language box fill",
         "description": "The background color of the language block. Can be a function that takes in the language `dictionary` or `none` (see argument #link(<arg-languages>)[`languages`]) and returns a stroke.",
         "default": "(lang) => lang.color.lighten(80%)",
-        "ty": [ "type(none)", "color", "gradient", "pattern", "function" ],
+        "ty": [ "type(none)", "color", "gradient", "tiling", "function" ],
         "function": false,
         "example": "*Fixed fill:*\n#codly(lang-fill: red)\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```\n*Function mapping:*\n#codly(lang-fill: (lang) => lang.color.lighten(40%))\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```"
     },
@@ -252,6 +252,26 @@
         "ty": [ "bool" ],
         "function": true,
         "example": "#codly(\n  display-icon: false,\n  languages: (\n    py: (\n      name: [Python], color: green,\n      icon: \"🐍\"\n    ),\n  ),\n)\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```"
+    },
+    "filename": {
+        "title": "File name",
+        "description": "Changes the background fill of certain lines to give them the appearance of being hihglighted. This is done by specifying an array of a combination of:\n - *line numbers*: the line number (one-indexed) as it is shown in the document (including offsets, skips, etc.)\n - *array of line number & fill*: an array of strictly two elements containing the line number (same as before) and a color, gradient, or pattern fill. \n\n The default highlighting color is controlled by the #link(<arg-highlighted-default-color>)[`highlighted-default-color`] argument. \n#one-indexed",
+        "default": "none",
+        "ty": [ "str", "content", "type(none)" ],
+        "function": true,
+        "reset": true,
+        "example": "*Using default highlight color:*\n#codly(\n  highlighted-lines: (1, 3)\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```\n*Per-line color selection:*\n#codly(\n  highlighted-lines: ((1, red.lighten(60%)), 2, 3)\n)```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```",
+        "upcoming": true
+    },
+    "filename-separator": {
+        "title": "File name separator",
+        "description": "Changes the background fill of certain lines to give them the appearance of being hihglighted. This is done by specifying an array of a combination of:\n - *line numbers*: the line number (one-indexed) as it is shown in the document (including offsets, skips, etc.)\n - *array of line number & fill*: an array of strictly two elements containing the line number (same as before) and a color, gradient, or pattern fill. \n\n The default highlighting color is controlled by the #link(<arg-highlighted-default-color>)[`highlighted-default-color`] argument. \n#one-indexed",
+        "default": "[ | ]",
+        "ty": [ "str", "content" ],
+        "function": true,
+        "reset": false,
+        "example": "*Using default highlight color:*\n#codly(\n  highlighted-lines: (1, 3)\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```\n*Per-line color selection:*\n#codly(\n  highlighted-lines: ((1, red.lighten(60%)), 2, 3)\n)```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```",
+        "upcoming": true
     },
     "number-format": {
         "title": "Line number format",
@@ -358,7 +378,7 @@
         "title": "Highlight lines default color",
         "description": "Changes the default color of highlighted lines.",
         "default": "orange.lighten(60%)",
-        "ty": [ "color", "pattern", "gradient" ],
+        "ty": [ "color", "tiling", "gradient" ],
         "function": true,
         "example": "*Using default highlight color:*\n#codly(\n  highlighted-default-color: green.lighten(60%),\n  highlighted-lines: (1, 3)\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```\n*Per-line color selection still works:*\n#codly(\n  highlighted-lines: ((1, red.lighten(60%)), 2, 3)\n)```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```",
         "upcoming": true

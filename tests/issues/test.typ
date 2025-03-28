@@ -42,4 +42,8 @@ contained within a figure and that figure must have a label.")*/
 #codly-reset()
 
 #include "63-continue-highlights.typ"
+#pagebreak()
+#codly-reset()
+
+#include "71-no-highlights-in-local.typ"
 #codly-reset()

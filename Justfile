@@ -39,6 +39,11 @@ install: (package "@local")
 # install the library with the "@preview" prefix (for pre-release testing)
 install-preview: (package "@preview")
 
+# Benchmark codly
+bench *args:
+	crityp bench/test-codly-12/main.typ --bench-output .
+	crityp bench/test-codly-main/main.typ --root . --bench-output .
+
 [private]
 remove target:
   ./scripts/uninstall "{{target}}"

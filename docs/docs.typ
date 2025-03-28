@@ -75,8 +75,8 @@
     "https://typst.app/docs/reference/visualize/color/"
   } else if ty == "gradient" {
     "https://typst.app/docs/reference/visualize/gradient/"
-  } else if ty == "pattern" {
-    "https://typst.app/docs/reference/visualize/pattern/"
+  } else if ty == "tiling" {
+    "https://typst.app/docs/reference/visualize/tiling/"
   } else if ty == "length" {
     "https://typst.app/docs/reference/layout/length/"
   } else if ty == "stroke" {

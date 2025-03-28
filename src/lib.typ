@@ -786,7 +786,7 @@
 
   show figure.where(kind: "__codly-end-block"): it => none
 
-  set par(justify: false)
+  set par(justify: false, first-line-indent: 0pt)
 
   let range = (__codly-args.range.type_check)(if "range" in extra {
     extra.range
