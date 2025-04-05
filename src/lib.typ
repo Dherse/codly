@@ -710,7 +710,7 @@
   )(if "highlight-inset" in extra {
     extra.highlight-inset
   } else {
-    state("highlight-inset", __codly-args.highlight-inset.default).get()
+    state("codly-highlight-inset", __codly-args.highlight-inset.default).get()
   });
 
   show raw.line.where(label: <codly-highlighted>): codly-line.with(
