@@ -51,7 +51,7 @@
 ///  ```
 ///
 /// - offset (int): the offset to apply to the code block
-/// 
+///
 /// -> content
 #let codly-offset(offset: 0) = {
   (__codly-args.offset.update)(offset)
@@ -71,7 +71,7 @@
 ///
 /// - start (int): the start of the displayed range
 /// - end (none, int): the end of the displayed range, none for the rest of the block
-/// 
+///
 /// -> content
 #let codly-range(
   start,
@@ -98,7 +98,7 @@
 ///  ```
 ///  Hello, world!
 ///  ```
-/// 
+///
 /// -> content
 #let codly-disable() = {
   (__codly-args.enabled.update)(false)
@@ -121,7 +121,7 @@
 ///  ```
 ///  Hello, world!
 ///  ```
-/// 
+///
 /// -> content
 #let codly-enable() = {
   (__codly-args.enabled.update)(true)
@@ -139,7 +139,7 @@
 ///  #no-codly(```
 ///  Hello, world!
 ///  ```)
-/// 
+///
 /// -> content
 #let no-codly(body) = {
   (__codly-args.enabled.update)(false)
@@ -160,7 +160,7 @@
 ///  #yes-codly(```
 ///  Hello, world!
 ///  ```)
-/// 
+///
 /// -> content
 #let yes-codly(body) = {
   (__codly-args.enabled.update)(true)
@@ -175,10 +175,10 @@
 ///  Hello, world!
 ///  Goodbye, world!
 ///  ```
-/// 
+///
 /// - position (int): the line at which to insert the skip
 /// - length (int): the number of lines the skip is long
-/// 
+///
 /// -> content
 #let codly-skip(
   position,
@@ -710,7 +710,7 @@
   )(if "highlight-inset" in extra {
     extra.highlight-inset
   } else {
-    state("highlight-inset", __codly-args.highlight-inset.default).get()
+    state("codly-highlight-inset", __codly-args.highlight-inset.default).get()
   });
 
   show raw.line.where(label: <codly-highlighted>): codly-line.with(
@@ -974,7 +974,7 @@
       skips.sorted(key: x => x.at(0)).dedup()
     }
   }
-  
+
   let highlighted-lines = (
     __codly-args.highlighted-lines.type_check
   )(if "highlighted-lines" in extra {
@@ -993,7 +993,7 @@
 
   let highlighted-by-line = ()
   if highlighted-lines == none {
-    
+
   } else if type(highlighted-lines) == array {
     if highlighted-lines.len() > 0 {
       let ix = 1
@@ -1004,7 +1004,7 @@
           assert(l.len() == 2, message: "codly: a highlighted line definition must be an integer or an array of two elements: the line, and the highlight color (array length mismatch)")
           let ln = l.at(0)
           assert(type(ln) == int, message: "codly: the type of a `highlighted-lines` line must be either an integer, found: " + str(type(ln)));
-          
+
           let col = l.at(1)
           assert(
             type(col) == color or type(col) == gradient or type(col) == pattern,
@@ -1423,7 +1423,7 @@
   let smart-skip-enabled = if type(smart-skip) == bool {
     smart-skip
   } else {
-    smart-skip.values().any((v) => v) 
+    smart-skip.values().any((v) => v)
   }
 
   let in-skip = false
@@ -1457,7 +1457,7 @@
     // Try and look for a skip
     let skip = skips.at(0, default: none)
     if skip != none and line.number == skip.at(0) {
-      if numbers-format != none { 
+      if numbers-format != none {
         items.push(skip-number)
       }
 
@@ -1469,7 +1469,7 @@
     } else if smart-skip-enabled and not in_range(ranges, line.number) and not in-skip {
       if in-first {
         if smart-skip-top {
-          if numbers-format != none { 
+          if numbers-format != none {
             items.push(skip-number)
           }
           items.push(skip-line)
@@ -1477,7 +1477,7 @@
         }
       } else if array.range(line.number, line.count).any((i) => in_range(ranges, i)) {
         if smart-skip-rest {
-          if numbers-format != none { 
+          if numbers-format != none {
             items.push(skip-number)
           }
           items.push(skip-line)
@@ -1485,7 +1485,7 @@
         }
       } else {
         if smart-skip-bot {
-          if numbers-format != none { 
+          if numbers-format != none {
             items.push(skip-number)
           }
           items.push(skip-line)
@@ -1530,7 +1530,7 @@
     // Must be done before the smart indentation code.
     // Otherwise it results in two paragraphs.
     if numbers-format != none {
-      items.push(numbers-format(line.number + offset))      
+      items.push(numbers-format(line.number + offset))
     }
 
     let annot = none
@@ -1568,7 +1568,7 @@
         annot-content,
       )
     }
-    
+
     if had-first or (
       display-names != true and display-icons != true
     ) {
@@ -1695,7 +1695,7 @@
       type(zebra-color) != color and zebra-color != none
     )
   )
-  
+
   let width_lines_number = calc.max(2, (calc.ceil(calc.log(it.lines.len())) + 1)) * 1em
 
   let line_colors = ()
@@ -1748,7 +1748,7 @@
             (auto, 1fr)
           },
           inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
-          stroke: (x,y) => 
+          stroke: (x,y) =>
             if numbers-outside {
               let idx_end = if has-annotations {
                 2
@@ -1770,7 +1770,7 @@
             none
           } else {
             (x, y) => if numbers-outside and x == 0 {
-              none 
+              none
             } else {
               line_colors.at(y, default: fill)
             }
@@ -1801,9 +1801,9 @@
       }
     },
   )
-  
+
   block_content
-    
+
   figure(
     kind: "__codly-end-block",
     supplement: none,
@@ -1868,9 +1868,9 @@
 /// ```typ
 /// #show: codly-init
 /// ```
-/// 
+///
 /// - body (content): the body of the document
-/// 
+///
 /// -> content
 #let codly-init(
   body,
