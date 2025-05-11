@@ -1789,11 +1789,11 @@
           inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
           stroke: none,
           align: (numbers-alignment, left + horizon),
-          fill: (x, y) => if zebra-color != none and calc.rem(y, 2) == 0 {
+          fill: (x, y) => line_colors.at(y, default: if zebra-color != none and calc.rem(y, 2) == 0 {
             zebra-color
           } else {
             fill
-          },
+          }),
           ..header,
           ..items,
           ..footer,
