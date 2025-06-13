@@ -1261,7 +1261,12 @@
         lang-stroke
       }
 
-      let b = measure(icon + name)
+      let sep = if icon != [] and name != [] {
+        h(0.2em)
+      } else {
+        []
+      }
+      let b = measure(icon + sep + name)
       box(
         radius: radius,
         fill: fill,
@@ -1269,7 +1274,7 @@
         stroke: stroke,
         outset: 0pt,
         height: b.height + padding.top + padding.bottom,
-        icon + name,
+        icon + sep + name,
       )
     } else {
       (language-block)(name, icon, color)
@@ -1957,7 +1962,7 @@
       baseline: 0.1em,
       inset: 0pt,
       outset: 0pt,
-    ) + h(0.2em),
+    ),
     color: rgb("#239DAD"),
   ),
   typc: (
@@ -1967,7 +1972,7 @@
       baseline: 0.1em,
       inset: 0pt,
       outset: 0pt,
-    ) + h(0.2em),
+    ),
     color: rgb("#239DAD"),
   ),
 )
