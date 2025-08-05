@@ -50,4 +50,8 @@ contained within a figure and that figure must have a label.")*/
 #codly-reset()
 
 #include "81-highlight-inset-with-tags.typ"
+#pagebreak()
+#codly-reset()
+
+#include "85-annotation-labels.typ"
 #codly-reset()

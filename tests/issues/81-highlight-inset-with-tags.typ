@@ -1,4 +1,4 @@
-#import "@preview/codly:1.3.0": *
+#import "../../codly.typ": *
 #show: codly-init
 
 #codly(

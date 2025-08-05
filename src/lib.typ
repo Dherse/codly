@@ -813,7 +813,6 @@
     }
   }
 
-  let block-label = auto
   let display-names = (
     __codly-args.display-name.type_check
   )(if "display-name" in extra {
@@ -1558,7 +1557,7 @@
           supplement: none,
           numbering: (..) => {
             ref(block-label)
-            sep
+            reference-sep
             referenced
           },
           []
