@@ -54,4 +54,8 @@ contained within a figure and that figure must have a label.")*/
 #codly-reset()
 
 #include "85-annotation-labels.typ"
+#pagebreak()
+#codly-reset()
+
+#include "89-nested-highlights.typ"
 #codly-reset()

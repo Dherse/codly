@@ -341,6 +341,52 @@
   }
 }
 
+#let __sort-highlights(highlights) = {
+  // Check if highlight 'a' contains highlight 'b'
+  let contains(a, b) = {
+    // a contains b if b is fully within a's range
+    // but they're not the same highlight
+    (a.start <= b.start and a.end >= b.end and
+      not (a.start == b.start and a.end == b.end))
+  }
+  
+  // Calculate nesting depth for a highlight
+  // Depth = number of highlights that contain this one
+  let get-depth(h, all-highlights) = {
+    let depth = 0
+    for other in all-highlights {
+      if contains(other, h) {
+        depth += 1
+      }
+    }
+    depth
+  }
+  
+  // Add depth information to each highlight
+  let with-depths = highlights.enumerate().map(((i, h)) => {
+    (
+      original-index: i,
+      highlight: h,
+      depth: get-depth(h, highlights)
+    )
+  })
+  
+  // Sort by:
+  // 1. Depth (descending - deepest/most nested first)
+  // 2. Start position (ascending)
+  // 3. End position (ascending) 
+  // 4. Original index (to maintain stable sort)
+  let sorted = with-depths.sorted(key: item => (
+    -item.depth,  // Negative for descending order
+    item.highlight.start,
+    item.highlight.end,
+    item.original-index
+  ))
+  
+  // Return just the highlights without the extra metadata
+  sorted.map(item => item.highlight)
+}
+
 #let codly-line(
   highlight-stroke,
   highlight-fill,
@@ -363,7 +409,7 @@
     if highlights == none {
       ()
     } else {
-      highlights
+      __sort-highlights(highlights
         .filter(x => x.line == it.number)
         .map(x => {
           if not "start" in x or x.start == none {
@@ -378,8 +424,7 @@
             x.insert("fill", default-color)
           }
           x
-        })
-        .sorted(key: x => x.start)
+        }))
     }
   }
 
