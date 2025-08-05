@@ -9,7 +9,7 @@
 )
 
 // Set this to the relevant version
-#let current_version = "1.4.0"
+#let current_version = "1.3.1"
 
 #show: codly-init
 
@@ -224,7 +224,7 @@ To start using Codly, you must first import it into your Typst project.
 
 #example(
   ```typ
-  #import "@preview/codly:1.4.0": *
+  #import "@preview/codly:1.3.1": *
 
   #show: codly-init
   ```,
