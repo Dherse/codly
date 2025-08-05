@@ -12,6 +12,16 @@
 #let current_version = "1.3.0"
 
 #show: codly-init
+
+#show ref: it => {
+  if type(it.target) == label and str(it.target).starts-with("arg-") {
+  let label = str(it.target).replace("arg-", "")
+    return link(it.target, raw(lang: "typc", label))
+  } else {
+    return it
+  }
+}
+
 #show raw.where(block: false): set raw(lang: "typc")
 #show raw.where(block: false): box.with(
   fill: luma(240),

@@ -471,6 +471,36 @@
   for hl in highlights {
     let fill = highlight-fill(hl.fill)
     let stroke = highlight-stroke(hl.fill)
+    let hl-inset = if "inset" in hl {
+      hl.inset
+    } else {
+      highlight-inset
+    }
+
+    let hl-baseline = if "baseline" in hl {
+      hl.baseline
+    } else {
+      highlight-baseline
+    }
+
+    let hl-outset = if "outset" in hl {
+      hl.outset
+    } else {
+      highlight-outset
+    }
+
+    let hl-clip = if "clip" in hl {
+      hl.clip
+    } else {
+      highlight-clip
+    }
+
+    let hl-radius = if "radius" in hl {
+      hl.radius
+    } else {
+      highlight-radius
+    }
+
     let tag = if "tag" in hl {
       hl.tag
     } else {
@@ -539,13 +569,13 @@
       if collection != none and (i + len >= hl.end or last) {
         if tag == none {
           let content = box(
-            radius: highlight-radius,
-            clip: highlight-clip,
+            radius: hl-radius,
+            clip: hl-clip,
             fill: fill,
             stroke: stroke,
-            inset: highlight-inset,
-            outset: highlight-outset,
-            baseline: highlight-baseline,
+            inset: hl-inset,
+            outset: hl-outset,
+            baseline: hl-baseline,
             collection.join() + label,
           )
           children.push(content)
@@ -553,7 +583,7 @@
           let col = collection.join()
           let height-col = measure(col).height
           let height-tag = measure(tag).height
-          let highlight-inset-sep = __codly-inset(highlight-inset)
+          let highlight-inset-sep = __codly-inset(hl-inset)
           let max-height = calc.max(
             height-col,
             height-tag,
@@ -562,30 +592,30 @@
             radius: (
               top-right: 0pt,
               bottom-right: 0pt,
-              rest: highlight-radius,
+              rest: hl-radius,
             ),
             height: max-height,
-            clip: highlight-clip,
+            clip: hl-clip,
             fill: fill,
             stroke: stroke,
-            inset: highlight-inset,
-            outset: highlight-outset,
-            baseline: highlight-baseline,
+            inset: hl-inset,
+            outset: hl-outset,
+            baseline: hl-baseline,
             collection.join(),
           )
           let tag-box = box(
             radius: (
               top-left: 0pt,
               bottom-left: 0pt,
-              rest: highlight-radius,
+              rest: hl-radius,
             ),
             height: max-height,
-            clip: highlight-clip,
+            clip: hl-clip,
             fill: fill,
             stroke: stroke,
-            inset: highlight-inset,
-            outset: highlight-outset,
-            baseline: highlight-baseline,
+            inset: hl-inset,
+            outset: hl-outset,
+            baseline: hl-baseline,
             tag + label,
           )
 
