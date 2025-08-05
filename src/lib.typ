@@ -553,10 +553,11 @@
           let col = collection.join()
           let height-col = measure(col).height
           let height-tag = measure(tag).height
+          let highlight-inset-sep = __codly-inset(highlight-inset)
           let max-height = calc.max(
             height-col,
             height-tag,
-          ) + 2 * highlight-inset
+          ) + highlight-inset-sep.top + highlight-inset-sep.bottom
           let hl-box = box(
             radius: (
               top-right: 0pt,
