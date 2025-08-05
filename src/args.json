@@ -369,7 +369,12 @@
         "default": "none",
         "ty": [ "array", "type(none)" ],
         "function": true,
-        "example": "#codly(highlights: (\n  (line: 4, start: 2, end: none, fill: red),\n  (line: 5, start: 13, end: 19, fill: green, tag: \"(a)\"),\n  (line: 5, start: 26, fill: blue, tag: \"(b)\"),\n))\n```py\ndef fib(n):\n if n <= 1:\n  return n\n else:\n  return fib(n - 1) + fib(n - 2)\nprint(fib(25))\n```"
+        "example": "#codly(highlights: (\n  (line: 4, start: 2, end: none, fill: red),\n  (line: 5, start: 13, end: 19, fill: green, tag: \"(a)\"),\n  (line: 5, start: 26, fill: blue, tag: \"(b)\"),\n))\n```py\ndef fib(n):\n if n <= 1:\n  return n\n else:\n  return fib(n - 1) + fib(n - 2)\nprint(fib(25))\n```",
+        "examples": [{
+            "title": "Local override of highlight parameters",
+            "desc": "You can override the global highlight parameters for a specific highlight by using the `inset`, `radius`, `clip`, and `outset` keys in the highlight dictionary.",
+            "code": "#codly(\n  highlights: (\n    (line: 4, start: 2, end: none, fill: red),\n    (line: 5, start: 13, end: 19, fill: green, tag: \"(a)\", inset: 0.1em, radius: 0.5em),\n    (line: 5, start: 26, fill: blue, tag: \"(b)\", clip: false)\n  )\n)\n```py\ndef fib(n):\n if n <= 1:\n  return n\n else:\n  return fib(n - 1) + fib(n - 2)\nprint(fib(25))\n```"
+        }]
     },
     "highlight-radius": {
         "title": "Highlight radius",

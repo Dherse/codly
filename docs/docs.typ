@@ -382,7 +382,7 @@ The codly functions acts like a set-rule, this means that calling it will set th
     if "upcoming" in arg { bool_yes_no(not arg.upcoming) } else { bool_yes_no(true) },
   ))
 
-  block(breakable: false, {
+  block(breakable: true, {
     [
       #header #label
       #card
