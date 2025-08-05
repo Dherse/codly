@@ -1374,6 +1374,14 @@
         grid.cell(
           transform(header) + language-block-final,
           colspan: if numbers-format == none { 1 } else { 2 },
+          align: auto,
+          breakable: auto,
+          fill: auto,
+          inset: auto,
+          rowspan: 1,
+          stroke: none,
+          x: auto,
+          y: auto,
           ..header-args,
         ),
       ),
@@ -1565,6 +1573,13 @@
       annot = grid.cell(
         rowspan: current-annot.end - current-annot.start + 1,
         align: left + horizon,
+        breakable: auto,
+        fill: auto,
+        inset: auto,
+        colspan: 1,
+        stroke: none,
+        x: auto,
+        y: auto,
         annot-content,
       )
     }
@@ -1573,7 +1588,18 @@
       display-names != true and display-icons != true
     ) {
       if annot == none and has-annotations {
-        items.push(grid.cell(l, colspan: if current-annot == none { 2 } else { 1 }))
+        items.push(grid.cell(
+          l,
+          colspan: if current-annot == none { 2 } else { 1 },
+          align: auto,
+          breakable: auto,
+          fill: auto,
+          inset: auto,
+          rowspan: 1,
+          stroke: none,
+          x: auto,
+          y: auto,
+        ))
       } else if annot == none {
         items.push(l)
       } else {
@@ -1583,7 +1609,18 @@
       continue
     } else if alias == none {
       if annot == none and has-annotations {
-        items.push(grid.cell(l, colspan: if current-annot == none { 2 } else { 1 }))
+        items.push(grid.cell(
+          l,
+          colspan: if current-annot == none { 2 } else { 1 },
+          align: auto,
+          breakable: auto,
+          fill: auto,
+          inset: auto,
+          rowspan: 1,
+          stroke: none,
+          x: auto,
+          y: auto,
+        ))
       } else if annot == none {
         items.push(l)
       } else {
@@ -1597,7 +1634,18 @@
     if has-annotations {
       if header != none {
         if annot == none and has-annotations {
-          items.push(grid.cell(l, colspan: if current-annot == none { 2 } else { 1 }))
+          items.push(grid.cell(
+            l,
+            colspan: if current-annot == none { 2 } else { 1 },
+            align: auto,
+            breakable: auto,
+            fill: auto,
+            inset: auto,
+            rowspan: 1,
+            stroke: none,
+            x: auto,
+            y: auto,
+          ))
         } else if annot == none {
           items.push(annot)
         } else {
@@ -1607,22 +1655,61 @@
       } else {
         // Annotation printing
         if annot == none and has-annotations {
-          items.push(grid.cell(grid(
-            columns: (1fr, lb.width + padding.left + padding.right),
-            l, language-block-final,
-          ), colspan: if current-annot == none { 2 } else { 1 }))
+          items.push(grid.cell(
+            grid(
+              columns: (1fr, lb.width + padding.left + padding.right),
+              align: left,
+              column-gutter: 0pt,
+              fill: none,
+              gutter: 0pt,
+              inset: 0pt,
+              row-gutter: 0pt,
+              stroke: none,
+              l, language-block-final,
+            ),
+            colspan: if current-annot == none { 2 } else { 1 },
+            align: auto,
+            breakable: auto,
+            fill: auto,
+            inset: auto,
+            rowspan: 1,
+            stroke: none,
+            x: auto,
+            y: auto,
+          ))
         } else if annot == none {
           items.push(grid(
             columns: (1fr, lb.width + padding.left + padding.right),
+            align: left,
+            column-gutter: 0pt,
+            fill: none,
+            gutter: 0pt,
+            inset: 0pt,
+            row-gutter: 0pt,
+            stroke: none,
             l, language-block-final,
           ))
           items = (..items, grid(
             columns: (1fr, lb.width + padding.left + padding.right),
+            align: left,
+            column-gutter: 0pt,
+            fill: none,
+            gutter: 0pt,
+            inset: 0pt,
+            row-gutter: 0pt,
+            stroke: none,
             l, language-block-final,
           ))
         } else {
           items.push(grid(
             columns: (1fr, lb.width + padding.left + padding.right),
+            align: left,
+            column-gutter: 0pt,
+            fill: none,
+            gutter: 0pt,
+            inset: 0pt,
+            row-gutter: 0pt,
+            stroke: none,
             l, language-block-final,
           ))
           items.push(annot)
@@ -1635,6 +1722,13 @@
         items.push(
           grid(
             columns: (1fr, lb.width + padding.left + padding.right),
+            align: left,
+            column-gutter: 0pt,
+            fill: none,
+            gutter: 0pt,
+            inset: 0pt,
+            row-gutter: 0pt,
+            stroke: none,
             l, language-block-final,
           ),
         )
@@ -1681,6 +1775,14 @@
         grid.cell(
           transform(footer),
           colspan: if numbers-format == none { 1 } else { 2 },
+          align: auto,
+          breakable: auto,
+          fill: auto,
+          inset: auto,
+          rowspan: 1,
+          stroke: none,
+          x: auto,
+          y: auto,
           ..footer-args
         ),
       ),
@@ -1775,6 +1877,9 @@
               line_colors.at(y, default: fill)
             }
           },
+          column-gutter: 0pt,
+          gutter: 0pt,
+          row-gutter: 0pt,
           ..header,
           ..items,
           ..footer,
@@ -1794,6 +1899,9 @@
           } else {
             fill
           }),
+          column-gutter: 0pt,
+          gutter: 0pt,
+          row-gutter: 0pt,
           ..header,
           ..items,
           ..footer,
