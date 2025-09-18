@@ -1514,6 +1514,10 @@
     smart-skip.values().any((v) => v)
   }
 
+  // Track the original number of skips for array indexing
+  let original-skip-count = skips.len()
+  let processed-skips = 0
+
   let in-skip = false
   let in-first = true
   let had-first = false
@@ -1545,11 +1549,29 @@
     // Try and look for a skip
     let skip = skips.at(0, default: none)
     if skip != none and line.number == skip.at(0) {
+      // Determine skip index for array access
+      let skip-index = processed-skips
+      processed-skips += 1
+      
+      // Get skip-number content (array or single value)
+      let skip-number-content = if type(skip-number) == array {
+        skip-number.at(skip-index, default: skip-number.at(-1, default: [ ... ]))
+      } else {
+        skip-number
+      }
+      
+      // Get skip-line content (array or single value)  
+      let skip-line-content = if type(skip-line) == array {
+        skip-line.at(skip-index, default: skip-line.at(-1, default: align(center)[ ... ]))
+      } else {
+        skip-line
+      }
+      
       if numbers-format != none {
-        items.push(skip-number)
+        items.push(skip-number-content)
       }
 
-      items.push(skip-line)
+      items.push(skip-line-content)
       lines_to_number.push(-99999999);
       // Advance the offset.
       offset += skip.at(1)
@@ -1557,26 +1579,57 @@
     } else if smart-skip-enabled and not in_range(ranges, line.number) and not in-skip {
       if in-first {
         if smart-skip-top {
+          // Smart skips use default values since they're not indexed
           if numbers-format != none {
-            items.push(skip-number)
+            let skip-number-content = if type(skip-number) == array {
+              skip-number.at(-1, default: [ ... ])
+            } else {
+              skip-number
+            }
+            items.push(skip-number-content)
           }
-          items.push(skip-line)
+          let skip-line-content = if type(skip-line) == array {
+            skip-line.at(-1, default: align(center)[ ... ])
+          } else {
+            skip-line
+          }
+          items.push(skip-line-content)
           lines_to_number.push(-99999999);
         }
       } else if array.range(line.number, line.count).any((i) => in_range(ranges, i)) {
         if smart-skip-rest {
           if numbers-format != none {
-            items.push(skip-number)
+            let skip-number-content = if type(skip-number) == array {
+              skip-number.at(-1, default: [ ... ])
+            } else {
+              skip-number
+            }
+            items.push(skip-number-content)
           }
-          items.push(skip-line)
+          let skip-line-content = if type(skip-line) == array {
+            skip-line.at(-1, default: align(center)[ ... ])
+          } else {
+            skip-line
+          }
+          items.push(skip-line-content)
           lines_to_number.push(-99999999);
         }
       } else {
         if smart-skip-bot {
           if numbers-format != none {
-            items.push(skip-number)
+            let skip-number-content = if type(skip-number) == array {
+              skip-number.at(-1, default: [ ... ])
+            } else {
+              skip-number
+            }
+            items.push(skip-number-content)
           }
-          items.push(skip-line)
+          let skip-line-content = if type(skip-line) == array {
+            skip-line.at(-1, default: align(center)[ ... ])
+          } else {
+            skip-line
+          }
+          items.push(skip-line-content)
           lines_to_number.push(-99999999);
         }
       }

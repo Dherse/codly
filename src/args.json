@@ -313,17 +313,17 @@
     },
     "skip-line": {
         "title": "Skip line",
-        "description": "Sets the content with which the line code is filled when a skip is encountered.",
+        "description": "Sets the content with which the line code is filled when a skip is encountered. Can be a single content value applied to all skips, or an array of content values for individual skip formatting.",
         "default": "align(center)[ ... ]",
-        "ty": [ "content", "type(none)" ],
+        "ty": [ "content", "type(none)", "array" ],
         "function": true,
         "example": "#codly(\n  skips: ((4, 32), ),\n  skip-line: align(center, emoji.face.shock)\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\nfib(25)\n```"
     },
     "skip-number": {
         "title": "Skip number",
-        "description": "Sets the content with which the line number columns is filled when a skip is encountered. If line numbers are disabled, this has no effect.",
+        "description": "Sets the content with which the line number columns is filled when a skip is encountered. If line numbers are disabled, this has no effect. Can be a single content value applied to all skips, or an array of content values for individual skip formatting.",
         "default": "[ ... ]",
-        "ty": [ "content", "type(none)" ],
+        "ty": [ "content", "type(none)", "array" ],
         "function": true,
         "example": "#codly(\n  skips: ((4, 32), ),\n  skip-number: align(center, emoji.face.shock)\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\nfib(25)\n```"
     },
