@@ -53,8 +53,8 @@
 /// - skip-last-empty (bool, function): skip-last-empty
 /// - breakable (bool): breakable
 /// - skips (array, none, function): skips
-/// - skip-line (content, none, function): skip-line
-/// - skip-number (content, none, function): skip-number
+/// - skip-line (content, none, array, function): skip-line
+/// - skip-number (content, none, array, function): skip-number
 /// - annotations (array, none, function): annotations
 /// - annotation-format (none, function): annotation-format
 /// - highlighted-lines (array, none, function): highlighted-lines
@@ -358,8 +358,8 @@
 /// - skip-last-empty (bool, function): skip-last-empty
 /// - breakable (bool): breakable
 /// - skips (array, none, function): skips
-/// - skip-line (content, none, function): skip-line
-/// - skip-number (content, none, function): skip-number
+/// - skip-line (content, none, array, function): skip-line
+/// - skip-number (content, none, array, function): skip-number
 /// - annotations (array, none, function): annotations
 /// - annotation-format (none, function): annotation-format
 /// - highlighted-lines (array, none, function): highlighted-lines
