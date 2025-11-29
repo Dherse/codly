@@ -1878,8 +1878,6 @@
     )
   )
 
-  let width_lines_number = calc.max(2, (calc.ceil(calc.log(it.lines.len())) + 1)) * 1em
-
   let line_colors = ()
   for (i, line) in lines_to_number.enumerate() {
     let highlighted = highlighted-by-line.at(line - 1, default: none)
