@@ -597,7 +597,7 @@
           hl.tag
         }
 
-        place(hide[#figure(
+        place(hide(pdf.artifact[#figure(
           kind: "codly-referencer",
           supplement: none,
           numbering: (..) => {
@@ -606,7 +606,7 @@
             __codly-trim(referenced)
           },
           []
-        )#hl.label])
+        )#hl.label]))
       } else {
         none
       }
@@ -1598,7 +1598,7 @@
     }
 
     // Always push the formatted line number
-    let l = figure(
+    let l = pdf.artifact(figure(
       kind: "__codly-raw-line",
       numbering: none,
       placement: none,
@@ -1611,7 +1611,7 @@
         line.text,
         box(height: height, width: 0pt) + line.body,
       ) <codly-highlighted>]
-    )
+    ))
 
     lines_to_number.push(line.number + offset)
 
@@ -1632,7 +1632,7 @@
           num
         }
 
-        place(hide[#figure(
+        place(hide(pdf.artifact[#figure(
           kind: "codly-referencer",
           supplement: none,
           numbering: (..) => {
@@ -1641,7 +1641,7 @@
             referenced
           },
           []
-        )#current-annot.label])
+        )#current-annot.label]))
       } else {
         none
       }
@@ -1992,7 +1992,7 @@
 
   block_content
 
-  figure(
+  pdf.artifact(figure(
     kind: "__codly-end-block",
     supplement: none,
     numbering: none,
@@ -2000,7 +2000,7 @@
     outlined: false,
     gap: 0pt,
     caption: none,
-  )[]
+  )[])
 
   if offset != 0 {
     state("codly-offset").update(0)
@@ -2140,22 +2140,22 @@
 #let typst-icon = (
   typ: (
     name: "Typst",
-    icon: box(
+    icon: pdf.artifact(box(
       image("typst-small.png", height: 0.8em),
       baseline: 0.1em,
       inset: 0pt,
       outset: 0pt,
-    ),
+    )),
     color: rgb("#239DAD"),
   ),
   typc: (
     name: "Typst code",
-    icon: box(
+    icon: pdf.artifact(box(
       image("typst-small.png", height: 0.8em),
       baseline: 0.1em,
       inset: 0pt,
       outset: 0pt,
-    ),
+    )),
     color: rgb("#239DAD"),
   ),
 )
