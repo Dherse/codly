@@ -1977,7 +1977,7 @@
           fill: (x, y) => line_colors.at(y, default: if zebra-color != none and calc.rem(y, 2) == 0 {
             zebra-color
           } else {
-            fill
+            line_colors.at(y, default: fill)
           }),
           column-gutter: 0pt,
           gutter: 0pt,
