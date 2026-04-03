@@ -209,7 +209,7 @@
         "title": "Language box radius",
         "description": "The radius of the border of the language block.",
         "default": "0.32em",
-        "ty": [ "length" ],
+        "ty": [ "length", "dictionary" ],
         "function": true,
         "example": "#codly(lang-radius: 10pt)\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```"
     },
