@@ -789,6 +789,12 @@
     state("codly-highlight-inset", __codly-args.highlight-inset.default).get()
   });
 
+  let highlight-baseline = if sys.version >= version(0, 15, 0) {
+    auto
+  } else {
+    __codly-inset(highlight-inset).bottom
+  }
+
   show raw.line.where(label: <codly-highlighted>): codly-line.with(
     (__codly-args.highlight-stroke.type_check)(if "highlight-stroke" in extra {
       extra.highlight-stroke
@@ -806,7 +812,7 @@
       state("codly-highlight-radius", __codly-args.highlight-radius.default).get()
     }),
     highlight-inset,
-    __codly-inset(highlight-inset).bottom,
+    highlight-baseline,
     (__codly-args.highlight-outset.type_check)(if "highlight-outset" in extra {
       extra.highlight-outset
     } else {
