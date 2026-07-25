@@ -1082,8 +1082,8 @@
 
           let col = l.at(1)
           assert(
-            type(col) == color or type(col) == gradient or type(col) == pattern,
-            message: "codly: the type of a `highlighted-lines` color must be either a color, a gradient, or a pattern, found: " + str(type(col))
+            type(col) == color or type(col) == gradient or type(col) == tiling,
+            message: "codly: the type of a `highlighted-lines` color must be either a color, a gradient, or a tiling, found: " + str(type(col))
           )
 
           (ln, col)
@@ -1324,7 +1324,7 @@
 
       let fill = if type(lang-fill) == function {
         (lang-fill)((name: name, icon: icon, color: color))
-      } else if type(lang-fill) == color or type(lang-fill) == gradient or type(lang-fill) == pattern {
+      } else if type(lang-fill) == color or type(lang-fill) == gradient or type(lang-fill) == tiling {
         lang-fill
       } else {
         color
@@ -1390,7 +1390,7 @@
 
       let fill = if type(lang-fill) == function {
         (lang-fill)((name: alias, icon: [], color: default-color))
-      } else if type(lang-fill) == color or type(lang-fill) == gradient or type(lang-fill) == pattern {
+      } else if type(lang-fill) == color or type(lang-fill) == gradient or type(lang-fill) == tiling {
         lang-fill
       } else {
         default-color
