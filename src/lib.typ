@@ -1517,6 +1517,32 @@
   let in-skip = false
   let in-first = true
   let had-first = false
+  let visible-lines = it.lines.filter(line =>
+    in_range(ranges, line.number) and not (
+      skip-last-empty and line.text.trim().len() == 0 and line.number == line.count
+    )
+  )
+  let first-line-number = if visible-lines.len() == 0 {
+    none
+  } else {
+    visible-lines.first().number
+  }
+  let last-line-number = if visible-lines.len() == 0 {
+    none
+  } else {
+    visible-lines.last().number
+  }
+  let first-code-row = none
+  let last-code-row = none
+  let outside-corner = (content, corner-radius, corner-fill) => box(
+    width: 100%,
+    outset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
+    radius: corner-radius,
+    stroke: none,
+    fill: corner-fill,
+    clip: true,
+    content,
+  )
   for line in it.lines {
     first-annot = false
 
@@ -1612,6 +1638,51 @@
         box(height: height, width: 0pt) + line.body,
       ) <codly-highlighted>]
     )
+
+    // Outside numbers move the code cells away from the outer block's left
+    // edge. Give the first and last rendered lines their own rounded box so
+    // both corners and their fills use the same geometry.
+    let row-index = lines_to_number.len()
+    if numbers-outside and line.number == first-line-number {
+      first-code-row = row-index
+    }
+    if numbers-outside and line.number == last-line-number {
+      last-code-row = row-index
+    }
+    let highlighted = highlighted-by-line.at(line.number + offset - 1, default: none)
+    let line-fill = if highlighted != none {
+      highlighted
+    } else if zebra-color != none and calc.rem(row-index, 2) == 0 {
+      zebra-color
+    } else {
+      fill
+    }
+
+    if numbers-outside and line.number == first-line-number and line.number == last-line-number {
+      l = outside-corner(
+        l,
+        (
+          top-left: radius,
+          top-right: radius,
+          bottom-left: radius,
+          bottom-right: radius,
+          rest: 0pt,
+        ),
+        line-fill,
+      )
+    } else if numbers-outside and line.number == first-line-number {
+      l = outside-corner(
+        l,
+        (top-left: radius, top-right: radius, rest: 0pt),
+        line-fill,
+      )
+    } else if numbers-outside and line.number == last-line-number {
+      l = outside-corner(
+        l,
+        (bottom-left: radius, bottom-right: radius, rest: 0pt),
+        line-fill,
+      )
+    }
 
     lines_to_number.push(line.number + offset)
 
@@ -1952,6 +2023,8 @@
             none
           } else {
             (x, y) => if numbers-outside and x == 0 {
+              none
+            } else if numbers-outside and x == 1 and (y == first-code-row or y == last-code-row) {
               none
             } else {
               line_colors.at(y, default: fill)
