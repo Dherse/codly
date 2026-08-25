@@ -1241,6 +1241,7 @@
 
   let items = ()
   let lines_to_number = ()
+  let number-widths = ()
   let height = measure[1].height
   let current-annot = none
   let first-annot = false
@@ -1546,6 +1547,7 @@
     let skip = skips.at(0, default: none)
     if skip != none and line.number == skip.at(0) {
       if numbers-format != none {
+        number-widths.push(measure(skip-number).width)
         items.push(skip-number)
       }
 
@@ -1558,6 +1560,7 @@
       if in-first {
         if smart-skip-top {
           if numbers-format != none {
+            number-widths.push(measure(skip-number).width)
             items.push(skip-number)
           }
           items.push(skip-line)
@@ -1566,6 +1569,7 @@
       } else if array.range(line.number, line.count).any((i) => in_range(ranges, i)) {
         if smart-skip-rest {
           if numbers-format != none {
+            number-widths.push(measure(skip-number).width)
             items.push(skip-number)
           }
           items.push(skip-line)
@@ -1574,6 +1578,7 @@
       } else {
         if smart-skip-bot {
           if numbers-format != none {
+            number-widths.push(measure(skip-number).width)
             items.push(skip-number)
           }
           items.push(skip-line)
@@ -1618,7 +1623,9 @@
     // Must be done before the smart indentation code.
     // Otherwise it results in two paragraphs.
     if numbers-format != none {
-      items.push(numbers-format(line.number + offset))
+      let number = numbers-format(line.number + offset)
+      number-widths.push(measure(number).width)
+      items.push(number)
     }
 
     let annot = none
@@ -1816,6 +1823,15 @@
     }
   }
 
+  let number-width = if numbers-outside and number-widths.len() > 0 {
+    number-widths.fold(
+      0pt,
+      (a, b) => calc.max(a, b),
+    ) + padding.left * 1.5 + padding.right * 1.5
+  } else {
+    0pt
+  }
+
   // prepare the footer
   let footer = (__codly-args.footer.type_check)(if "footer" in extra {
     extra.footer
@@ -1878,8 +1894,6 @@
     )
   )
 
-  let width_lines_number = calc.max(2, (calc.ceil(calc.log(it.lines.len())) + 1)) * 1em
-
   let line_colors = ()
   for (i, line) in lines_to_number.enumerate() {
     let highlighted = highlighted-by-line.at(line - 1, default: none)
@@ -1899,26 +1913,40 @@
     radius: radius,
     stroke: if numbers-outside { none } else { stroke },
     {
-      if is-complex-fill {
-        // We use place to draw the fill on a separate layer.
+      if is-complex-fill or numbers-outside {
+        // Draw fills separately so outside numbering can use one rounded
+        // clipping container for the whole code area.
+        let fill-grid = grid(
+          columns: if has-annotations {
+            (1fr, annot-width)
+          } else {
+            (1fr,)
+          },
+          stroke: none,
+          inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
+          fill: (x, y) => if numbers-outside {
+            line_colors.at(y, default: fill)
+          } else if zebra-color != none and calc.rem(y, 2) == 0 {
+            zebra-color
+          } else {
+            fill
+          },
+          ..header,
+          ..it.lines.map(line => hide(line)),
+          ..footer,
+        )
         place(
-          grid(
-            columns: if has-annotations {
-              (1fr, annot-width)
-            } else {
-              (1fr,)
-            },
-            stroke: none,
-            inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
-            fill: (x, y) => if zebra-color != none and calc.rem(y, 2) == 0 {
-              zebra-color
-            } else {
-              fill
-            },
-            ..header,
-            ..it.lines.map(line => hide(line)),
-            ..footer,
-          ),
+          dx: if numbers-outside { number-width } else { 0pt },
+          if numbers-outside {
+            box(
+              width: 100% - number-width,
+              radius: radius,
+              clip: true,
+              fill-grid,
+            )
+          } else {
+            fill-grid
+          },
         )
       }
 
@@ -1948,7 +1976,7 @@
               none
             },
           align: (numbers-alignment, left + horizon),
-          fill: if is-complex-fill {
+          fill: if is-complex-fill or numbers-outside {
             none
           } else {
             (x, y) => if numbers-outside and x == 0 {
