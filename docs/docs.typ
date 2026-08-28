@@ -3,15 +3,13 @@
 #import "orly.typ": orly
 #import "../src/args.typ": *
 #import "../codly.typ": (
-  codly, codly-init, codly-reset, no-codly, yes-codly, codly-enable,
-  codly-disable, codly-range, codly-offset, local, codly-skip,
-  typst-icon
+  codly, codly-set, codly-show, codly-selector, typst-icon
 )
 
 // Set this to the relevant version
 #let current_version = "1.3.1"
 
-#show: codly-init
+#show raw.where(block: true): codly
 
 #show ref: it => {
   if type(it.target) == label and str(it.target).starts-with("arg-") {
@@ -135,7 +133,10 @@
   enabled: true,
   languages: typst-icon,
 )
-#codly(..codly-args)
+
+#show: codly-set(
+  ..codly-args
+)
 
 #let one-indexed = info[ Line numbers are one-indexed, meaning that to reference the fourth line, you use the number `4`. ]
 #let zero-indexed = info[ Character positions are zero-indexed, meaning that to reference the fourth character, you use the number `3`. ]
@@ -152,7 +153,7 @@
       inset: 0.32em,
       stroke: 1pt + luma(120),
       {
-        pre
+        show: codly-set(..pre)
         raw
       }
     ),
@@ -206,7 +207,7 @@
   numbering: "1",
 )
 
-#codly(lang-format: none)
+#show: codly-set(lang-format: none)
 
 #outline(depth: 2, indent: auto)
 
@@ -453,7 +454,7 @@ You can reference lines directly, if you have set a label correctly, using the s
   ] <my-label>
   I can reference my code block: @my-label. Or a specific line: @my-label:2.
   ````,
-  pre: codly(
+  pre: arguments(
     ranges: ((1, 3), (8, 10)),
     skips: ((4, 0), )
   )
@@ -481,7 +482,7 @@ You can also highlight by reference, to do this, you need to set a label for you
 
   Reference a highlight by its label: @hl-1.
   ````,
-  pre: codly(
+  pre: arguments(
     ranges: ((1, 3), (13, 13)),
     skips: ((4, 0), )
   )
@@ -505,7 +506,7 @@ And using #link(<arg-reference-by>)[`"item"`] mode:
 
   Reference a highlight by its label: @hl-2.
   ````,
-  pre: codly(
+  pre: arguments(
     ranges: ((1, 4), (14, 14)),
     skips: ((5, 0), )
   )
@@ -525,7 +526,7 @@ This is a short, non-exhaustive guide on how to get nicer icons for the language
 + Using your font selector, select the icon you wish to use
   - For example, the language icon in Tabler Icons is `ebbe` (the unicode value of the icon, which you can find in the documentation of the font)
   - Use the #link("https://typst.app/docs/reference/text/text/")[`text`] function to display the icon in your document by setting the font, size, and the unicode value of the icon:
-  #codly(highlights: ((line: 1, start: 12, end: 25, tag: [ Font name ]), (line: 1, start: 43, end: 46, fill: green, tag: [ UTF-8 icon code])))
+  #show: codly-set(highlights: ((line: 1, start: 12, end: 25, tag: [ Font name ]), (line: 1, start: 43, end: 46, fill: green, tag: [ UTF-8 icon code])))
   ```typc
   text(font: "tabler-icons", size: 1em, "\u{ebbe}")
   ```
