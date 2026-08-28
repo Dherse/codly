@@ -318,8 +318,13 @@
   fields: (
     field("body", types.option(content), doc: __doc("footer"), required: true),
     field("repeat", types.option(bool), doc: __doc("footer-repeat"), default: __default("footer-repeat")),
-    field("cell-args", types.option(types.union(array, dictionary, arguments)), doc: __doc("footer-cell-args"), default: __default("footer-cell-args")),
-    field("transform", types.option(function), doc: __doc("footer-transform"), default: __default("footer-transform")),
+
+    // Replaces the old cell-args
+    field("align", types.option(alignment), doc: "todo", default: center + horizon),
+    field("breakable", types.option(types.union(bool, auto)), doc: "todo", default: auto),
+    field("inset", types.option(types.union(length, dictionary, auto)), doc: "todo", default: auto),
+    field("fill", types.option(types.union(types.paint, auto)), doc: "todo", default: auto),
+    field("stroke", types.option(types.union(stroke, auto)), doc: "todo", default: auto),
   )
 )
 
@@ -436,10 +441,11 @@
     field("skip-line", types.option(content), doc: __doc("skip-line"), default: __default("skip-line")),
     field("skip-number", types.option(content), doc: __doc("skip-number"), default: __default("skip-number")),
     field("annotations", types.option(types.array(annotation)), doc: __doc("annotations"), default: __default("annotations"), folds: false),
-    field("highlighted-lines", types.option(types.array(highlighted-line)), doc: __doc("highlighted-lines"), default: __default("highlighted-lines"), folds: false),
+    field("highlighted", types.option(types.array(highlighted-line)), doc: __doc("highlighted-lines"), default: __default("highlighted-lines"), folds: false),
     field("highlights", types.option(types.array(highlight)), doc: __doc("highlights"), default: __default("highlights"), folds: false),
     field("header", types.option(content), doc: __doc("header"), default: __default("header")),
     field("footer", types.option(content), doc: __doc("footer"), default: __default("footer")),
+    field("radius", types.option(length), doc: __doc("radius"), default: __default("radius")),
   )
 )
 
