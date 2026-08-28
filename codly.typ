@@ -548,12 +548,13 @@
       }
 
       import "src/lib.typ": __codly-show
-      show raw.where(block: true): __codly-show.with(codly-line, codly-lang, codly-header, codly-number, codly-annotation, it)
+      show raw.where(block: true): __codly-show.with(codly-line, codly-lang, codly-header, codly-footer, codly-number, codly-annotation, codly-ref, it)
       
       it.body
     },
     fields: (
       e.field("body", e.types.option(content), doc: "The row block to style", required: true),
+      e.field("block-label", e.types.option(label), doc: "The label of the containing figure.", default: none),
       e.field("alias", e.types.option(str), doc: "Whether this is an already aliased block", required: false, default: none),
       e.field("enabled", e.types.option(bool), doc: __doc("enabled"), default: __default("enabled")),
       e.field("number-enabled", e.types.option(bool), doc: "todo", default: true),
@@ -628,4 +629,8 @@
 #let annotation-show_(it, ..args) = {
   import "@preview/elembic:1.1.1" as e
   e.show_(codly-annotation, it, ..args)
+}
+#let ref-set_(..args)             = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(codly-ref, ..args)
 }

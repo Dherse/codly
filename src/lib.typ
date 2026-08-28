@@ -155,6 +155,9 @@
     []
   }
   let body = icon + sep + name
+  if body == [] {
+    return []
+  }
 
   let padding = __codly-inset(arg("inset"))
   let b = measure(body)
@@ -447,10 +450,13 @@
   // A zero-width box guarantees a consistent line height (measured once).
   let line-height = __codly-line-height-state.get()
   if line-height == none {
-    line-height = measure[1].height
+    // Match the historical line rhythm: highlighted rows reserve the top
+    // highlight inset in addition to the glyph height. Without it, boxes sit
+    // a fraction of an em too high compared with the legacy renderer.
+    line-height = measure[1].height + __codly-inset(get(codly-highlight).inset).top
     __codly-line-height-state.update(line-height)
   }
-  let body = box(height: line-height, width: 0pt) + line.body
+  let body = box(height: line-height, width: 0pt, baseline: 0pt) + line.body
 
   // Smart indentation: turn leading whitespace into a hanging indent so that
   // line breaks continue at the same indentation level.
@@ -549,7 +555,13 @@
 
   let output = raw.line(line.number, line.count, line.text, highlighted)
   if it.block-label == none {
-    return output
+    return output + place(hide[#figure(
+      kind: "__codly-raw-line",
+      supplement: none,
+      caption: none,
+      outlined: false,
+      raw.line(line.number, line.count, line.text, []),
+    )])
   }
 
   let ref-set = get(codly-ref)
@@ -581,6 +593,7 @@
   skip-line,
   skip-number,
   codly-annotation,
+  ref-set,
   highlights,
   smart-indent,
   block-label,
@@ -674,12 +687,32 @@
     ))
 
     if current-annot != none and first-annot {
+      let label = if current-annot.label != none {
+        let referenced = if ref-set.by == "line" {
+          (ref-set.number-format)(line.number + offset)
+        } else {
+          if current-annot.content == none { str(annots) } else { current-annot.content }
+        }
+        place(hide[#figure(
+          kind: "codly-referencer",
+          supplement: none,
+          numbering: (..) => {
+            ref(block-label)
+            ref-set.sep
+            __codly-trim(referenced)
+          },
+          [],
+        )#current-annot.label])
+      } else {
+        []
+      }
       items.push(grid.cell(
         rowspan: current-annot.end - current-annot.start + 1,
         align: left + horizon,
         codly-annotation[
           #annots
           #current-annot.content
+          #label
         ],
       ))
     }
@@ -694,28 +727,34 @@
   codly-line,
   codly-lang,
   codly-header,
+  codly-footer,
   codly-number,
   codly-annotation,
+  codly-ref,
   args,
   it,
 ) = e.get(get => {
   let cstr = args.__elembic_stored_element_data.default-constructor
   let lines_to_number = ()
 
-  if args.alias == none and args.aliases != none and it.lang in args.aliases {
-    return cstr(
-      raw(
-        it.text,
-        block: true,
-        align: it.align,
-        lang: args.aliases.at(it.lang),
-        theme: it.theme,
-        syntaxes: it.syntaxes,
-        tab-size: it.tab-size,
-      ),
-      alias: it.lang,
-      ..__filter_elembic_args(args)
-    )
+  if args.alias == none and args.aliases != none {
+    if it.lang != none {
+      if it.lang in args.aliases {
+        return cstr(
+          raw(
+            it.text,
+            block: true,
+            align: it.align,
+            lang: args.aliases.at(it.lang),
+            theme: it.theme,
+            syntaxes: it.syntaxes,
+            tab-size: it.tab-size,
+          ),
+          alias: it.lang,
+          ..__filter_elembic_args(args)
+        )
+      }
+    }
   }
 
   let lang = if args.alias == none {
@@ -803,7 +842,7 @@
 
     // auto allows external set rules to override the footer cell args
     let footer-set = get(codly-footer)
-    let cell_args = (colspan: 2, rowspan: 1, x: 0, y: 0)
+    let cell_args = (colspan: 2, rowspan: 1)
     if footer-set.align != auto {
       cell_args.align = footer-set.align
     }
@@ -854,7 +893,7 @@
     let block-label = args.at("block-label", default: none)
     let annotations = args.annotations.sorted(key: x => x.start).map(annot => {
       if block-label == none and annot.label != none {
-        panic("codly: annotations with labels (" + annot.label + ") require `block-label` to be set")
+        panic("codly: annotations with labels (" + str(annot.label) + ") require `block-label` to be set")
       }
       annot
     })
@@ -894,7 +933,7 @@
     let end = query(figure.where(kind: "__codly-end-block").after(origin.location())).first()
     let lines = query(figure.where(kind: "__codly-raw-line").after(origin.location()).before(end.location()))
     if lines.len() > 0 {
-      offset += lines.last().body.children.at(0).number
+      offset += lines.last().body.number
     }
   }
 
@@ -944,6 +983,7 @@
     args.skip-line,
     args.skip-number,
     codly-annotation,
+    get(codly-ref),
     args.highlights,
     args.smart-indent,
     args.at("block-label", default: none),
@@ -983,6 +1023,7 @@
 
   let numbers-outside = get(codly-number).placement == "outside"
   let has-annotations = annotations != none and annotations.len() > 0
+  let annot-width = auto
   let padding = __codly-inset(get-line.inset)
   let numbers-alignment = get(codly-number).align
   let block_content = block(
@@ -1054,8 +1095,8 @@
           gutter: 0pt,
           row-gutter: 0pt,
           ..header-block,
-          ..footer-block,
           ..items,
+          ..footer-block,
         )
       } else {
         grid(
@@ -1076,8 +1117,8 @@
           gutter: 0pt,
           row-gutter: 0pt,
           ..header-block,
-          ..footer-block,
           ..items,
+          ..footer-block,
         )
       }
     },

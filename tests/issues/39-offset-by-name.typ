@@ -1,10 +1,7 @@
-#import "../../codly.typ": *
-
-#show: codly-init.with()
+#import "../../codly.typ" as codly
 
 = First part
-#codly(offset: 10)
-```py
+#codly.new(offset: 10, ```py
 import pandas as pd
 
 def preprocess_headers(data: pd.DataFrame) -> None:
@@ -27,11 +24,10 @@ def preprocess_headers(data: pd.DataFrame) -> None:
         inplace=True,
         errors="raise",
     )
-``` <first-part>
+```)<first-part>
 
 = Second part
-#codly(offset-from: <first-part>)
-```py
+#codly.new(offset-from: <first-part>, ```py
     # Replace values with correct ones
     data.loc[data["Relation"] == "Mum", "Relation"] = "Mother"
     data.loc[data["Nationality"] == "KW", "Nationality"] = "Kuwait"
@@ -50,7 +46,7 @@ def preprocess_headers(data: pd.DataFrame) -> None:
     grade_ids = [f"G-{i:02d}" for i in range(1, 13)]
     data["GradeID"] = data["GradeID"].cat.set_categories(grade_ids, ordered=True)
     data["Class"] = pd.Categorical(data["Class"], ordered=True, categories=["L", "M", "H"])
-```
+```)
 
 = No offset
 ```py

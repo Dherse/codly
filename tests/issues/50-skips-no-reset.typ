@@ -1,14 +1,10 @@
 
-#import "../../codly.typ": *
-#show: codly-init.with()
+#import "../../codly.typ" as codly
 
 #set page(height: auto, margin: 5pt, width: 450pt)
 
 = Should have a skip
-#codly(
-skips: ((9,9),)
-)
-```py
+#codly.new(skips: ((9, 9),), ```py
 def start_server():
     # Create a socket
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -21,7 +17,7 @@ def start_server():
     # Start waiting for connections 
     server_socket.listen(1)
     print(f"Server listening on {host}:{port}...")
-  ```
+```)
 
 = Should not have a skip
 

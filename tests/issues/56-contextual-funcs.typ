@@ -1,11 +1,9 @@
-#import "../../codly.typ": *
+#import "../../codly.typ" as codly
 
-#local(
-  fill: () => red
-)[
-  ```rs
+#show: codly.line-set_(fill: red)
+
+#codly.new(```rs
   pub fn main() {
     println!("Hello, World!");
   }
-  ```
-]
+```)
