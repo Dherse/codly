@@ -3,6 +3,10 @@
 /// The prefix identifying codly's custom elements and types.
 #let __codly-prefix = "@preview/codly:v2.0.0"
 
+/// Cached height of a single character, shared by every line so each line does
+/// not re-measure it. Initialized lazily on first use.
+#let __codly-line-height-state = state("codly-line-height", none)
+
 /// Metadata for each codly argument, read from `src/args.json`.
 /// The `doc` of each field below is the argument's `title` in that file.
 #let __codly-args = json("args.json")
@@ -167,11 +171,402 @@
   return badge
 }
 
-#let __codly-header-show(
-  it
-) = {
-  it.body
+/// Trims leading whitespace-only children from content, used for references.
+#let __codly-trim(body) = {
+  if type(body) == str {
+    return body.trim()
+  }
+
+  if body.has("children") {
+    let out = ()
+    let start = true
+    for child in body.children {
+      if start and child.has("text") and child.text.trim().len() == 0 {
+        continue
+      } else if start and child == [ ] {
+        continue
+      }
+
+      start = false
+      out.push(child)
+    }
+
+    (body.func())(out)
+  } else {
+    body
+  }
 }
+
+/// Sorts highlights so that nested highlights are applied before the ones
+/// containing them, preserving a stable order for equal spans.
+#let __sort-highlights(highlights) = {
+  // Check if highlight 'a' contains highlight 'b'
+  let contains(a, b) = {
+    // a contains b if b is fully within a's range
+    // but they're not the same highlight
+    (a.start <= b.start and a.end >= b.end and
+      not (a.start == b.start and a.end == b.end))
+  }
+
+  // Calculate nesting depth for a highlight
+  // Depth = number of highlights that contain this one
+  let get-depth(h, all-highlights) = {
+    let depth = 0
+    for other in all-highlights {
+      if contains(other, h) {
+        depth += 1
+      }
+    }
+    depth
+  }
+
+  // Add depth information to each highlight
+  let with-depths = highlights.enumerate().map(((i, h)) => {
+    (
+      original-index: i,
+      highlight: h,
+      depth: get-depth(h, highlights)
+    )
+  })
+
+  // Sort by:
+  // 1. Depth (descending - deepest/most nested first)
+  // 2. Start position (ascending)
+  // 3. End position (ascending)
+  // 4. Original index (to maintain stable sort)
+  let sorted = with-depths.sorted(key: item => (
+    -item.depth,  // Negative for descending order
+    item.highlight.start,
+    item.highlight.end,
+    item.original-index
+  ))
+
+  // Return just the highlights without the extra metadata
+  sorted.map(item => item.highlight)
+}
+
+/// The length in characters of a piece of content, where content labeled
+/// `<codly-highlight>` (a tagged highlight) occupies no positions.
+#let __codly-line-length(child) = {
+  if child.has("label") and child.label == <codly-highlight> {
+    0
+  } else if child.has("text") {
+    child.text.len()
+  } else if child.has("children") {
+    child.children.map(__codly-line-length).sum()
+  } else if child.has("child") {
+    __codly-line-length(child.child)
+  } else if child.has("body") {
+    __codly-line-length(child.body)
+  } else {
+    0
+  }
+}
+
+/// Flattens content into a sequence of atomic children, keeping labeled
+/// highlight content whole and splitting text at whitespace clusters so
+/// highlights can start and end on word boundaries.
+#let __codly-line-body(elem) = {
+  if elem.has("label") and elem.label == <codly-highlight> {
+    (elem,)
+  } else if elem.has("children") {
+    elem.children.map(__codly-line-body).flatten()
+  } else if elem.has("child") and elem.has("styles") {
+    __codly-line-body(elem.child)
+      .map(x => (elem.func())(x, elem.styles))
+      .flatten()
+  } else if elem.has("text") {
+    // Separate the whitespaces at the start of text
+    let out = ()
+    let whitespace = none
+    for cluster in elem.text.clusters() {
+      if cluster.match(regex("\\s")) != none {
+        if whitespace == none {
+          whitespace = cluster
+        } else {
+          whitespace += cluster
+        }
+      } else if whitespace != none {
+        out.push(text(whitespace))
+        out.push(text(cluster))
+        whitespace = none
+      } else {
+        out.push(text(cluster))
+      }
+    }
+    if whitespace != none {
+      out.push(text(whitespace))
+    }
+    out
+  } else {
+    (elem,)
+  }
+}
+
+/// Renders a single highlighted span of a code line. All styling is resolved
+/// from the per-highlight overrides in the metadata record, falling back to
+/// the element's own fields, and references use the `codly-ref` settings.
+#let __codly-highlight-show(
+  codly-ref,
+  it,
+) = e.get(get => {
+  let hl = it.highlight
+
+  let base = if hl != none and hl.fill != none { hl.fill } else { it.color }
+  let fill = (it.fill)(base)
+  let stroke = if type(it.stroke) == function {
+    (it.stroke)(base)
+  } else {
+    it.stroke
+  }
+  let override(name) = if hl != none and hl.at(name) != none {
+    hl.at(name)
+  } else {
+    it.at(name)
+  }
+  let radius = override("radius")
+  let clip = override("clip")
+  let inset = override("inset")
+  let outset = override("outset")
+  let baseline = if hl != none and hl.baseline != none {
+    hl.baseline
+  } else {
+    __codly-inset(it.inset).bottom
+  }
+
+  // Build the hidden reference figure if the highlight is labeled.
+  let label = if hl != none and hl.label != none {
+    assert(
+      hl.at("block-label", default: none) != none,
+      message: "codly: for labels on highlights to work, you must have the code block contained within a figure and that figure must have a label.",
+    )
+    let ref-set = get(codly-ref)
+    let referenced = if ref-set.by == "line" {
+      (ref-set.number-format)(hl.at("line-number"))
+    } else {
+      assert(hl.tag != none, message: "codly: tag is required for item reference")
+      hl.tag
+    }
+
+    place(hide[#figure(
+      kind: "codly-referencer",
+      supplement: none,
+      numbering: (..) => {
+        ref(hl.at("block-label"))
+        ref-set.sep
+        __codly-trim(referenced)
+      },
+      [],
+    )#hl.label])
+  }
+
+  let tag = if hl != none { hl.tag } else { none }
+  if tag == none {
+    box(
+      radius: radius,
+      clip: clip,
+      fill: fill,
+      stroke: stroke,
+      inset: inset,
+      outset: outset,
+      baseline: baseline,
+      it.body + label,
+    )
+  } else {
+    // With a tag, the highlight is split into a body box and a tag box whose
+    // inner corners are squared off so they join seamlessly. Both boxes get an
+    // explicit width: with `width: auto`, Typst would shrink them to the
+    // remaining line width at the weak break point, reflowing their text.
+    let inset-sep = __codly-inset(inset)
+    let size-body = measure(it.body)
+    let size-tag = measure(tag)
+    let max-height = calc.max(
+      size-body.height,
+      size-tag.height,
+    ) + inset-sep.top + inset-sep.bottom
+    let width-body = size-body.width + inset-sep.left + inset-sep.right
+    let width-tag = size-tag.width + inset-sep.left + inset-sep.right
+    let body-box = box(
+      radius: (top-right: 0pt, bottom-right: 0pt, rest: radius),
+      width: width-body,
+      height: max-height,
+      clip: clip,
+      fill: fill,
+      stroke: stroke,
+      inset: inset,
+      outset: outset,
+      baseline: baseline,
+      it.body,
+    )
+    let tag-box = box(
+      radius: (top-left: 0pt, bottom-left: 0pt, rest: radius),
+      width: width-tag,
+      height: max-height,
+      clip: clip,
+      fill: fill,
+      stroke: stroke,
+      inset: inset,
+      outset: outset,
+      baseline: baseline,
+      tag + label,
+    )
+    [#body-box#h(0pt, weak: true)#tag-box]
+  }
+})
+
+/// Renders a single code line: smart indentation, per-character highlights
+/// (delegated to `codly-highlight`), and line reference figures.
+#let __codly-line-show(
+  codly-highlight,
+  codly-ref,
+  it,
+) = e.get(get => {
+  let line = it.body
+
+  // Skip placeholders and other non-line content are rendered as-is.
+  if type(line) != content or line.func() != raw.line {
+    return line
+  }
+
+  let hl-eid = none
+  let highlights = if it.highlights == none {
+    ()
+  } else {
+    __sort-highlights(
+      it.highlights
+        .filter(x => x.line == line.number)
+        .map(hl => {
+          // Inject the context needed for references into the metadata record.
+          hl.insert("line-number", line.number)
+          hl.insert("block-label", it.block-label)
+          hl
+        }),
+    )
+  }
+
+  // A zero-width box guarantees a consistent line height (measured once).
+  let line-height = __codly-line-height-state.get()
+  if line-height == none {
+    line-height = measure[1].height
+    __codly-line-height-state.update(line-height)
+  }
+  let body = box(height: line-height, width: 0pt) + line.body
+
+  // Smart indentation: turn leading whitespace into a hanging indent so that
+  // line breaks continue at the same indentation level.
+  let width = none
+  if it.smart-indent {
+    // The first textual slice is the text before the first whitespace run,
+    // i.e. the indented body of the line (leading whitespace is stripped by
+    // raw parsing). Measure it directly; non-textual first elements have no
+    // indentation.
+    if body.has("children") {
+      for child in body.children {
+        if child.has("text") {
+          let match = child.text.match(regex("^\\s*"))
+          if match != none and match.start == 0 and match.end > 0 {
+            width = measure([#child.text.slice(0, match.end)]).width
+          }
+          break
+        }
+      }
+    }
+  }
+
+  // Apply the highlights: walk the flattened children once, tracking which
+  // highlights cover each child, then group consecutive children sharing the
+  // same highlight stack and wrap each group in nested `codly-highlight`
+  // instances, innermost first. This must run before the indentation wrap:
+  // a `set par` wrapper would otherwise be distributed to every flattened
+  // child, turning each character into its own paragraph.
+  let highlighted = body
+  if highlights.len() > 0 {
+    let source = __codly-line-body(body)
+    let count = source.len()
+
+    // Since highlights are sorted deepest-first and their spans are
+    // contiguous, each child can be marked with its covering stack in one
+    // pass: a highlight joins when the child's character interval intersects
+    // it and leaves when the interval moves past its end.
+    let marked = ()
+    let active = ()
+    let ended = ()
+    let i = 0
+    for (index, child) in source.enumerate() {
+      let child-len = __codly-line-length(child)
+
+      // Leave highlights that ended before this child.
+      active = active.filter(hl => i < hl.end)
+
+      // Join newly covered highlights (deepest-first, so the marked stack is
+      // directly usable for nesting). Once a highlight has ended it cannot
+      // rejoin.
+      for hl in highlights {
+        if hl not in active and i < hl.end and (i >= hl.start or i + child-len >= hl.start) and (hl not in ended) {
+          active.push(hl)
+        }
+      }
+
+      marked.push((child, active))
+      ended += highlights.filter(hl => i + child-len >= hl.end)
+      i += child-len
+    }
+
+    // Group consecutive children with an identical stack.
+    let children = ()
+    let group = ()
+    let group-stack = ()
+    for (child, stack) in marked {
+      if stack != group-stack and group.len() > 0 {
+        let content = group.join()
+        for hl in group-stack {
+          content = codly-highlight(content, highlight: hl)
+        }
+        children.push(content)
+        group = ()
+      }
+      group-stack = stack
+      group.push(child)
+    }
+    if group.len() > 0 {
+      let content = group.join()
+      for hl in group-stack {
+        content = codly-highlight(content, highlight: hl)
+      }
+      children.push(content)
+    }
+
+    highlighted = children.join()
+  }
+
+  // Apply the hanging indent last, around the fully assembled line.
+  if width != none {
+    highlighted = {
+      set par(hanging-indent: width)
+      highlighted
+    }
+  }
+
+  let output = raw.line(line.number, line.count, line.text, highlighted)
+  if it.block-label == none {
+    return output
+  }
+
+  let ref-set = get(codly-ref)
+  let line-label = label(str(it.block-label) + ":" + str(line.number))
+  [#figure(
+    kind: "codly-line",
+    supplement: none,
+    caption: none,
+    outlined: false,
+    numbering: (..) => {
+      ref(it.block-label)
+      ref-set.sep
+      (ref-set.number-format)(line.number)
+    },
+    output,
+  )#line-label]
+})
 
 #let __codly-line-loop(
   codly-line,
@@ -186,7 +581,11 @@
   skip-line,
   skip-number,
   codly-annotation,
+  highlights,
+  smart-indent,
+  block-label,
   offset,
+  lang-block,
 ) = {
   let items = ()
   let lines_to_number = ()
@@ -218,8 +617,8 @@
       }
     }
 
-    let explicit-skip = skips.at(0, default: none)
-    let explicit-skip = explicit-skip != none and line.number == explicit-skip.position
+    let explicit-skip-data = skips.at(0, default: none)
+    let explicit-skip = explicit-skip-data != none and line.number == explicit-skip-data.position
     let smart-skip = smart-skip-enabled and not in_range(ranges, line.number) and not in-skip
     let smart-skip = if smart-skip {
       if in-first {
@@ -243,17 +642,15 @@
       ))
       lines_to_number.push(-99999999)
       if explicit-skip {
-        offset += skips.first().length
+        offset += explicit-skip-data.length
         _ = skips.remove(0)
       }
     }
 
     if not in_range(ranges, line.number) {
-      in-skip = true
       continue
     }
     in-skip = false
-    in-first = false
 
     if skip-last-empty and line.text.trim().len() == 0 and line.number == line.count {
       continue
@@ -264,8 +661,15 @@
       items.push(codly-number(line.number + offset))
     }
 
+    // The line's number carries the offset, matching its displayed number.
+    let numbered = raw.line(line.number + offset, line.count, line.text, line.body)
     items.push(grid.cell(
-      codly-line(line),
+      codly-line(
+        if in-first { numbered + lang-block } else { numbered },
+        highlights: highlights,
+        smart-indent: smart-indent,
+        block-label: block-label,
+      ),
       colspan: if number-enabled { 1 } else { 2 },
     ))
 
@@ -279,19 +683,21 @@
         ],
       ))
     }
+
+    in-first = false
   }
 
   (items: items, lines_to_number: lines_to_number)
 }
 
 #let __codly-show(
-  it,
-  args,
   codly-line,
   codly-lang,
   codly-header,
   codly-number,
   codly-annotation,
+  args,
+  it,
 ) = e.get(get => {
   let cstr = args.__elembic_stored_element_data.default-constructor
   let lines_to_number = ()
@@ -337,8 +743,6 @@
 
   // Build the header
   let header-block = if args.header != none {
-    lines_to_number.push(-999999999)
-
     // check if the header is a `codly-header` element, if not, wrap it in one
     let header = if e.eid(args.header) == e.eid(codly-header) {
       codly-header(
@@ -540,8 +944,17 @@
     args.skip-line,
     args.skip-number,
     codly-annotation,
+    args.highlights,
+    args.smart-indent,
+    args.at("block-label", default: none),
     offset,
+    if args.header == none { lang-block } else { [] },
   )
+
+  // The header counts as a line for zebra striping purposes.
+  if args.header != none {
+    lines_to_number.insert(0, -999999999)
+  }
 
   // If the fill or zebra color is a gradient, we will draw it on a separate layer.
   let get-line = get(codly-line)
