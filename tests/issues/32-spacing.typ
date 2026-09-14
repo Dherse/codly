@@ -1,5 +1,6 @@
 #import "../../codly.typ" as codly
 
+
 #show: codly.line-set_(stroke: none, inset: 0.205em)
 #show: codly.lang-set_(display-icon: false, display-name: false)
 
@@ -47,7 +48,7 @@ def preprocess_headers(data: pd.DataFrame) -> None:
     data["Class"] = pd.Categorical(data["Class"], ordered=True, categories=["L", "M", "H"])
 ```
 
-#set page("a3")
+#set page(width: 600pt, height: auto)
 #columns(2)[
   #codly.new(number-enabled: false, code)
   #colbreak()

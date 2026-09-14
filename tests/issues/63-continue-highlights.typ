@@ -1,6 +1,6 @@
 #import "../../codly.typ" as codly
 
-#set page(width: 300pt, height: 300pt)
+#set page(width: 300pt, height: auto)
 #codly.new(
   enabled: true,
   annotations: (

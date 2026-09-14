@@ -1,5 +1,6 @@
 #import "../../codly.typ" as codly
 
+#set page(width: 300pt, height: auto)
 #show: codly.ref-set_(by: "item")
 
 @test1

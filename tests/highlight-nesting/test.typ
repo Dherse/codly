@@ -1,4 +1,4 @@
-#import "../../src/lib.typ": __codly-line-show
+#import "../../src/lib.typ": __codly-line-show, __codly-line-loop
 
 // Expose the nesting as delimiters so we can check the complete structure,
 // including whether an outer highlight is emitted more than once.
@@ -16,11 +16,11 @@
   }
 }
 
-#let check(highlights, expected) = {
+#let check(highlights, expected, body: [abcdefghi]) = {
   show figure.where(kind: "__codly-raw-line"): it => []
   show raw.line: it => assert.eq(text-of(it.body), expected)
   __codly-line-show(wrap, none, (
-    body: raw.line(1, 1, "abcdefghi", [abcdefghi]),
+    body: raw.line(1, 1, "", body),
     highlights: highlights.map(hl => (line: 1, ..hl)),
     smart-indent: false,
     block-label: none,
@@ -64,3 +64,51 @@
 #check(((start: 3, end: 100, tag: "tail"),), "ab<tail>cdefghi</tail>")
 #check(((start: 20, end: 30, tag: "outside"),), "abcdefghi")
 #check((), "abcdefghi")
+
+// Duplicate records collapse even when separated by another equal span.
+#check((
+  (start: 2, end: 8, tag: "first"),
+  (start: 2, end: 8, tag: "second"),
+  (start: 2, end: 8, tag: "first"),
+), "a<second><first>bcdefgh</first></second>i")
+
+// Whitespace runs are atomic even when several boundaries fall inside them.
+#check((
+  (start: 2, end: 9, tag: "outer"),
+  (start: 5, end: 6, tag: "inner"),
+), "<outer>  ab<inner>   </inner>cd</outer> e", body: text("  ab   cd e"))
+
+// Per-line indexing uses displayed numbers, including offsets from each skip.
+#context {
+  let first = (line: 11, start: 1, end: 2)
+  let second = (line: 14, start: 1, end: 3)
+  let last = (line: 19, start: 2, end: 3)
+  let expected = ("11": (first,), "14": (second,), "15": (), "19": (last,))
+  let render(line, highlights: none, ..args) = {
+    if line.func() == raw.line {
+      assert.eq(highlights, expected.at(str(line.number)))
+    }
+    line
+  }
+  let result = __codly-line-loop(
+    render,
+    number => [],
+    (first: false, rest: false, last: false),
+    range(1, 5).map(number => raw.line(number, 4, "abc", [abc])),
+    (), // annotations
+    none, // ranges
+    ((position: 2, length: 2), (position: 4, length: 3)),
+    false, // skip-last-empty
+    false, // number-enabled
+    [skip],
+    [], // skip-number
+    none, // codly-annotation
+    none, // ref-set
+    (last, second, first, (line: 50, start: 1, end: 2)),
+    false, // smart-indent
+    none, // block-label
+    10, // offset
+    [], // lang-block
+  )
+  assert.eq(result.lines_to_number, (11, -99999999, 14, 15, -99999999, 19))
+}
