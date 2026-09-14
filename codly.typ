@@ -102,7 +102,7 @@
       e.field("line", int, doc: "The line number to start highlighting (one-indexed).", required: true),
       e.field("start", e.types.option(int), doc: "The character position to start highlighting, zero if omitted or `none` (zero-indexed).", default: none),
       e.field("end", e.types.option(int), doc: "The character position to end highlighting, the end of the line if omitted or `none` (zero-indexed).", default: none),
-      e.field("fill", e.types.option(e.types.paint), doc: "The fill of the highlight, defaults to the default color.", default: none),
+      e.field("fill", e.types.option(e.types.union(e.types.paint, function)), doc: "The fill of the highlight, defaults to the default color.", default: none),
       e.field("tag", e.types.option(e.types.union(str, content)), doc: "An optional tag to be displayed alongside the highlight.", default: none),
       e.field("inset", e.types.option(e.types.union(length, dictionary)), doc: "Overrides `codly-highlight`'s `inset`.", default: none),
       e.field("baseline", e.types.option(length), doc: "Overrides the baseline which is set by default to the `bottom` component of `codly-highlight`'s `inset`.", default: none),
@@ -110,6 +110,7 @@
       e.field("outset", e.types.option(e.types.union(length, dictionary)), doc: "Overrides `codly-highlight`'s `outset`.", default: none),
       e.field("radius", e.types.option(length), doc: "Overrides `codly-highlight`'s `radius`.", default: none),
       e.field("label", e.types.option(label), doc: "If and only if the code block is in a `figure`, sets the label by which the highlight can be referenced.", default: none),
+      e.field("stroke", e.types.option(e.types.union(stroke, function)), doc: "Overrides `codly-highlight`'s `stroke`.", default: none)
     ),
     parse-args: __highlight-parser,
     casts: (
@@ -367,6 +368,7 @@
       e.field("color", e.types.paint, doc: __doc("default-color"), default: __default("default-color")),
       e.field("radius", e.types.option(length), doc: __doc("highlight-radius"), default: __default("highlight-radius")),
       e.field("fill", e.types.option(function), doc: __doc("highlight-fill"), default: __default("highlight-fill")),
+      e.field("baseline", e.types.option(length), doc: "todo", default: 0.0pt),
       e.field("stroke", e.types.option(e.types.union(stroke, function)), doc: __doc("highlight-stroke"), default: __default("highlight-stroke")),
       e.field("inset", e.types.option(e.types.union(length, dictionary)), doc: __doc("highlight-inset"), default: __default("highlight-inset")),
       e.field("outset", e.types.option(e.types.union(length, dictionary)), doc: __doc("highlight-outset"), default: __default("highlight-outset")),
