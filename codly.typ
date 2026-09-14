@@ -118,9 +118,8 @@
       (
         from: dictionary,
         with: constructor => value => {
+          value = __highlight-normalize(value)
           let line = value.remove("line")
-          value = __highlight-normalize((line: line, ..value))
-          line = value.remove("line")
           constructor(line, ..value)
         },
       ),
@@ -180,9 +179,8 @@
       (
         from: dictionary,
         with: constructor => value => {
+          value = __annotation-normalize(value)
           let start = value.remove("start")
-          value = __annotation-normalize((start: start, ..value))
-          start = value.remove("start")
           constructor(start, ..value)
         },
       ),
@@ -206,8 +204,7 @@
         let ordered = ()
         for name in fields.user-fields.keys() {
           if name in named {
-            ordered.push(named.at(name))
-            _ = named.remove(name)
+            ordered.push(named.remove(name))
           }
         }
         // Any remaining named fields are unknown and will error in the default parser
@@ -229,8 +226,7 @@
     let ordered = ()
     for name in field-names {
       if name in value {
-        ordered.push(value.at(name))
-        _ = value.remove(name)
+        ordered.push(value.remove(name))
       }
     }
     if value.len() > 0 {
@@ -334,8 +330,8 @@
   )
 }
 
-/// A reference to a highlight or annotation of a codly code block. Takes over
-/// the `reference-` prefixed arguments of `codly`.
+/// Shared formatting settings read by the line, highlight, and annotation
+/// reference renderers. Generated references currently use figure numbering.
 #let codly-ref = {
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default
@@ -502,26 +498,6 @@
   )
 }
 
-/// A reference to a highlight or annotation of a codly code block. Takes over
-/// the `reference-` prefixed arguments of `codly`.
-#let codly-ref = {
-  import "@preview/elembic:1.1.1" as e
-  import "src/lib.typ": __codly-prefix, __doc, __default
-
-  e.element.declare(
-    "codly-ref",
-    prefix: __codly-prefix,
-    doc: "A reference to a highlight or annotation of a codly code block.",
-    display: it => it.body,
-    fields: (
-      e.field("body", e.types.option(content), doc: "The content of the reference.", required: true),
-      e.field("by", e.types.option(e.types.union("line", "item")), doc: __doc("reference-by"), default: __default("reference-by")),
-      e.field("sep", e.types.option(e.types.union(str, content)), doc: __doc("reference-sep"), default: __default("reference-sep")),
-      e.field("numbering", e.types.option(function), doc: __doc("reference-number-format"), default: __default("reference-number-format")),
-    )
-  )
-}
-
 /// A line number of a codly code block. Takes over the `number-` prefixed
 /// arguments of `codly`.
 #let codly-number = {
@@ -555,9 +531,11 @@
       }
 
       import "src/lib.typ": __codly-show
-      show raw.where(block: true): __codly-show.with(codly-line, codly-lang, codly-header, codly-footer, codly-number, codly-annotation, codly-ref, it)
-      
-      it.body
+      let body = it.remove("body")
+      let data = it.remove("__elembic_stored_element_data")
+      let constructor = if it.alias == none and it.aliases != none { data.default-constructor }
+      show raw.where(block: true): __codly-show.with(codly-line, codly-lang, codly-header, codly-footer, codly-number, codly-annotation, codly-ref, constructor, it)
+      body
     },
     fields: (
       e.field("body", e.types.option(content), doc: "The row block to style", required: true),
