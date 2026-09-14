@@ -1,5 +1,7 @@
 #import "../../codly.typ" as codly
 
+#set page(width: 300pt, height: auto)
+
 #codly.new(highlights: (
   (line: 2, start: 10, end: 10, fill: green),
   (line: 2, start: 14, end: 14, fill: red),
