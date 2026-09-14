@@ -110,7 +110,8 @@
       e.field("outset", e.types.option(e.types.union(length, dictionary)), doc: "Overrides `codly-highlight`'s `outset`.", default: none),
       e.field("radius", e.types.option(length), doc: "Overrides `codly-highlight`'s `radius`.", default: none),
       e.field("label", e.types.option(label), doc: "If and only if the code block is in a `figure`, sets the label by which the highlight can be referenced.", default: none),
-      e.field("stroke", e.types.option(e.types.union(stroke, function)), doc: "Overrides `codly-highlight`'s `stroke`.", default: none)
+      e.field("stroke", e.types.option(e.types.union(stroke, function)), doc: "Overrides `codly-highlight`'s `stroke`.", default: none),
+      e.field("depth", e.types.option(int), doc: "The depth of the highlight, used to determine which highlight is on top when multiple highlights overlap. Higher depth means on top."),
     ),
     parse-args: __highlight-parser,
     casts: (
@@ -172,6 +173,7 @@
       e.field("end", e.types.option(int), doc: "The line number to end the annotation, if missing or `none` the annotation will only contain the start line.", default: none),
       e.field("content", e.types.option(content), doc: "The content of the annotation as a showable value, if missing or `none` the annotation will only contain the number.", default: none),
       e.field("label", e.types.option(label), doc: "If and only if the code block is in a `figure`, sets the label by which the annotation can be referenced.", default: none),
+      e.field("numbering", e.types.option(function), doc: "The format of the annotation number, defaults to `(1)`.", default: numbering.with("(1)")),
     ),
     parse-args: __annotation-parser,
     casts: (
@@ -347,7 +349,7 @@
       e.field("body", e.types.option(content), doc: "The content of the reference.", required: true),
       e.field("by", e.types.option(e.types.union("line", "item")), doc: __doc("reference-by"), default: __default("reference-by")),
       e.field("sep", e.types.option(e.types.union(str, content)), doc: __doc("reference-sep"), default: __default("reference-sep")),
-      e.field("number-format", e.types.option(function), doc: __doc("reference-number-format"), default: __default("reference-number-format")),
+      e.field("numbering", e.types.option(function), doc: __doc("reference-number-format"), default: __default("reference-number-format")),
     )
   )
 }
@@ -472,7 +474,6 @@
       e.field("radius", e.types.option(length), doc: __doc("lang-radius"), default: __default("lang-radius")),
       e.field("stroke", e.types.option(e.types.union(stroke, function)), doc: __doc("lang-stroke"), default: __default("lang-stroke")),
       e.field("fill", e.types.option(e.types.union(e.types.paint, function)), doc: __doc("lang-fill"), default: __default("lang-fill")),
-      e.field("format", e.types.option(e.types.union(type(auto), function)), doc: __doc("lang-format"), default: __default("lang-format")),
       e.field("display-name", e.types.option(bool), doc: __doc("display-name"), default: __default("display-name")),
       e.field("display-icon", e.types.option(bool), doc: __doc("display-icon"), default: __default("display-icon")),
     )
@@ -483,16 +484,20 @@
 /// prefixed arguments of `codly`.
 #let codly-annotation = {
   import "@preview/elembic:1.1.1" as e
-  import "src/lib.typ": __codly-prefix, __doc, __default
+  import "src/lib.typ": __codly-prefix, __doc, __default, __codly-annotation-show
 
   e.element.declare(
     "codly-annotation",
     prefix: __codly-prefix,
     doc: "An annotation displayed on the right side of a codly code block.",
-    display: it => it.body,
+    display: __codly-annotation-show,
+    labelable: false,
     fields: (
       e.field("body", e.types.option(content), doc: "The content of the annotation.", required: true),
-      e.field("format", e.types.option(function), doc: __doc("annotation-format"), default: __default("annotation-format")),
+      e.field("label", e.types.option(content), doc: "todo", default: "todo", required: true),
+      e.field("height", e.types.option(length), doc: "todo", default: 0.0pt),
+      e.field("num", e.types.option(int), doc: "todo", default: 0),
+      e.field("numbering", e.types.option(function), doc: "todo", default: numbering.with("(1)")),
     )
   )
 }
@@ -512,7 +517,7 @@
       e.field("body", e.types.option(content), doc: "The content of the reference.", required: true),
       e.field("by", e.types.option(e.types.union("line", "item")), doc: __doc("reference-by"), default: __default("reference-by")),
       e.field("sep", e.types.option(e.types.union(str, content)), doc: __doc("reference-sep"), default: __default("reference-sep")),
-      e.field("number-format", e.types.option(function), doc: __doc("reference-number-format"), default: __default("reference-number-format")),
+      e.field("numbering", e.types.option(function), doc: __doc("reference-number-format"), default: __default("reference-number-format")),
     )
   )
 }

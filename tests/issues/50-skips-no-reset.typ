@@ -21,7 +21,7 @@ def start_server():
 
 = Should not have a skip
 
-```py
+#codly.new(```py
 def start_server():
     # Create a socket
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -34,4 +34,4 @@ def start_server():
     # Start waiting for connections 
     server_socket.listen(1)
     print(f"Server listening on {host}:{port}...")
-  ```
+```)

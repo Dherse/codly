@@ -1,5 +1,7 @@
 #import "../../codly.typ" as codly
 
+#set page(height: auto, margin: 5pt, width: 450pt)
+
 #codly.new(header: [ Hello, world! ], footer: [ Goodbye, world! ], ```py
 def fib(n):
   if n <= 1:

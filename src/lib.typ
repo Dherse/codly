@@ -3,10 +3,6 @@
 /// The prefix identifying codly's custom elements and types.
 #let __codly-prefix = "@preview/codly:v2.0.0"
 
-/// Cached height of a single character, shared by every line so each line does
-/// not re-measure it. Initialized lazily on first use.
-#let __codly-line-height-state = state("codly-line-height", none)
-
 /// Metadata for each codly argument, read from `src/args.json`.
 /// The `doc` of each field below is the argument's `title` in that file.
 #let __codly-args = json("args.json")
@@ -96,11 +92,6 @@
     it.at(name)
   }
 
-  let format = arg("format")
-  if format == none {
-    return []
-  }
-
   // Resolve the display properties. When the language definition does not
   // provide a name, fall back to the un-prettified language key; when it does
   // not provide a color, fall back to the default color.
@@ -127,12 +118,6 @@
   // The dictionary passed to function-valued `stroke`/`fill` and to custom
   // formatters.
   let lang = (name: name, icon: icon, color: color)
-
-  if type(format) == function {
-    return format(name, icon, color)
-  }
-
-  // `format: auto`: the default formatter.
   let fill = arg("fill")
   let fill = if type(fill) == function {
     fill(lang)
@@ -245,7 +230,10 @@
   ))
 
   // Return just the highlights without the extra metadata
-  sorted.map(item => item.highlight)
+  sorted.map(item => {
+    item.highlight.depth = item.depth
+    item.highlight
+  })
 }
 
 /// The length in characters of a piece of content, where content labeled
@@ -316,25 +304,23 @@
   let hl = it.highlight
 
   let base = if hl != none and hl.fill != none { hl.fill } else { it.color }
-  let fill = (it.fill)(base)
-  let stroke = if type(it.stroke) == function {
-    (it.stroke)(base)
-  } else {
-    it.stroke
-  }
   let override(name) = if hl != none and hl.at(name) != none {
     hl.at(name)
   } else {
     it.at(name)
   }
+  let fill = override("fill")
+  let stroke = override("stroke")
   let radius = override("radius")
   let clip = override("clip")
   let inset = override("inset")
   let outset = override("outset")
-  let baseline = if hl != none and hl.baseline != none {
-    hl.baseline
+  let baseline = override("baseline")
+  let fill = (it.fill)(base)
+  let stroke = if type(it.stroke) == function {
+    (it.stroke)(base)
   } else {
-    __codly-inset(it.inset).bottom
+    it.stroke
   }
 
   // Build the hidden reference figure if the highlight is labeled.
@@ -345,7 +331,7 @@
     )
     let ref-set = get(codly-ref)
     let referenced = if ref-set.by == "line" {
-      (ref-set.number-format)(hl.at("line-number"))
+      (ref-set.numbering)(hl.at("line-number"))
     } else {
       assert(hl.tag != none, message: "codly: tag is required for item reference")
       hl.tag
@@ -413,7 +399,7 @@
       baseline: baseline,
       tag + label,
     )
-    [#body-box#h(0pt, weak: true)#tag-box]
+    [#body-box#h(0pt, weak: true)#tag-box<codly-highlight>]
   }
 })
 
@@ -448,14 +434,7 @@
   }
 
   // A zero-width box guarantees a consistent line height (measured once).
-  let line-height = __codly-line-height-state.get()
-  if line-height == none {
-    // Match the historical line rhythm: highlighted rows reserve the top
-    // highlight inset in addition to the glyph height. Without it, boxes sit
-    // a fraction of an em too high compared with the legacy renderer.
-    line-height = measure[1].height + __codly-inset(get(codly-highlight).inset).top
-    __codly-line-height-state.update(line-height)
-  }
+  let line-height = measure[1].height // + __codly-inset(get(codly-highlight).inset).top
   let body = box(height: line-height, width: 0pt, baseline: 0pt) + line.body
 
   // Smart indentation: turn leading whitespace into a hanging indent so that
@@ -480,15 +459,13 @@
   }
 
   // Apply the highlights: walk the flattened children once, tracking which
-  // highlights cover each child, then group consecutive children sharing the
-  // same highlight stack and wrap each group in nested `codly-highlight`
-  // instances, innermost first. This must run before the indentation wrap:
+  // highlights cover each child, keeping shared outer highlights open when
+  // their nested highlights change. This must run before the indentation wrap:
   // a `set par` wrapper would otherwise be distributed to every flattened
   // child, turning each character into its own paragraph.
   let highlighted = body
   if highlights.len() > 0 {
     let source = __codly-line-body(body)
-    let count = source.len()
 
     // Since highlights are sorted deepest-first and their spans are
     // contiguous, each child can be marked with its covering stack in one
@@ -498,15 +475,14 @@
     let active = ()
     let ended = ()
     let i = 0
-    for (index, child) in source.enumerate() {
+    for child in source {
       let child-len = __codly-line-length(child)
 
       // Leave highlights that ended before this child.
       active = active.filter(hl => i < hl.end)
 
-      // Join newly covered highlights (deepest-first, so the marked stack is
-      // directly usable for nesting). Once a highlight has ended it cannot
-      // rejoin.
+      // Join newly covered highlights. Once a highlight has ended it cannot
+      // rejoin; the covering stack is sorted by depth when grouping below.
       for hl in highlights {
         if hl not in active and i < hl.end and (i >= hl.start or i + child-len >= hl.start) and (hl not in ended) {
           active.push(hl)
@@ -518,31 +494,37 @@
       i += child-len
     }
 
-    // Group consecutive children with an identical stack.
-    let children = ()
-    let group = ()
-    let group-stack = ()
+    // Each open highlight has its own child buffer, ordered outermost first.
+    // Preserve the shared prefix of successive stacks so an outer highlight
+    // wraps all its plain text and nested highlights in a single element.
+    let open = ()
+    let groups = ((),)
+    // An empty final stack closes every remaining highlight.
+    marked.push((none, ()))
     for (child, stack) in marked {
-      if stack != group-stack and group.len() > 0 {
-        let content = group.join()
-        for hl in group-stack {
-          content = codly-highlight(content, highlight: hl)
-        }
-        children.push(content)
-        group = ()
+      let stack = stack.sorted(key: hl => -hl.depth).rev()
+      let shared = 0
+      while shared < calc.min(open.len(), stack.len()) and open.at(shared) == stack.at(shared) {
+        shared += 1
       }
-      group-stack = stack
-      group.push(child)
-    }
-    if group.len() > 0 {
-      let content = group.join()
-      for hl in group-stack {
-        content = codly-highlight(content, highlight: hl)
+
+      // Close only the changed suffix, attaching each completed highlight to
+      // its parent. Crossing spans split where their parent changes.
+      while open.len() > shared {
+        let hl = open.pop()
+        let content = codly-highlight(groups.pop().join(), highlight: hl)
+        groups.last().push(content)
       }
-      children.push(content)
+      for hl in stack.slice(shared) {
+        open.push(hl)
+        groups.push(())
+      }
+      if child != none {
+        groups.last().push(child)
+      }
     }
 
-    highlighted = children.join()
+    highlighted = groups.first().join()
   }
 
   // Apply the hanging indent last, around the fully assembled line.
@@ -574,7 +556,7 @@
     numbering: (..) => {
       ref(it.block-label)
       ref-set.sep
-      (ref-set.number-format)(line.number)
+      (ref-set.numbering)(line.number)
     },
     output,
   )#line-label]
@@ -608,11 +590,13 @@
   let annots = 0
   let in-skip = false
   let in-first = true
+  let has-annots = annotations.len() > 0
+  let line-height = measure[1].height // + __codly-inset(get(codly-highlight).inset).top
 
   for line in lines {
     first-annot = false
 
-    let annot = annotations.at(0, default: none)
+    let annot = annotations.at(annotations.len() - 1, default: none)
     if annot != none and line.number == annot.start {
       current-annot = annot
       first-annot = true
@@ -621,8 +605,8 @@
 
     if current-annot != none and line.number > current-annot.end {
       current-annot = none
-      _ = annotations.remove(0)
-      let annot = annotations.at(0, default: none)
+      _ = annotations.pop()
+      let annot = annotations.at(annotations.len() - 1, default: none)
       if annot != none and line.number == annot.start {
         current-annot = annot
         first-annot = true
@@ -651,7 +635,6 @@
       }
       items.push(grid.cell(
         codly-line(skip-line),
-        colspan: if number-enabled { 1 } else { 2 },
       ))
       lines_to_number.push(-99999999)
       if explicit-skip {
@@ -676,20 +659,26 @@
 
     // The line's number carries the offset, matching its displayed number.
     let numbered = raw.line(line.number + offset, line.count, line.text, line.body)
+    let rendered-line = codly-line(
+      numbered,
+      highlights: highlights,
+      smart-indent: smart-indent,
+      block-label: block-label,
+    )
+    if in-first {
+      in-first = false
+      rendered-line += lang-block
+    }
     items.push(grid.cell(
-      codly-line(
-        if in-first { numbered + lang-block } else { numbered },
-        highlights: highlights,
-        smart-indent: smart-indent,
-        block-label: block-label,
-      ),
-      colspan: if number-enabled { 1 } else { 2 },
+      colspan: if not has-annots or current-annot != none { 1 } else { 2 },
+      rendered-line,
     ))
 
     if current-annot != none and first-annot {
+      let height = line-height * (current-annot.end - current-annot.start + 1)
       let label = if current-annot.label != none {
         let referenced = if ref-set.by == "line" {
-          (ref-set.number-format)(line.number + offset)
+          (ref-set.numbering)(line.number + offset)
         } else {
           if current-annot.content == none { str(annots) } else { current-annot.content }
         }
@@ -706,21 +695,28 @@
       } else {
         []
       }
+
       items.push(grid.cell(
         rowspan: current-annot.end - current-annot.start + 1,
         align: left + horizon,
-        codly-annotation[
-          #annots
-          #current-annot.content
-          #label
-        ],
+        codly-annotation(
+          current-annot.content,
+          label,
+          num: annots,
+          height: height,
+          numbering: current-annot.numbering,
+        ),
       ))
     }
-
-    in-first = false
   }
 
   (items: items, lines_to_number: lines_to_number)
+}
+
+#let __codly-annotation-show(
+  it
+) = {
+  $lr(}, size: #it.height) #(it.numbering)(it.num) #it.body #it.label$
 }
 
 #let __codly-show(
@@ -796,7 +792,8 @@
 
     // auto allows external set rules to override the header cell args
     let header-set = get(codly-header)
-    let cell_args = (colspan: 2, rowspan: 1, x: 0, y: 0)
+    let colspan = if args.number-enabled { 2 } else { 1 }
+    let cell_args = (colspan: colspan, rowspan: 1, x: 0, y: 0)
     if header-set.align != auto {
       cell_args.align = header-set.align
     }
@@ -831,18 +828,19 @@
     // check if the footer is a `codly-header` element, if not, wrap it in one
     let footer = if e.eid(args.footer) == e.eid(codly-footer) {
       codly-footer(
-        args.footer.body + lang-block,
+        args.footer.body,
         ..e.fields(args.footer, exclude: ["body"])
       )
     } else {
       codly-footer(
-        args.footer + lang-block,
+        args.footer,
       )
     }
 
     // auto allows external set rules to override the footer cell args
     let footer-set = get(codly-footer)
-    let cell_args = (colspan: 2, rowspan: 1)
+    let colspan = if args.number-enabled { 2 } else { 1 }
+    let cell_args = (colspan: colspan, rowspan: 1)
     if footer-set.align != auto {
       cell_args.align = footer-set.align
     }
@@ -891,7 +889,11 @@
   // Process annotations.
   let annotations = if args.annotations != none {
     let block-label = args.at("block-label", default: none)
-    let annotations = args.annotations.sorted(key: x => x.start).map(annot => {
+    // Sort the annotations in reverse order
+    let annotations = args.annotations.sorted(key: x => args.annotations.len() - x.start).map(annot => {
+      if annot.end == none {
+        annot.insert("end", annot.start)
+      }
       if block-label == none and annot.label != none {
         panic("codly: annotations with labels (" + str(annot.label) + ") require `block-label` to be set")
       }
@@ -901,7 +903,7 @@
     // Check for overlapping annotations.
     let current = none
     for a in annotations {
-      if current != none and a.start <= current.end {
+      if current != none and a.end > current.start {
         panic("codly: overlapping annotations")
       }
       current = a
@@ -913,7 +915,7 @@
   }
 
   // handle number formatting
-  let numbers-format = if args.number-enabled != none {
+  let numbers-format = if args.number-enabled {
     codly-number
   } else {
     none
@@ -1044,8 +1046,8 @@
             },
             stroke: none,
             inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
-            fill: (x, y) => if zebra-color != none and calc.rem(y, 2) == 0 {
-              zebra-color
+            fill: (x, y) => if zebra-fill != none and calc.rem(y, 2) == 0 {
+              zebra-fill
             } else {
               fill
             },
@@ -1108,8 +1110,8 @@
           inset: padding.pairs().map(((k, x)) => (k, x * 1.5)).to-dict(),
           stroke: none,
           align: (numbers-alignment, left + horizon),
-          fill: (x, y) => line_colors.at(y, default: if zebra-color != none and calc.rem(y, 2) == 0 {
-            zebra-color
+          fill: (x, y) => line_colors.at(y, default: if zebra-fill != none and calc.rem(y, 2) == 0 {
+            zebra-fill
           } else {
             fill
           }),
@@ -1123,6 +1125,23 @@
       }
     },
   )
+
+  // fix alignment of codly-line reference figures, and show only body
+  show figure.where(kind: "codly-line"): it => {
+    set align(left + horizon)
+    it.body
+  }
+
+  // fix alignment of codly-line reference figures, and show only body
+  show figure.where(kind: "__codly-raw-line"): it => {
+    set align(left + horizon)
+    it.body
+  }
+
+  // fix alignment of codly-line reference figures, and show only body
+  show figure.where(kind: "__codly-end-block"): it => none
+
+  set par(justify: false, first-line-indent: 0pt)
 
   block_content
 

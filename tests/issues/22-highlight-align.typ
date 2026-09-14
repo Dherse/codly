@@ -1,21 +1,18 @@
 #import "../../codly.typ" as codly
 
 #set page(width: 300pt, height: auto)
-#show raw.where(block: true): codly.new
-
 #show: codly.lang-set_(
   display-icon: false,
   display-name: false,
 )
 
 #grid(columns: 3)[
-  #codly.new(
-    highlights: ((line: 2, start: 0, end: none),),
+  #codly.new(highlights: ((line: 2, start: 0, end: none),))[
     ```kotlin
     val n = 0
     val n = 0
     ```
-  )
+  ]
 ][
   #show: codly.highlight-set_(
     inset: 0em,
@@ -23,13 +20,12 @@
     clip: true,
   )
 
-  #codly.new(
-    highlights: ((line: 1, start: 0, end: none), ),
+  #codly.new(highlights: ((line: 1, start: 0, end: none), ))[
     ```kotlin
     val n = 0
     val n = 0
     ```
-  )
+  ]
 ][
   #show: codly.highlight-set_(
     inset: 0em,
@@ -37,11 +33,10 @@
     clip: true,
   )
 
-  #codly.new(
-    highlights: ((line: 2, start: 0, end: none), ),
+  #codly.new(highlights: ((line: 2, start: 0, end: none), ))[
     ```kotlin
     val n = 0
     val n = 0
     ```
-  )
+  ]
 ]

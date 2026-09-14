@@ -1,5 +1,7 @@
 #import "../../codly.typ" as codly
 
+#set page(height: auto, margin: 5pt, width: 450pt)
+
 = First part
 #codly.new(offset: 10, ```py
 import pandas as pd
@@ -49,10 +51,10 @@ def preprocess_headers(data: pd.DataFrame) -> None:
 ```)
 
 = No offset
-```py
+#codly.new(```py
 def fib(n):
   if n <= 1:
       return n
   return fib(n - 1) + fib(n - 2)
 fib(11)
-```
+```)
