@@ -139,6 +139,8 @@
     assert(end > 0, message: "codly: annotation `end` must be greater than 0")
   }
 
+  assert(end >= start, message: "codly: annotation `end` must be at least `start`")
+
   if "content" not in value {
     value.insert("content", none)
   }

@@ -104,6 +104,19 @@ Codly offers a wide range of features for referencing code blocks, lines, highli
 
 ![highlight-ref](./assets/highlight-ref.png)
 
+### Querying a code block (development API)
+
+References remain native Typst references and do not require a custom `ref` show rule. For queried information, `codly.info` reads a small metadata record:
+
+```typ
+#import "codly.typ" as codly
+#codly.new(raw("first\nsecond", block: true))<source>
+
+#context [This block has #codly.info(<source>).lines source lines.]
+```
+
+`lines` counts source lines before ranges and skips. `last-number` is the last displayed line number, including offsets, or `none` for an empty block. `offset-from` uses the same record. Pass the label of the code block or its containing figure.
+
 ### Setting an offset
 
 If you wish to add an offset to your code block, but without selecting a subset of lines, you can use the `codly-offset` function:

@@ -1,69 +1,73 @@
-#import "../../codly.typ": *
+#import "../../codly.typ" as codly
+#import "@preview/elembic:1.1.1" as e
 
-#set page("a6")
+#set page(width: 8cm + 10pt, height: auto, margin: 5pt)
 
-#show: codly-init
-
-```typst
+#codly.new[```typst
 Hello, world!
-```
+```]
 
-#codly-disable()
-```typst
+#codly.new(enabled: false)[```typst
 Hello, world!
-```
+```]
 
-#codly-enable()
-```typst
+#codly.new[```typst
 Hello, world!
-```
+```]
 
-#codly(number-format: none)
-```typst
+#codly.new(number-enabled: false)[```typst
 Hello, world!
-```
+```]
 
-#codly(lang-format: none)
-```typst
+#{
+  show: e.show_(codly.codly-lang, it => [])
+  codly.new(number-enabled: false)[```typst
 Hello, world!
-```
+  ```]
+}
 
-#codly(annotations: ((start: 1, content: "Hello, world!"), ))
-```typst
-Hello, world!
-```
+#{
+  show: e.show_(codly.codly-lang, it => [])
+  codly.new(number-enabled: false, annotations: ((start: 1, content: "Hello, world!"), ))[```typst
+  Hello, world!
+  ```]
+}
 
-#codly(lang-format: auto)
-#codly(annotations: ((start: 1, content: "Hello, world!"), ))
-```typst
+#codly.new(number-enabled: false, annotations: ((start: 1, content: "Hello, world!"), ))[```typst
 Hello, world!
-```
+```]
 
 = With highlight
-#codly(highlights: ((line: 1, tag: "Hello, world!"), ))
-#codly(inset: 0.5pt)
-```typst
-Hello, world!
-```
-
-#no-codly[
-  ```typst
+#{
+  show: codly.line-set_(inset: 0.5pt)
+  codly.new(number-enabled: false, highlights: ((line: 1, tag: "Hello, world!"), ))[```typst
   Hello, world!
-  ```
-]
+  ```]
+}
 
-#codly(inset: 10pt)
-```typst
+#codly.new(enabled: false)[```typst
 Hello, world!
-```
+```]
 
-#codly(inset: 0.5pt)
-```typst
-Hello, world!
-```
+#{
+  show: codly.line-set_(inset: 10pt)
+  codly.new(number-enabled: false)[```typst
+  Hello, world!
+  ```]
+}
 
-#codly-reset()
-#codly(languages: (py: (name: "Python", icon: "Sss ", color: rgb("#4584b6")), ))
-```py
+#{
+  show: codly.line-set_(inset: 0.5pt)
+  codly.new(number-enabled: false)[```typst
+  Hello, world!
+  ```]
+}
+
+#{
+  show: codly.lang-set_(languages: (
+    py: (name: "Python", icon: "Sss ", color: rgb("#4584b6")),
+  ))
+  codly.new[```py
 # Example code that calculates the sum of the first 10 natural numbers squares
-```
+  ```]
+}

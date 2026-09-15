@@ -15,13 +15,7 @@
 #include "40-header-no-number.typ"  
 #pagebreak()
 
-/*
-Waiting for typst-test update:
-#assert-panic(() => {
-  include "47-crash-label.typ"
-  pagebreak()
-}, message: "inequality assertion failed: codly: for labels on highlights to work, you must have the code block 
-contained within a figure and that figure must have a label.")*/
+// Issue 47 is checked as an expected compiler error by tests/run.py.
 
 #include "50-skips-no-reset.typ"
 #pagebreak()

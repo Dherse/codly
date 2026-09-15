@@ -1,7 +1,7 @@
 #import "../../codly.typ" as codly
 #import "@preview/elembic:1.1.1" as e
 
-#set page(width: 320pt, height: auto)
+#set page(width: 255pt, height: auto, margin: 5pt)
 
 #let check(expected, body) = {
   show: codly.line-show_(it => {
@@ -27,6 +27,29 @@
 #check(("skip", 2, 3), codly.new(
   raw("1\n2\n3\n", block: true), range: (2,), smart-skip: true,
 ))
+
+// Exercise each smart-skip switch independently and keep ordinary gaps hidden.
+#for (flags, expected) in (
+  ((first: true), ("skip", 2, 3, 6)),
+  ((rest: true, first: false, last: false), (2, 3, "skip", 6)),
+  ((last: true), (2, 3, 6, "skip")),
+  (false, (2, 3, 6)),
+) {
+  check(expected, codly.new(raw("1\n2\n3\n4\n5\n6\n7\n8", block: true),
+    ranges: ((2, 3), (6, 6)), smart-skip: flags,
+  ))
+}
+
+#for (source, options, expected) in (
+  ("", (:), ()),
+  ("", (skip-last-empty: false), (1,)),
+  ("one\n\n", (:), (1, 2)),
+  ("one\n\n", (skip-last-empty: false), (1, 2, 3)),
+  ("one\ntwo", (range: (20,), smart-skip: true), ("skip",)),
+  ("one\ntwo", (number-enabled: false, offset: 40), (41, 42)),
+) {
+  check(expected, codly.new(raw(source, block: true), ..options))
+}
 
 // A large displayed offset must not require a densely padded highlight array.
 #{
@@ -55,6 +78,18 @@
     it
   }
   codly.new(raw("one\n\n  two", block: true))
+}
+
+// Outside borders use displayed rows, including headers and footers.
+#{
+  show: e.set_(codly.codly-number, placement: "outside")
+  show: codly.line-set_(stroke: red + 1pt)
+  show grid: it => {
+    assert.eq((it.stroke)(1, 3).bottom, red + 1pt)
+    assert.eq((it.stroke)(1, 4).bottom, none)
+    it
+  }
+  codly.new(raw("1\n2\n3\n4\n5", block: true), range: (2, 3), header: [head], footer: [foot])
 }
 
 #context {

@@ -1,28 +1,29 @@
-// Compile with `typst compile tests/numbers-out-margin/test.typ --root . tests/numbers-out-margin/out/test.pdf` in root directory
-
-#import "../../codly.typ": *
-
-#set page("a4")
-
-#show: codly-init
+#import "../../codly.typ" as codly
+#import "@preview/elembic:1.1.1" as e
 
 = First test
 
-#codly(number-placement: "outside")
-
-```java
-System.out.println("Hello, world!");
-```
+#{
+  show: e.set_(codly.codly-number, placement: "outside")
+  codly.new[```java
+  System.out.println("Hello, world!");
+  ```]
+}
 
 = Second test
-```java
+#{
+  show: e.set_(codly.codly-number, placement: "outside")
+  codly.new[```java
 System.out.println("Hello, world!");
 System.out.println("Hello, world!");
 System.out.println("Hello, world!");
-```
+  ```]
+}
 
 = Third test
-```scala
+#{
+  show: e.set_(codly.codly-number, placement: "outside")
+  codly.new[```scala
 def factorial(n: Int): Int = 
 
   @tailrec
@@ -34,4 +35,5 @@ def factorial(n: Int): Int =
   loop(n, 1) // Call to the closure using the base case
   
 end factorial
-```
+  ```]
+}

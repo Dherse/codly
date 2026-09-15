@@ -1,18 +1,13 @@
-// Compile with `typst compile tests/numbers-out-margin/test.typ --root . tests/numbers-out-margin/out/test.pdf` in root directory
+#import "../../codly.typ" as codly
+#import "@preview/elembic:1.1.1" as e
 
-#import "../../codly.typ": *
-
-#set page("a4")
-
-#show: codly-init.with()
+#set page(height: 400pt)
 
 = Long code
 
-#codly(
-  number-placement: "outside", breakable : true, number-align: right
-)
-
-```scala
+#{
+  show: e.set_(codly.codly-number, placement: "outside", align: right)
+  codly.new(breakable: true)[```scala
 package labs.lab10_streams
 
 import hevs.graphics.FunGraphics
@@ -136,4 +131,5 @@ object CSVReader {
 		writeSVG(theLines)
 	}
 }
-```
+```]
+}

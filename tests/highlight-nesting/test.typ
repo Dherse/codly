@@ -1,5 +1,7 @@
 #import "../../src/lib.typ": __codly-line-show, __codly-line-loop
 
+#set page(width: 160pt, height: auto, margin: 5pt)
+
 // Expose the nesting as delimiters so we can check the complete structure,
 // including whether an outer highlight is emitted more than once.
 #let wrap(body, highlight: none) = {
@@ -11,6 +13,10 @@
     body.text
   } else if body.has("children") {
     body.children.map(text-of).join()
+  } else if body.has("child") {
+    text-of(body.child)
+  } else if body.has("body") {
+    text-of(body.body)
   } else {
     ""
   }
@@ -64,6 +70,18 @@
 #check(((start: 3, end: 100, tag: "tail"),), "ab<tail>cdefghi</tail>")
 #check(((start: 20, end: 30, tag: "outside"),), "abcdefghi")
 #check((), "abcdefghi")
+
+// Grapheme clusters stay whole when a boundary lands inside a combining
+// character or an emoji. Positions use the source string's character offsets.
+#check(((start: 2, end: 2, tag: "accent"),), "<accent>á</accent>bc", body: text("ábc"))
+#check(((start: 2, end: 2, tag: "emoji"),), "a<emoji>🙂</emoji>b", body: text("a🙂b"))
+
+// Styled content is traversed for text checks and remains intact in a span.
+#check(((start: 3, end: 6, tag: "styled"),), "ab<styled>cdef</styled>gh", body: [ab#text(fill: red)[cd]#strong[ef]gh])
+
+// Empty spans emit nothing; equal geometry preserves distinct tags and order.
+#check(((start: 4, end: 3, tag: "empty"),), "abcdef", body: [abcdef])
+#check(((start: 2, end: 2, tag: "first"), (start: 2, end: 2, tag: "second")), "a<second><first>b</first></second>c", body: [abc])
 
 // Duplicate records collapse even when separated by another equal span.
 #check((

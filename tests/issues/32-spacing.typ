@@ -48,7 +48,7 @@ def preprocess_headers(data: pd.DataFrame) -> None:
     data["Class"] = pd.Categorical(data["Class"], ordered=True, categories=["L", "M", "H"])
 ```
 
-#set page(width: 600pt, height: auto)
+#set page(width: 470pt, height: auto, margin: 5pt)
 #columns(2)[
   #codly.new(number-enabled: false, code)
   #colbreak()

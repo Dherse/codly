@@ -1,6 +1,6 @@
 #import "../../codly.typ" as codly
 
-#set page(width: 400pt, height: auto)
+#set page(width: 315pt, height: auto, margin: 5pt)
 #set heading(numbering: "1")
 
 // Native forward references; no initialization or custom ref show rule.

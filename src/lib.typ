@@ -287,16 +287,14 @@
   let hl = it.highlight
 
   let base = if hl != none and hl.fill != none { hl.fill } else { it.color }
+  if type(base) == function { base = base(it.color) }
   let style = (:)
   for name in ("radius", "clip", "inset", "outset", "baseline") {
     style.insert(name, if hl != none and hl.at(name) != none { hl.at(name) } else { it.at(name) })
   }
-  let fill = (it.fill)(base)
-  let stroke = if type(it.stroke) == function {
-    (it.stroke)(base)
-  } else {
-    it.stroke
-  }
+  let fill = if it.fill != none { (it.fill)(base) }
+  let stroke = if hl != none and hl.stroke != none { hl.stroke } else { it.stroke }
+  if type(stroke) == function { stroke = stroke(base) }
 
   // Build the hidden reference figure if the highlight is labeled.
   let label = if hl != none and hl.label != none {
@@ -760,7 +758,8 @@
   if args.alias == none and args.aliases != none {
     if it.lang != none {
       if it.lang in args.aliases {
-        let _ = args.remove("alias")
+        let aliased-args = args
+        let _ = aliased-args.remove("alias")
         return constructor(
           raw(
             it.text,
@@ -772,7 +771,7 @@
             tab-size: it.tab-size,
           ),
           alias: it.lang,
-          ..args
+          ..aliased-args
         )
       }
     }
@@ -800,20 +799,14 @@
     )
   }
 
-  // Build the header
-  let header-block = if args.header != none {
-    let header = if e.eid(args.header) == e.eid(codly-header) {
-      codly-header(
-        args.header.body + lang-block,
-        ..e.fields(args.header, exclude: ["body"])
-      )
-    } else {
-      codly-header(
-        args.header + lang-block,
-      )
-    }
+  let has-annotations = args.annotations != none and args.annotations.len() > 0
+  let column-count = (if args.number-enabled { 2 } else { 1 }) + (if has-annotations { 1 } else { 0 })
 
-    let header-set = get(codly-header)
+  let header-block = if args.header != none {
+    let fields = if e.eid(args.header) == e.eid(codly-header) { e.fields(args.header) } else { (body: args.header) }
+    let body = fields.remove("body")
+    let header = codly-header(body + lang-block, ..fields)
+    let header-set = get(codly-header) + fields
     let cell-args = __codly-cell-args(
       header-set.align, header-set.breakable, header-set.fill,
       header-set.inset, header-set.stroke,
@@ -824,7 +817,7 @@
         repeat: header-set.repeat,
         grid.cell(
           header,
-          colspan: if args.number-enabled { 2 } else { 1 },
+          colspan: column-count,
           rowspan: 1,
           x: 0, y: 0,
           ..cell-args
@@ -835,20 +828,11 @@
     ()
   }
 
-  // Build the footer
   let footer-block = if args.footer != none {
-    let footer = if e.eid(args.footer) == e.eid(codly-footer) {
-      codly-footer(
-        args.footer.body,
-        ..e.fields(args.footer, exclude: ["body"])
-      )
-    } else {
-      codly-footer(
-        args.footer,
-      )
-    }
-
-    let footer-set = get(codly-footer)
+    let fields = if e.eid(args.footer) == e.eid(codly-footer) { e.fields(args.footer) } else { (body: args.footer) }
+    let body = fields.remove("body")
+    let footer = codly-footer(body, ..fields)
+    let footer-set = get(codly-footer) + fields
     let cell-args = __codly-cell-args(
       footer-set.align, footer-set.breakable, footer-set.fill,
       footer-set.inset, footer-set.stroke,
@@ -859,7 +843,7 @@
         repeat: footer-set.repeat,
         grid.cell(
           footer,
-          colspan: if args.number-enabled { 2 } else { 1 },
+          colspan: column-count,
           rowspan: 1,
           ..cell-args
         )
@@ -895,7 +879,7 @@
     if args.block-label == none and annot.label != none {
       panic("codly: annotations with labels (" + str(annot.label) + ") require `block-label` to be set")
     }
-    if previous != none and annot.end > previous {
+    if previous != none and annot.end >= previous {
       panic("codly: overlapping annotations")
     }
     previous = annot.start
@@ -966,16 +950,10 @@
     lines_to_number.insert(0, -999999999)
   }
 
-  // If the fill or zebra color is a gradient, we will draw it on a separate layer.
   let get-line = get(codly-line)
   let line-fill = get-line.fill
   let zebra-fill = get-line.zebra-fill
   let fill = get-line.fill
-  let is-complex-fill = (
-    (type(line-fill) != color and line-fill != none) or (
-      type(zebra-fill) != color and zebra-fill != none
-    )
-  )
 
   let line_colors = ()
   if highlighted-by-line.len() > 0 {
@@ -993,7 +971,6 @@
 
   let number-settings = get(codly-number)
   let numbers-outside = number-settings.placement == "outside"
-  let has-annotations = annotations != none and annotations.len() > 0
   let annot-width = auto
   let padding = __codly-inset(get-line.inset)
   let grid-inset = (
@@ -1010,7 +987,7 @@
     if line_colors == () { base } else { line_colors.at(y, default: base) }
   }
   let stroke = get-line.stroke
-  let last-row = it.lines.len() - 1
+  let last-row = lines_to_number.len() + (if args.footer != none { 1 } else { 0 }) - 1
   let last-column = if has-annotations { 2 } else { 1 }
 
   let block_content = block(
@@ -1018,31 +995,8 @@
     clip: true,
     width: 100%,
     radius: args.radius,
-    stroke: if numbers-outside { none } else { get-line.stroke },
+    stroke: if outside-column { none } else { get-line.stroke },
     {
-      if is-complex-fill {
-        // We use place to draw the fill on a separate layer.
-        place(
-          grid(
-            columns: if has-annotations {
-              (1fr, annot-width)
-            } else {
-              (1fr,)
-            },
-            stroke: none,
-            inset: grid-inset,
-            fill: (x, y) => if zebra-fill != none and calc.rem(y, 2) == 0 {
-              zebra-fill
-            } else {
-              fill
-            },
-            ..header,
-            ..it.lines.map(line => hide(line)),
-            ..footer,
-          ),
-        )
-      }
-
       if numbers-format != none {
         grid(
           columns: if has-annotations {
@@ -1051,7 +1005,7 @@
             (auto, 1fr)
           },
           inset: grid-inset,
-          stroke: if numbers-outside {
+          stroke: if outside-column {
             (x, y) => (
               left: if x == 1 { stroke },
               right: if x == last-column { stroke },
@@ -1060,7 +1014,7 @@
             )
           },
           align: (numbers-alignment, left + horizon),
-          fill: if not is-complex-fill { cell-fill },
+          fill: cell-fill,
           column-gutter: 0pt,
           gutter: 0pt,
           row-gutter: 0pt,

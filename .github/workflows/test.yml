@@ -20,17 +20,17 @@ jobs:
           packages: cargo
           version: 1.0
 
-      - name: Install tytanic from github
+      - name: Install Tytanic
         uses: baptiste0928/cargo-install@v3.0.0
         with:
           crate: tytanic
-          version: '0.2.1'
+          version: '0.4.1'
       - name: Setup typst
         uses: typst-community/setup-typst@v4
         with:
-          version: 'v0.13.1'
+          version: 'v0.15.1'
       - name: Run test suite
-        run: tt run --no-fail-fast --font-path ./docs/fonts
+        run: python3 tests/run.py
       - name: Archive diffs
         uses: actions/upload-artifact@v4
         if: always()

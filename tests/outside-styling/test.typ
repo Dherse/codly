@@ -1,3 +1,5 @@
+#import "../../codly.typ" as codly
+
 #set page(height: auto, width: 300pt, margin: 10pt)
 
 #let replace-at(str, colors) = {
@@ -21,8 +23,7 @@
   }
 }
 
-#[
-    #show raw.line: it => {
+#let color-lines(it) = {
     if it.number == 1 {
       replace-at(it.text, (green: (4,), red: (10,), blue: (16,), purple: (22,)))
     } else if it.number == 2 {
@@ -32,7 +33,10 @@
     } else {
       it
     }
-  }
+}
+
+#[
+  #show raw.line: color-lines
   
   ```
   Test1 test2 test3 test4
@@ -45,33 +49,15 @@
   if test:
     pass
   ```
-]
-
-#import "../../codly.typ": *
-#show: codly-init.with()
-
-#[
-  #show raw.line: it => {
-    if it.number == 1 {
-      replace-at(it.text, (green: (4,), red: (10,), blue: (16,), purple: (22,)))
-    } else if it.number == 2 {
-      replace-at(it.text, (green: range(4,5), red: range(10,12), blue: range(17,20), purple: range(25,28)))
-    } else if it.number == 3 {
-      replace-at(it.text, (green: (0,1,2,3,4,5,6,7,8)))
-    } else {
-      it
-    }
-  }
-  
-  ```
+  #codly.new[```
   Test1 test2 test3 test4
   Test1 test22 test333 test444
   Test12345
-  ```
+  ```]
 
   
-  ```python
+  #codly.new[```python
   if test:
     pass
-  ```
+  ```]
 ]

@@ -1,6 +1,6 @@
 #import "../../codly.typ" as codly
 
-#set page(width: 400pt, height: auto)
+#set page(width: 200pt, height: auto, margin: 5pt)
 
 #codly.new(
   raw("a\nb\nc", block: true),
