@@ -25,6 +25,15 @@
   eval(__codly-args.at(name).default, mode: "code")
 }
 
+/// Read the compact block record without querying reference figures.
+#let __codly-block-info(target) = {
+  let origin = query(target)
+  assert(origin.len() == 1, message: "codly: expected a unique code block label: " + str(target))
+  let blocks = query(selector(<__codly-block>).after(origin.first().location()))
+  assert(blocks.len() > 0, message: "codly: no code block found after " + str(target))
+  blocks.first().value
+}
+
 #let __codly-inset(inset) = {
   if type(inset) == dictionary {
     let other = inset.at("rest", default: 0.32em)
@@ -49,27 +58,19 @@
   args
 }
 
-#let in_range(ranges, line) = {
-  if ranges == none or ranges.len() == 0 {
-    return true
-  }
-
-  // Return true if the line is contained in any of the ranges.
-  for r in ranges {
-    if r.at(0) == none {
-      if line <= r.at(1) {
-        return true
-      }
-    } else if r.at(1) == none {
-      if r.at(0) <= line {
-        return true
-      }
-    } else if r.at(0) <= line and line <= r.at(1) {
-      return true
+/// Sort and merge ranges once, then advance through them alongside the lines.
+#let __codly-ranges(ranges) = {
+  let ordered = ()
+  for r in ranges { ordered.push((r.start, if r.end == none { calc.inf } else { r.end })) }
+  let merged = ()
+  for (start, end) in ordered.sorted() {
+    if merged.len() > 0 and start <= merged.last().last() + 1 {
+      merged.last().at(1) = calc.max(merged.last().last(), end)
+    } else {
+      merged.push((start, end))
     }
   }
-
-  return false
+  merged
 }
 
 #let __codly-lang-show(
@@ -178,34 +179,27 @@
   }
 }
 
-/// Sorts highlights so that nested highlights are applied before the ones
-/// containing them, preserving a stable order for equal spans.
-#let __sort-highlights(highlights) = {
-  if highlights.len() <= 1 {
-    if highlights.len() == 1 { highlights.at(0).insert("depth", 0) }
-    return highlights
-  }
+/// Cache nesting and boundary events by geometry, independently of line styles.
+#let __codly-highlight-layout(spans) = {
   let keys = ()
-  for hl in highlights {
+  for (start, end) in spans {
     let depth = 0
-    for other in highlights {
-      if (
-        other.start <= hl.start and other.end >= hl.end and
-        (other.start != hl.start or other.end != hl.end)
-      ) {
+    for (other-start, other-end) in spans {
+      if other-start <= start and other-end >= end and (other-start != start or other-end != end) {
         depth += 1
       }
     }
-    keys.push((-depth, hl.start, hl.end, keys.len()))
+    keys.push((-depth, start, end, keys.len()))
   }
-
-  let sorted = ()
-  for (depth, _, _, index) in keys.sorted() {
-    let hl = highlights.at(index)
-    hl.insert("depth", -depth)
-    sorted.push(hl)
+  let order = keys.sorted()
+  let boundaries = ()
+  let pending = ()
+  for (_, start, end, _) in order {
+    boundaries.push(start)
+    boundaries.push(end)
+    pending.push((start, pending.len()))
   }
-  sorted
+  (order: order, boundaries: boundaries.sorted(), pending: pending.sorted())
 }
 
 /// The length in characters of a piece of content, where content labeled
@@ -319,12 +313,14 @@
         hl.tag
       }
 
+      let block-label = hl.at("block-label")
+      let sep = ref-set.sep
       place(hide[#figure(
         kind: "codly-referencer",
         supplement: none,
         numbering: (..) => {
-          ref(hl.at("block-label"))
-          ref-set.sep
+          ref(block-label)
+          sep
           __codly-trim(referenced)
         },
         [],
@@ -402,16 +398,29 @@
   let block-label = it.block-label
   context {
     let highlights = ()
-    if line-highlights != none {
+    let layout = none
+    if line-highlights != none and line-highlights.len() > 0 {
+      let spans = ()
       for hl in line-highlights {
         if hl.line == line.number {
-          // Inject the context needed for references into the metadata record.
-          hl.insert("line-number", line.number)
-          hl.insert("block-label", block-label)
+          if hl.at("label", default: none) != none {
+            hl.insert("line-number", line.number)
+            hl.insert("block-label", block-label)
+          }
           highlights.push(hl)
+          spans.push((hl.start, hl.end))
         }
       }
-      highlights = __sort-highlights(highlights)
+      if highlights.len() > 0 { layout = __codly-highlight-layout(spans) }
+    }
+    if layout != none {
+      let sorted = ()
+      for (depth, _, _, index) in layout.order {
+        let hl = highlights.at(index)
+        hl.insert("depth", -depth)
+        sorted.push(hl)
+      }
+      highlights = sorted
     }
 
     // Keep empty and highlighted lines at a consistent height.
@@ -424,9 +433,9 @@
       if body.has("children") {
         for child in body.children {
           if child.has("text") {
-            let match = child.text.match(regex("^\\s*"))
-            if match != none and match.start == 0 and match.end > 0 {
-              width = measure([#child.text.slice(0, match.end)]).width
+            let match = child.text.match(regex("^\\s+"))
+            if match != none {
+              width = measure([#match.text]).width
             }
             break
           }
@@ -437,15 +446,8 @@
     // Split before applying `set par`, which would otherwise wrap each fragment.
     let highlighted = body
     if highlights.len() > 0 {
-      let boundaries = ()
-      let pending = ()
-      for hl in highlights {
-        boundaries.push(hl.start)
-        boundaries.push(hl.end)
-        pending.push((hl.start, pending.len()))
-      }
-      let source = __codly-line-body(body, boundaries.sorted())
-      pending = pending.sorted()
+      let source = __codly-line-body(body, layout.boundaries)
+      let pending = layout.pending
 
       // Descending indices keep the outer highlights first without re-sorting.
       let next = 0
@@ -534,7 +536,9 @@
 
     let number = line.number
     e.get(get => {
-      let ref-set = get(codly-ref)
+      let settings = get(codly-ref)
+      let sep = settings.sep
+      let number-format = settings.numbering
       let line-label = label(str(block-label) + ":" + str(number))
       [#figure(
         kind: "codly-line",
@@ -543,8 +547,8 @@
         outlined: false,
         numbering: (..) => {
           ref(block-label)
-          ref-set.sep
-          (ref-set.numbering)(number)
+          sep
+          number-format(number)
         },
         output,
       )#line-label]
@@ -584,6 +588,12 @@
   let has-annots = annotations.len() > 0
   let line-height = if has-annots { measure[1].height }
   let skip-index = 0
+  let range-index = 0
+  let has-ranges = ranges != none and ranges.len() > 0
+  let last-line = lines.len()
+  if has-ranges and skip-last-empty and last-line > 0 and lines.last().text.trim() == "" {
+    last-line -= 1
+  }
 
   // Index once per block instead of passing every highlight to every line.
   let highlights-by-line = (:)
@@ -623,46 +633,43 @@
 
     let explicit-skip-data = skips.at(skip-index, default: none)
     let explicit-skip = explicit-skip-data != none and line.number == explicit-skip-data.position
-    let in-range = ranges == none or ranges.len() == 0 or in_range(ranges, line.number)
-    let smart-skip = smart-skip-enabled and not in-range and not in-skip
-    let smart-skip = if smart-skip {
-      if in-first {
-        smart-skip.first
-      } else if ranges.any(r => {
-        // Is there a visible line in [line.number, line.count)? Test the
-        // interval directly instead of allocating and searching future lines.
-        let first = calc.max(line.number, if r.at(0) == none { line.number } else { r.at(0) })
-        let last = calc.min(line.count - 1, if r.at(1) == none { line.count - 1 } else { r.at(1) })
-        first <= last
-      }) {
-        smart-skip.rest
-      } else {
-        smart-skip.last
+    if has-ranges {
+      while range-index < ranges.len() and ranges.at(range-index).last() < line.number {
+        range-index += 1
       }
+    }
+    let interval = if has-ranges { ranges.at(range-index, default: none) }
+    let in-range = not has-ranges or (interval != none and interval.first() <= line.number)
+    let insert-skip = smart-skip-enabled and not in-range and not in-skip and if in-first {
+      smart-skip.first
+    } else if interval != none and interval.first() <= last-line {
+      smart-skip.rest
     } else {
-      false
+      smart-skip.last
     }
 
-    if explicit-skip or smart-skip {
+    if explicit-skip or insert-skip {
       if number-enabled {
         items.push(codly-number(skip-number))
       }
-      items.push(grid.cell(
-        codly-line(skip-line),
-      ))
+      items.push(codly-line(skip-line))
       lines_to_number.push(-99999999)
       if explicit-skip {
         offset += explicit-skip-data.length
         skip-index += 1
+        while skip-index < skips.len() and skips.at(skip-index) == explicit-skip-data {
+          skip-index += 1
+        }
       }
     }
 
     if not in-range {
+      in-skip = true
       continue
     }
     in-skip = false
 
-    if skip-last-empty and line.text.trim().len() == 0 and line.number == line.count {
+    if skip-last-empty and line.number == line.count and line.text.trim() == "" {
       continue
     }
 
@@ -686,10 +693,11 @@
       in-first = false
       rendered-line += lang-block
     }
-    items.push(grid.cell(
-      colspan: if not has-annots or current-annot != none { 1 } else { 2 },
-      rendered-line,
-    ))
+    items.push(if has-annots {
+      grid.cell(colspan: if current-annot != none { 1 } else { 2 }, rendered-line)
+    } else {
+      rendered-line
+    })
 
     if current-annot != none and first-annot {
       let height = line-height * (current-annot.end - current-annot.start + 1)
@@ -738,6 +746,7 @@
 
 #let __codly-show(
   codly-line,
+  codly-highlight,
   codly-lang,
   codly-header,
   codly-footer,
@@ -862,7 +871,7 @@
 
   // Process skips.
   let skips = if args.skips != none {
-    args.skips.sorted(key: x => x.at(0)).dedup()
+    args.skips.sorted(key: x => x.position)
   } else {
     ()
   }
@@ -875,6 +884,8 @@
   } else if range != none {
     ranges = (range,)
   }
+
+  if ranges != none { ranges = __codly-ranges(ranges) }
 
   let annotations = if args.annotations == none { () } else {
     args.annotations.sorted(key: annot => -annot.start)
@@ -900,50 +911,26 @@
   // handle offset and `offset-from`:
   let offset = args.offset
   if args.offset-from != none {
-    let origin = query(args.offset-from)
-    if origin.len() == 0 {
-      panic("codly: offset-from must be used with a valid label, could not find: " + str(offset-from))
-    } else if origin.len() > 1 {
-      panic("codly: offset-from must be used with a unique label, found multiple: " + str(offset-from))
-    }
-
-    let origin = origin.first()
-    let end = query(figure.where(kind: "__codly-end-block").after(origin.location())).first()
-    let last-number = end.body.value
+    let last-number = __codly-block-info(args.offset-from).last-number
     if last-number != none {
       offset += last-number
     }
   }
 
-  // Handling highlighted lines
-  let highlighted-by-line = ()
-  if args.highlighted != none and args.highlighted.len() > 0 {
-      let ix = 1
-      for l in args.highlighted.sorted(key: (x) => if type(x) == int { x } else { x.at(0) }) {
-        let (ln, col) =  if type(l) == int {
-          (l, highlighted-default-color)
-        } else if type(l) == array {
-          assert(l.len() == 2, message: "codly: a highlighted line definition must be an integer or an array of two elements: the line, and the highlight color (array length mismatch)")
-          let ln = l.at(0)
-          assert(type(ln) == int, message: "codly: the type of a `highlighted` line must be either an integer, found: " + str(type(ln)));
-
-          let col = l.at(1)
-          assert(
-            type(col) == color or type(col) == gradient or type(col) == pattern,
-            message: "codly: the type of a `highlighted` color must be either a color, a gradient, or a pattern, found: " + str(type(col))
-          )
-
-          (ln, col)
+  let highlighted-by-line = (:)
+  if args.highlighted != none {
+    let default-fill = auto
+    for hl in args.highlighted {
+      let fill = hl.color
+      if fill == none {
+        if default-fill == auto {
+          let settings = get(codly-highlight)
+          default-fill = (settings.fill)(settings.color)
         }
-
-        while ix < ln {
-          ix += 1
-          highlighted-by-line.push(none)
-        }
-
-        highlighted-by-line.push(col)
-        ix += 1
+        fill = default-fill
       }
+      highlighted-by-line.insert(str(hl.line), fill)
+    }
   }
 
   let ref-set = if annotations.len() > 0 and args.block-label != none {
@@ -993,7 +980,7 @@
   let line_colors = ()
   if highlighted-by-line.len() > 0 {
     for (i, line) in lines_to_number.enumerate() {
-      let highlighted = highlighted-by-line.at(line - 1, default: none)
+      let highlighted = highlighted-by-line.at(str(line), default: none)
       if highlighted != none {
         line_colors.push(highlighted)
       } else if zebra-fill != none and calc.rem(i, 2) == 0 {
@@ -1109,23 +1096,12 @@
     it.body
   }
 
-  // fix alignment of codly-line reference figures, and show only body
-  show figure.where(kind: "__codly-end-block"): it => none
-
   set par(justify: false, first-line-indent: 0pt)
 
   block_content
 
-  figure(
-    kind: "__codly-end-block",
-    supplement: none,
-    numbering: none,
-    placement: none,
-    outlined: false,
-    gap: 0pt,
-    caption: none,
-    metadata(last-number),
-  )
+  [#metadata((last-number: last-number, lines: it.lines.len()))<__codly-block>]
+
 })
 
 #let typst-icon = (

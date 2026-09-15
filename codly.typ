@@ -118,7 +118,6 @@
       (
         from: dictionary,
         with: constructor => value => {
-          value = __highlight-normalize(value)
           let line = value.remove("line")
           constructor(line, ..value)
         },
@@ -179,7 +178,6 @@
       (
         from: dictionary,
         with: constructor => value => {
-          value = __annotation-normalize(value)
           let start = value.remove("start")
           constructor(start, ..value)
         },
@@ -195,6 +193,7 @@
 /// required fields.
 #let __pair-parser(first-field) = {
   (default-parser, fields: (:), typecheck: true) => {
+    let names = fields.user-fields.keys()
     (args, include-required: true) => {
       let positional = args.pos()
       let named = args.named()
@@ -202,7 +201,7 @@
         // All fields given by name: convert to positional order based on field
         // declaration order.
         let ordered = ()
-        for name in fields.user-fields.keys() {
+        for name in names {
           if name in named {
             ordered.push(named.remove(name))
           }
@@ -534,7 +533,7 @@
       let body = it.remove("body")
       let data = it.remove("__elembic_stored_element_data")
       let constructor = if it.alias == none and it.aliases != none { data.default-constructor }
-      show raw.where(block: true): __codly-show.with(codly-line, codly-lang, codly-header, codly-footer, codly-number, codly-annotation, codly-ref, constructor, it)
+      show raw.where(block: true): __codly-show.with(codly-line, codly-highlight, codly-lang, codly-header, codly-footer, codly-number, codly-annotation, codly-ref, constructor, it)
       body
     },
     fields: (
@@ -619,3 +618,6 @@
   import "@preview/elembic:1.1.1" as e
   e.set_(codly-ref, ..args)
 }
+
+/// In context, read source line count and the last displayed number of a block.
+#import "src/lib.typ": __codly-block-info as info
