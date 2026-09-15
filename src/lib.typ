@@ -313,7 +313,7 @@
 
       let block-label = hl.at("block-label")
       let sep = ref-set.sep
-      place(hide[#figure(
+      place(hide(pdf.artifact[#figure(
         kind: "codly-referencer",
         supplement: none,
         numbering: (..) => {
@@ -322,7 +322,7 @@
           __codly-trim(referenced)
         },
         [],
-      )#hl.label])
+      )#hl.label]))
     })
   }
 
@@ -713,7 +713,7 @@
         } else {
           if current-annot.content == none { str(annots) } else { current-annot.content }
         }
-        place(hide[#figure(
+        place(hide(pdf.artifact[#figure(
           kind: "codly-referencer",
           supplement: none,
           numbering: (..) => {
@@ -722,7 +722,7 @@
             __codly-trim(referenced)
           },
           [],
-        )#current-annot.label])
+        )#current-annot.label]))
       } else {
         []
       }
@@ -1069,22 +1069,22 @@
 #let typst-icon = (
   typ: (
     name: "Typst",
-    icon: box(
+    icon: pdf.artifact(box(
       image("typst-small.png", height: 0.8em),
       baseline: 0.1em,
       inset: 0pt,
       outset: 0pt,
-    ),
+    )),
     color: rgb("#239DAD"),
   ),
   typc: (
     name: "Typst code",
-    icon: box(
+    icon: pdf.artifact(box(
       image("typst-small.png", height: 0.8em),
       baseline: 0.1em,
       inset: 0pt,
       outset: 0pt,
-    ),
+    )),
     color: rgb("#239DAD"),
   ),
 )
