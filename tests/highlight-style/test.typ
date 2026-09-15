@@ -6,7 +6,8 @@
 #let check(expected, body) = {
   show box: it => {
     if it.body == [word] {
-      assert.eq((it.fill, it.stroke, it.clip, it.baseline.shift), expected)
+      let baseline = it.baseline.at("shift", default: auto)
+      assert.eq((it.fill, it.stroke, it.clip, baseline), expected)
       [#metadata(none)<styled-highlight>]
     }
     it

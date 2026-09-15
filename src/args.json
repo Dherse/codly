@@ -209,7 +209,7 @@
         "title": "Language box radius",
         "description": "The radius of the border of the language block.",
         "default": "0.32em",
-        "ty": [ "length" ],
+        "ty": [ "length", "dictionary" ],
         "function": true,
         "example": "#codly(lang-radius: 10pt)\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```"
     },
@@ -313,17 +313,17 @@
     },
     "skip-line": {
         "title": "Skip line",
-        "description": "Sets the content with which the line code is filled when a skip is encountered.",
+        "description": "Sets the content displayed for a skip. An array supplies one value per explicit skip in display order, ignoring duplicate skip records. Further skips reuse the final value. Smart skips use the final value without consuming an entry. An empty array uses the default; `none` entries display nothing.",
         "default": "align(center)[ ... ]",
-        "ty": [ "content", "type(none)" ],
+        "ty": [ "content", "type(none)", "array" ],
         "function": true,
         "example": "#codly(\n  skips: ((4, 32), ),\n  skip-line: align(center, emoji.face.shock)\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\nfib(25)\n```"
     },
     "skip-number": {
         "title": "Skip number",
-        "description": "Sets the content with which the line number columns is filled when a skip is encountered. If line numbers are disabled, this has no effect.",
+        "description": "Sets the number column content for a skip. Like @arg-skip-line, this accepts a single value or an array indexed by explicit skips. Further skips and smart skips reuse the final value; an empty array uses the default. `none` entries display nothing. If line numbers are disabled, this has no effect.",
         "default": "[ ... ]",
-        "ty": [ "content", "type(none)" ],
+        "ty": [ "content", "type(none)", "array" ],
         "function": true,
         "example": "#codly(\n  skips: ((4, 32), ),\n  skip-number: align(center, emoji.face.shock)\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\nfib(25)\n```"
     },
@@ -365,7 +365,7 @@
     },
     "highlights": {
         "title": "Highlights",
-        "description": "You can apply highlights to the code block using the `highlights` argument. It consists of a list of dictionaries, each with the following keys:\n- `line`: the line number to start highlighting\n- `start`: the character position to start highlighting, zero if omitted or `none`\n- `end`: the character position to end highlighting, the end of the line if omitted or `none`\n- `fill`: the fill of the highlight, defaults to the default color\n- `tag`: an optional tag to be displayed alongside the highlight.\n- `inset`: overrides the global @arg-highlight-inset.\n- `baseline`: overrides the baseline which is set by default to the `bottom` component of @arg-highlight-inset.\n- `clip`: overrides the global @arg-highlight-clip.\n- `outset`: overrides the global @arg-highlight-outset.\n- `radius`: overrides the global @arg-highlight-radius.\n- `label`: *if and only if* the code block is in a `figure`, sets the label by which the highlight can be referenced.\n\nAs with other code block settings, annotations are reset after each code block. #one-indexed #zero-indexed",
+        "description": "You can apply highlights to the code block using the `highlights` argument. It consists of a list of dictionaries, each with the following keys:\n- `line`: the line number to start highlighting\n- `start`: the character position to start highlighting, zero if omitted or `none`\n- `end`: the character position to end highlighting, the end of the line if omitted or `none`\n- `fill`: the fill of the highlight, defaults to the default color\n- `tag`: an optional tag to be displayed alongside the highlight.\n- `inset`: overrides the global @arg-highlight-inset.\n- `baseline`: overrides the highlight box baseline. The default is `0pt` (no shift). Typst 0.15 and newer also accept `auto` to use the content baseline.\n- `clip`: overrides the global @arg-highlight-clip.\n- `outset`: overrides the global @arg-highlight-outset.\n- `radius`: overrides the global @arg-highlight-radius.\n- `label`: *if and only if* the code block is in a `figure`, sets the label by which the highlight can be referenced.\n\nAs with other code block settings, annotations are reset after each code block. #one-indexed #zero-indexed",
         "default": "none",
         "ty": [ "array", "type(none)" ],
         "function": true,

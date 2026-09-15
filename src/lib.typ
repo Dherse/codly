@@ -586,6 +586,11 @@
   let has-annots = annotations.len() > 0
   let line-height = if has-annots { measure[1].height }
   let skip-index = 0
+  let formatted-skips = 0
+  let line-array = type(skip-line) == array
+  let number-array = type(skip-number) == array
+  let fallback-line = if line-array { skip-line.at(-1, default: __default("skip-line")) } else { skip-line }
+  let fallback-number = if number-array { skip-number.at(-1, default: __default("skip-number")) } else { skip-number }
   let range-index = 0
   let has-ranges = ranges != none and ranges.len() > 0
   let last-line = lines.len()
@@ -648,11 +653,14 @@
 
     if explicit-skip or insert-skip {
       if number-enabled {
-        items.push(codly-number(skip-number))
+        let number = if explicit-skip and number-array { skip-number.at(formatted-skips, default: fallback-number) } else { fallback-number }
+        items.push(codly-number(if number == none { [] } else { number }))
       }
-      items.push(codly-line(skip-line))
+      let body = if explicit-skip and line-array { skip-line.at(formatted-skips, default: fallback-line) } else { fallback-line }
+      items.push(codly-line(body))
       lines_to_number.push(-99999999)
       if explicit-skip {
+        formatted-skips += 1
         offset += explicit-skip-data.length
         skip-index += 1
         while skip-index < skips.len() and skips.at(skip-index) == explicit-skip-data {
