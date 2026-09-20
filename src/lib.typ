@@ -561,6 +561,17 @@
   )))
 }
 
+/// Resolve syntax-highlighted content before constructing the line element so
+/// its show rules, highlights, indentation, and references see a real raw.line.
+#let __codly-sublang-line(constructor, line, source: none, ..args) = context {
+  let record = query(selector(source).before(here())).last(default: none)
+  let resolved = if record == none { line } else { record.value }
+  constructor(
+    raw.line(line.number, line.count, resolved.text, resolved.body),
+    ..args,
+  )
+}
+
 #let __codly-line-loop(
   codly-line,
   codly-number,
@@ -580,6 +591,7 @@
   block-label,
   offset,
   lang-block,
+  sublang-lines: (:),
 ) = {
   let items = ()
   let lines_to_number = ()
@@ -703,7 +715,11 @@
     let numbered = if offset == 0 { line } else {
       raw.line(line.number + offset, line.count, line.text, line.body)
     }
-    let rendered-line = codly-line(
+    let line-source = sublang-lines.at(str(line.number), default: none)
+    let render = if line-source == none { codly-line } else {
+      __codly-sublang-line.with(codly-line, source: line-source)
+    }
+    let rendered-line = render(
       numbered,
       highlights: if has-highlights { highlights-by-line.at(str(line.number + offset), default: ()) } else { highlights },
       smart-indent: smart-indent,
@@ -961,20 +977,19 @@
     (by: settings.by, sep: settings.sep, numbering: settings.numbering)
   }
 
-  // Handling of sublang blocks:
-  // - we first look for all sublangs, we extract the code for each
-  // - we then pass it to a sublang-block where it gets rendered as metadata
-  // - we then query and remember the location before and after the sublang block
-  // - then we replace the line's body with the content of the relevant queried metadata
+  // Resolve sublanguage syntax through metadata, retaining the original source
+  // lines for range/skip/annotation processing. The line loop resolves each
+  // displayed line before codly-line applies its character-level formatting.
   let output-blocks = ()
+  let sublang-lines = (:)
   let lines = it.lines
   if args.sublangs != none and args.sublangs.len() > 0 {
     let nl-regex = regex("(\r\n|\r|\n)")
     let raw-text-lines = it.text.split(nl-regex)
     for (idx, s) in args.sublangs.enumerate() {
-      let sublang-lines = raw-text-lines.slice(s.start - 1, s.end)
+      let source-lines = raw-text-lines.slice(s.start - 1, s.end)
       let new-block = raw(
-        sublang-lines.join("\n"),
+        source-lines.join("\n"),
         block: true,
         lang: s.lang,
         align: it.align,
@@ -983,34 +998,13 @@
         syntaxes: it.syntaxes
       )
 
-      // We produce a sublang block which will create the following metadata:
-      // - __codly_line_sublang_meta_start
-      // - __codly_line_sublang_meta x N
-      // - __codly_line_sublang_meta_end
       output-blocks.push(sublang-block(new-block, idx))
       let idx = str(idx)
 
-      // So for each line, its body becomes querying for the first meta start and end before itself
-      // then querying all metas between the anchors and selecting the Nth one.
-      
-      for (i, line) in std-range(s.start - 1, s.end).enumerate() {
-        let body = context {
-          let line-label = label("__codly_sublang_line_" + idx + "_" + str(i))
-          let cnt = query(selector(line-label)
-            .before(here()))
-            .last(default: auto)
-          if cnt == auto {
-            text(red, "codly: meta not yet available, if you see this, there is a convergence issue")
-          } else {
-            cnt.value
-          }
-        }
-
-        lines.at(line) = raw.line(
-          line,
-          it.lines.len(),
-          sublang-lines.at(i),
-          body
+      for i in std-range(source-lines.len()) {
+        sublang-lines.insert(
+          str(s.start + i),
+          label("__codly_sublang_line_" + idx + "_" + str(i)),
         )
       }
     }
@@ -1037,6 +1031,7 @@
     args.at("block-label", default: none),
     offset,
     if args.header == none { lang-block } else { [] },
+    sublang-lines: sublang-lines,
   )
 
   // The header counts as a line for zebra striping purposes.
@@ -1091,6 +1086,7 @@
     inset: stroke-inset,
     outset: if outside-column { 0pt } else { -stroke-inset },
     {
+      set block(breakable: true)
       if outside-column {
         geometry.outside(
           if has-annotations { (auto, 1fr, annot-width) } else { (auto, 1fr) },

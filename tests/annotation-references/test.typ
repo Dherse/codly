@@ -13,7 +13,8 @@
 #show: codly.ref-set_(sep: " / ", numbering: n => [L#n])
 #show: codly.annotation-show_(it => {
   let fields = e.fields(it)
-  [#metadata((fields.num, fields.body, suffix((fields.numbering)(fields.num))))<annotation-seen>#it]
+  [#metadata((fields.num, fields.body, suffix((fields.numbering)(fields.num))))<annotation-seen>
+    #metadata(fields.height)<annotation-height>#it]
 })
 #show grid.cell: it => {
   if it.rowspan > 1 { [#metadata(it.rowspan)<annotation-rowspan>#it] } else { it }
@@ -33,6 +34,7 @@
 #context {
   assert.eq(query(<annotation-seen>).map(it => it.value), ((1, [first], "(1)"), (2, [second], "2!")))
   assert.eq(query(<annotation-rowspan>).map(it => it.value), (2, 2))
+  for annotation in query(<annotation-height>) { assert(annotation.value > 0pt) }
   for (target, expected) in ((<first-note>, " / L12"), (<second-note>, " / L15")) {
     let target = query(target).first()
     assert.eq(suffix((target.numbering)()), expected)
