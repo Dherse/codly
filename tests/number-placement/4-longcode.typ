@@ -6,7 +6,7 @@
 = Long code
 
 #{
-  show: e.set_(codly.codly-number, placement: "outside", align: right)
+  show: e.set_(codly.codly-number, placement: "outside", fill: none, align: right)
   // @typstyle off: preserve tabs in the Scala fixture.
   codly.new(breakable: true)[```scala
   package labs.lab10_streams

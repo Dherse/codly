@@ -1126,6 +1126,12 @@
         doc: __doc("number-placement"),
         default: __default("number-placement"),
       ),
+      e.field(
+        "fill",
+        e.types.option(e.types.union(auto, e.types.paint)),
+        doc: "The background fill of the number column. `auto` follows each code row's fill.",
+        default: auto,
+      ),
     ),
   )
 }
@@ -1166,7 +1172,7 @@
 
 #let codly = {
   import "@preview/elembic:1.1.1" as e
-  import "src/lib.typ": __codly-prefix, __doc, __default
+  import "src/lib.typ": __codly-prefix, __default, __doc
 
   e.element.declare(
     "codly",

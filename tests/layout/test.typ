@@ -24,7 +24,7 @@
   footer: codly.codly-footer([footer-plain], fill: purple, inset: 5pt),
 )
 
-// Outside numbers stay unfilled while the geometry layer preserves complex paints.
+// An explicit `none` preserves an unfilled outside number column.
 #let line-gradient = gradient.linear(red, blue)
 #let zebra-tiling = tiling(
   size: (4pt, 4pt),
@@ -33,7 +33,7 @@
 )
 #{
   show: codly.line-set_(fill: line-gradient, zebra-fill: zebra-tiling)
-  show: e.set_(codly.codly-number, placement: "outside")
+  show: e.set_(codly.codly-number, placement: "outside", fill: none)
   show rect: it => [#metadata(it.fill)<complex-fill>#it]
   codly.new(raw("gradient\ntiling", block: true))
 }

@@ -1,6 +1,8 @@
 #import "../../codly.typ" as codly
 #import "@preview/elembic:1.1.1" as e
 
+#show: e.set_(codly.codly-number, fill: none)
+
 // Observe the geometry layer itself. The outer codly block has no stroke in
 // outside-number mode, so these are the clipped blocks drawn by geometry.outside.
 #show block: it => {

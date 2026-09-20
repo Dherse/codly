@@ -2,7 +2,7 @@
 #import "@preview/elembic:1.1.1" as e
 
 #set page(width: 190pt, height: 100pt, margin: 5pt)
-#show: e.set_(codly.codly-number, placement: "outside")
+#show: e.set_(codly.codly-number, placement: "outside", fill: none)
 #show: codly.line-set_(stroke: 0.6pt + black)
 
 #let source = ("f({value: [1, 2, 3]});\n" * 8).trim()

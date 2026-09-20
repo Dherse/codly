@@ -13,7 +13,7 @@ fib(25)
 ```]
 
 #{
-  show: e.set_(codly.codly-number, placement: "outside")
+  show: e.set_(codly.codly-number, placement: "outside", fill: none)
   codly.new(skips: ((4, 32),))[```py
   def fib(n):
       if n <= 1:
@@ -25,7 +25,7 @@ fib(25)
 }
 
 #{
-  show: e.set_(codly.codly-number, placement: "outside")
+  show: e.set_(codly.codly-number, placement: "outside", fill: none)
   codly.new(
     skips: ((4, 120),),
     skip-number: align(center, emoji.face.shock),

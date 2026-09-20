@@ -18,7 +18,7 @@ public class MyApp {
 ```]
 
 #{
-  show: e.set_(codly.codly-number, placement: "outside")
+  show: e.set_(codly.codly-number, placement: "outside", fill: none)
   codly.new(highlights: (
     (line: 1, start: 14, end: 18, fill: blue),
     (line: 3, start: 5, end: 10, fill: green),

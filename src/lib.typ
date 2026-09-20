@@ -1303,6 +1303,7 @@
 
   let number-settings = get(codly-number)
   let numbers-outside = number-settings.placement == "outside"
+  let numbers-enabled = args.number-enabled
   let annot-width = auto
   let padding = __codly-inset(get-line.inset)
   let grid-inset = (
@@ -1312,13 +1313,21 @@
     left: padding.left * 1.5,
   )
   let numbers-alignment = number-settings.align
-  let outside-column = args.number-enabled and numbers-outside
-  let zebra-rows = if args.number-enabled { lines_to_number.len() } else { calc.inf }
-  let cell-fill = (x, y) => if outside-column and x == 0 { none } else {
+  let outside-column = numbers-enabled and numbers-outside
+  let number-fill = number-settings.fill
+  let zebra-rows = if numbers-enabled { lines_to_number.len() } else { calc.inf }
+  let cell-fill = (x, y) => if numbers-enabled and x == 0 and number-fill == none {
+    none
+  } else {
     let base = if y < zebra-rows and zebra-fill != none and calc.rem(y, 2) == 0 {
       zebra-fill
     } else { fill }
-    if line_colors == () { base } else { line_colors.at(y, default: base) }
+    let code-fill = if line_colors == () { base } else { line_colors.at(y, default: base) }
+    if numbers-enabled and x == 0 {
+      if number-fill == auto { code-fill } else { number-fill }
+    } else {
+      code-fill
+    }
   }
   let stroke = get-line.stroke
   let stroke-inset = if stroke == none { 0pt } else if stroke.thickness == auto { 0.5pt } else {

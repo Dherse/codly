@@ -15,7 +15,7 @@ public static void main(String args[]) {
 ```]
 
 #{
-  show: e.set_(codly.codly-number, placement: "outside")
+  show: e.set_(codly.codly-number, placement: "outside", fill: none)
   codly.new[```java
   public static void main(String args[]) {
       System.out.println("Hello, world!");
@@ -36,7 +36,7 @@ public static void main(String args[]) {
 
 #{
   show: codly.line-set_(zebra-fill: none)
-  show: e.set_(codly.codly-number, placement: "outside")
+  show: e.set_(codly.codly-number, placement: "outside", fill: none)
   codly.new[```java
   public static void main(String args[]) {
       System.out.println("Hello, world!");
@@ -46,7 +46,7 @@ public static void main(String args[]) {
 
 == Disabling number format but number outside margin enabled
 #{
-  show: e.set_(codly.codly-number, placement: "outside")
+  show: e.set_(codly.codly-number, placement: "outside", fill: none)
   codly.new(number-enabled: false)[```java
   public static void main(String args[]) {
       System.out.println("Hello, world!");
@@ -77,7 +77,7 @@ public static void main(String args[]) {
 ```]
 
 #{
-  show: e.set_(codly.codly-number, placement: "outside")
+  show: e.set_(codly.codly-number, placement: "outside", fill: none)
   codly.new(annotations: ((start: 1, content: "Begin with that!"),))[```java
   public static void main(String args[]) {
       System.out.println("Hello, world!");
@@ -88,7 +88,7 @@ public static void main(String args[]) {
 = With highlight
 
 #{
-  show: e.set_(codly.codly-number, placement: "outside")
+  show: e.set_(codly.codly-number, placement: "outside", fill: none)
   codly.new(
     highlights: (
       (line: 1, start: 14, end: 18, fill: blue),

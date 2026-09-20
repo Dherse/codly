@@ -16,7 +16,7 @@
   let first = if it.body.func() == metadata { it.body } else { it.body.children.first() }
   if first.value.origin != origin { return it }
   let paint = if first.value.fill == auto { fill(it.x, it.y - 1) } else { first.value.fill }
-  if not outside or it.x != 0 or it.colspan > 1 {
+  if not outside or it.x != 0 or it.colspan > 1 or paint != none {
     let marks = ()
     if guides != none and it.x == code-column and first.value.role == "body" {
       let depth = guides.depths.at(it.y - 1, default: 0)
@@ -76,6 +76,7 @@
       body-top: at.y,
       body-bottom: bottom,
       cells: (),
+      numbers: (),
     ))
   }
   let spans = ()
@@ -121,15 +122,24 @@
       let bottom = if next != none and index == last { next.a.y } else { r.body-bottom }
       let dx = r.at.x - regions.at(span.region).at.x
       if bottom > top {
-        regions
-          .at(index)
-          .cells
-          .push((
-            a: (x: span.a.x + dx, y: top),
-            b: (x: span.b.x + dx, y: bottom),
-            fill: span.value.fill,
-            guides: span.value.guides.filter(g => index == span.region or g.max-height == none),
-          ))
+        let a = (x: span.a.x + dx, y: top)
+        let b = (x: span.b.x + dx, y: bottom)
+        if outside and span.value.x == 0 {
+          regions.at(index).numbers.push((a: a, b: b, fill: span.value.fill))
+        } else {
+          let guides = if index == span.region { span.value.guides } else {
+            span.value.guides.filter(g => g.max-height == none)
+          }
+          regions
+            .at(index)
+            .cells
+            .push((
+              a: a,
+              b: b,
+              fill: span.value.fill,
+              guides: guides,
+            ))
+        }
       }
       index += 1
     }
@@ -157,6 +167,7 @@
       top: r.at.y,
       bottom: r.bottom,
       cells: r.cells,
+      numbers: r.numbers,
       wraps: local-markers,
     ))
   }
@@ -178,6 +189,16 @@
     default: none,
   )
   if page != none {
+    for cell in page.numbers {
+      if cell.fill != none {
+        place(top + left, dx: cell.a.x - at.x, dy: cell.a.y - page.top, rect(
+          width: cell.b.x - cell.a.x,
+          height: cell.b.y - cell.a.y,
+          fill: cell.fill,
+          stroke: none,
+        ))
+      }
+    }
     let code-left = if page.left == none { at.x } else { page.left }
     place(top + left, dx: code-left - at.x, dy: page.top - at.y, block(
       width: at.x + width - code-left,

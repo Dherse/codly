@@ -91,7 +91,7 @@
 
 // Outside borders use displayed rows, including headers and footers.
 #{
-  show: e.set_(codly.codly-number, placement: "outside")
+  show: e.set_(codly.codly-number, placement: "outside", fill: none)
   show: codly.line-set_(stroke: red + 1pt)
   show block: it => if type(it.stroke) == stroke and it.stroke.thickness == 1pt {
     [#metadata(it.height)<outside-outline>#it]

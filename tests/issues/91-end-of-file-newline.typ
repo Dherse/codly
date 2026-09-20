@@ -4,7 +4,7 @@
 #show: codly.line-set_(
   stroke: 2pt + red,
 )
-#show: codly.number-set_(placement: "outside")
+#show: codly.number-set_(placement: "outside", fill: none)
 
 #codly.new(
   raw(read("./91-end-of-file-newline.txt"), block: true),
@@ -14,7 +14,7 @@
   raw(read("./91-end-of-file-newline.txt").trim("\n"), block: true),
 )
 
-#show: codly.number-set_(placement: "inside")
+#show: codly.number-set_(placement: "inside", fill: auto)
 
 #codly.new(
   raw(read("./91-end-of-file-newline.txt"), block: true),
