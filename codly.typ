@@ -1357,6 +1357,13 @@
         doc: "Opt-in indentation guides; true or an indent-guides configuration.",
         default: none,
       ),
+      e.field(
+        "width",
+        e.types.union(length, ratio, auto),
+        doc: "todo",
+        default: 100%,
+        folds: false,
+      )
     ),
   )
 }

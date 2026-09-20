@@ -1327,7 +1327,7 @@
   let block_content = block(
     breakable: args.breakable,
     clip: not outside-column,
-    width: 100%,
+    width: args.width,
     radius: args.radius,
     stroke: if outside-column { none } else { get-line.stroke },
     inset: stroke-inset,
