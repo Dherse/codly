@@ -16,7 +16,13 @@
       // every cluster; it allocated on the hottest wrap-marker path.
       for c in body.text.clusters() {
         let space = c == " "
-        let separate = space or (c != "_" and c.contains(standalone))
+        let ascii-word = (
+          (c >= "a" and c <= "z")
+            or (c >= "A" and c <= "Z")
+            or (c >= "0" and c <= "9")
+            or c == "_"
+        )
+        let separate = space or (not ascii-word and c.contains(standalone))
         if separate and token != "" {
           parts.push(probe(token))
           token = ""
