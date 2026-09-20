@@ -25,7 +25,10 @@
 #check-constructors((
   // `language` and `smart-skip` take named fields.
   (codly.language(name: "Python"), (name: "Python", color: none, icon: none)),
-  (codly.language(name: [Python], color: blue, icon: "py"), (name: [Python], color: blue, icon: "py")),
+  (
+    codly.language(name: [Python], color: blue, icon: "py"),
+    (name: [Python], color: blue, icon: "py"),
+  ),
   (codly.smart-skip(), (first: none, last: none, rest: none)),
   (codly.smart-skip(first: true, last: false, rest: none), (first: true, last: false, rest: none)),
 
@@ -38,36 +41,101 @@
   (codly.highlighted-line(line: 7, color: green), (line: 7, color: green)),
 
   // Optional values are retained, while omitted highlight bounds normalize.
-  (codly.highlight(8), (
-    line: 8, start: 0, end: 999999999, fill: none, tag: none,
-    inset: none, baseline: none, clip: none, outset: none, radius: none,
-    label: none, stroke: none, depth: none,
-  )),
-  (codly.highlight(
-    9, start: 2, end: 6, fill: red, tag: "marked", inset: 1pt,
-    baseline: 2pt, clip: true, outset: 3pt, radius: 4pt, depth: 5,
-  ), (
-    line: 9, start: 2, end: 6, fill: red, tag: "marked", inset: 1pt,
-    baseline: 2pt, clip: true, outset: 3pt, radius: 4pt, label: none,
-    stroke: none, depth: 5,
-  )),
-  (codly.highlight(10, start: none, end: none), (
-    line: 10, start: 0, end: 999999999, fill: none, tag: none,
-    inset: none, baseline: none, clip: none, outset: none, radius: none,
-    label: none, stroke: none, depth: none,
-  )),
-  (codly.annotation(11), (
-    start: 11, end: 11, content: none, label: none, numbering: default-numbering,
-  )),
-  (codly.annotation(12, end: 14, content: [explanation]), (
-    start: 12, end: 14, content: [explanation], label: none, numbering: default-numbering,
-  )),
+  (
+    codly.highlight(8),
+    (
+      line: 8,
+      start: 0,
+      end: 999999999,
+      fill: none,
+      tag: none,
+      inset: none,
+      baseline: none,
+      clip: none,
+      outset: none,
+      radius: none,
+      label: none,
+      stroke: none,
+      depth: none,
+    ),
+  ),
+  (
+    codly.highlight(
+      9,
+      start: 2,
+      end: 6,
+      fill: red,
+      tag: "marked",
+      inset: 1pt,
+      baseline: 2pt,
+      clip: true,
+      outset: 3pt,
+      radius: 4pt,
+      depth: 5,
+    ),
+    (
+      line: 9,
+      start: 2,
+      end: 6,
+      fill: red,
+      tag: "marked",
+      inset: 1pt,
+      baseline: 2pt,
+      clip: true,
+      outset: 3pt,
+      radius: 4pt,
+      label: none,
+      stroke: none,
+      depth: 5,
+    ),
+  ),
+  (
+    codly.highlight(10, start: none, end: none),
+    (
+      line: 10,
+      start: 0,
+      end: 999999999,
+      fill: none,
+      tag: none,
+      inset: none,
+      baseline: none,
+      clip: none,
+      outset: none,
+      radius: none,
+      label: none,
+      stroke: none,
+      depth: none,
+    ),
+  ),
+  (
+    codly.annotation(11),
+    (
+      start: 11,
+      end: 11,
+      content: none,
+      label: none,
+      numbering: default-numbering,
+    ),
+  ),
+  (
+    codly.annotation(12, end: 14, content: [explanation]),
+    (
+      start: 12,
+      end: 14,
+      content: [explanation],
+      label: none,
+      numbering: default-numbering,
+    ),
+  ),
 ))
 
 #check-casts((
   // Dictionary and string casts for language preserve unknown fields.
-  (codly.language, (name: "Rust", color: orange, icon: "rs", aliases: 2),
-    (name: "Rust", color: orange, icon: "rs", aliases: 2)),
+  (
+    codly.language,
+    (name: "Rust", color: orange, icon: "rs", aliases: 2),
+    (name: "Rust", color: orange, icon: "rs", aliases: 2),
+  ),
   (codly.language, "Typst", (name: "Typst", color: none, icon: none)),
 
   // Bool and dictionary casts for smart skips fill omitted sides from `rest`.
@@ -85,19 +153,42 @@
 
   // Highlight and annotation dictionary casts retain supplied values and
   // apply the same defaults as their constructors.
-  (codly.highlight, (line: 13, start: 1, end: 4, tag: "tag", clip: false, depth: 2), (
-    line: 13, start: 1, end: 4, fill: none, tag: "tag", inset: none,
-    baseline: none, clip: false, outset: none, radius: none, label: none,
-    stroke: none, depth: 2,
-  )),
-  (codly.annotation, (start: 15, end: 16, content: [note]), (
-    start: 15, end: 16, content: [note], label: none, numbering: default-numbering,
-  )),
+  (
+    codly.highlight,
+    (line: 13, start: 1, end: 4, tag: "tag", clip: false, depth: 2),
+    (
+      line: 13,
+      start: 1,
+      end: 4,
+      fill: none,
+      tag: "tag",
+      inset: none,
+      baseline: none,
+      clip: false,
+      outset: none,
+      radius: none,
+      label: none,
+      stroke: none,
+      depth: 2,
+    ),
+  ),
+  (
+    codly.annotation,
+    (start: 15, end: 16, content: [note]),
+    (
+      start: 15,
+      end: 16,
+      content: [note],
+      label: none,
+      numbering: default-numbering,
+    ),
+  ),
 ))
 
 // Exercise the same casts through the public block constructor, where these
 // types are consumed in arrays and option fields.
-#let block-fields = e.fields(codly.new(none,
+#let block-fields = e.fields(codly.new(
+  none,
   range: (17, 19),
   smart-skip: true,
   skips: ((20, 2),),
@@ -111,12 +202,26 @@
 #assert.eq(e.fields(block-fields.skips.at(0)), (position: 20, length: 2))
 #assert.eq(e.fields(block-fields.highlighted.at(0)), (line: 21, color: none))
 #assert.eq(e.fields(block-fields.highlights.at(0)), (
-  line: 22, start: 1, end: 2, fill: none, tag: none, inset: none,
-  baseline: none, clip: none, outset: none, radius: none, label: none,
-  stroke: none, depth: none,
+  line: 22,
+  start: 1,
+  end: 2,
+  fill: none,
+  tag: none,
+  inset: none,
+  baseline: none,
+  clip: none,
+  outset: none,
+  radius: none,
+  label: none,
+  stroke: none,
+  depth: none,
 ))
 #assert.eq(e.fields(block-fields.annotations.at(0)), (
-  start: 23, end: 23, content: [note], label: none, numbering: default-numbering,
+  start: 23,
+  end: 23,
+  content: [note],
+  label: none,
+  numbering: default-numbering,
 ))
 
 // Failed casts report false without requiring the full diagnostic text.

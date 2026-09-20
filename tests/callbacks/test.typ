@@ -48,10 +48,15 @@
 #{
   show: codly.line-set_(fill: red)
   show: codly.highlight-set_(color: red, fill: highlight-fill, stroke: highlight-stroke)
-  show: codly.lang-set_(languages: (py: (
-    name: [Python], icon: "P", color: red,
-    fill: language-fill, stroke: language-stroke,
-  )))
+  show: codly.lang-set_(languages: (
+    py: (
+      name: [Python],
+      icon: "P",
+      color: red,
+      fill: language-fill,
+      stroke: language-stroke,
+    ),
+  ))
   show: codly.line-show_(line-fields)
   show: codly.highlight-show_(highlight-fields)
   show: codly.lang-show_(lang-fields)
@@ -59,24 +64,32 @@
 
   {
     show: codly.line-set_(fill: blue)
-    show: codly.highlight-set_(color: blue, fill: color => {
-      assert.eq(color, blue)
-      color.lighten(70%)
-    }, stroke: color => {
-      assert.eq(color, blue)
-      0.5pt + color
-    })
-    show: codly.lang-set_(languages: (py: (
-      name: [Python], icon: "P", color: blue,
-      fill: lang => {
-        assert.eq(lang, (name: [Python], icon: "P", color: blue))
-        blue.lighten(70%)
+    show: codly.highlight-set_(
+      color: blue,
+      fill: color => {
+        assert.eq(color, blue)
+        color.lighten(70%)
       },
-      stroke: lang => {
-        assert.eq(lang, (name: [Python], icon: "P", color: blue))
-        0.5pt + blue
+      stroke: color => {
+        assert.eq(color, blue)
+        0.5pt + color
       },
-    )))
+    )
+    show: codly.lang-set_(languages: (
+      py: (
+        name: [Python],
+        icon: "P",
+        color: blue,
+        fill: lang => {
+          assert.eq(lang, (name: [Python], icon: "P", color: blue))
+          blue.lighten(70%)
+        },
+        stroke: lang => {
+          assert.eq(lang, (name: [Python], icon: "P", color: blue))
+          0.5pt + blue
+        },
+      ),
+    ))
     codly.new(raw("inner", lang: "py", block: true), highlights: ((line: 1, start: 1, end: 1),))
   }
 
@@ -86,18 +99,24 @@
 // Offset-from uses the preceding block's displayed number. The second block
 // keeps a character highlight on displayed line 9 while callbacks receive a
 // scalar color from the configured highlight element.
-#show: codly.highlight-set_(color: green, fill: color => {
-  assert.eq(color, green)
-  green.lighten(70%)
-}, stroke: color => {
-  assert.eq(color, green)
-  0.5pt + green
-})
+#show: codly.highlight-set_(
+  color: green,
+  fill: color => {
+    assert.eq(color, green)
+    green.lighten(70%)
+  },
+  stroke: color => {
+    assert.eq(color, green)
+    0.5pt + green
+  },
+)
 #show: codly.highlight-show_(highlight-fields)
 #show: e.show_(codly.codly-number, number-fields)
 #codly.new(raw("one\ntwo", block: true), offset: 5)<offset-source>
 #codly.new(
-  raw("three", block: true), offset: 1, offset-from: <offset-source>,
+  raw("three", block: true),
+  offset: 1,
+  offset-from: <offset-source>,
   highlights: ((line: 9, start: 1, end: 1),),
 )
 

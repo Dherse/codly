@@ -3,20 +3,36 @@
 #let ignore-scopes = "string, comment, constant.character, markup.raw"
 #let delimiters = regex("[()\\[\\]{}]")
 #let singletons = (
-  "(": ((start: 0, text: "("),), ")": ((start: 0, text: ")"),),
-  "[": ((start: 0, text: "["),), "]": ((start: 0, text: "]"),),
-  "{": ((start: 0, text: "{"),), "}": ((start: 0, text: "}"),),
+  "(": ((start: 0, text: "("),),
+  ")": ((start: 0, text: ")"),),
+  "[": ((start: 0, text: "["),),
+  "]": ((start: 0, text: "]"),),
+  "{": ((start: 0, text: "{"),),
+  "}": ((start: 0, text: "}"),),
 )
-#let palette = (rgb("#b04080"), rgb("#996300"), rgb("#267a45"), rgb("#007f99"), rgb("#425cc7"), rgb("#8655a8"))
+#let palette = (
+  rgb("#b04080"),
+  rgb("#996300"),
+  rgb("#267a45"),
+  rgb("#007f99"),
+  rgb("#425cc7"),
+  rgb("#8655a8"),
+)
 
 // A private theme marks code with strong, independently of the display theme.
 #let theme(code, ignored) = {
   let escape(s) = s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-  bytes("<?xml version=\"1.0\"?><plist version=\"1.0\"><dict><key>settings</key><array>"
-    + "<dict><key>settings</key><dict><key>foreground</key><string>#000000</string></dict></dict>"
-    + "<dict><key>scope</key><string>" + escape(code) + "</string><key>settings</key><dict><key>fontStyle</key><string>bold</string></dict></dict>"
-    + "<dict><key>scope</key><string>" + escape(ignored) + "</string><key>settings</key><dict><key>fontStyle</key><string></string></dict></dict>"
-    + "</array></dict></plist>")
+  bytes(
+    "<?xml version=\"1.0\"?><plist version=\"1.0\"><dict><key>settings</key><array>"
+      + "<dict><key>settings</key><dict><key>foreground</key><string>#000000</string></dict></dict>"
+      + "<dict><key>scope</key><string>"
+      + escape(code)
+      + "</string><key>settings</key><dict><key>fontStyle</key><string>bold</string></dict></dict>"
+      + "<dict><key>scope</key><string>"
+      + escape(ignored)
+      + "</string><key>settings</key><dict><key>fontStyle</key><string></string></dict></dict>"
+      + "</array></dict></plist>",
+  )
 }
 
 // Match while walking classified runs; only delimiter positions survive.
@@ -37,15 +53,17 @@
     for piece in pieces {
       let eligible = false
       while not piece.has("text") {
-        if piece.func() == strong { eligible = true; piece = piece.body }
-        else if piece.has("child") { piece = piece.child }
-        else { break }
+        if piece.func() == strong {
+          eligible = true
+          piece = piece.body
+        } else if piece.has("child") { piece = piece.child } else { break }
       }
       let value = piece.at("text", default: "")
       let size = value.len()
       if eligible {
-        let found = if size == 1 { singletons.at(value, default: ()) }
-          else if value.contains(delimiters) { value.matches(delimiters) } else { () }
+        let found = if size == 1 { singletons.at(value, default: ()) } else if value.contains(
+          delimiters,
+        ) { value.matches(delimiters) } else { () }
         for found in found {
           let symbol = found.text
           let depth = none
@@ -70,8 +88,7 @@
 }
 
 #let replace-leaf(piece, body) = {
-  if piece.has("text") { body }
-  else if piece.has("child") {
+  if piece.has("text") { body } else if piece.has("child") {
     (piece.func())(replace-leaf(piece.child, body), piece.styles)
   } else {
     let fields = piece.fields()
@@ -86,7 +103,10 @@
   let offset = 0
   let next = 0
   for original in pieces {
-    if next == marks.len() { output.push(original); continue }
+    if next == marks.len() {
+      output.push(original)
+      continue
+    }
     let piece = original
     while not piece.has("text") {
       if piece.has("child") { piece = piece.child } else { piece = piece.body }
@@ -98,7 +118,9 @@
       let start = 0
       while next < marks.len() and marks.at(next).first() < end {
         let (position, depth) = marks.at(next)
-        let color = if depth == none { unmatched } else { colors.at(calc.rem(depth + depth-offset, colors.len())) }
+        let color = if depth == none { unmatched } else {
+          colors.at(calc.rem(depth + depth-offset, colors.len()))
+        }
         if color != none {
           let at = position - offset
           if at > start { parts.push(text(value.slice(start, at))) }
@@ -107,8 +129,7 @@
         }
         next += 1
       }
-      if start == 0 { output.push(original) }
-      else {
+      if start == 0 { output.push(original) } else {
         if start < value.len() { parts.push(text(value.slice(start))) }
         output.push(replace-leaf(original, parts.join()))
       }
@@ -120,7 +141,8 @@
 
 #let capture(body, origin, key, pairs: none) = {
   show raw: it => [#metadata((
-    origin: origin, key: key,
+    origin: origin,
+    key: key,
     value: if pairs == none { it.lines } else { scan(it.lines, pairs) },
   ))<__codly-rainbow>]
   body
@@ -128,8 +150,12 @@
 
 #let resource(value, inherited, name) = {
   let safe = type(value) != str and (type(value) != array or value.all(v => type(v) != str))
-  assert(safe or value == inherited,
-    message: "codly: rainbow cannot copy an explicit string `raw." + name + "`; use `path(...)` or `read(..., encoding: none)`")
+  assert(
+    safe or value == inherited,
+    message: "codly: rainbow cannot copy an explicit string `raw."
+      + name
+      + "`; use `path(...)` or `read(..., encoding: none)`",
+  )
   if safe { ((name): value) } else { (:) }
 }
 
@@ -137,8 +163,13 @@
   for (key, positions) in marks {
     let i = int(key) - 1
     let line = lines.at(i)
-    lines.at(i) = raw.line(line.number, line.count, line.text,
-      paint(line.body, positions, settings.palette, settings.depth-offset, settings.unmatched))
+    lines.at(i) = raw.line(line.number, line.count, line.text, paint(
+      line.body,
+      positions,
+      settings.palette,
+      settings.depth-offset,
+      settings.unmatched,
+    ))
   }
   lines
 }
@@ -158,8 +189,14 @@
         set text(size: size, font: font)
         render(paint-lines(source.lines, scan(it.lines, settings.pairs), settings))
       }
-      raw(parent-text, block: true, lang: source.lang, tab-size: source.tab-size,
-        theme: classifier, ..syntax)
+      raw(
+        parent-text,
+        block: true,
+        lang: source.lang,
+        tab-size: source.tab-size,
+        theme: classifier,
+        ..syntax,
+      )
     }
   }
   if segments.len() > 0 {
@@ -169,15 +206,47 @@
     for (index, segment) in segments.enumerate() {
       let code = rows.slice(segment.start - 1, segment.end).join("\n")
       for i in range(segment.start - 1, segment.end) { parent.at(i) = "" }
-      capture(raw(code, block: true, lang: segment.lang, tab-size: source.tab-size,
-        theme: classifier, ..syntax), origin, "marks-" + str(index), pairs: settings.pairs)
-      capture(raw(code, block: true, lang: segment.lang, tab-size: source.tab-size,
-        ..display-theme, ..syntax), origin, "lines-" + str(index))
+      capture(
+        raw(
+          code,
+          block: true,
+          lang: segment.lang,
+          tab-size: source.tab-size,
+          theme: classifier,
+          ..syntax,
+        ),
+        origin,
+        "marks-" + str(index),
+        pairs: settings.pairs,
+      )
+      capture(
+        raw(
+          code,
+          block: true,
+          lang: segment.lang,
+          tab-size: source.tab-size,
+          ..display-theme,
+          ..syntax,
+        ),
+        origin,
+        "lines-" + str(index),
+      )
     }
     parent-text = parent.join("\n")
   }
-  capture(raw(parent-text, block: true, lang: source.lang, tab-size: source.tab-size,
-    theme: classifier, ..syntax), origin, "parent", pairs: settings.pairs)
+  capture(
+    raw(
+      parent-text,
+      block: true,
+      lang: source.lang,
+      tab-size: source.tab-size,
+      theme: classifier,
+      ..syntax,
+    ),
+    origin,
+    "parent",
+    pairs: settings.pairs,
+  )
   context {
     let records = (:)
     for record in query(selector(<__codly-rainbow>).after(origin).before(here())) {

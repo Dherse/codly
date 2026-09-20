@@ -18,15 +18,26 @@
     assert.eq(actual, expected, message: lang + ": " + source)
     []
   }
-  raw(source, lang: lang, block: true, syntaxes: syntaxes, theme: r.theme(r.code-scopes, r.ignore-scopes))
+  raw(source, lang: lang, block: true, syntaxes: syntaxes, theme: r.theme(
+    r.code-scopes,
+    r.ignore-scopes,
+  ))
 }
 
-#check("rs", "fn f() { println!(\"{}\", \"}\"); let s = r###\"{\"###; let c = '}'; }", "0(0)0{1(1)0}")
+#check(
+  "rs",
+  "fn f() { println!(\"{}\", \"}\"); let s = r###\"{\"###; let c = '}'; }",
+  "0(0)0{1(1)0}",
+)
 #check("rs", "fn f() { /* } /* { */ ] */\n[1]\n}", "0(0)0{1[1]0}")
 #check("js", "function f() { return `literal { ${g({x: \"}\"})} }`; }", "0(0)0{1{2(3{3}2)1}0}")
 #check("js", "const r = /[{}()]/g; const x = a / b; f([]); // {", "0(1[1]0)")
 #check("js", "`outer ${foo(`inner ${bar({a: \"}\"})}`)}`", "0{1(2{3(4{4}3)2}1)0}")
-#check("py", "def f():\n  s = f\"literal {{ {g({'x': '}'})} }}\"\n  # {}\n  return []", "0(0)0{1(2{2}1)0}0[0]")
+#check(
+  "py",
+  "def f():\n  s = f\"literal {{ {g({'x': '}'})} }}\"\n  # {}\n  return []",
+  "0(0)0{1(2{2}1)0}0[0]",
+)
 #check("py", "s = ''' {\n ] } '''\nf(\"escaped \\\" {\")", "0(0)")
 #check("c", "int f() { char *s = \"}\\\"{\"; /* { */ return (1); }", "0(0)0{1(1)0}")
 #check("json", "{\"}\": [\"{\", {\"x\": 1}]}", "0{1[2{2}1]0}")
@@ -48,7 +59,11 @@
 #check("codly-rainbow-test", "word(%}%)", "0(0)", syntaxes: path("custom.sublime-syntax"))
 
 #let colors = (rgb("#e00000"), rgb("#0000e0"), rgb("#00a000"))
-#let settings = e.fields(codly.rainbow(palette: colors, pairs: ("{}",), code-scopes: "source.custom"))
+#let settings = e.fields(codly.rainbow(
+  palette: colors,
+  pairs: ("{}",),
+  code-scopes: "source.custom",
+))
 #assert.eq(settings.palette, colors)
 #assert.eq(settings.pairs, ("{}",))
 #assert.eq(settings.code-scopes, "source.custom")
@@ -68,14 +83,22 @@
   let origin = here()
   show: codly.line-show_(record-line)
   [#figure(caption: [Rainbow])[
-    #codly.new(raw("{\nf([1], \"}\")\n}", lang: "js", block: true),
-      block-label: <colored>, rainbow: (palette: colors), range: (2, 2),
+    #codly.new(
+      raw("{\nf([1], \"}\")\n}", lang: "js", block: true),
+      block-label: <colored>,
+      rainbow: (palette: colors),
+      range: (2, 2),
       highlights: ((line: 2, start: 2, end: 5, label: <mark>),),
     )
   ]<colored>]
   context {
     let seen = query(selector(<rainbow-color>).after(origin).before(here())).map(it => it.value)
-    assert.eq(seen, (("(", colors.at(1)), ("[", colors.at(2)), ("]", colors.at(2)), (")", colors.at(1))))
+    assert.eq(seen, (
+      ("(", colors.at(1)),
+      ("[", colors.at(2)),
+      ("]", colors.at(2)),
+      (")", colors.at(1)),
+    ))
     assert.eq(query(<colored:2>).len(), 1)
     assert.eq(query(<mark>).len(), 1)
     assert.eq(codly.info(<colored>), (last-number: 2, lines: 3))
@@ -86,15 +109,26 @@
 #context {
   let origin = here()
   show: codly.line-show_(record-line)
-  codly.new(raw("{\nf({x: \"}\"})\ng([])\n}", lang: "rs", block: true),
-    rainbow: (palette: colors), sublangs: ((start: 2, end: 2, lang: "js"),), offset: 10,
+  codly.new(
+    raw("{\nf({x: \"}\"})\ng([])\n}", lang: "rs", block: true),
+    rainbow: (palette: colors),
+    sublangs: ((start: 2, end: 2, lang: "js"),),
+    offset: 10,
     annotations: ((start: 2, end: 3, content: [mixed]),),
   )
   context {
     let seen = query(selector(<rainbow-color>).after(origin).before(here())).map(it => it.value)
     assert.eq(seen, (
-      ("{", colors.at(0)), ("(", colors.at(0)), ("{", colors.at(1)), ("}", colors.at(1)), (")", colors.at(0)),
-      ("(", colors.at(1)), ("[", colors.at(2)), ("]", colors.at(2)), (")", colors.at(1)), ("}", colors.at(0)),
+      ("{", colors.at(0)),
+      ("(", colors.at(0)),
+      ("{", colors.at(1)),
+      ("}", colors.at(1)),
+      (")", colors.at(0)),
+      ("(", colors.at(1)),
+      ("[", colors.at(2)),
+      ("]", colors.at(2)),
+      (")", colors.at(1)),
+      ("}", colors.at(0)),
     ))
     let lines = query(selector(<rainbow-line>).after(origin).before(here())).map(it => it.value)
     assert.eq(lines.map(it => it.first()), (11, 12, 13, 14))
@@ -106,9 +140,12 @@
 #context {
   let origin = here()
   show: codly.line-show_(record-line)
-  codly.new(raw("f({[]}) }", lang: "rs", block: true, theme: none),
-    rainbow: (palette: colors, pairs: ("{}",), depth-offset: 4, unmatched: colors.at(2)),
-  )
+  codly.new(raw("f({[]}) }", lang: "rs", block: true, theme: none), rainbow: (
+    palette: colors,
+    pairs: ("{}",),
+    depth-offset: 4,
+    unmatched: colors.at(2),
+  ))
   context {
     let seen = query(selector(<rainbow-color>).after(origin).before(here())).map(it => it.value)
     assert.eq(seen, (("{", colors.at(1)), ("}", colors.at(1)), ("}", colors.at(2))))
@@ -119,28 +156,46 @@
   let origin = here()
   set raw(syntaxes: "custom.sublime-syntax", theme: "../aliases/99-local-resources.tmTheme")
   show: codly.line-show_(record-line)
-  codly.new(raw("word(%}%)\nword([1]) ~ }", lang: "custom-alias", block: true),
+  codly.new(
+    raw("word(%}%)\nword([1]) ~ }", lang: "custom-alias", block: true),
     aliases: (custom-alias: "codly-rainbow-test"),
     rainbow: (palette: colors, ignore-scopes: r.ignore-scopes + ", custom.ignored"),
     sublangs: ((start: 2, end: 2, lang: "codly-rainbow-test"),),
   )
   context {
-    assert.eq(query(selector(<word-color>).after(origin).before(here())).map(it => it.value), (rgb("#ff0000"),) * 2)
+    assert.eq(
+      query(selector(<word-color>).after(origin).before(here())).map(it => it.value),
+      (rgb("#ff0000"),) * 2,
+    )
     let seen = query(selector(<rainbow-color>).after(origin).before(here())).map(it => it.value)
-    assert.eq(seen, (("(", colors.at(0)), (")", colors.at(0)),
-      ("(", colors.at(0)), ("[", colors.at(1)), ("]", colors.at(1)), (")", colors.at(0))))
+    assert.eq(seen, (
+      ("(", colors.at(0)),
+      (")", colors.at(0)),
+      ("(", colors.at(0)),
+      ("[", colors.at(1)),
+      ("]", colors.at(1)),
+      (")", colors.at(0)),
+    ))
   }
 }
 
 // Speculative measurements must retain the normal wrapping and line heights.
 #context {
-  let body = raw("\tfn é(x) { let y = [1, 2, 3]; f(x, y); }\n// comment {\n", lang: "rs", block: true)
-  assert.eq(measure(codly.new(body), width: 120pt),
-    measure(codly.new(body, rainbow: true), width: 120pt))
+  let body = raw(
+    "\tfn é(x) { let y = [1, 2, 3]; f(x, y); }\n// comment {\n",
+    lang: "rs",
+    block: true,
+  )
+  assert.eq(measure(codly.new(body), width: 120pt), measure(
+    codly.new(body, rainbow: true),
+    width: 120pt,
+  ))
   show raw: set text(font: "Libertinus Serif", size: 0.9em)
   show raw.where(block: true): set text(0.8em)
-  assert.eq(measure(codly.new(body), width: 120pt),
-    measure(codly.new(body, rainbow: true), width: 120pt))
+  assert.eq(measure(codly.new(body), width: 120pt), measure(
+    codly.new(body, rainbow: true),
+    width: 120pt,
+  ))
 }
 
 #context {
@@ -163,7 +218,10 @@
     ((palette: ()), "palette must not be empty"),
     ((depth-offset: -1), "depth-offset must be nonnegative"),
   ) {
-    let error = catch(() => measure(codly.new(raw("()", lang: "rs", block: true), rainbow: options)))
+    let error = catch(() => measure(codly.new(
+      raw("()", lang: "rs", block: true),
+      rainbow: options,
+    )))
     assert(error != none and error.contains(message))
   }
 }

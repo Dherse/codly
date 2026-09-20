@@ -22,7 +22,11 @@
   show: codly.set_(enabled: false, radius: 7pt)
   show: codly.show_(it => {
     let fields = e.fields(it)
-    [#metadata((enabled: fields.enabled, radius: fields.radius, body-block: fields.body.fields().at("block", default: false)))<codly-fields>#it]
+    [#metadata((
+        enabled: fields.enabled,
+        radius: fields.radius,
+        body-block: fields.body.fields().at("block", default: false),
+      ))<codly-fields>#it]
   })
   show raw: it => {
     if it.text == "inline" {
@@ -84,7 +88,11 @@
   show: codly.lang-set_(languages: languages, display-name: false, display-icon: false)
   show: codly.lang-show_(it => {
     let fields = e.fields(it)
-    [#metadata((body: fields.body, display-name: fields.display-name, display-icon: fields.display-icon))<language-hidden>#it]
+    [#metadata((
+        body: fields.body,
+        display-name: fields.display-name,
+        display-icon: fields.display-icon,
+      ))<language-hidden>#it]
   })
   codly.new(raw("hidden", block: true, lang: "python"))
 }
@@ -92,7 +100,10 @@
   show: codly.lang-set_(languages: languages)
   show: codly.lang-show_(it => {
     let fields = e.fields(it)
-    [#metadata((body: fields.body, defined: fields.languages.at("missing", default: none)))<language-fallback>#it]
+    [#metadata((
+        body: fields.body,
+        defined: fields.languages.at("missing", default: none),
+      ))<language-fallback>#it]
   })
   codly.new(raw("missing", block: true, lang: "missing"))
 }
@@ -128,14 +139,28 @@
     for child in it.children {
       if child.func() == grid.header or child.func() == grid.footer {
         let cell = child.fields().children.first()
-        edges.push((kind: if child.func() == grid.header { "header" } else { "footer" }, fill: cell.fields().fill))
+        edges.push((
+          kind: if child.func() == grid.header { "header" } else { "footer" },
+          fill: cell.fields().fill,
+        ))
       }
     }
     [#metadata(edges)<styled-cells>#it]
   }
-  codly.new(raw("style-one", block: true), header: [plain-header], footer: codly.codly-footer([explicit-footer], fill: blue))
-  codly.new(raw("style-two", block: true), header: codly.codly-header([explicit-header], fill: red), footer: [plain-footer])
-  codly.new(raw("style-three", block: true), header: codly.codly-header([inherited-header]), footer: codly.codly-footer([inherited-footer]))
+  codly.new(raw("style-one", block: true), header: [plain-header], footer: codly.codly-footer(
+    [explicit-footer],
+    fill: blue,
+  ))
+  codly.new(
+    raw("style-two", block: true),
+    header: codly.codly-header([explicit-header], fill: red),
+    footer: [plain-footer],
+  )
+  codly.new(
+    raw("style-three", block: true),
+    header: codly.codly-header([inherited-header]),
+    footer: codly.codly-footer([inherited-footer]),
+  )
 }
 
 // Custom hooks can inspect line, number, highlight, and annotation elements.
@@ -168,7 +193,10 @@
   codly.new(raw("gradient", block: true))
 }
 #{
-  show: codly.line-set_(fill: tiling(size: (4pt, 4pt), relative: "parent", rect(width: 2pt, height: 2pt)))
+  show: codly.line-set_(fill: tiling(size: (4pt, 4pt), relative: "parent", rect(
+    width: 2pt,
+    height: 2pt,
+  )))
   codly.new(raw("pattern", block: true))
 }
 
@@ -183,12 +211,30 @@
   let syntax = query(<language-syntax>).map(it => it.value)
   assert.eq(syntax.len(), 2)
   assert.eq(syntax.first(), syntax.last())
-  assert.eq(query(<language-hidden>).first().value, (body: "python", display-name: false, display-icon: false))
+  assert.eq(query(<language-hidden>).first().value, (
+    body: "python",
+    display-name: false,
+    display-icon: false,
+  ))
   assert.eq(query(<language-fallback>).first().value, (body: "missing", defined: none))
   let headers = e.query(codly.codly-header)
-  assert.eq(headers.map(it => text-of(it)), ("standalone-head", "plain-head", "element-head", "plain-header", "explicit-header", "inherited-header"))
+  assert.eq(headers.map(it => text-of(it)), (
+    "standalone-head",
+    "plain-head",
+    "element-head",
+    "plain-header",
+    "explicit-header",
+    "inherited-header",
+  ))
   let footers = e.query(codly.codly-footer)
-  assert.eq(footers.map(it => text-of(it)), ("standalone-foot", "plain-foot", "element-foot", "explicit-footer", "plain-footer", "inherited-footer"))
+  assert.eq(footers.map(it => text-of(it)), (
+    "standalone-foot",
+    "plain-foot",
+    "element-foot",
+    "explicit-footer",
+    "plain-footer",
+    "inherited-footer",
+  ))
   let styled = query(<styled-cells>).map(it => it.value)
   assert.eq(styled, (
     ((kind: "header", fill: green), (kind: "footer", fill: blue)),

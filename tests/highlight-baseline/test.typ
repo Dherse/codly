@@ -22,7 +22,8 @@
 // Issue #131 / PR #132, rendered through the complete raw-line pipeline.
 #codly.new(highlights: ((line: 3, start: 3, end: 10, fill: orange),), raw(
   "pub fn main() {\n  println!(\"Hello!\");\n  println!(\"Hello!\");\n}",
-  lang: "rust", block: true,
+  lang: "rust",
+  block: true,
 ))
 
 #context {

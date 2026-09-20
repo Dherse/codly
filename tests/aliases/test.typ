@@ -18,7 +18,9 @@
 }
 
 #context {
-  let lines = query(<alias-line-height>).map(it => it.value).filter(it => it.text in ("alias", "direct"))
+  let lines = query(<alias-line-height>)
+    .map(it => it.value)
+    .filter(it => it.text in ("alias", "direct"))
   assert.eq(lines.len(), 2)
   assert.eq(lines.first().height, lines.last().height)
 }

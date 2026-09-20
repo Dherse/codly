@@ -7,12 +7,22 @@
 // References, highlights, annotations, sublanguages, ranges and offsets.
 @wrapped:12 @wrapped-highlight
 #figure(caption: [Wrap markers])[
-  #codly.new(raw("root\n    f(very_long_argument, another_long_argument, argument_three);\n    next();\nend", lang: "js", block: true),
-    wrap-marker: marker, indent-guides: true, rainbow: true,
-    offset: 10, block-label: <wrapped>, range: (2, 3),
+  #codly.new(
+    raw(
+      "root\n    f(very_long_argument, another_long_argument, argument_three);\n    next();\nend",
+      lang: "js",
+      block: true,
+    ),
+    wrap-marker: marker,
+    indent-guides: true,
+    rainbow: true,
+    offset: 10,
+    block-label: <wrapped>,
+    range: (2, 3),
     sublangs: ((start: 2, end: 2, lang: "rs"),),
     highlights: ((line: 12, start: 4, end: 5, label: <wrapped-highlight>),),
-    annotations: ((start: 2, end: 3, content: [note]),))
+    annotations: ((start: 2, end: 3, content: [note]),),
+  )
 ]<wrapped>
 #context {
   assert.eq(query(<wrapped:12>).len(), 1)
@@ -27,8 +37,13 @@
   context {
     let origin = here()
     show: e.set_(codly.codly-number, placement: if outside { "outside" } else { "inside" })
-    codly.new(raw("    call(" + "argument, " * 80 + ");", block: true),
-      wrap-marker: marker, indent-guides: true, header: [header], footer: [footer])
+    codly.new(
+      raw("    call(" + "argument, " * 80 + ");", block: true),
+      wrap-marker: marker,
+      indent-guides: true,
+      header: [header],
+      footer: [footer],
+    )
     context {
       let arrows = query(selector(<painted-wrap>).after(origin).before(here()))
       assert(arrows.len() > 10)
@@ -55,11 +70,16 @@
 // Nested blocks can reuse source row numbers without sharing continuation state.
 #context {
   let origin = here()
-  let nested = codly.new(raw("    " + "nested " * 20, block: true),
-    wrap-marker: [#metadata(none)<nested-wrap>↪], number-enabled: false)
-  codly.new(raw("    " + "outer " * 20, block: true),
+  let nested = codly.new(
+    raw("    " + "nested " * 20, block: true),
+    wrap-marker: [#metadata(none)<nested-wrap>↪],
+    number-enabled: false,
+  )
+  codly.new(
+    raw("    " + "outer " * 20, block: true),
     wrap-marker: [#metadata(none)<outer-wrap>↪],
-    annotations: ((start: 1, content: box(width: 130pt, nested)),))
+    annotations: ((start: 1, content: box(width: 130pt, nested)),),
+  )
   context {
     let rows = query(selector(<__codly-wrap-row>).after(origin).before(here()))
     assert.eq(rows.len(), 2)

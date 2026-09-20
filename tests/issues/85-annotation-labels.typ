@@ -12,14 +12,15 @@
       (start: 2, label: <test1>),
     ),
     ```py
-  print("Hello, world!")
+      print("Hello, world!")
 
-  for i in range(1, 5):
-      print(i)
+      for i in range(1, 5):
+          print(i)
 
-  if i == 3:
-      print("Three!")
-```)
+      if i == 3:
+          print("Three!")
+    ```,
+  )
 ] <figure>
 
 @test2
@@ -33,12 +34,13 @@
       (start: 4, label: <test3>),
     ),
     ```py
-  print("Hello, world!")
+      print("Hello, world!")
 
-  for i in range(1, 5):
-      print(i)
+      for i in range(1, 5):
+          print(i)
 
-  if i == 3:
-      print("Three!")
-```)
+      if i == 3:
+          print("Three!")
+    ```,
+  )
 ] <figure2>

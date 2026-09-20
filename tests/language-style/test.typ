@@ -37,7 +37,13 @@
 
 #let capture-lang = it => {
   let fields = e.fields(it)
-  [#metadata((body: fields.body, display-name: fields.display-name, display-icon: fields.display-icon, radius: fields.radius, definition-radius: fields.languages.py.at("radius", default: none)))<language-fields>#it]
+  [#metadata((
+      body: fields.body,
+      display-name: fields.display-name,
+      display-icon: fields.display-icon,
+      radius: fields.radius,
+      definition-radius: fields.languages.py.at("radius", default: none),
+    ))<language-fields>#it]
 }
 
 // Both parts of the badge are shown by default.
@@ -83,7 +89,10 @@
     (false, false),
   ))
   assert.eq(fields.map(it => it.radius), (
-    radius, 6pt, 6pt, 6pt,
+    radius,
+    6pt,
+    6pt,
+    6pt,
   ))
   assert.eq(fields.map(it => it.definition-radius), (
     radius,

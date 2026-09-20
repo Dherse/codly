@@ -2,9 +2,7 @@
 #import "@preview/codly-languages:0.1.8": *
 #import "orly.typ": orly
 #import "../src/args.typ": *
-#import "../codly.typ": (
-  codly, codly-set, codly-show, codly-selector, typst-icon
-)
+#import "../codly.typ": codly, codly-set, codly-show, codly-selector, typst-icon
 
 // Set this to the relevant version
 #let current_version = "1.3.1"
@@ -13,7 +11,7 @@
 
 #show ref: it => {
   if type(it.target) == label and str(it.target).starts-with("arg-") {
-  let label = str(it.target).replace("arg-", "")
+    let label = str(it.target).replace("arg-", "")
     return link(it.target, raw(lang: "typc", label))
   } else {
     return it
@@ -117,25 +115,25 @@
 
 // Start with a cover page
 #orly(
-    color: rgb("#85144b"),
-    title: "Codly " + current_version + " manual",
-    top-text: "Always start a new Typst project by importing codly",
-    subtitle: "Your code blocks on steroids",
-    pic: "/docs/codly.png",
-    signature: "Dherse"
+  color: rgb("#85144b"),
+  title: "Codly " + current_version + " manual",
+  top-text: "Always start a new Typst project by importing codly",
+  subtitle: "Your code blocks on steroids",
+  pic: "/docs/codly.png",
+  signature: "Dherse",
 )
 
 #let args = json("../src/args.json")
 
 #let codly-args = arguments(
-  header-cell-args: (align: center, ),
+  header-cell-args: (align: center),
   header-transform: strong,
   enabled: true,
   languages: typst-icon,
 )
 
 #show: codly-set(
-  ..codly-args
+  ..codly-args,
 )
 
 #let one-indexed = info[ Line numbers are one-indexed, meaning that to reference the fourth line, you use the number `4`. ]
@@ -146,7 +144,7 @@
     header: [ Example code ],
   )
   grid(
-    columns: (1fr, )* 2,
+    columns: (1fr,) * 2,
     column-gutter: 0.32em,
     box(
       radius: 0.32em,
@@ -155,43 +153,58 @@
       {
         show: codly-set(..pre)
         raw
-      }
+      },
     ),
     box(
       radius: 0.32em,
       width: 1fr,
       stroke: 1pt + luma(120),
       grid(
-        columns: (1fr, ),
+        columns: (1fr,),
         inset: 0.32em,
         grid.header(
           grid.cell(
             inset: 0pt,
-            align: center, box(
+            align: center,
+            box(
               fill: luma(240),
               stroke: 1pt + luma(120),
               inset: 0.32em,
               radius: (top-left: 0.32em, top-right: 0.32em),
               width: 1fr,
-              strong[Rendered output]
-            )
-          )
+              strong[Rendered output],
+            ),
+          ),
         ),
         {
           codly-reset()
           eval(
             if actual != none {
               actual.text
-            } else { 
+            } else {
               raw.text
             },
-            scope: (codly: codly, local: local, no-codly: no-codly, yes-codly: yes-codly, codly-enable: codly-enable, codly-disable: codly-disable, codly-range: codly-range, codly-offset: codly-offset, codly-skip: codly-skip, codly-reset: codly-reset, typst-icon: typst-icon, one-indexed: one-indexed, zero-indexed: zero-indexed),
-            mode: "markup"
+            scope: (
+              codly: codly,
+              local: local,
+              no-codly: no-codly,
+              yes-codly: yes-codly,
+              codly-enable: codly-enable,
+              codly-disable: codly-disable,
+              codly-range: codly-range,
+              codly-offset: codly-offset,
+              codly-skip: codly-skip,
+              codly-reset: codly-reset,
+              typst-icon: typst-icon,
+              one-indexed: one-indexed,
+              zero-indexed: zero-indexed,
+            ),
+            mode: "markup",
           )
           codly-reset()
           codly(..codly-args)
         },
-      )
+      ),
     ),
   )
 }
@@ -245,7 +258,7 @@ From this point on, any code block that is included in your Typst project will b
   ```
   Hello, world!
   ```
-  ````
+  ````,
 )
 
 
@@ -355,10 +368,12 @@ The codly functions acts like a set-rule, this means that calling it will set th
 
   let tys = if type(arg.ty) == array {
     let long = arg.ty.len() > 2
-    arg.ty.map(ty_map)
-      .map((x) => (x, raw(lang: "typc", x)))
+    arg
+      .ty
+      .map(ty_map)
+      .map(x => (x, raw(lang: "typc", x)))
       .map(((key, value)) => link(link-map(key), value))
-      .join(", ", last: if long { ", or " } else { " or "})
+      .join(", ", last: if long { ", or " } else { " or " })
   } else {
     link(link-map(arg.ty), raw(lang: "typc", ty_map(arg.ty)))
   }
@@ -387,7 +402,13 @@ The codly functions acts like a set-rule, this means that calling it will set th
     [
       #header #label
       #card
-      #eval(arg.description, mode: "markup", scope: (experiment: experiment, info: info, warning: warning, one-indexed: one-indexed, zero-indexed: zero-indexed))
+      #eval(arg.description, mode: "markup", scope: (
+        experiment: experiment,
+        info: info,
+        warning: warning,
+        one-indexed: one-indexed,
+        zero-indexed: zero-indexed,
+      ))
 
       #if "experimental" in arg and arg.experimental {
         experiment[
@@ -398,7 +419,7 @@ The codly functions acts like a set-rule, this means that calling it will set th
       #if "example" in arg {
         [=== Example]
         example(
-          raw(block: true, lang: "typ", arg.example)
+          raw(block: true, lang: "typ", arg.example),
         )
       }
 
@@ -409,13 +430,17 @@ The codly functions acts like a set-rule, this means that calling it will set th
             ex.desc
           }
           example(
-            raw(block: true, lang: "typ", ex.code)
+            raw(block: true, lang: "typ", ex.code),
           )
         }
       }
 
       #if "post" in arg {
-        eval(arg.post, mode: "markup", scope: (experiment: experiment, info: info, example: example))
+        eval(arg.post, mode: "markup", scope: (
+          experiment: experiment,
+          info: info,
+          example: example,
+        ))
       }
     ]
   })
@@ -426,11 +451,11 @@ The codly functions acts like a set-rule, this means that calling it will set th
 
 This section of the documentation will detail how you can use codly to reference: lines, highlights, and annotations in your code blocks. To do this, here are the requirements that must be met *for each code block*:
 #list(marker: sym.square)[
-Numbering of figures must be turned on: `set figure(numbering: ...)`.
+  Numbering of figures must be turned on: `set figure(numbering: ...)`.
 ][
-The code block must be contained within a raw figure: `figure(kind: raw)`.
+  The code block must be contained within a raw figure: `figure(kind: raw)`.
 ][
-The figure must have a label of its own: `figure(...)[...] <my-label>`.
+  The figure must have a label of its own: `figure(...)[...] <my-label>`.
 ]
 
 == Shorthand line references
@@ -456,8 +481,8 @@ You can reference lines directly, if you have set a label correctly, using the s
   ````,
   pre: arguments(
     ranges: ((1, 3), (8, 10)),
-    skips: ((4, 0), )
-  )
+    skips: ((4, 0),),
+  ),
 )
 
 == Highlight references
@@ -484,8 +509,8 @@ You can also highlight by reference, to do this, you need to set a label for you
   ````,
   pre: arguments(
     ranges: ((1, 3), (13, 13)),
-    skips: ((4, 0), )
-  )
+    skips: ((4, 0),),
+  ),
 )
 
 And using #link(<arg-reference-by>)[`"item"`] mode:
@@ -508,8 +533,8 @@ And using #link(<arg-reference-by>)[`"item"`] mode:
   ````,
   pre: arguments(
     ranges: ((1, 4), (14, 14)),
-    skips: ((5, 0), )
-  )
+    skips: ((5, 0),),
+  ),
 )
 
 #pagebreak(weak: true)
@@ -526,26 +551,29 @@ This is a short, non-exhaustive guide on how to get nicer icons for the language
 + Using your font selector, select the icon you wish to use
   - For example, the language icon in Tabler Icons is `ebbe` (the unicode value of the icon, which you can find in the documentation of the font)
   - Use the #link("https://typst.app/docs/reference/text/text/")[`text`] function to display the icon in your document by setting the font, size, and the unicode value of the icon:
-  #show: codly-set(highlights: ((line: 1, start: 12, end: 25, tag: [ Font name ]), (line: 1, start: 43, end: 46, fill: green, tag: [ UTF-8 icon code])))
+  #show: codly-set(highlights: (
+    (line: 1, start: 12, end: 25, tag: [ Font name ]),
+    (line: 1, start: 43, end: 46, fill: green, tag: [ UTF-8 icon code]),
+  ))
   ```typc
   text(font: "tabler-icons", size: 1em, "\u{ebbe}")
   ```
 + You can store it the `languages` argument of the `codly` function to use it for all code blocks in your document: #example(````typ
-#let icon = text(font: "tabler-icons", size: 1em, "\u{ebbe}")
-#codly(languages: (text: (icon: icon, name: "Text")))
-```text
-Hello, world!
-```
-````)
+  #let icon = text(font: "tabler-icons", size: 1em, "\u{ebbe}")
+  #codly(languages: (text: (icon: icon, name: "Text")))
+  ```text
+  Hello, world!
+  ```
+  ````)
 + Congrats, you now have fancy icons!
 + ...
 + But you can notice that the baseline of the icon is wrong, I find that this is generally the case with tabler, you can set the baseline to `0.1em` in the icon to fix it: #example(````typ
-#let icon = text(font: "tabler-icons", size: 1em, "\u{ebbe}", baseline: 0.1em)
-#codly(languages: (text: (icon: icon, name: "Text")))
-```text
-Hello, world!
-```
-````)
+  #let icon = text(font: "tabler-icons", size: 1em, "\u{ebbe}", baseline: 0.1em)
+  #codly(languages: (text: (icon: icon, name: "Text")))
+  ```text
+  Hello, world!
+  ```
+  ````)
 
 == Typst language icon (`typst-icon`) <typst-icon>
 
@@ -642,7 +670,7 @@ Additionally, local settings can be used to set per-language configuration using
 ]
 
 #warning[
- If you use the `local` function in a show rule, nested `local` states *will not work* with the settings you have set! Use the `codly` method instead. If using the `codly` method, and you *must* manually reset the changed settings in the show rule!
+  If you use the `local` function in a show rule, nested `local` states *will not work* with the settings you have set! Use the `codly` method instead. If using the `codly` method, and you *must* manually reset the changed settings in the show rule!
 ]
 
 #example(````typ

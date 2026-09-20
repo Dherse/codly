@@ -34,37 +34,52 @@
 }
 
 // Plain text, three nesting levels, sibling highlights, and gaps.
-#check((
-  (start: 2, end: 8, tag: "outer"),
-  (start: 3, end: 5, tag: "middle"),
-  (start: 4, end: 4, tag: "inner"),
-  (start: 7, end: 7, tag: "sibling"),
-), "a<outer>b<middle>c<inner>d</inner>e</middle>f<sibling>g</sibling>h</outer>i")
+#check(
+  (
+    (start: 2, end: 8, tag: "outer"),
+    (start: 3, end: 5, tag: "middle"),
+    (start: 4, end: 4, tag: "inner"),
+    (start: 7, end: 7, tag: "sibling"),
+  ),
+  "a<outer>b<middle>c<inner>d</inner>e</middle>f<sibling>g</sibling>h</outer>i",
+)
 
 // Shared starts and ends must preserve one wrapper per highlight.
-#check((
-  (start: 1, end: 9, tag: "outer"),
-  (start: 1, end: 3, tag: "left"),
-  (start: 7, end: 9, tag: "right"),
-), "<outer><left>abc</left>def<right>ghi</right></outer>")
+#check(
+  (
+    (start: 1, end: 9, tag: "outer"),
+    (start: 1, end: 3, tag: "left"),
+    (start: 7, end: 9, tag: "right"),
+  ),
+  "<outer><left>abc</left>def<right>ghi</right></outer>",
+)
 
 // Equal spans retain the existing innermost-first input order.
-#check((
-  (start: 2, end: 8, tag: "first"),
-  (start: 2, end: 8, tag: "second"),
-), "a<second><first>bcdefgh</first></second>i")
+#check(
+  (
+    (start: 2, end: 8, tag: "first"),
+    (start: 2, end: 8, tag: "second"),
+  ),
+  "a<second><first>bcdefgh</first></second>i",
+)
 
 // Adjacent highlights at the same depth remain separate.
-#check((
-  (start: 2, end: 4, tag: "left"),
-  (start: 5, end: 7, tag: "right"),
-), "a<left>bcd</left><right>efg</right>hi")
+#check(
+  (
+    (start: 2, end: 4, tag: "left"),
+    (start: 5, end: 7, tag: "right"),
+  ),
+  "a<left>bcd</left><right>efg</right>hi",
+)
 
 // Crossing spans split as necessary to produce properly nested elements.
-#check((
-  (start: 2, end: 5, tag: "left"),
-  (start: 4, end: 7, tag: "right"),
-), "a<left>bc</left><right><left>de</left>fg</right>hi")
+#check(
+  (
+    (start: 2, end: 5, tag: "left"),
+    (start: 4, end: 7, tag: "right"),
+  ),
+  "a<left>bc</left><right><left>de</left>fg</right>hi",
+)
 
 // A span continuing past the line is closed at the end of the content.
 #check(((start: 3, end: 100, tag: "tail"),), "ab<tail>cdefghi</tail>")
@@ -77,24 +92,39 @@
 #check(((start: 2, end: 2, tag: "emoji"),), "a<emoji>🙂</emoji>b", body: text("a🙂b"))
 
 // Styled content is traversed for text checks and remains intact in a span.
-#check(((start: 3, end: 6, tag: "styled"),), "ab<styled>cdef</styled>gh", body: [ab#text(fill: red)[cd]#strong[ef]gh])
+#check(
+  ((start: 3, end: 6, tag: "styled"),),
+  "ab<styled>cdef</styled>gh",
+  body: [ab#text(fill: red)[cd]#strong[ef]gh],
+)
 
 // Empty spans emit nothing; equal geometry preserves distinct tags and order.
 #check(((start: 4, end: 3, tag: "empty"),), "abcdef", body: [abcdef])
-#check(((start: 2, end: 2, tag: "first"), (start: 2, end: 2, tag: "second")), "a<second><first>b</first></second>c", body: [abc])
+#check(
+  ((start: 2, end: 2, tag: "first"), (start: 2, end: 2, tag: "second")),
+  "a<second><first>b</first></second>c",
+  body: [abc],
+)
 
 // Duplicate records collapse even when separated by another equal span.
-#check((
-  (start: 2, end: 8, tag: "first"),
-  (start: 2, end: 8, tag: "second"),
-  (start: 2, end: 8, tag: "first"),
-), "a<second><first>bcdefgh</first></second>i")
+#check(
+  (
+    (start: 2, end: 8, tag: "first"),
+    (start: 2, end: 8, tag: "second"),
+    (start: 2, end: 8, tag: "first"),
+  ),
+  "a<second><first>bcdefgh</first></second>i",
+)
 
 // Whitespace runs are atomic even when several boundaries fall inside them.
-#check((
-  (start: 2, end: 9, tag: "outer"),
-  (start: 5, end: 6, tag: "inner"),
-), "<outer>  ab<inner>   </inner>cd</outer> e", body: text("  ab   cd e"))
+#check(
+  (
+    (start: 2, end: 9, tag: "outer"),
+    (start: 5, end: 6, tag: "inner"),
+  ),
+  "<outer>  ab<inner>   </inner>cd</outer> e",
+  body: text("  ab   cd e"),
+)
 
 // Per-line indexing uses displayed numbers, including offsets from each skip.
 #context {

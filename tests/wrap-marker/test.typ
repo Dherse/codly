@@ -9,12 +9,22 @@
 // Only the wrapped source row gets markers; source text and numbering survive.
 #context {
   let origin = here()
-  show: codly.line-show_(it => [#metadata((e.fields(it).body.number, e.fields(it).body.text))<wrap-source>#it])
-  codly.new(raw(source, lang: "rs", block: true), wrap-marker: marker,
-    rainbow: true, indent-guides: (x-offset: 0.3em))
+  show: codly.line-show_(it => [#metadata((
+      e.fields(it).body.number,
+      e.fields(it).body.text,
+    ))<wrap-source>#it])
+  codly.new(
+    raw(source, lang: "rs", block: true),
+    wrap-marker: marker,
+    rainbow: true,
+    indent-guides: (x-offset: 0.3em),
+  )
   context {
     assert.eq(query(selector(<painted-wrap>).after(origin).before(here())).len(), 2)
-    assert.eq(query(selector(<wrap-source>).after(origin).before(here())).map(m => m.value.last()), source.split("\n"))
+    assert.eq(
+      query(selector(<wrap-source>).after(origin).before(here())).map(m => m.value.last()),
+      source.split("\n"),
+    )
     // Short source rows take the fast path and need no per-character tags.
     let rows = query(selector(<__codly-wrap-row>).after(origin).before(here()))
     assert.eq(rows.map(m => m.value.row), (3,))
@@ -50,7 +60,11 @@
     for width in (45pt, 90pt, 150pt) {
       let plain = text(font: "DejaVu Sans Mono", source)
       let tagged = wrap.annotate(plain, here(), 1)
-      assert.eq(measure(plain, width: width), measure(tagged, width: width), message: source + " " + repr(width))
+      assert.eq(
+        measure(plain, width: width),
+        measure(tagged, width: width),
+        message: source + " " + repr(width),
+      )
     }
   }
 }
@@ -76,8 +90,12 @@
 // painted above the highlight fill rather than disappearing behind it.
 #context {
   let origin = here()
-  codly.new(raw(source, lang: "rs", block: true), wrap-marker: marker,
-    highlights: ((line: 3, start: 0, end: 999),), indent-guides: true)
+  codly.new(
+    raw(source, lang: "rs", block: true),
+    wrap-marker: marker,
+    highlights: ((line: 3, start: 0, end: 999),),
+    indent-guides: true,
+  )
   context { assert.eq(query(selector(<painted-wrap>).after(origin).before(here())).len(), 2) }
 }
 
@@ -85,8 +103,9 @@
 #context {
   let origin = here()
   for baseline in (-8pt, 0pt, 8pt) {
-    codly.new(raw("short call();", block: true), wrap-marker: marker,
-      highlights: ((line: 1, start: 6, end: 10, baseline: baseline),))
+    codly.new(raw("short call();", block: true), wrap-marker: marker, highlights: (
+      (line: 1, start: 6, end: 10, baseline: baseline),
+    ))
   }
   context { assert.eq(query(selector(<painted-wrap>).after(origin).before(here())).len(), 0) }
 }
@@ -95,7 +114,8 @@
 // tagged span must not be mistaken for a soft wrap.
 #context {
   let origin = here()
-  codly.new(raw("    " + "argument " * 15, block: true), wrap-marker: marker,
-    highlights: ((line: 1, start: 1, end: 999, tag: [1]),))
+  codly.new(raw("    " + "argument " * 15, block: true), wrap-marker: marker, highlights: (
+    (line: 1, start: 1, end: 999, tag: [1]),
+  ))
   context { assert.eq(query(selector(<painted-wrap>).after(origin).before(here())).len(), 0) }
 }

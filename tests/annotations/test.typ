@@ -2,10 +2,9 @@
 #import "@preview/elembic:1.1.1" as e
 
 #let suffix(body) = {
-  if type(body) == str { body }
-  else if body.has("text") { body.text }
-  else if body.has("children") { body.children.map(suffix).join() }
-  else { "" }
+  if type(body) == str { body } else if body.has("text") { body.text } else if body.has(
+    "children",
+  ) { body.children.map(suffix).join() } else { "" }
 }
 
 #let line-show(it) = {
@@ -23,7 +22,12 @@
 #show: codly.line-show_(line-show)
 #show: codly.annotation-show_(it => {
   let fields = e.fields(it)
-  [#metadata((num: fields.num, body: fields.body, height: fields.height, numbering: suffix((fields.numbering)(fields.num))))<annotation-seen>#it]
+  [#metadata((
+      num: fields.num,
+      body: fields.body,
+      height: fields.height,
+      numbering: suffix((fields.numbering)(fields.num)),
+    ))<annotation-seen>#it]
 })
 #show grid.cell: it => {
   if it.rowspan > 1 { [#metadata(it.rowspan)<annotation-rowspan>#it] } else { it }
@@ -36,7 +40,10 @@
   set text(size: 12pt)
   show: codly.line-set_(inset: 3pt)
   codly.new(
-    raw("short\nthis line is deliberately long so it wraps in the narrow test page\nend", block: true),
+    raw(
+      "short\nthis line is deliberately long so it wraps in the narrow test page\nend",
+      block: true,
+    ),
     annotations: ((start: 1, end: 2, content: block(inset: 2pt)[wrapped]),),
   )
 }
@@ -70,8 +77,12 @@
 }
 
 #context {
-  let lines-between(start, end) = query(selector(<annotation-line>).after(start.location()).before(end.location()))
-  let ann-between(start, end) = query(selector(<annotation-seen>).after(start.location()).before(end.location()))
+  let lines-between(start, end) = query(
+    selector(<annotation-line>).after(start.location()).before(end.location()),
+  )
+  let ann-between(start, end) = query(
+    selector(<annotation-seen>).after(start.location()).before(end.location()),
+  )
   let wrapped = lines-between(query(<wrapped-case>).first(), query(<ranges-case>).first())
   let wrapped-ann = ann-between(query(<wrapped-case>).first(), query(<ranges-case>).first()).first()
   let wrapped-after = wrapped.at(2).location().position()
@@ -101,7 +112,9 @@
   }
   assert(paged.len() == 14)
   assert(pages.len() > 1)
-  let paged-ann = query(selector(<annotation-seen>).after(query(<paged-case>).first().location())).first()
+  let paged-ann = query(
+    selector(<annotation-seen>).after(query(<paged-case>).first().location()),
+  ).first()
   assert(paged-ann.value.height > 0pt)
 
   assert.eq(query(<annotation-seen>).map(it => it.value.num), (1, 1, 1, 1))

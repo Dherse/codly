@@ -7,7 +7,9 @@
 @code:1 @marked @note
 
 #figure(caption: [Code])[
-  #codly.new(raw("first\nsecond\nthird", block: true), block-label: <code>,
+  #codly.new(
+    raw("first\nsecond\nthird", block: true),
+    block-label: <code>,
     highlights: ((line: 1, start: 1, end: 3, label: <marked>),),
     annotations: ((start: 2, label: <note>),),
   )
@@ -15,9 +17,9 @@
 
 #show: codly.ref-set_(by: "item")
 #figure(caption: [Tagged code])[
-  #codly.new(raw("one", block: true), block-label: <tagged>,
-    highlights: ((line: 1, tag: [A], label: <tag>),),
-  )
+  #codly.new(raw("one", block: true), block-label: <tagged>, highlights: (
+    (line: 1, tag: [A], label: <tag>),
+  ))
 ]<tagged>
 @tag @tagged:1
 

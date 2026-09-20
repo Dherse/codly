@@ -20,7 +20,7 @@
     clip: true,
   )
 
-  #codly.new(highlights: ((line: 1, start: 0, end: none), ))[
+  #codly.new(highlights: ((line: 1, start: 0, end: none),))[
     ```kotlin
     val n = 0
     val n = 0
@@ -33,7 +33,7 @@
     clip: true,
   )
 
-  #codly.new(highlights: ((line: 2, start: 0, end: none), ))[
+  #codly.new(highlights: ((line: 2, start: 0, end: none),))[
     ```kotlin
     val n = 0
     val n = 0

@@ -78,7 +78,7 @@
 }
 
 #let __codly-lang-show(
-  it
+  it,
 ) = {
   // The body is the language key as a string, e.g. "py".
   let lang-key = it.body
@@ -92,7 +92,9 @@
 
   let style = (:)
   for name in ("display-name", "display-icon", "fill", "stroke", "inset", "radius") {
-    style.insert(name, if lang-def != none and name in lang-def { lang-def.at(name) } else { it.at(name) })
+    style.insert(name, if lang-def != none and name in lang-def { lang-def.at(name) } else {
+      it.at(name)
+    })
   }
 
   let name = if not style.display-name {
@@ -263,7 +265,10 @@
       if token != "" and (not is-space or not was-space) {
         offset += token.len()
         if next < boundaries.len() and boundaries.at(next) <= offset {
-          if part != "" { out.push(text(part)); part = "" }
+          if part != "" {
+            out.push(text(part))
+            part = ""
+          }
           out.push(text(token))
           while next < boundaries.len() and boundaries.at(next) <= offset { next += 1 }
         } else {
@@ -322,15 +327,15 @@
       let block-label = hl.at("block-label")
       let sep = ref-set.sep
       place(hide(pdf.artifact[#figure(
-        kind: "codly-referencer",
-        supplement: none,
-        numbering: (..) => {
-          ref(block-label)
-          sep
-          __codly-trim(referenced)
-        },
-        [],
-      )#hl.label]))
+          kind: "codly-referencer",
+          supplement: none,
+          numbering: (..) => {
+            ref(block-label)
+            sep
+            __codly-trim(referenced)
+          },
+          [],
+        )#hl.label]))
     })
   }
 
@@ -351,10 +356,14 @@
     let inset-sep = __codly-inset(style.inset)
     let size-body = measure(body)
     let size-tag = measure(tag)
-    let max-height = calc.max(
-      size-body.height,
-      size-tag.height,
-    ) + inset-sep.top + inset-sep.bottom
+    let max-height = (
+      calc.max(
+        size-body.height,
+        size-tag.height,
+      )
+        + inset-sep.top
+        + inset-sep.bottom
+    )
     let width-body = size-body.width + inset-sep.left + inset-sep.right
     let width-tag = size-tag.width + inset-sep.left + inset-sep.right
     let body-box = box(
@@ -403,8 +412,11 @@
   let smart-indent = it.smart-indent
   let block-label = it.block-label
   if smart-indent and it.__wrap != none and "width" not in it.__wrap {
-    return layout(size => __codly-line-show(codly-highlight, codly-ref,
-      it + (__wrap: it.__wrap + (width: size.width))))
+    return layout(size => __codly-line-show(
+      codly-highlight,
+      codly-ref,
+      it + (__wrap: it.__wrap + (width: size.width)),
+    ))
   }
   context {
     let highlights = ()
@@ -450,7 +462,13 @@
       let row = it.__wrap.row
       let marker = it.__wrap.marker
       let advance = measure(marker).width + 0.3em.to-absolute()
-      wrap-data = (owner: it.__wrap.owner, row: row, marker: marker, advance: advance, tolerance: line-height / 2)
+      wrap-data = (
+        owner: it.__wrap.owner,
+        row: row,
+        marker: marker,
+        advance: advance,
+        tolerance: line-height / 2,
+      )
       body = wrap.annotate(body, it.__wrap.owner, row)
     }
     body = box(height: line-height, width: 0pt, baseline: 0pt) + body
@@ -470,8 +488,10 @@
       // whitespace runs are atomic; crossing spans may also reopen later.
       let remaining = calc.max(prefix.len() - start, 0)
       if not smart-indent or (remaining == 0 and wrap-data == none) { return (:) }
-      (__continuation-indent: measure(text(" " * remaining)).width
-        + if wrap-data == none { 0pt } else { wrap-data.advance })
+      (
+        __continuation-indent: measure(text(" " * remaining)).width
+          + if wrap-data == none { 0pt } else { wrap-data.advance },
+      )
     }
 
     // Split before applying `set par`, which would otherwise wrap each fragment.
@@ -507,7 +527,10 @@
             let position = 0
             let duplicate = false
             for other in active {
-              if highlights.at(other) == hl { duplicate = true; break }
+              if highlights.at(other) == hl {
+                duplicate = true
+                break
+              }
               if other > index { position += 1 }
             }
             if not duplicate {
@@ -526,13 +549,16 @@
 
           // Keep shared outer highlights open across changes to their children.
           let shared = 0
-          while shared < calc.min(open.len(), active.len()) and open.at(shared) == active.at(shared) {
+          while (
+            shared < calc.min(open.len(), active.len()) and open.at(shared) == active.at(shared)
+          ) {
             shared += 1
           }
           while open.len() > shared {
             let hl = highlights.at(open.pop())
-            let content = codly-highlight(groups.pop().join(), highlight: hl,
-              ..highlight-options(starts.pop()))
+            let content = codly-highlight(groups.pop().join(), highlight: hl, ..highlight-options(
+              starts.pop(),
+            ))
             groups.last().push(content)
           }
           while open.len() < active.len() {
@@ -548,8 +574,9 @@
       // Close spans that continue through or beyond the end of the line.
       while open.len() > 0 {
         let hl = highlights.at(open.pop())
-        let content = codly-highlight(groups.pop().join(), highlight: hl,
-          ..highlight-options(starts.pop()))
+        let content = codly-highlight(groups.pop().join(), highlight: hl, ..highlight-options(
+          starts.pop(),
+        ))
         groups.last().push(content)
       }
 
@@ -577,24 +604,28 @@
       let number-format = settings.numbering
       let line-label = label(str(block-label) + ":" + str(number))
       [#output#place(hide(pdf.artifact[#figure(
-        kind: "codly-line",
-        supplement: none,
-        caption: none,
-        outlined: false,
-        numbering: (..) => {
-          ref(block-label)
-          sep
-          number-format(number)
-        },
-        [],
-      )#line-label]))]
+            kind: "codly-line",
+            supplement: none,
+            caption: none,
+            outlined: false,
+            numbering: (..) => {
+              ref(block-label)
+              sep
+              number-format(number)
+            },
+            [],
+          )#line-label]))]
     })
   }
 }
 
 #let __codly-annotation-cell(constructor, body, label, num, numbering) = {
   block(height: 1fr, layout(size => constructor(
-    body, label, num: num, numbering: numbering, height: size.height,
+    body,
+    label,
+    num: num,
+    numbering: numbering,
+    height: size.height,
   )))
 }
 
@@ -648,8 +679,12 @@
   let formatted-skips = 0
   let line-array = type(skip-line) == array
   let number-array = type(skip-number) == array
-  let fallback-line = if line-array { skip-line.at(-1, default: __default("skip-line")) } else { skip-line }
-  let fallback-number = if number-array { skip-number.at(-1, default: __default("skip-number")) } else { skip-number }
+  let fallback-line = if line-array { skip-line.at(-1, default: __default("skip-line")) } else {
+    skip-line
+  }
+  let fallback-number = if number-array {
+    skip-number.at(-1, default: __default("skip-number"))
+  } else { skip-number }
   let range-index = 0
   let has-ranges = ranges != none and ranges.len() > 0
   let last-line = lines.len()
@@ -681,7 +716,9 @@
       if current-annot != none and line.number > current-annot.end {
         if annotation-cell != none {
           items.at(annotation-cell) = grid.cell(
-            rowspan: annotation-rows, align: left + horizon, items.at(annotation-cell),
+            rowspan: annotation-rows,
+            align: left + horizon,
+            items.at(annotation-cell),
           )
           annotation-cell = none
           annotation-rows = 0
@@ -705,20 +742,29 @@
     }
     let interval = if has-ranges { ranges.at(range-index, default: none) }
     let in-range = not has-ranges or (interval != none and interval.first() <= line.number)
-    let insert-skip = smart-skip-enabled and not in-range and not in-skip and if in-first {
-      smart-skip.first
-    } else if interval != none and interval.first() <= last-line {
-      smart-skip.rest
-    } else {
-      smart-skip.last
-    }
+    let insert-skip = (
+      smart-skip-enabled
+        and not in-range
+        and not in-skip
+        and if in-first {
+          smart-skip.first
+        } else if interval != none and interval.first() <= last-line {
+          smart-skip.rest
+        } else {
+          smart-skip.last
+        }
+    )
 
     if explicit-skip or insert-skip {
       if number-enabled {
-        let number = if explicit-skip and number-array { skip-number.at(formatted-skips, default: fallback-number) } else { fallback-number }
+        let number = if explicit-skip and number-array {
+          skip-number.at(formatted-skips, default: fallback-number)
+        } else { fallback-number }
         items.push(codly-number(if number == none { [] } else { number }))
       }
-      let body = if explicit-skip and line-array { skip-line.at(formatted-skips, default: fallback-line) } else { fallback-line }
+      let body = if explicit-skip and line-array {
+        skip-line.at(formatted-skips, default: fallback-line)
+      } else { fallback-line }
       let body = codly-line(body)
       items.push(if has-annots {
         grid.cell(colspan: if annotation-cell == none { 2 } else { 1 }, body)
@@ -763,7 +809,9 @@
     }
     let rendered-line = render(
       numbered,
-      highlights: if has-highlights { highlights-by-line.at(str(line.number + offset), default: ()) } else { highlights },
+      highlights: if has-highlights {
+        highlights-by-line.at(str(line.number + offset), default: ())
+      } else { highlights },
       smart-indent: smart-indent,
       __wrap: if wrap-settings == none { none } else { wrap-settings + (row: line.number) },
       block-label: block-label,
@@ -786,22 +834,26 @@
           if current-annot.content == none { str(annots) } else { current-annot.content }
         }
         place(hide(pdf.artifact[#figure(
-          kind: "codly-referencer",
-          supplement: none,
-          numbering: (..) => {
-            ref(block-label)
-            ref-set.sep
-            __codly-trim(referenced)
-          },
-          [],
-        )#current-annot.label]))
+            kind: "codly-referencer",
+            supplement: none,
+            numbering: (..) => {
+              ref(block-label)
+              ref-set.sep
+              __codly-trim(referenced)
+            },
+            [],
+          )#current-annot.label]))
       } else {
         []
       }
 
       annotation-cell = items.len()
       items.push(__codly-annotation-cell(
-        codly-annotation, current-annot.content, label, annots, current-annot.numbering,
+        codly-annotation,
+        current-annot.content,
+        label,
+        annots,
+        current-annot.numbering,
       ))
     }
     if annotation-cell != none { annotation-rows += 1 }
@@ -809,18 +861,28 @@
 
   if annotation-cell != none {
     items.at(annotation-cell) = grid.cell(
-      rowspan: annotation-rows, align: left + horizon, items.at(annotation-cell),
+      rowspan: annotation-rows,
+      align: left + horizon,
+      items.at(annotation-cell),
     )
   }
 
-  (items: items, lines_to_number: lines_to_number, last-number: last-number, guide-depths: guide-depths)
+  (
+    items: items,
+    lines_to_number: lines_to_number,
+    last-number: last-number,
+    guide-depths: guide-depths,
+  )
 }
 
 #let __codly-annotation-show(
-  it
+  it,
 ) = {
   // Preserve the equation's typography and unbreakable layout for accessible text.
-  let body = text(font: "New Computer Modern Math", weight: 450)[#pdf.artifact[$lr(}, size: #it.height)$]
+  let body = text(
+    font: "New Computer Modern Math",
+    weight: 450,
+  )[#pdf.artifact[$lr(}, size: #it.height)$]
     #(it.numbering)(it.num)
     #it.body
     #it.label]
@@ -850,14 +912,21 @@
         let _ = aliased-args.remove("alias")
         let target-lang = args.aliases.at(it.lang)
         let raw-args = (:)
-        let safe-resource(value) = type(value) != str and (
-          type(value) != array or value.all(value => type(value) != str)
+        let safe-resource(value) = (
+          type(value) != str
+            and (
+              type(value) != array or value.all(value => type(value) != str)
+            )
         )
         if not safe-resource(it.theme) and it.theme != alias-style.theme {
-          panic("codly: aliases cannot safely copy an explicit string `raw.theme`; use `path(\"...\")` or `read(\"...\")`")
+          panic(
+            "codly: aliases cannot safely copy an explicit string `raw.theme`; use `path(\"...\")` or `read(\"...\")`",
+          )
         }
         if not safe-resource(it.syntaxes) and it.syntaxes != alias-style.syntaxes {
-          panic("codly: aliases cannot safely copy explicit string `raw.syntaxes`; use `path(\"...\")` or `read(\"...\")`")
+          panic(
+            "codly: aliases cannot safely copy explicit string `raw.syntaxes`; use `path(\"...\")` or `read(\"...\")`",
+          )
         }
         if safe-resource(it.theme) { raw-args.insert("theme", it.theme) }
         if safe-resource(it.syntaxes) { raw-args.insert("syntaxes", it.syntaxes) }
@@ -865,10 +934,15 @@
           set text(size: alias-style.size)
           constructor(
             raw(
-              it.text, block: true, align: it.align, lang: target-lang,
-              tab-size: it.tab-size, ..raw-args,
+              it.text,
+              block: true,
+              align: it.align,
+              lang: target-lang,
+              tab-size: it.tab-size,
+              ..raw-args,
             ),
-            alias: it.lang, ..aliased-args,
+            alias: it.lang,
+            ..aliased-args,
           )
         }
       }
@@ -884,12 +958,25 @@
       if args.indent-guides != none and args.indent-guides.enabled {
         let guides = e.fields(args.indent-guides)
         let style = indent.settings(guides, args.rainbow)
-        prepared.indent-guides = guides + (rainbow: true, palette: style.palette, depth-offset: style.depth-offset)
+        prepared.indent-guides = (
+          guides + (rainbow: true, palette: style.palette, depth-offset: style.depth-offset)
+        )
       }
       return rainbow.prepare(it, settings, sublangs, lines => __codly-show(
-        codly-line, codly-highlight, codly-lang, codly-header, codly-footer,
-        codly-number, codly-annotation, codly-ref, sublang-block, constructor,
-        prepared, alias-style, it, prepared-lines: lines,
+        codly-line,
+        codly-highlight,
+        codly-lang,
+        codly-header,
+        codly-footer,
+        codly-number,
+        codly-annotation,
+        codly-ref,
+        sublang-block,
+        constructor,
+        prepared,
+        alias-style,
+        it,
+        prepared-lines: lines,
       ))
     }
   }
@@ -912,21 +999,28 @@
       lang-settings.align,
       dx: lang-settings.outset.x,
       dy: lang-settings.outset.y,
-      lang-block
+      lang-block,
     )
   }
 
   let has-annotations = args.annotations != none and args.annotations.len() > 0
-  let column-count = (if args.number-enabled { 2 } else { 1 }) + (if has-annotations { 1 } else { 0 })
+  let column-count = (
+    (if args.number-enabled { 2 } else { 1 }) + (if has-annotations { 1 } else { 0 })
+  )
 
   let header-block = if args.header != none {
-    let fields = if e.eid(args.header) == e.eid(codly-header) { e.fields(args.header) } else { (body: args.header) }
+    let fields = if e.eid(args.header) == e.eid(codly-header) { e.fields(args.header) } else {
+      (body: args.header)
+    }
     let body = fields.remove("body")
     let header = codly-header(body + lang-block, ..fields)
     let header-set = get(codly-header) + fields
     let cell-args = __codly-cell-args(
-      header-set.align, header-set.breakable, header-set.fill,
-      header-set.inset, header-set.stroke,
+      header-set.align,
+      header-set.breakable,
+      header-set.fill,
+      header-set.inset,
+      header-set.stroke,
     )
 
     (
@@ -936,9 +1030,10 @@
           header,
           colspan: column-count,
           rowspan: 1,
-          x: 0, y: 0,
-          ..cell-args
-        )
+          x: 0,
+          y: 0,
+          ..cell-args,
+        ),
       ),
     )
   } else {
@@ -946,13 +1041,18 @@
   }
 
   let footer-block = if args.footer != none {
-    let fields = if e.eid(args.footer) == e.eid(codly-footer) { e.fields(args.footer) } else { (body: args.footer) }
+    let fields = if e.eid(args.footer) == e.eid(codly-footer) { e.fields(args.footer) } else {
+      (body: args.footer)
+    }
     let body = fields.remove("body")
     let footer = codly-footer(body, ..fields)
     let footer-set = get(codly-footer) + fields
     let cell-args = __codly-cell-args(
-      footer-set.align, footer-set.breakable, footer-set.fill,
-      footer-set.inset, footer-set.stroke,
+      footer-set.align,
+      footer-set.breakable,
+      footer-set.fill,
+      footer-set.inset,
+      footer-set.stroke,
     )
 
     (
@@ -962,8 +1062,8 @@
           footer,
           colspan: column-count,
           rowspan: 1,
-          ..cell-args
-        )
+          ..cell-args,
+        ),
       ),
     )
   } else {
@@ -995,7 +1095,9 @@
   let previous = none
   for annot in annotations {
     if args.block-label == none and annot.label != none {
-      panic("codly: annotations with labels (" + str(annot.label) + ") require `block-label` to be set")
+      panic(
+        "codly: annotations with labels (" + str(annot.label) + ") require `block-label` to be set",
+      )
     }
     if previous != none and annot.end >= previous {
       panic("codly: overlapping annotations")
@@ -1058,7 +1160,7 @@
         align: it.align,
         tab-size: it.tab-size,
         theme: it.theme,
-        syntaxes: it.syntaxes
+        syntaxes: it.syntaxes,
       )
 
       output-blocks.push(sublang-block(new-block, idx))
@@ -1082,7 +1184,12 @@
   let indentation = if guides != none and guides.enabled {
     indent.scan(lines.map(l => l.text), width: guides.width, blank-lines: guides.blank-lines)
   }
-  let (items: items, lines_to_number: lines_to_number, last-number: last-number, guide-depths: guide-depths) = __codly-line-loop(
+  let (
+    items: items,
+    lines_to_number: lines_to_number,
+    last-number: last-number,
+    guide-depths: guide-depths,
+  ) = __codly-line-loop(
     codly-line,
     codly-number,
     smart-skip,
@@ -1145,11 +1252,15 @@
   let outside-column = args.number-enabled and numbers-outside
   let zebra-rows = if args.number-enabled { lines_to_number.len() } else { calc.inf }
   let cell-fill = (x, y) => if outside-column and x == 0 { none } else {
-    let base = if y < zebra-rows and zebra-fill != none and calc.rem(y, 2) == 0 { zebra-fill } else { fill }
+    let base = if y < zebra-rows and zebra-fill != none and calc.rem(y, 2) == 0 {
+      zebra-fill
+    } else { fill }
     if line_colors == () { base } else { line_colors.at(y, default: base) }
   }
   let stroke = get-line.stroke
-  let stroke-inset = if stroke == none { 0pt } else if stroke.thickness == auto { 0.5pt } else { stroke.thickness / 2 }
+  let stroke-inset = if stroke == none { 0pt } else if stroke.thickness == auto { 0.5pt } else {
+    stroke.thickness / 2
+  }
   let block_content = block(
     breakable: args.breakable,
     clip: not outside-column,
@@ -1160,21 +1271,42 @@
     outset: if outside-column { 0pt } else { -stroke-inset },
     {
       set block(breakable: true)
-      if outside-column or wrap-settings != none or (indentation != none and guide-depths.any(d => d > 0)) {
+      if (
+        outside-column
+          or wrap-settings != none
+          or (indentation != none and guide-depths.any(d => d > 0))
+      ) {
         geometry.outside(
-          (if args.number-enabled { (auto,) } else { () }) + (1fr,) + (if has-annotations { (annot-width,) } else { () }),
-          grid-inset, (numbers-alignment, left + horizon), cell-fill,
-          if outside-column { stroke } else { none }, if outside-column { args.radius } else { 0pt }, header-block, items, footer-block,
+          (if args.number-enabled { (auto,) } else { () })
+            + (1fr,)
+            + (if has-annotations { (annot-width,) } else { () }),
+          grid-inset,
+          (numbers-alignment, left + horizon),
+          cell-fill,
+          if outside-column { stroke } else { none },
+          if outside-column { args.radius } else { 0pt },
+          header-block,
+          items,
+          footer-block,
           code-column: if args.number-enabled { 1 } else { 0 },
           outside: outside-column,
           wraps: wrap-settings,
           guides: if indentation == none { none } else {
-            indent.settings(guides, args.rainbow) + (
-              depths: guide-depths, width: indentation.width, inset: grid-inset.left,
-              // Unindented continuation text must not run through a guide.
-              max-height: if args.smart-indent { none } else {
-                measure[1].height + grid-inset.top.to-absolute() + grid-inset.bottom.to-absolute()
-              },
+            (
+              indent.settings(guides, args.rainbow)
+                + (
+                  depths: guide-depths,
+                  width: indentation.width,
+                  inset: grid-inset.left,
+                  // Unindented continuation text must not run through a guide.
+                  max-height: if args.smart-indent { none } else {
+                    (
+                      measure[1].height
+                        + grid-inset.top.to-absolute()
+                        + grid-inset.bottom.to-absolute()
+                    )
+                  },
+                )
             )
           },
         )
@@ -1201,7 +1333,7 @@
           columns: if has-annotations {
             (1fr, annot-width)
           } else {
-            (1fr)
+            1fr
           },
           inset: grid-inset,
           stroke: none,
@@ -1230,7 +1362,6 @@
   block_content
 
   [#metadata((last-number: last-number, lines: it.lines.len()))<__codly-block>]
-
 })
 
 #let typst-icon = (

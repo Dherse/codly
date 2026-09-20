@@ -6,5 +6,6 @@
 #codly.new(
   highlights: ((line: 1, tag: "(1)"),),
   ```
-code
-```)
+  code
+  ```,
+)

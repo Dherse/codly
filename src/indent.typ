@@ -57,12 +57,22 @@
 }
 
 #let settings(value, rainbow) = {
-  let colored = if value.rainbow == auto { rainbow != none and rainbow.enabled } else { value.rainbow }
-  let colors = if value.palette != auto { value.palette }
-    else if rainbow != none { rainbow.palette }
-    else { import "rainbow.typ": palette; palette }
-  let offset = if value.depth-offset != auto { value.depth-offset }
-    else if rainbow != none { rainbow.depth-offset } else { 0 }
-  (palette: if colored { colors } else { (value.color,) }, depth-offset: offset,
-    thickness: value.thickness, x-offset: value.x-offset)
+  let colored = if value.rainbow == auto { rainbow != none and rainbow.enabled } else {
+    value.rainbow
+  }
+  let colors = if value.palette != auto { value.palette } else if rainbow != none {
+    rainbow.palette
+  } else {
+    import "rainbow.typ": palette
+    palette
+  }
+  let offset = if value.depth-offset != auto { value.depth-offset } else if rainbow != none {
+    rainbow.depth-offset
+  } else { 0 }
+  (
+    palette: if colored { colors } else { (value.color,) },
+    depth-offset: offset,
+    thickness: value.thickness,
+    x-offset: value.x-offset,
+  )
 }

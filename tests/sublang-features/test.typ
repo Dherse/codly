@@ -4,11 +4,11 @@
 #set page(width: 300pt, height: auto, margin: 5pt)
 
 #let text-of(body) = {
-  if body.has("text") { body.text }
-  else if body.has("children") { body.children.map(text-of).join() }
-  else if body.has("child") { text-of(body.child) }
-  else if body.has("body") { text-of(body.body) }
-  else { "" }
+  if body.has("text") { body.text } else if body.has("children") {
+    body.children.map(text-of).join()
+  } else if body.has("child") { text-of(body.child) } else if body.has("body") {
+    text-of(body.body)
+  } else { "" }
 }
 
 #show: codly.line-show_(it => {
@@ -16,9 +16,13 @@
   let line = fields.body
   if line != none and line.func() == raw.line {
     [#metadata((
-      number: line.number, count: line.count, text: line.text,
-      body: text-of(line.body), styled: line.body, smart-indent: fields.smart-indent,
-    ))<sublang-line>#it]
+        number: line.number,
+        count: line.count,
+        text: line.text,
+        body: text-of(line.body),
+        styled: line.body,
+        smart-indent: fields.smart-indent,
+      ))<sublang-line>#it]
   } else {
     [#metadata(line)<sublang-skip>#it]
   }
@@ -41,11 +45,19 @@
 @mixed:12 @rust-mark @c-mark @mixed-note
 #figure(caption: [Mixed languages])[
   #codly.new(
-    raw("echo before\n    let value = 1;\n    /* comment\n       continued */\necho middle\nint answer() {\n    return 42;\n}\n", lang: "sh", block: true),
-    block-label: <mixed>, offset: 10,
+    raw(
+      "echo before\n    let value = 1;\n    /* comment\n       continued */\necho middle\nint answer() {\n    return 42;\n}\n",
+      lang: "sh",
+      block: true,
+    ),
+    block-label: <mixed>,
+    offset: 10,
     sublangs: ((start: 2, end: 4, lang: "rs"), (start: 6, end: 8, lang: "c")),
-    ranges: ((1, 2), (4, none)), smart-skip: true,
-    skips: ((7, 2),), skip-line: [gap], skip-number: [gap],
+    ranges: ((1, 2), (4, none)),
+    smart-skip: true,
+    skips: ((7, 2),),
+    skip-line: [gap],
+    skip-number: [gap],
     highlights: (
       (line: 12, start: 4, end: 18, tag: "outer", label: <rust-mark>),
       (line: 12, start: 8, end: 13, tag: "inner"),
@@ -61,7 +73,9 @@
 #codly.new(
   raw("let other = 2;\n", lang: "sh", block: true),
   sublangs: ((start: 1, end: 2, lang: "rs"),),
-  number-enabled: false, offset-from: <mixed>, smart-indent: false,
+  number-enabled: false,
+  offset-from: <mixed>,
+  smart-indent: false,
   highlights: ((line: 21, start: 1, end: 3, tag: "later"),),
 )<later>
 
@@ -81,7 +95,19 @@
   assert.eq(lines.at(7).smart-indent, false)
   for line in lines { assert.eq(line.body, line.text) }
   assert.eq(query(<sublang-skip>).map(it => it.value), ([gap], [gap]))
-  assert.eq(query(<sublang-number>).map(it => it.value), (11, 12, [gap], 14, 15, 16, [gap], 19, 20, 1, 1))
+  assert.eq(query(<sublang-number>).map(it => it.value), (
+    11,
+    12,
+    [gap],
+    14,
+    15,
+    16,
+    [gap],
+    19,
+    20,
+    1,
+    1,
+  ))
   let annotations = query(<sublang-annotation>)
   assert.eq(annotations.map(it => it.value.num), (1,))
   // A figure's inherited block settings must not collapse the brace height.

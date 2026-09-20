@@ -19,32 +19,68 @@
     #codly.new(raw("one\ntwo\nthree\nfour\nfive", block: true), ..options)]
 }
 
-#check((
-  skips: ((4, 0), (2, 0), (2, 0), (5, 0)),
-  skip-line: ([A], [B]), skip-number: ([I], [II]),
-), ([A], [B], [B]), ([I], [II], [II]))
+#check(
+  (
+    skips: ((4, 0), (2, 0), (2, 0), (5, 0)),
+    skip-line: ([A], [B]),
+    skip-number: ([I], [II]),
+  ),
+  ([A], [B], [B]),
+  ([I], [II], [II]),
+)
 
-#check((
-  skips: ((2, 0), (4, 0)), skip-line: [gap], skip-number: none,
-), ([gap], [gap]), ([], []))
+#check(
+  (
+    skips: ((2, 0), (4, 0)),
+    skip-line: [gap],
+    skip-number: none,
+  ),
+  ([gap], [gap]),
+  ([], []),
+)
 
-#check((
-  skips: ((2, 0), (4, 0)), skip-line: (none, [gap]), skip-number: ([I], none),
-), (none, [gap]), ([I], []))
+#check(
+  (
+    skips: ((2, 0), (4, 0)),
+    skip-line: (none, [gap]),
+    skip-number: ([I], none),
+  ),
+  (none, [gap]),
+  ([I], []),
+)
 
-#check((
-  ranges: ((2, 2), (4, 4)), smart-skip: true,
-  skips: ((2, 0), (4, 0)), skip-line: ([A], [B]), skip-number: ([I], [II]),
-), ([B], [A], [B], [B], [B]), ([II], [I], [II], [II], [II]))
+#check(
+  (
+    ranges: ((2, 2), (4, 4)),
+    smart-skip: true,
+    skips: ((2, 0), (4, 0)),
+    skip-line: ([A], [B]),
+    skip-number: ([I], [II]),
+  ),
+  ([B], [A], [B], [B], [B]),
+  ([II], [I], [II], [II], [II]),
+)
 
-#check((
-  skips: ((2, 0),), skip-line: (), skip-number: (),
-), (align(center)[ ... ],), ([ ... ],))
+#check(
+  (
+    skips: ((2, 0),),
+    skip-line: (),
+    skip-number: (),
+  ),
+  (align(center)[ ... ],),
+  ([ ... ],),
+)
 
-#check((
-  number-enabled: false, skips: ((2, 0), (4, 0)),
-  skip-line: ([A], [B]), skip-number: ([I], [II]),
-), ([A], [B]), ())
+#check(
+  (
+    number-enabled: false,
+    skips: ((2, 0), (4, 0)),
+    skip-line: ([A], [B]),
+    skip-number: ([I], [II]),
+  ),
+  ([A], [B]),
+  (),
+)
 
 #context {
   let cases = query(<expected-skips>)

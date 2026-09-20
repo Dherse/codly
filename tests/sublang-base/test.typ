@@ -34,8 +34,8 @@
     (start: 2, end: 4, lang: "rs"),
     (start: 6, end: 10, lang: "c"),
   ),
-  highlights:(
+  highlights: (
     (line: 3, start: 5, end: 12, tag: "rs-macro"),
     (line: 9, start: 5, end: 10, tag: "c-func"),
-  )
+  ),
 )

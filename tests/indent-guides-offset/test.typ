@@ -18,11 +18,22 @@
         show: e.set_(codly.codly-number, placement: if outside { "outside" } else { "inside" })
         show: codly.line-show_(it => [#metadata(shift)<offset-row>#it])
         show line: it => context {
-          [#metadata((shift: shift.to-absolute(), color: it.stroke.paint, height: it.end.last()))<offset-stroke>#it]
+          [#metadata((
+              shift: shift.to-absolute(),
+              color: it.stroke.paint,
+              height: it.end.last(),
+            ))<offset-stroke>#it]
         }
-        codly.new(raw("root {\n    child {\n        call(long_argument, another_long_argument);\n    }\n}", lang: "js", block: true),
-          number-enabled: numbers, rainbow: (palette: (red, blue)),
-          indent-guides: (width: 4, x-offset: shift))
+        codly.new(
+          raw(
+            "root {\n    child {\n        call(long_argument, another_long_argument);\n    }\n}",
+            lang: "js",
+            block: true,
+          ),
+          number-enabled: numbers,
+          rainbow: (palette: (red, blue)),
+          indent-guides: (width: 4, x-offset: shift),
+        )
       }
       context {
         let strokes = query(selector(<offset-stroke>).after(origin).before(here()))
@@ -40,7 +51,9 @@
             assert(calc.abs((a.value.height - b.value.height).length) < 0.001pt)
           }
           let moved-rows = rows.slice(variant * 5, (variant + 1) * 5)
-          let dy = moved-rows.first().location().position().y - base-rows.first().location().position().y
+          let dy = (
+            moved-rows.first().location().position().y - base-rows.first().location().position().y
+          )
           for (a, b) in base-rows.zip(moved-rows) {
             assert.eq(a.location().position().x, b.location().position().x)
             assert(calc.abs(b.location().position().y - a.location().position().y - dy) < 0.001pt)
@@ -56,8 +69,11 @@
   let origin = here()
   show line: it => [#metadata(none)<clipped-guide>#it]
   for shift in (-1000pt, 1000pt) {
-    codly.new(raw("root\n    child", block: true),
-      annotations: ((start: 2, content: [note]),), indent-guides: (x-offset: shift))
+    codly.new(
+      raw("root\n    child", block: true),
+      annotations: ((start: 2, content: [note]),),
+      indent-guides: (x-offset: shift),
+    )
   }
   context {
     assert.eq(query(selector(<clipped-guide>).after(origin).before(here())).len(), 0)

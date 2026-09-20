@@ -12,7 +12,7 @@
 #include "39-offset-by-name.typ"
 #pagebreak()
 
-#include "40-header-no-number.typ"  
+#include "40-header-no-number.typ"
 #pagebreak()
 
 // Issue 47 is checked as an expected compiler error by tests/run.py.

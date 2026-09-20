@@ -17,7 +17,8 @@
 )
 
 #codly.new(
-  raw("one\ntwo", block: true), number-enabled: false,
+  raw("one\ntwo", block: true),
+  number-enabled: false,
   annotations: ((start: 1, content: [note]),),
   header: codly.codly-header([header-plain], fill: green, inset: 4pt),
   footer: codly.codly-footer([footer-plain], fill: purple, inset: 5pt),
@@ -26,7 +27,9 @@
 // Outside numbers stay unfilled while the geometry layer preserves complex paints.
 #let line-gradient = gradient.linear(red, blue)
 #let zebra-tiling = tiling(
-  size: (4pt, 4pt), relative: "parent", rect(width: 2pt, height: 2pt),
+  size: (4pt, 4pt),
+  relative: "parent",
+  rect(width: 2pt, height: 2pt),
 )
 #{
   show: codly.line-set_(fill: line-gradient, zebra-fill: zebra-tiling)
@@ -43,7 +46,8 @@
   show: e.show_(codly.codly-header, it => [#metadata(e.fields(it).repeat)<header-repeat>#it])
   show: e.show_(codly.codly-footer, it => [#metadata(e.fields(it).repeat)<footer-repeat>#it])
   codly.new(
-    raw(range(1, 14).map(str).join("\n"), block: true), breakable: true,
+    raw(range(1, 14).map(str).join("\n"), block: true),
+    breakable: true,
     header: codly.codly-header([repeat header], repeat: true, fill: luma(230), inset: 1em),
     footer: codly.codly-footer([repeat footer], repeat: true, fill: luma(235), inset: 1em),
   )
@@ -52,10 +56,21 @@
 #repeat-case()
 
 #context {
-  assert.eq(query(<complex-fill>).map(it => type(it.value)), (type(zebra-tiling), type(line-gradient)))
-  let cells = query(<grid-cell>).map(it => it.value).filter(it => it.fill in (
-    red, blue, green, purple,
+  assert.eq(query(<complex-fill>).map(it => type(it.value)), (
+    type(zebra-tiling),
+    type(line-gradient),
   ))
+  let cells = query(<grid-cell>)
+    .map(it => it.value)
+    .filter(it => (
+      it.fill
+        in (
+          red,
+          blue,
+          green,
+          purple,
+        )
+    ))
   assert.eq(cells, (
     (colspan: 3, fill: red, inset: 2pt),
     (colspan: 3, fill: blue, inset: 3pt),

@@ -2,10 +2,9 @@
 #import "@preview/elembic:1.1.1" as e
 
 #let suffix(body) = {
-  if type(body) == str { body }
-  else if body.has("text") { body.text }
-  else if body.has("children") { body.children.map(suffix).join() }
-  else { "" }
+  if type(body) == str { body } else if body.has("text") { body.text } else if body.has(
+    "children",
+  ) { body.children.map(suffix).join() } else { "" }
 }
 
 
@@ -22,17 +21,18 @@
 
 @first-note @second-note
 #figure(caption: [Annotations])[
-  #codly.new(raw("1\n2\n3\n4\n5\n6", block: true), offset: 10, block-label: <code>,
-    annotations: (
-      (start: 5, end: 6, label: <second-note>, content: [second], numbering: n => [#n!]),
-      (start: 2, end: 3, label: <first-note>, content: [first]),
-    ),
-  )
+  #codly.new(raw("1\n2\n3\n4\n5\n6", block: true), offset: 10, block-label: <code>, annotations: (
+    (start: 5, end: 6, label: <second-note>, content: [second], numbering: n => [#n!]),
+    (start: 2, end: 3, label: <first-note>, content: [first]),
+  ))
 ]<code>
 
 
 #context {
-  assert.eq(query(<annotation-seen>).map(it => it.value), ((1, [first], "(1)"), (2, [second], "2!")))
+  assert.eq(query(<annotation-seen>).map(it => it.value), (
+    (1, [first], "(1)"),
+    (2, [second], "2!"),
+  ))
   assert.eq(query(<annotation-rowspan>).map(it => it.value), (2, 2))
   for annotation in query(<annotation-height>) { assert(annotation.value > 0pt) }
   for (target, expected) in ((<first-note>, " / L12"), (<second-note>, " / L15")) {

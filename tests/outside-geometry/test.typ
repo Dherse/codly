@@ -8,7 +8,12 @@
   let radius = fields.at("radius", default: none)
   let stroke = fields.at("stroke", default: none)
   if fields.at("clip", default: false) {
-    [#metadata((radius: radius, stroke: stroke, clip: fields.at("clip", default: false), height: fields.at("height")))<outside-background>#it]
+    [#metadata((
+        radius: radius,
+        stroke: stroke,
+        clip: fields.at("clip", default: false),
+        height: fields.at("height"),
+      ))<outside-background>#it]
   } else { it }
 }
 
@@ -39,7 +44,29 @@
 })
 
 #let repeated-source = (
-  "R01", "R02 " + range(4).map(_ => "this deliberately long source line wraps in the narrow code column so its cell crosses a region boundary ").join(), "R03", "R04", "R05", "R06", "R07", "R08", "R09", "R10", "R11", "R12", "R13", "R14", "R15", "R16", "R17", "R18",
+  "R01",
+  "R02 "
+    + range(4)
+      .map(_ => {
+        "this deliberately long source line wraps in the narrow code column so its cell crosses a region boundary "
+      })
+      .join(),
+  "R03",
+  "R04",
+  "R05",
+  "R06",
+  "R07",
+  "R08",
+  "R09",
+  "R10",
+  "R11",
+  "R12",
+  "R13",
+  "R14",
+  "R15",
+  "R16",
+  "R17",
+  "R18",
 ).join("\n")
 
 #metadata(none)<outside-repeat>
@@ -49,7 +76,9 @@
   show: e.set_(codly.codly-number, placement: "outside")
   show: codly.line-set_(fill: body-fill, zebra-fill: zebra-fill, stroke: blue + 3pt)
   codly.new(
-    raw(repeated-source, block: true), breakable: true, radius: 20pt,
+    raw(repeated-source, block: true),
+    breakable: true,
+    radius: 20pt,
     annotations: ((start: 2, end: 17, content: [spanning annotation]),),
     header: codly.codly-header([repeat header], repeat: true, fill: header-fill, inset: 3pt),
     footer: codly.codly-footer([repeat footer], repeat: true, fill: footer-fill, inset: 3pt),
@@ -67,7 +96,8 @@
   show: codly.line-set_(fill: body-fill, zebra-fill: zebra-fill, stroke: blue + 3pt)
   codly.new(
     raw(range(1, 15).map(n => "O" + str(n)).join("\n"), block: true),
-    breakable: true, radius: 20pt,
+    breakable: true,
+    radius: 20pt,
     header: codly.codly-header([once header], repeat: false, fill: header-fill, inset: 3pt),
     footer: codly.codly-footer([once footer], repeat: false, fill: footer-fill, inset: 3pt),
   )
@@ -82,7 +112,11 @@
   set text(size: 7pt)
   show: e.set_(codly.codly-number, placement: "outside")
   show: codly.line-set_(fill: body-fill, zebra-fill: zebra-fill, stroke: purple + 3pt)
-  codly.new(raw(range(1, 30).map(n => "C" + str(n)).join("\n"), block: true), breakable: true, radius: 19pt)
+  codly.new(
+    raw(range(1, 30).map(n => "C" + str(n)).join("\n"), block: true),
+    breakable: true,
+    radius: 19pt,
+  )
 }
 
 // Marker scopes must keep an outside-number block in header content from
@@ -95,11 +129,16 @@
   show: e.set_(codly.codly-number, placement: "outside")
   show: codly.line-set_(fill: body-fill, zebra-fill: zebra-fill, stroke: orange + 3pt)
   codly.new(
-    raw("outer one\nouter two", block: true), breakable: true, radius: 18pt,
-    header: codly.codly-header([outer header #{
-      show: codly.line-set_(stroke: red + 2pt)
-      codly.new(raw("nested", block: true), radius: 5pt)
-    }], inset: 3pt),
+    raw("outer one\nouter two", block: true),
+    breakable: true,
+    radius: 18pt,
+    header: codly.codly-header(
+      [outer header #{
+          show: codly.line-set_(stroke: red + 2pt)
+          codly.new(raw("nested", block: true), radius: 5pt)
+        }],
+      inset: 3pt,
+    ),
   )
 }
 
@@ -119,8 +158,12 @@
   // Every actual clipped backdrop preserves the requested radius and stroke.
   let wide = backgrounds.filter(it => it.value.stroke.paint == blue)
   let column-blocks = backgrounds.filter(it => it.value.stroke.paint == purple)
-  let nested-outer = backgrounds.filter(it => it.value.stroke.paint == orange and it.value.radius == 0% + 18pt)
-  let nested-inner = backgrounds.filter(it => it.value.stroke.paint == red and it.value.radius == 0% + 5pt)
+  let nested-outer = backgrounds.filter(it => (
+    it.value.stroke.paint == orange and it.value.radius == 0% + 18pt
+  ))
+  let nested-inner = backgrounds.filter(it => (
+    it.value.stroke.paint == red and it.value.radius == 0% + 5pt
+  ))
   assert(wide.len() > 3)
   for background in wide {
     assert(background.value.clip)
@@ -138,8 +181,12 @@
   // Paints exist on continuation regions. The long wrapped row and spanning
   // annotation are covered by the visual fixture; this also catches a missing
   // reconstructed paint layer (the source grid itself emits no filled rects).
-  let repeat-paints = query(selector(<outside-paint>).after(repeat.location()).before(once.location()))
-  let repeat-lines = query(selector(<outside-code-line>).after(repeat.location()).before(once.location()))
+  let repeat-paints = query(
+    selector(<outside-paint>).after(repeat.location()).before(once.location()),
+  )
+  let repeat-lines = query(
+    selector(<outside-code-line>).after(repeat.location()).before(once.location()),
+  )
   let repeat-pages = ()
   for paint in repeat-paints {
     let page = paint.location().position().page
@@ -156,7 +203,12 @@
   assert(wrapped.location().position().page < after-wrapped.location().position().page)
   let wrapped-paint = repeat-paints.filter(it => {
     let p = it.location().position()
-    p.page == after-wrapped.location().position().page and calc.abs(p.x - after-wrapped.location().position().x) < 4pt and p.y < after-wrapped.location().position().y and it.value.fill == zebra-fill
+    (
+      p.page == after-wrapped.location().position().page
+        and calc.abs(p.x - after-wrapped.location().position().x) < 4pt
+        and p.y < after-wrapped.location().position().y
+        and it.value.fill == zebra-fill
+    )
   })
   assert(wrapped-paint.len() > 0)
 
@@ -166,7 +218,11 @@
   let after-annotation = repeat-lines.filter(it => it.value == "R18").first()
   let annotation-paint = repeat-paints.filter(it => {
     let p = it.location().position()
-    p.page == after-annotation.location().position().page and p.x > after-annotation.location().position().x and it.value.fill == zebra-fill
+    (
+      p.page == after-annotation.location().position().page
+        and p.x > after-annotation.location().position().x
+        and it.value.fill == zebra-fill
+    )
   })
   assert(annotation-paint.len() > 0)
 

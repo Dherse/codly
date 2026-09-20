@@ -29,6 +29,14 @@ test *args:
 update *args:
 	tt update --font-path ./docs/fonts {{ args }}
 
+# format Typst library, tests, and documentation sources
+fmt:
+	typstyle --inplace --line-width 100 --indent-width 2 --no-reorder-import-items codly.typ src tests docs
+
+# verify Typst formatting without changing files
+fmt-check:
+	typstyle --check --line-width 100 --indent-width 2 --no-reorder-import-items codly.typ src tests docs
+
 # package the library into the specified destination folder
 package target:
   ./scripts/package "{{target}}"
@@ -55,4 +63,4 @@ uninstall: (remove "@local")
 uninstall-preview: (remove "@preview")
 
 # run ci suite
-ci: test doc
+ci: fmt-check test doc

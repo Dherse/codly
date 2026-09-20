@@ -23,9 +23,9 @@
 #{
   show: e.set_(codly.codly-number, placement: "outside")
   show: codly.line-set_(stroke: blue + 1pt)
-  codly.new(raw("outside\nsecond", block: true), radius: 8pt,
-    annotations: ((start: 1, end: 2, content: [Remark]),),
-  )
+  codly.new(raw("outside\nsecond", block: true), radius: 8pt, annotations: (
+    (start: 1, end: 2, content: [Remark]),
+  ))
 }
 
 #context {
@@ -36,8 +36,10 @@
 }
 
 // Guides are decorative strokes; source remains searchable accessible text.
-#codly.new(raw("guided source\n    guided child", block: true),
-  indent-guides: (rainbow: true, palette: (purple, blue)))
+#codly.new(raw("guided source\n    guided child", block: true), indent-guides: (
+  rainbow: true,
+  palette: (purple, blue),
+))
 
 // Continuation markers are decorative artifacts; the source remains text.
 #codly.new(raw("wrapped source " + "argument " * 15, block: true), wrap-marker: [↪])

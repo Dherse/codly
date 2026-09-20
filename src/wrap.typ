@@ -4,17 +4,23 @@
   if body.has("text") {
     let parts = ()
     let token = ""
-    let probe(s) = [#text(s)#context [#metadata((owner: owner, row: row,
-      width: measure(text(s)).width))<__codly-wrap-point>]]
+    let probe(s) = [#text(s)#context [#metadata((
+        owner: owner,
+        row: row,
+        width: measure(text(s)).width,
+      ))<__codly-wrap-point>]]
     // Keep words (and their ligatures) intact. Punctuation, symbols, and East
     // Asian clusters also expose potential native line-break boundaries.
     let standalone = regex("[\\p{Han}\\p{Hiragana}\\p{Katakana}\\p{Hangul}\\p{P}\\p{S}]")
     for c in body.text.clusters() {
       let separate = c.trim() == "" or (c != "_" and c.contains(standalone))
-      if separate and token != "" { parts.push(probe(token)); token = "" }
-      if c.trim() == "" { parts.push(text(c)) }
-      else if separate { parts.push(probe(c)) }
-      else { token += c }
+      if separate and token != "" {
+        parts.push(probe(token))
+        token = ""
+      }
+      if c.trim() == "" { parts.push(text(c)) } else if separate { parts.push(probe(c)) } else {
+        token += c
+      }
     }
     if token != "" { parts.push(probe(token)) }
     parts.join()
@@ -51,14 +57,20 @@
     if row == none { continue }
     let at = point.location().position()
     let left = at.x - point.value.width
-    let region = by-page.at(str(at.page), default: ()).find(r =>
-      r.at.x <= left and left < r.at.x + r.width and r.at.y <= at.y and at.y <= r.bottom)
+    let region = by-page
+      .at(str(at.page), default: ())
+      .find(r => r.at.x <= left and left < r.at.x + r.width and r.at.y <= at.y and at.y <= r.bottom)
     let region-key = if region == none { none } else { (region.at.x, region.at.y) }
     let before = previous.at(key, default: none)
-    if before != none and (
-      at.page != before.at.page or region-key != before.region or (
-        at.y - before.at.y > row.tolerance and left < before.at.x - 0.001pt
-      )
+    if (
+      before != none
+        and (
+          at.page != before.at.page
+            or region-key != before.region
+            or (
+              at.y - before.at.y > row.tolerance and left < before.at.x - 0.001pt
+            )
+        )
     ) {
       result.push((at: (page: at.page, x: left - row.advance, y: at.y), body: row.marker))
     }

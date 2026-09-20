@@ -28,7 +28,13 @@
 #{
   set page(height: 130pt, margin: 10pt)
   show: codly.line-set_(stroke: red + 4pt)
-  codly.new(raw(range(1, 10).map(n => str(n) + " a longer line that wraps within this narrow block").join("\n"), block: true),
+  codly.new(
+    raw(
+      range(1, 10)
+        .map(n => str(n) + " a longer line that wraps within this narrow block")
+        .join("\n"),
+      block: true,
+    ),
     header: codly.codly-header([header], repeat: true, inset: 1em),
     footer: codly.codly-footer([footer], repeat: true, inset: 1em),
   )

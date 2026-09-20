@@ -15,13 +15,17 @@
 
 // A resolved path retains its caller origin when copied through the alias.
 #codly.new(raw(
-  "keyword", lang: "custom-alias", block: true,
+  "keyword",
+  lang: "custom-alias",
+  block: true,
   theme: path("99-local-resources.tmTheme"),
   syntaxes: path("99-local-resources.sublime-syntax"),
 ))
 
 #codly.new(raw(
-  "keyword", lang: "custom-alias", block: true,
+  "keyword",
+  lang: "custom-alias",
+  block: true,
   theme: read("99-local-resources.tmTheme", encoding: none),
   syntaxes: read("99-local-resources.sublime-syntax", encoding: none),
 ))
