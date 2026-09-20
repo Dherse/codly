@@ -777,6 +777,7 @@
   codly-number,
   codly-annotation,
   codly-ref,
+  sublang-block,
   constructor,
   args,
   alias-style,
@@ -898,6 +899,7 @@
   }
 
   // Process range/ranges.
+  let std-range = range
   let range = args.range
   let ranges = args.ranges
   if range != none and ranges != none {
@@ -959,13 +961,68 @@
     (by: settings.by, sep: settings.sep, numbering: settings.numbering)
   }
 
+  // Handling of sublang blocks:
+  // - we first look for all sublangs, we extract the code for each
+  // - we then pass it to a sublang-block where it gets rendered as metadata
+  // - we then query and remember the location before and after the sublang block
+  // - then we replace the line's body with the content of the relevant queried metadata
+  let output-blocks = ()
+  let lines = it.lines
+  if args.sublangs != none and args.sublangs.len() > 0 {
+    let nl-regex = regex("(\r\n|\r|\n)")
+    let raw-text-lines = it.text.split(nl-regex)
+    for (idx, s) in args.sublangs.enumerate() {
+      let sublang-lines = raw-text-lines.slice(s.start - 1, s.end)
+      let new-block = raw(
+        sublang-lines.join("\n"),
+        block: true,
+        lang: s.lang,
+        align: it.align,
+        tab-size: it.tab-size,
+        theme: it.theme,
+        syntaxes: it.syntaxes
+      )
+
+      // We produce a sublang block which will create the following metadata:
+      // - __codly_line_sublang_meta_start
+      // - __codly_line_sublang_meta x N
+      // - __codly_line_sublang_meta_end
+      output-blocks.push(sublang-block(new-block, idx))
+      let idx = str(idx)
+
+      // So for each line, its body becomes querying for the first meta start and end before itself
+      // then querying all metas between the anchors and selecting the Nth one.
+      
+      for (i, line) in std-range(s.start - 1, s.end).enumerate() {
+        let body = context {
+          let line-label = label("__codly_sublang_line_" + idx + "_" + str(i))
+          let cnt = query(selector(line-label)
+            .before(here()))
+            .last(default: auto)
+          if cnt == auto {
+            text(red, "codly: meta not yet available, if you see this, there is a convergence issue")
+          } else {
+            cnt.value
+          }
+        }
+
+        lines.at(line) = raw.line(
+          line,
+          it.lines.len(),
+          sublang-lines.at(i),
+          body
+        )
+      }
+    }
+  }
+
   // Handling of `smart-skip`
   let smart-skip = args.smart-skip
   let (items: items, lines_to_number: lines_to_number, last-number: last-number) = __codly-line-loop(
     codly-line,
     codly-number,
     smart-skip,
-    it.lines,
+    lines,
     annotations,
     ranges,
     skips,
@@ -1088,6 +1145,7 @@
 
   set par(justify: false, first-line-indent: 0pt)
 
+  output-blocks.join()
   block_content
 
   [#metadata((last-number: last-number, lines: it.lines.len()))<__codly-block>]

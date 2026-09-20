@@ -24,6 +24,50 @@
   )
 }
 
+/// A range of lines that should use a different syntax-highlighting language.
+#let __sublang-normalize(value) = {
+  let start = value.at("start")
+  assert(start > 0, message: "codly: sublang `start` must be greater than 0")
+
+  let end = value.at("end")
+  assert(end >= start, message: "codly: sublang `end` must be at least `start`")
+
+  value
+}
+
+#let __sublang-parser = {
+  (default-parser, fields: (:), typecheck: true) => {
+    (args, include-required: true) => {
+      let result = default-parser(args, include-required: include-required)
+      if result.at(0) {
+        result.at(1) = __sublang-normalize(result.at(1))
+      }
+      result
+    }
+  }
+}
+
+/// A syntax-highlighting language applied to an inclusive range of lines.
+#let sublang = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+
+  e.types.declare(
+    "sublang",
+    prefix: __codly-prefix,
+    doc: "A syntax-highlighting language applied to a range of lines.",
+    fields: (
+      e.field("start", int, doc: "The first line of the range (one-indexed).", required: true, named: true),
+      e.field("end", int, doc: "The last line of the range (inclusive).", required: true, named: true),
+      e.field("lang", str, doc: "The syntax-highlighting language key.", required: true, named: true),
+    ),
+    parse-args: __sublang-parser,
+    casts: (
+      (from: dictionary),
+    ),
+  )
+}
+
 /// Configuration for smart skips, see the `smart-skip` field.
 #let smart-skip = {
   import "@preview/elembic:1.1.1" as e
@@ -519,6 +563,36 @@
   )
 }
 
+#let sublang-block = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix, __doc, __default
+
+  e.element.declare(
+    "sublang-block",
+    prefix: __codly-prefix,
+    doc: "A sublanguage block within a codly code block.",
+    display: it => {
+      show raw.where(block: true): raw => {
+        let idx = str(it.idx)
+
+        for (i, line) in raw.lines.enumerate() {
+          let line-label = label("__codly_sublang_line_" + idx + "_" + str(i))
+          [
+            #metadata(line) #line-label
+          ]
+        }
+      }
+
+      it.body
+    },
+    fields: (
+      e.field("body", content, doc: "The content of the sublanguage block.", required: true),
+      e.field("idx", int, doc: "The index of the sublanguage block within the code block.", required: true),
+    )
+  )
+
+}
+
 #let codly = {
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default
@@ -537,7 +611,7 @@
       let data = it.remove("__elembic_stored_element_data")
       let constructor = if it.alias == none and it.aliases != none and it.aliases.len() > 0 { data.default-constructor }
       let alias-style = if constructor != none { (size: text.size, theme: raw.theme, syntaxes: raw.syntaxes) }
-      show raw.where(block: true): __codly-show.with(codly-line, codly-highlight, codly-lang, codly-header, codly-footer, codly-number, codly-annotation, codly-ref, constructor, it, alias-style)
+      show raw.where(block: true): __codly-show.with(codly-line, codly-highlight, codly-lang, codly-header, codly-footer, codly-number, codly-annotation, codly-ref, sublang-block, constructor, it, alias-style)
       body
     },
     fields: (
@@ -564,6 +638,7 @@
       e.field("header", e.types.option(content), doc: __doc("header"), default: __default("header")),
       e.field("footer", e.types.option(content), doc: __doc("footer"), default: __default("footer")),
       e.field("radius", e.types.option(length), doc: __doc("radius"), default: __default("radius")),
+      e.field("sublangs", e.types.option(e.types.array(sublang)), doc: "todo", default: none),
     )
   )
 }
