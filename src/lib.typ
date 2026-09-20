@@ -396,6 +396,224 @@
 
 /// Renders a single code line: smart indentation, per-character highlights
 /// (delegated to `codly-highlight`), and line reference figures.
+// Keep the shared rendering helpers out of each line's context captures.
+// Its font-dependent work still runs inside the caller's deferred context.
+#let __codly-line-render(codly-highlight, codly-ref, it, line-show) = {
+  let line = it.body
+  let line-highlights = it.highlights
+  let smart-indent = it.smart-indent
+  let block-label = it.block-label
+  let highlights = ()
+  let layout = none
+  if line-highlights != none and line-highlights.len() > 0 {
+    let spans = ()
+    for hl in line-highlights {
+      if hl.line == line.number {
+        if hl.at("label", default: none) != none {
+          hl.insert("line-number", line.number)
+          hl.insert("block-label", block-label)
+        }
+        highlights.push(hl)
+        spans.push((hl.start, hl.end))
+      }
+    }
+    if highlights.len() > 0 { layout = __codly-highlight-layout(spans) }
+  }
+  if layout != none {
+    let sorted = ()
+    for (depth, _, _, index) in layout.order {
+      let hl = highlights.at(index)
+      hl.insert("depth", -depth)
+      sorted.push(hl)
+    }
+    highlights = sorted
+  }
+
+  // Keep empty and highlighted lines at a consistent height.
+  let line-height = measure[1].height
+  let body = line.body
+  let wrap-data = none
+  let needs-marker = false
+  if smart-indent and it.__wrap != none {
+    // Highlight insets can change the width. Measure their ordinary renderer
+    // before deciding whether to add any probes to this source row.
+    let natural = if highlights.len() == 0 { line.body } else {
+      line-show(codly-highlight, codly-ref, it + (__wrap: none))
+    }
+    needs-marker = measure(natural).width > it.__wrap.width
+  }
+  if needs-marker {
+    let row = it.__wrap.row
+    let marker = it.__wrap.marker
+    let advance = measure(marker).width + 0.3em.to-absolute()
+    wrap-data = (
+      owner: it.__wrap.owner,
+      row: row,
+      marker: marker,
+      advance: advance,
+      tolerance: line-height / 2,
+    )
+    body = wrap.annotate(body, it.__wrap.owner, row)
+  }
+  body = box(height: line-height, width: 0pt, baseline: 0pt) + body
+
+  // Continue wrapped lines at their original indentation.
+  let width = none
+  let prefix = if smart-indent { line.text.match(indent.leading-spaces).text } else { "" }
+  if smart-indent {
+    if prefix != "" { width = measure(text(prefix)).width }
+  }
+  if wrap-data != none {
+    wrap-data.insert("indent", if width == none { 0pt } else { width })
+    width = wrap-data.indent + wrap-data.advance
+  }
+  let highlight-options(start) = {
+    // Use the actual fragment start: highlight positions are one-based and
+    // whitespace runs are atomic; crossing spans may also reopen later.
+    let remaining = calc.max(prefix.len() - start, 0)
+    if not smart-indent or (remaining == 0 and wrap-data == none) { return (:) }
+    (
+      __continuation-indent: measure(text(" " * remaining)).width
+        + if wrap-data == none { 0pt } else { wrap-data.advance },
+    )
+  }
+
+  // Split before applying `set par`, which would otherwise wrap each fragment.
+  let highlighted = body
+  if highlights.len() > 0 {
+    let source = __codly-line-body(body, layout.boundaries)
+    let pending = layout.pending
+
+    // Descending indices keep the outer highlights first without re-sorting.
+    let next = 0
+    let next-end = calc.inf
+    let active = ()
+    let open = ()
+    let groups = ((),)
+    let starts = ()
+    let i = 0
+    for child in source {
+      let end = i + __codly-line-length(child)
+      let changed = false
+      if i >= next-end {
+        let remaining = ()
+        for index in active {
+          if i < highlights.at(index).end { remaining.push(index) }
+        }
+        active = remaining
+        changed = true
+      }
+      while next < pending.len() and pending.at(next).first() <= end {
+        let index = pending.at(next).last()
+        let hl = highlights.at(index)
+        // Expired spans cannot rejoin; duplicate records apply only once.
+        if i < hl.end {
+          let position = 0
+          let duplicate = false
+          for other in active {
+            if highlights.at(other) == hl {
+              duplicate = true
+              break
+            }
+            if other > index { position += 1 }
+          }
+          if not duplicate {
+            active.insert(position, index)
+            changed = true
+          }
+        }
+        next += 1
+      }
+
+      if changed {
+        next-end = calc.inf
+        for index in active {
+          next-end = calc.min(next-end, highlights.at(index).end)
+        }
+
+        // Keep shared outer highlights open across changes to their children.
+        let shared = 0
+        while (
+          shared < calc.min(open.len(), active.len()) and open.at(shared) == active.at(shared)
+        ) {
+          shared += 1
+        }
+        while open.len() > shared {
+          let hl = highlights.at(open.pop())
+          let content = codly-highlight(groups.pop().join(), highlight: hl, ..highlight-options(
+            starts.pop(),
+          ))
+          groups.last().push(content)
+        }
+        while open.len() < active.len() {
+          open.push(active.at(open.len()))
+          groups.push(())
+          starts.push(i)
+        }
+      }
+      groups.last().push(child)
+      i = end
+    }
+
+    // Close spans that continue through or beyond the end of the line.
+    while open.len() > 0 {
+      let hl = highlights.at(open.pop())
+      let content = codly-highlight(groups.pop().join(), highlight: hl, ..highlight-options(
+        starts.pop(),
+      ))
+      groups.last().push(content)
+    }
+
+    highlighted = groups.first().join()
+  }
+
+  if width != none {
+    highlighted = {
+      set par(hanging-indent: width)
+      highlighted
+    }
+  }
+
+  if wrap-data != none { highlighted = [#metadata(wrap-data)<__codly-wrap-row>#highlighted] }
+  let output = raw.line(line.number, line.count, line.text, highlighted)
+  if block-label == none {
+    // End the paragraph while its hanging indent is in scope. Unlike an
+    // empty placement, this boundary needs no positioned frame.
+    return output + parbreak()
+  }
+
+  let number = line.number
+  let reference = it.reference
+  if reference != none { number = reference.number }
+  e.get(get => {
+    let settings = get(codly-ref)
+    let sep = settings.sep
+    let number-format = settings.numbering
+    let line-label = label(
+      str(block-label)
+        + ":"
+        + if reference == none {
+          str(number)
+        } else {
+          reference.label
+        },
+    )
+    [#output#place(hide(pdf.artifact[#figure(
+          kind: "codly-line",
+          supplement: none,
+          caption: none,
+          outlined: false,
+          numbering: (..) => {
+            ref(block-label)
+            sep
+            number-format(number)
+            if reference != none { reference.suffix }
+          },
+          [],
+        )#line-label]))]
+  })
+}
+
 #let __codly-line-show(
   codly-highlight,
   codly-ref,
@@ -408,9 +626,16 @@
     return line
   }
 
-  let line-highlights = it.highlights
+  // The renderer needs no element metadata or grid-cell styling fields.
+  let it = (
+    body: line,
+    highlights: it.highlights,
+    smart-indent: it.smart-indent,
+    block-label: it.block-label,
+    reference: if it.block-label != none { it.reference },
+    __wrap: if it.smart-indent { it.__wrap },
+  )
   let smart-indent = it.smart-indent
-  let block-label = it.block-label
   if smart-indent and it.__wrap != none and "width" not in it.__wrap {
     return layout(size => __codly-line-show(
       codly-highlight,
@@ -418,216 +643,12 @@
       it + (__wrap: it.__wrap + (width: size.width)),
     ))
   }
-  context {
-    let highlights = ()
-    let layout = none
-    if line-highlights != none and line-highlights.len() > 0 {
-      let spans = ()
-      for hl in line-highlights {
-        if hl.line == line.number {
-          if hl.at("label", default: none) != none {
-            hl.insert("line-number", line.number)
-            hl.insert("block-label", block-label)
-          }
-          highlights.push(hl)
-          spans.push((hl.start, hl.end))
-        }
-      }
-      if highlights.len() > 0 { layout = __codly-highlight-layout(spans) }
-    }
-    if layout != none {
-      let sorted = ()
-      for (depth, _, _, index) in layout.order {
-        let hl = highlights.at(index)
-        hl.insert("depth", -depth)
-        sorted.push(hl)
-      }
-      highlights = sorted
-    }
-
-    // Keep empty and highlighted lines at a consistent height.
-    let line-height = measure[1].height
-    let body = line.body
-    let wrap-data = none
-    let needs-marker = false
-    if smart-indent and it.__wrap != none {
-      // Highlight insets can change the width. Measure their ordinary renderer
-      // before deciding whether to add any probes to this source row.
-      let natural = if highlights.len() == 0 { line.body } else {
-        __codly-line-show(codly-highlight, codly-ref, it + (__wrap: none))
-      }
-      needs-marker = measure(natural).width > it.__wrap.width
-    }
-    if needs-marker {
-      let row = it.__wrap.row
-      let marker = it.__wrap.marker
-      let advance = measure(marker).width + 0.3em.to-absolute()
-      wrap-data = (
-        owner: it.__wrap.owner,
-        row: row,
-        marker: marker,
-        advance: advance,
-        tolerance: line-height / 2,
-      )
-      body = wrap.annotate(body, it.__wrap.owner, row)
-    }
-    body = box(height: line-height, width: 0pt, baseline: 0pt) + body
-
-    // Continue wrapped lines at their original indentation.
-    let width = none
-    let prefix = if smart-indent { line.text.match(indent.leading-spaces).text } else { "" }
-    if smart-indent {
-      if prefix != "" { width = measure(text(prefix)).width }
-    }
-    if wrap-data != none {
-      wrap-data.insert("indent", if width == none { 0pt } else { width })
-      width = wrap-data.indent + wrap-data.advance
-    }
-    let highlight-options(start) = {
-      // Use the actual fragment start: highlight positions are one-based and
-      // whitespace runs are atomic; crossing spans may also reopen later.
-      let remaining = calc.max(prefix.len() - start, 0)
-      if not smart-indent or (remaining == 0 and wrap-data == none) { return (:) }
-      (
-        __continuation-indent: measure(text(" " * remaining)).width
-          + if wrap-data == none { 0pt } else { wrap-data.advance },
-      )
-    }
-
-    // Split before applying `set par`, which would otherwise wrap each fragment.
-    let highlighted = body
-    if highlights.len() > 0 {
-      let source = __codly-line-body(body, layout.boundaries)
-      let pending = layout.pending
-
-      // Descending indices keep the outer highlights first without re-sorting.
-      let next = 0
-      let next-end = calc.inf
-      let active = ()
-      let open = ()
-      let groups = ((),)
-      let starts = ()
-      let i = 0
-      for child in source {
-        let end = i + __codly-line-length(child)
-        let changed = false
-        if i >= next-end {
-          let remaining = ()
-          for index in active {
-            if i < highlights.at(index).end { remaining.push(index) }
-          }
-          active = remaining
-          changed = true
-        }
-        while next < pending.len() and pending.at(next).first() <= end {
-          let index = pending.at(next).last()
-          let hl = highlights.at(index)
-          // Expired spans cannot rejoin; duplicate records apply only once.
-          if i < hl.end {
-            let position = 0
-            let duplicate = false
-            for other in active {
-              if highlights.at(other) == hl {
-                duplicate = true
-                break
-              }
-              if other > index { position += 1 }
-            }
-            if not duplicate {
-              active.insert(position, index)
-              changed = true
-            }
-          }
-          next += 1
-        }
-
-        if changed {
-          next-end = calc.inf
-          for index in active {
-            next-end = calc.min(next-end, highlights.at(index).end)
-          }
-
-          // Keep shared outer highlights open across changes to their children.
-          let shared = 0
-          while (
-            shared < calc.min(open.len(), active.len()) and open.at(shared) == active.at(shared)
-          ) {
-            shared += 1
-          }
-          while open.len() > shared {
-            let hl = highlights.at(open.pop())
-            let content = codly-highlight(groups.pop().join(), highlight: hl, ..highlight-options(
-              starts.pop(),
-            ))
-            groups.last().push(content)
-          }
-          while open.len() < active.len() {
-            open.push(active.at(open.len()))
-            groups.push(())
-            starts.push(i)
-          }
-        }
-        groups.last().push(child)
-        i = end
-      }
-
-      // Close spans that continue through or beyond the end of the line.
-      while open.len() > 0 {
-        let hl = highlights.at(open.pop())
-        let content = codly-highlight(groups.pop().join(), highlight: hl, ..highlight-options(
-          starts.pop(),
-        ))
-        groups.last().push(content)
-      }
-
-      highlighted = groups.first().join()
-    }
-
-    if width != none {
-      highlighted = {
-        set par(hanging-indent: width)
-        highlighted
-      }
-    }
-
-    if wrap-data != none { highlighted = [#metadata(wrap-data)<__codly-wrap-row>#highlighted] }
-    let output = raw.line(line.number, line.count, line.text, highlighted)
-    if block-label == none {
-      // Keep the inline anchor that determines line wrapping and spacing.
-      return output + place([])
-    }
-
-    let number = line.number
-    let reference = it.reference
-    if reference != none { number = reference.number }
-    e.get(get => {
-      let settings = get(codly-ref)
-      let sep = settings.sep
-      let number-format = settings.numbering
-      let line-label = label(
-        str(block-label)
-          + ":"
-          + if reference == none {
-            str(number)
-          } else {
-            reference.label
-          },
-      )
-      [#output#place(hide(pdf.artifact[#figure(
-            kind: "codly-line",
-            supplement: none,
-            caption: none,
-            outlined: false,
-            numbering: (..) => {
-              ref(block-label)
-              sep
-              number-format(number)
-              if reference != none { reference.suffix }
-            },
-            [],
-          )#line-label]))]
-    })
-  }
+  context __codly-line-render(
+    codly-highlight,
+    codly-ref,
+    it,
+    __codly-line-show,
+  )
 }
 
 #let __codly-annotation-cell(constructor, body, label, num, numbering) = {
@@ -927,7 +948,10 @@
   box(width: measure(body).width, body)
 }
 
-#let __codly-show(
+// Share static captures across blocks while keeping the style lookup deferred.
+#let __codly-block-render(
+  get,
+  block-show,
   codly-line,
   codly-highlight,
   codly-lang,
@@ -942,7 +966,7 @@
   alias-style,
   it,
   prepared-lines: none,
-) = e.get(get => {
+) = {
   if args.alias == none and args.aliases != none {
     if it.lang != none {
       if it.lang in args.aliases {
@@ -1000,7 +1024,7 @@
           guides + (rainbow: true, palette: style.palette, depth-offset: style.depth-offset)
         )
       }
-      return rainbow.prepare(it, settings, sublangs, lines => __codly-show(
+      return rainbow.prepare(it, settings, sublangs, lines => block-show(
         codly-line,
         codly-highlight,
         codly-lang,
@@ -1405,7 +1429,41 @@
   block_content
 
   [#metadata((last-number: last-number, lines: it.lines.len()))<__codly-block>]
-})
+}
+
+#let __codly-show(
+  codly-line,
+  codly-highlight,
+  codly-lang,
+  codly-header,
+  codly-footer,
+  codly-number,
+  codly-annotation,
+  codly-ref,
+  sublang-block,
+  constructor,
+  args,
+  alias-style,
+  it,
+  prepared-lines: none,
+) = e.get(get => __codly-block-render(
+  get,
+  __codly-show,
+  codly-line,
+  codly-highlight,
+  codly-lang,
+  codly-header,
+  codly-footer,
+  codly-number,
+  codly-annotation,
+  codly-ref,
+  sublang-block,
+  constructor,
+  args,
+  alias-style,
+  it,
+  prepared-lines: prepared-lines,
+))
 
 #let typst-icon = (
   typ: (
