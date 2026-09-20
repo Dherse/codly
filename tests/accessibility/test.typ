@@ -38,3 +38,6 @@
 // Guides are decorative strokes; source remains searchable accessible text.
 #codly.new(raw("guided source\n    guided child", block: true),
   indent-guides: (rainbow: true, palette: (purple, blue)))
+
+// Continuation markers are decorative artifacts; the source remains text.
+#codly.new(raw("wrapped source " + "argument " * 15, block: true), wrap-marker: [↪])

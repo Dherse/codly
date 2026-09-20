@@ -1,3 +1,5 @@
+#import "wrap.typ" as wrap
+
 // Record cell bounds without measuring or duplicating their contents.
 #let cell(body, origin, role: "body") = {
   let fields = if body.func() == grid.cell { body.fields() } else { (body: body) }
@@ -31,7 +33,7 @@
 
 #let region-key(pos) = repr((pos.page, pos.x, pos.y))
 
-#let pages(origin, code-column: 1, outside: true) = {
+#let pages(origin, code-column: 1, outside: true, wraps: none) = {
   let end = query(metadata.where(value: (kind: "paint-end", origin: origin)))
   if end.len() == 0 { return (:) }
   let starts = ()
@@ -105,15 +107,25 @@
     }
   }
   let pages = (:)
+  let markers = if wraps == none { () } else { wrap.marks(wraps.owner, end.first().location(), regions) }
   for r in regions {
-    pages.insert(region-key(r.at), (left: r.at.x + gutter, top: r.at.y, bottom: r.bottom, cells: r.cells))
+    let local-markers = ()
+    for marker in markers {
+      let p = marker.at
+      if p.page != r.at.page or p.x < r.at.x or p.x > r.at.x + r.width or p.y < r.body-top or p.y >= r.body-bottom { continue }
+      local-markers.push(marker)
+    }
+    pages.insert(region-key(r.at), (
+      origin: r.at, left: r.at.x + gutter, top: r.at.y, bottom: r.bottom, cells: r.cells,
+      wraps: local-markers,
+    ))
   }
   pages
 }
 
-#let background(origin, width, radius, stroke, code-column: 1, outside: true) = context {
+#let background(origin, width, radius, stroke, code-column: 1, outside: true, wraps: none) = context {
   let at = here().position()
-  let page = pages(origin, code-column: code-column, outside: outside).at(region-key(at), default: none)
+  let page = pages(origin, code-column: code-column, outside: outside, wraps: wraps).at(region-key(at), default: none)
   if page != none {
     let code-left = if page.left == none { at.x } else { page.left }
     place(top + left, dx: code-left - at.x, dy: page.top - at.y, block(
@@ -144,7 +156,19 @@
   }
 }
 
-#let outside(columns, inset, align, fill, stroke, radius, header, items, footer, code-column: 1, outside: true, guides: none) = context {
+#let wrap-foreground(origin, code-column, outside, wraps) = context {
+  let at = here().position()
+  let regions = pages(origin, code-column: code-column, outside: outside, wraps: wraps)
+  for region in regions.values() {
+    if region.origin.page != at.page or region.origin.x != at.x or calc.abs(region.bottom - at.y) > 0.001pt { continue }
+    for marker in region.wraps {
+      place(top + left, dx: marker.at.x - at.x, dy: marker.at.y - at.y,
+        pdf.artifact(text(top-edge: "baseline", bottom-edge: "baseline", marker.body)))
+    }
+  }
+}
+
+#let outside(columns, inset, align, fill, stroke, radius, header, items, footer, code-column: 1, outside: true, guides: none, wraps: none) = context {
   let origin = here()
   let cells = ()
   for item in items { cells.push(cell(item, origin)) }
@@ -157,7 +181,10 @@
     headers.push(grid.header(repeat: h.repeat, level: 2, cell(grid.cell(..fields, body), origin, role: "header")))
   }
   let footers = ()
-  let end = grid.cell(colspan: columns.len(), inset: 0pt, [#metadata((kind: "region-end", origin: origin))<__codly-geometry>])
+  let end = grid.cell(colspan: columns.len(), inset: 0pt, [
+    #metadata((kind: "region-end", origin: origin))<__codly-geometry>
+    #if wraps != none { wrap-foreground(origin, code-column, outside, wraps) }
+  ])
   if footer.len() > 0 {
     let f = footer.first()
     let content = cell(f.children.first(), origin, role: "footer")
@@ -178,7 +205,7 @@
       colspan: columns.len(), inset: 0pt,
       layout(size => {
         [#metadata((kind: "region-start", origin: origin, width: size.width))<__codly-geometry>]
-        background(origin, size.width, radius, stroke, code-column: code-column, outside: outside)
+        background(origin, size.width, radius, stroke, code-column: code-column, outside: outside, wraps: wraps)
       }),
     )),
     ..headers, ..cells, ..footers,

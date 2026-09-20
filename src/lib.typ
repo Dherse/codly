@@ -2,6 +2,7 @@
 #import "geometry.typ" as geometry
 #import "rainbow.typ" as rainbow
 #import "indent.typ" as indent
+#import "wrap.typ" as wrap
 
 /// The prefix identifying codly's custom elements and types.
 #let __codly-prefix = "@preview/codly:v2.0.0"
@@ -288,6 +289,10 @@
   it,
 ) = {
   let hl = it.highlight
+  let body = it.body
+  if it.__continuation-indent != none {
+    body = par(hanging-indent: it.__continuation-indent, body)
+  }
 
   let base = if hl != none and hl.fill != none { hl.fill } else { it.color }
   if type(base) == function { base = base(it.color) }
@@ -339,12 +344,12 @@
       inset: style.inset,
       outset: style.outset,
       baseline: style.baseline,
-      it.body + label,
+      body + label,
     )
   } else {
     // Explicit widths prevent reflow at the weak break between body and tag.
     let inset-sep = __codly-inset(style.inset)
-    let size-body = measure(it.body)
+    let size-body = measure(body)
     let size-tag = measure(tag)
     let max-height = calc.max(
       size-body.height,
@@ -362,7 +367,7 @@
       inset: style.inset,
       outset: style.outset,
       baseline: style.baseline,
-      it.body,
+      body,
     )
     let tag-box = box(
       radius: (top-left: 0pt, bottom-left: 0pt, rest: style.radius),
@@ -397,6 +402,10 @@
   let line-highlights = it.highlights
   let smart-indent = it.smart-indent
   let block-label = it.block-label
+  if smart-indent and it.__wrap != none and "width" not in it.__wrap {
+    return layout(size => __codly-line-show(codly-highlight, codly-ref,
+      it + (__wrap: it.__wrap + (width: size.width))))
+  }
   context {
     let highlights = ()
     let layout = none
@@ -426,13 +435,43 @@
 
     // Keep empty and highlighted lines at a consistent height.
     let line-height = measure[1].height
-    let body = box(height: line-height, width: 0pt, baseline: 0pt) + line.body
+    let body = line.body
+    let wrap-data = none
+    let needs-marker = false
+    if smart-indent and it.__wrap != none {
+      // Highlight insets can change the width. Measure their ordinary renderer
+      // before deciding whether to add any probes to this source row.
+      let natural = if highlights.len() == 0 { line.body } else {
+        __codly-line-show(codly-highlight, codly-ref, it + (__wrap: none))
+      }
+      needs-marker = measure(natural).width > it.__wrap.width
+    }
+    if needs-marker {
+      let row = it.__wrap.row
+      let marker = it.__wrap.marker
+      let advance = measure(marker).width + 0.3em.to-absolute()
+      wrap-data = (owner: it.__wrap.owner, row: row, marker: marker, advance: advance, tolerance: line-height / 2)
+      body = wrap.annotate(body, it.__wrap.owner, row)
+    }
+    body = box(height: line-height, width: 0pt, baseline: 0pt) + body
 
     // Continue wrapped lines at their original indentation.
     let width = none
+    let prefix = if smart-indent { indent.prefix(line.text) } else { "" }
     if smart-indent {
-      let prefix = indent.prefix(line.text)
       if prefix != "" { width = measure(text(prefix)).width }
+    }
+    if wrap-data != none {
+      wrap-data.insert("indent", if width == none { 0pt } else { width })
+      width = wrap-data.indent + wrap-data.advance
+    }
+    let highlight-options(start) = {
+      // Use the actual fragment start: highlight positions are one-based and
+      // whitespace runs are atomic; crossing spans may also reopen later.
+      let remaining = calc.max(prefix.len() - start, 0)
+      if not smart-indent or (remaining == 0 and wrap-data == none) { return (:) }
+      (__continuation-indent: measure(text(" " * remaining)).width
+        + if wrap-data == none { 0pt } else { wrap-data.advance })
     }
 
     // Split before applying `set par`, which would otherwise wrap each fragment.
@@ -447,6 +486,7 @@
       let active = ()
       let open = ()
       let groups = ((),)
+      let starts = ()
       let i = 0
       for child in source {
         let end = i + __codly-line-length(child)
@@ -491,12 +531,14 @@
           }
           while open.len() > shared {
             let hl = highlights.at(open.pop())
-            let content = codly-highlight(groups.pop().join(), highlight: hl)
+            let content = codly-highlight(groups.pop().join(), highlight: hl,
+              ..highlight-options(starts.pop()))
             groups.last().push(content)
           }
           while open.len() < active.len() {
             open.push(active.at(open.len()))
             groups.push(())
+            starts.push(i)
           }
         }
         groups.last().push(child)
@@ -506,7 +548,8 @@
       // Close spans that continue through or beyond the end of the line.
       while open.len() > 0 {
         let hl = highlights.at(open.pop())
-        let content = codly-highlight(groups.pop().join(), highlight: hl)
+        let content = codly-highlight(groups.pop().join(), highlight: hl,
+          ..highlight-options(starts.pop()))
         groups.last().push(content)
       }
 
@@ -520,6 +563,7 @@
       }
     }
 
+    if wrap-data != none { highlighted = [#metadata(wrap-data)<__codly-wrap-row>#highlighted] }
     let output = raw.line(line.number, line.count, line.text, highlighted)
     if block-label == none {
       // Keep the inline anchor that determines line wrapping and spacing.
@@ -586,6 +630,7 @@
   lang-block,
   sublang-lines: (:),
   indentation: none,
+  wrap-settings: none,
 ) = {
   let items = ()
   let lines_to_number = ()
@@ -720,6 +765,7 @@
       numbered,
       highlights: if has-highlights { highlights-by-line.at(str(line.number + offset), default: ()) } else { highlights },
       smart-indent: smart-indent,
+      __wrap: if wrap-settings == none { none } else { wrap-settings + (row: line.number) },
       block-label: block-label,
     )
     if in-first {
@@ -1030,6 +1076,9 @@
   // Handling of `smart-skip`
   let smart-skip = args.smart-skip
   let guides = args.indent-guides
+  let wrap-settings = if args.smart-indent and args.wrap-marker != none and args.wrap-marker != [] {
+    (owner: here(), marker: args.wrap-marker)
+  }
   let indentation = if guides != none and guides.enabled {
     indent.scan(lines.map(l => l.text), width: guides.width, blank-lines: guides.blank-lines)
   }
@@ -1054,6 +1103,7 @@
     if args.header == none { lang-block } else { [] },
     sublang-lines: sublang-lines,
     indentation: indentation,
+    wrap-settings: wrap-settings,
   )
 
   // The header counts as a line for zebra striping purposes.
@@ -1110,13 +1160,14 @@
     outset: if outside-column { 0pt } else { -stroke-inset },
     {
       set block(breakable: true)
-      if outside-column or (indentation != none and guide-depths.any(d => d > 0)) {
+      if outside-column or wrap-settings != none or (indentation != none and guide-depths.any(d => d > 0)) {
         geometry.outside(
           (if args.number-enabled { (auto,) } else { () }) + (1fr,) + (if has-annotations { (annot-width,) } else { () }),
           grid-inset, (numbers-alignment, left + horizon), cell-fill,
           if outside-column { stroke } else { none }, if outside-column { args.radius } else { 0pt }, header-block, items, footer-block,
           code-column: if args.number-enabled { 1 } else { 0 },
           outside: outside-column,
+          wraps: wrap-settings,
           guides: if indentation == none { none } else {
             indent.settings(guides, args.rainbow) + (
               depths: guide-depths, width: indentation.width, inset: grid-inset.left,

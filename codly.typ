@@ -492,6 +492,7 @@
     fields: (
       e.field("body", e.types.option(content), doc: "The highlighted content.", required: true),
       e.field("highlight", e.types.option(highlight), doc: "The highlight metadata for this content.", default: none),
+      e.field("__continuation-indent", e.types.option(length), default: none, doc: "Internal smart indentation inside a wrapping highlight."),
       e.field("color", e.types.paint, doc: __doc("default-color"), default: __default("default-color")),
       e.field("radius", e.types.option(length), doc: __doc("highlight-radius"), default: __default("highlight-radius")),
       e.field("fill", e.types.option(function), doc: __doc("highlight-fill"), default: __default("highlight-fill")),
@@ -524,6 +525,7 @@
       e.field("stroke", e.types.option(stroke), doc: __doc("stroke"), default: __default("stroke")),
       e.field("highlights", e.types.option(e.types.array(highlight)), doc: __doc("highlights"), default: __default("highlights"), folds: false),
       e.field("smart-indent", bool, doc: __doc("smart-indent"), default: __default("smart-indent")),
+      e.field("__wrap", e.types.option(dictionary), default: none, doc: "Internal block-owned continuation marker settings."),
       e.field("block-label", e.types.option(label), doc: "The label of the containing code block.", default: none),
     )
   )
@@ -711,6 +713,7 @@
       e.field("smart-skip", e.types.option(smart-skip), doc: __doc("smart-skip"), default: __default("smart-skip"), folds: false),
       e.field("aliases", e.types.option(dictionary), doc: __doc("aliases"), default: __default("aliases")),
       e.field("smart-indent", e.types.option(bool), doc: __doc("smart-indent"), default: __default("smart-indent")),
+      e.field("wrap-marker", e.types.option(content), default: none, doc: "Optional symbol at each wrapped continuation when smart-indent is enabled."),
       e.field("skip-last-empty", e.types.option(bool), doc: __doc("skip-last-empty"), default: __default("skip-last-empty")),
       e.field("breakable", e.types.option(bool), doc: __doc("breakable"), default: __default("breakable")),
       e.field("skips", e.types.option(e.types.array(skip)), doc: __doc("skips"), default: __default("skips"), folds: false),
