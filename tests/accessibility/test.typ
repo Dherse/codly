@@ -34,3 +34,7 @@
   assert.eq(query(<note>).len(), 1)
   assert.eq(query(figure.where(kind: "codly-line")).len(), 3)
 }
+
+// Guides are decorative strokes; source remains searchable accessible text.
+#codly.new(raw("guided source\n    guided child", block: true),
+  indent-guides: (rainbow: true, palette: (purple, blue)))

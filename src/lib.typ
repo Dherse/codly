@@ -1,6 +1,7 @@
 #import "@preview/elembic:1.1.1" as e
 #import "geometry.typ" as geometry
 #import "rainbow.typ" as rainbow
+#import "indent.typ" as indent
 
 /// The prefix identifying codly's custom elements and types.
 #let __codly-prefix = "@preview/codly:v2.0.0"
@@ -430,17 +431,8 @@
     // Continue wrapped lines at their original indentation.
     let width = none
     if smart-indent {
-      if body.has("children") {
-        for child in body.children {
-          if child.has("text") {
-            let match = child.text.match(regex("^\\s+"))
-            if match != none {
-              width = measure([#match.text]).width
-            }
-            break
-          }
-        }
-      }
+      let prefix = indent.prefix(line.text)
+      if prefix != "" { width = measure(text(prefix)).width }
     }
 
     // Split before applying `set par`, which would otherwise wrap each fragment.
@@ -593,9 +585,11 @@
   offset,
   lang-block,
   sublang-lines: (:),
+  indentation: none,
 ) = {
   let items = ()
   let lines_to_number = ()
+  let guide-depths = ()
   let last-number = none
   let smart-skip-enabled = smart-skip.first or smart-skip.last or smart-skip.rest
   let current-annot = none
@@ -686,6 +680,7 @@
       } else { body })
       if annotation-cell != none { annotation-rows += 1 }
       lines_to_number.push(-99999999)
+      if indentation != none { guide-depths.push(0) }
       if explicit-skip {
         formatted-skips += 1
         offset += explicit-skip-data.length
@@ -707,6 +702,7 @@
     }
 
     lines_to_number.push(line.number + offset)
+    if indentation != none { guide-depths.push(indentation.depths.at(line.number - 1)) }
     last-number = line.number + offset
     if number-enabled {
       items.push(codly-number(line.number + offset))
@@ -771,7 +767,7 @@
     )
   }
 
-  (items: items, lines_to_number: lines_to_number, last-number: last-number)
+  (items: items, lines_to_number: lines_to_number, last-number: last-number, guide-depths: guide-depths)
 }
 
 #let __codly-annotation-show(
@@ -838,6 +834,12 @@
       let settings = e.fields(args.rainbow)
       let sublangs = args.sublangs
       let prepared = args + (rainbow: none, sublangs: none)
+      // Resolve inherited guide colors before the delimiter pass clears rainbow.
+      if args.indent-guides != none and args.indent-guides.enabled {
+        let guides = e.fields(args.indent-guides)
+        let style = indent.settings(guides, args.rainbow)
+        prepared.indent-guides = guides + (rainbow: true, palette: style.palette, depth-offset: style.depth-offset)
+      }
       return rainbow.prepare(it, settings, sublangs, lines => __codly-show(
         codly-line, codly-highlight, codly-lang, codly-header, codly-footer,
         codly-number, codly-annotation, codly-ref, sublang-block, constructor,
@@ -1027,7 +1029,11 @@
 
   // Handling of `smart-skip`
   let smart-skip = args.smart-skip
-  let (items: items, lines_to_number: lines_to_number, last-number: last-number) = __codly-line-loop(
+  let guides = args.indent-guides
+  let indentation = if guides != none and guides.enabled {
+    indent.scan(lines.map(l => l.text), width: guides.width, blank-lines: guides.blank-lines)
+  }
+  let (items: items, lines_to_number: lines_to_number, last-number: last-number, guide-depths: guide-depths) = __codly-line-loop(
     codly-line,
     codly-number,
     smart-skip,
@@ -1047,11 +1053,13 @@
     offset,
     if args.header == none { lang-block } else { [] },
     sublang-lines: sublang-lines,
+    indentation: indentation,
   )
 
   // The header counts as a line for zebra striping purposes.
   if args.header != none {
     lines_to_number.insert(0, -999999999)
+    if indentation != none { guide-depths.insert(0, 0) }
   }
 
   let get-line = get(codly-line)
@@ -1102,11 +1110,22 @@
     outset: if outside-column { 0pt } else { -stroke-inset },
     {
       set block(breakable: true)
-      if outside-column {
+      if outside-column or (indentation != none and guide-depths.any(d => d > 0)) {
         geometry.outside(
-          if has-annotations { (auto, 1fr, annot-width) } else { (auto, 1fr) },
+          (if args.number-enabled { (auto,) } else { () }) + (1fr,) + (if has-annotations { (annot-width,) } else { () }),
           grid-inset, (numbers-alignment, left + horizon), cell-fill,
-          stroke, args.radius, header-block, items, footer-block,
+          if outside-column { stroke } else { none }, if outside-column { args.radius } else { 0pt }, header-block, items, footer-block,
+          code-column: if args.number-enabled { 1 } else { 0 },
+          outside: outside-column,
+          guides: if indentation == none { none } else {
+            indent.settings(guides, args.rainbow) + (
+              depths: guide-depths, width: indentation.width, inset: grid-inset.left,
+              // Unindented continuation text must not run through a guide.
+              max-height: if args.smart-indent { none } else {
+                measure[1].height + grid-inset.top.to-absolute() + grid-inset.bottom.to-absolute()
+              },
+            )
+          },
         )
       } else if numbers-format != none {
         grid(

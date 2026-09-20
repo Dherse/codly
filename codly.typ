@@ -106,6 +106,52 @@
   )
 }
 
+/// Optional indentation guides, independent of syntax delimiter nesting.
+#let indent-guides = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+
+  let parser(default-parser, fields: (:), typecheck: true) = {
+    (args, include-required: true) => {
+      let result = default-parser(args, include-required: include-required)
+      if result.at(0) {
+        let value = result.at(1)
+        let width = value.at("width", default: auto)
+        let palette = value.at("palette", default: auto)
+        let offset = value.at("depth-offset", default: auto)
+        assert(width == auto or width > 0, message: "codly: indent-guides width must be positive")
+        assert(palette == auto or palette.len() > 0, message: "codly: indent-guides palette must not be empty")
+        assert(offset == auto or offset >= 0, message: "codly: indent-guides depth-offset must be nonnegative")
+        let thickness = value.at("thickness", default: 0.5pt)
+        assert(thickness.abs >= 0pt and thickness.em >= 0 and thickness != 0pt,
+          message: "codly: indent-guides thickness must be positive")
+      }
+      result
+    }
+  }
+
+  e.types.declare(
+    "indent-guides", prefix: __codly-prefix,
+    doc: "Draw optional vertical guides at complete indentation levels.",
+    parse-args: parser,
+    fields: (
+      e.field("enabled", bool, default: true, doc: "Whether to draw indentation guides."),
+      e.field("width", e.types.union(auto, int), default: auto, doc: "Spaces per level; auto votes on observed indentation changes."),
+      e.field("blank-lines", bool, default: true, doc: "Continue shared levels across interior blank lines."),
+      e.field("rainbow", e.types.union(auto, bool), default: auto, doc: "Color guides by level; auto follows delimiter rainbow enablement."),
+      e.field("palette", e.types.union(auto, e.types.array(color)), default: auto, folds: false, doc: "Nonempty guide palette; auto shares the delimiter palette."),
+      e.field("depth-offset", e.types.union(auto, int), default: auto, doc: "Nonnegative palette offset; auto shares the delimiter offset."),
+      e.field("color", color, default: luma(70%), doc: "Guide color when rainbow guides are disabled."),
+      e.field("thickness", length, default: 0.5pt, doc: "Positive guide stroke thickness."),
+      e.field("x-offset", length, default: 0pt, doc: "Horizontal shift of every guide; positive moves right, negative moves left. Supports em lengths."),
+    ),
+    casts: (
+      (from: dictionary),
+      (from: bool, with: constructor => value => constructor(enabled: value)),
+    ),
+  )
+}
+
 /// Configuration for smart skips, see the `smart-skip` field.
 #let smart-skip = {
   import "@preview/elembic:1.1.1" as e
@@ -678,6 +724,7 @@
       e.field("radius", e.types.option(length), doc: __doc("radius"), default: __default("radius")),
       e.field("sublangs", e.types.option(e.types.array(sublang)), doc: "todo", default: none),
       e.field("rainbow", e.types.option(rainbow), doc: "Opt-in syntax-aware delimiter colors; true or a rainbow configuration.", default: none),
+      e.field("indent-guides", e.types.option(indent-guides), doc: "Opt-in indentation guides; true or an indent-guides configuration.", default: none),
     )
   )
 }

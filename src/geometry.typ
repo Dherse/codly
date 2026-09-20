@@ -6,12 +6,24 @@
   [#grid.cell(fill: none, ..fields, [#metadata((fill: fill, role: role, origin: origin))#body])<__codly-painted-cell>]
 }
 
-#let mark(it, fill, origin) = {
+#let mark(it, fill, origin, code-column: 1, outside: true, guides: none) = {
   let first = if it.body.func() == metadata { it.body } else { it.body.children.first() }
   if first.value.origin != origin { return it }
   let paint = if first.value.fill == auto { fill(it.x, it.y - 1) } else { first.value.fill }
-  if it.x != 0 or it.colspan > 1 {
-    place(top + left)[#metadata((kind: "cell-start", origin: origin, x: it.x, y: it.y, rowspan: it.rowspan, fill: paint, role: first.value.role))<__codly-geometry>]
+  if not outside or it.x != 0 or it.colspan > 1 {
+    let marks = ()
+    if guides != none and it.x == code-column and first.value.role == "body" {
+      let depth = guides.depths.at(it.y - 1, default: 0)
+      for level in range(depth) {
+        marks.push((
+          x: (guides.inset + guides.x-offset).to-absolute() + measure(text(" " * (level * guides.width))).width,
+          color: guides.palette.at(calc.rem(level + guides.depth-offset, guides.palette.len())),
+          thickness: guides.thickness,
+          max-height: guides.max-height,
+        ))
+      }
+    }
+    place(top + left)[#metadata((kind: "cell-start", origin: origin, x: it.x, y: it.y, rowspan: it.rowspan, fill: paint, role: first.value.role, guides: marks))<__codly-geometry>]
     place(bottom + right)[#metadata((kind: "cell-end", origin: origin))<__codly-geometry>]
   }
   it
@@ -19,7 +31,7 @@
 
 #let region-key(pos) = repr((pos.page, pos.x, pos.y))
 
-#let pages(origin) = {
+#let pages(origin, code-column: 1, outside: true) = {
   let end = query(metadata.where(value: (kind: "paint-end", origin: origin)))
   if end.len() == 0 { return (:) }
   let starts = ()
@@ -63,12 +75,12 @@
     let value = start.value
     if value.role == "body" {
       spans.push((value: value, a: a, b: b, region: region))
-      if value.x == 1 {
+      if value.x == code-column {
         rows.insert(str(value.y), (a: a, region: region))
-        gutter = a.x - regions.at(region).at.x
+        if outside { gutter = a.x - regions.at(region).at.x }
       }
     } else {
-      regions.at(region).cells.push((a: a, b: b, fill: value.fill))
+      regions.at(region).cells.push((a: a, b: b, fill: value.fill, guides: ()))
       if value.role == "header" { regions.at(region).body-top = calc.max(regions.at(region).body-top, b.y) }
       if value.role == "footer" { regions.at(region).body-bottom = calc.min(regions.at(region).body-bottom, a.y) }
     }
@@ -86,6 +98,7 @@
       if bottom > top {
         regions.at(index).cells.push((
           a: (x: span.a.x + dx, y: top), b: (x: span.b.x + dx, y: bottom), fill: span.value.fill,
+          guides: span.value.guides.filter(g => index == span.region or g.max-height == none),
         ))
       }
       index += 1
@@ -98,9 +111,9 @@
   pages
 }
 
-#let background(origin, width, radius, stroke) = context {
+#let background(origin, width, radius, stroke, code-column: 1, outside: true) = context {
   let at = here().position()
-  let page = pages(origin).at(region-key(at), default: none)
+  let page = pages(origin, code-column: code-column, outside: outside).at(region-key(at), default: none)
   if page != none {
     let code-left = if page.left == none { at.x } else { page.left }
     place(top + left, dx: code-left - at.x, dy: page.top - at.y, block(
@@ -116,13 +129,22 @@
               fill: cell.fill, stroke: none,
             ))
           }
+          for guide in cell.guides {
+            let x = cell.a.x + guide.x
+            if cell.a.x <= x and x < cell.b.x {
+              place(top + left, dx: x - code-left, dy: cell.a.y - page.top, pdf.artifact(line(
+                end: (0pt, if guide.max-height == none { cell.b.y - cell.a.y } else { calc.min(guide.max-height, cell.b.y - cell.a.y) }),
+                stroke: guide.color + guide.thickness,
+              )))
+            }
+          }
         }
       },
     ))
   }
 }
 
-#let outside(columns, inset, align, fill, stroke, radius, header, items, footer) = context {
+#let outside(columns, inset, align, fill, stroke, radius, header, items, footer, code-column: 1, outside: true, guides: none) = context {
   let origin = here()
   let cells = ()
   for item in items { cells.push(cell(item, origin)) }
@@ -148,7 +170,7 @@
   } else {
     footers.push(grid.footer(repeat: true, end))
   }
-  show <__codly-painted-cell>: it => mark(it, fill, origin)
+  show <__codly-painted-cell>: it => mark(it, fill, origin, code-column: code-column, outside: outside, guides: guides)
   grid(
     columns: columns, inset: inset, align: align, stroke: none, fill: none,
     column-gutter: 0pt, row-gutter: 0pt, gutter: 0pt,
@@ -156,7 +178,7 @@
       colspan: columns.len(), inset: 0pt,
       layout(size => {
         [#metadata((kind: "region-start", origin: origin, width: size.width))<__codly-geometry>]
-        background(origin, size.width, radius, stroke)
+        background(origin, size.width, radius, stroke, code-column: code-column, outside: outside)
       }),
     )),
     ..headers, ..cells, ..footers,

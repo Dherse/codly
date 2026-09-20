@@ -38,7 +38,7 @@ def run_accessibility(output):
         )
         passed = extracted.returncode == 0 and all(
             text in extracted.stdout
-            for text in ("plain source", "fn main()", "return 1", "Returns one", "outside", "Remark")
+            for text in ("plain source", "fn main()", "return 1", "Returns one", "outside", "Remark", "guided source", "guided child")
         )
         if not passed:
             result = extracted
