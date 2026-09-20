@@ -1363,7 +1363,7 @@
         doc: "todo",
         default: 100%,
         folds: false,
-      )
+      ),
     ),
   )
 }
