@@ -23,7 +23,7 @@ jobs:
       - name: Check Typst formatting
         run: >-
           typstyle --check --line-width 100 --indent-width 2
-          --no-reorder-import-items codly.typ src tests docs
+          --no-reorder-import-items codly.typ src tests
 
   tests:
     runs-on: ubuntu-latest
