@@ -278,9 +278,18 @@
         "example": "*Line number outside of the block:*\n#codly(number-placement: \"outside\")\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```\n*Line number inside of the block:*\n#codly(number-placement: \"inside\")\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```",
         "upcoming": false
     },
+    "unnumbered-lines": {
+        "title": "Unnumbered lines",
+        "description": "Source lines to omit from line numbering. Each entry can be a line number or `(line, fill)`, where `fill` replaces the empty number cell. Line numbers are one-indexed. An unnumbered line after displayed line 5 can be referenced as `@block:l5p1`; consecutive unnumbered lines increase the final number.",
+        "default": "()",
+        "ty": [ "array" ],
+        "function": true,
+        "reset": true,
+        "example": "#codly(unnumbered: ((1, emoji.face.happy), 4))\n```asm\nstart:\n  mov w0, 0\n  ret\ndone:\n```"
+    },
     "smart-indent": {
         "title": "Smart indentation",
-        "description": "Whether to use smart indentation, which will check for indentation on a line and use a bigger left side inset instead of spaces. This allows for linebreaks to continue at the same level of indentation. This is on by default, but disabling it can improve performance.",
+        "description": "Whether to continue wrapped lines at their original indentation. Leading spaces are read from the normalized raw line text, independently of syntax styling. Wrapping highlights also retain the indentation remaining inside their span. This is on by default, but disabling it can improve performance.",
         "default": "true",
         "ty": [ "bool" ],
         "function": false,
