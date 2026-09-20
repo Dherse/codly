@@ -17,6 +17,7 @@
 // #118: whole-line highlights remain effective when line numbers are hidden.
 #{
   show: codly.line-set_(fill: luma(230), zebra-fill: none)
+  show: codly.highlight-set_(color: blue, fill: color => color)
   show grid: it => {
     assert.eq((it.fill)(0, 0), luma(230))
     assert.eq((it.fill)(0, 1), red)
@@ -27,22 +28,22 @@
   codly.new(
     raw("one\ntwo\nthree", block: true),
     number-enabled: false,
-    highlighted: ((2, red), (3, blue)),
+    highlighted: ((2, red), 3),
   )
 }
 
 // #106: a one dimensional number alignment setting must not hide a figure's
 // text when numbers are disabled.
-#figure[
+#for alignment in (left, top) [#figure[
   #{
-    show: e.set_(codly.codly-number, align: left)
+    show: e.set_(codly.codly-number, align: alignment)
     show: codly.line-show_(it => {
       let body = e.fields(it).body
       [#metadata(body.text)<github-figure-line>#it]
     })
     codly.new(raw("Text\nText\nText\nText", block: true), number-enabled: false)
   }
-]
+]]
 
 // #110: `rest` still inserts the gap before a final singleton range when
 // `last` is disabled.
@@ -67,7 +68,7 @@
 
 // #135: an explicit empty language fill is valid.
 #{
-  show: codly.lang-set_(languages: (py: (name: "Python", color: green, fill: none)))
+  show: codly.lang-set_(fill: none, languages: (py: (name: "Python", color: green, fill: none)))
   codly.new(raw("print", lang: "py", block: true))
 }
 
@@ -82,5 +83,5 @@
   assert.eq(lines.at(6).number, "skip")
   assert.eq(lines.at(7).number, 5)
   assert.eq(codly.info(<github-empty>), (last-number: none, lines: 1))
-  assert.eq(query(<github-figure-line>).map(it => it.value), ("Text", "Text", "Text", "Text"))
+  assert.eq(query(<github-figure-line>).map(it => it.value), ("Text",) * 8)
 }
