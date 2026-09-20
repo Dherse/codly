@@ -51,3 +51,6 @@
 #pagebreak()
 
 #include "96-multiline-highlights.typ"
+#pagebreak()
+
+#include "91-end-of-file-newline.typ"
