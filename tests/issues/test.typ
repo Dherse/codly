@@ -45,3 +45,6 @@
 #pagebreak()
 
 #include "133-nested-highlights.typ"
+#pagebreak()
+
+#include "67-show-rule-regex.typ"
