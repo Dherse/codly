@@ -1,7 +1,7 @@
 #import "../../codly.typ" as codly
 
 // A line's minimum height survives glyph-specific text rules and whitespace.
-// Measuring these probes avoids adding visual snapshots for invisible struts.
+// Assertions check the invisible struts without rendering the probe blocks.
 #context {
   let reference = measure(width: 160pt, codly.new(
     raw("1", block: true),

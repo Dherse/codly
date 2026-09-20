@@ -1324,98 +1324,115 @@
   let stroke-inset = if stroke == none { 0pt } else if stroke.thickness == auto { 0.5pt } else {
     stroke.thickness / 2
   }
-  let block_content = block(
+
+  let grid-content = (intrinsic: false) => {
+    let code-width = if intrinsic { auto } else { 1fr }
+    set block(breakable: true)
+    if (
+      outside-column
+        or wrap-settings != none
+        or (indentation != none and guide-depths.any(d => d > 0))
+    ) {
+      geometry.outside(
+        (if args.number-enabled { (auto,) } else { () })
+          + (code-width,)
+          + (if has-annotations { (annot-width,) } else { () }),
+        grid-inset,
+        (numbers-alignment, left + horizon),
+        cell-fill,
+        if outside-column { stroke } else { none },
+        if outside-column { args.radius } else { 0pt },
+        header-block,
+        items,
+        footer-block,
+        code-column: if args.number-enabled { 1 } else { 0 },
+        outside: outside-column,
+        wraps: wrap-settings,
+        guides: if indentation == none { none } else {
+          (
+            indent.settings(guides, args.rainbow)
+              + (
+                depths: guide-depths,
+                width: indentation.width,
+                // Raw code uses a monospaced font, so guide positions are
+                // integral space advances. Measure that advance once per
+                // block instead of once for every row and nesting level.
+                step: measure(text(" " * indentation.width)).width,
+                inset: grid-inset.left,
+                // Unindented continuation text must not run through a guide.
+                max-height: if args.smart-indent { none } else {
+                  (
+                    measure[1].height
+                      + grid-inset.top.to-absolute()
+                      + grid-inset.bottom.to-absolute()
+                  )
+                },
+              )
+          )
+        },
+      )
+    } else if numbers-format != none {
+      grid(
+        columns: if has-annotations {
+          (auto, code-width, annot-width)
+        } else {
+          (auto, code-width)
+        },
+        inset: grid-inset,
+        stroke: none,
+        align: (numbers-alignment, left + horizon),
+        fill: cell-fill,
+        column-gutter: 0pt,
+        gutter: 0pt,
+        row-gutter: 0pt,
+        ..header-block,
+        ..items,
+        ..footer-block,
+      )
+    } else {
+      grid(
+        columns: if has-annotations {
+          (code-width, annot-width)
+        } else {
+          code-width
+        },
+        inset: grid-inset,
+        stroke: none,
+        align: (numbers-alignment, left + horizon),
+        fill: cell-fill,
+        column-gutter: 0pt,
+        gutter: 0pt,
+        row-gutter: 0pt,
+        ..header-block,
+        ..items,
+        ..footer-block,
+      )
+    }
+  }
+
+  let render-block = (width, intrinsic: false) => block(
     breakable: args.breakable,
     clip: not outside-column,
-    width: args.width,
+    width: width,
     radius: args.radius,
     stroke: if outside-column { none } else { get-line.stroke },
     inset: stroke-inset,
     outset: if outside-column { 0pt } else { -stroke-inset },
-    {
-      set block(breakable: true)
-      if (
-        outside-column
-          or wrap-settings != none
-          or (indentation != none and guide-depths.any(d => d > 0))
-      ) {
-        geometry.outside(
-          (if args.number-enabled { (auto,) } else { () })
-            + (1fr,)
-            + (if has-annotations { (annot-width,) } else { () }),
-          grid-inset,
-          (numbers-alignment, left + horizon),
-          cell-fill,
-          if outside-column { stroke } else { none },
-          if outside-column { args.radius } else { 0pt },
-          header-block,
-          items,
-          footer-block,
-          code-column: if args.number-enabled { 1 } else { 0 },
-          outside: outside-column,
-          wraps: wrap-settings,
-          guides: if indentation == none { none } else {
-            (
-              indent.settings(guides, args.rainbow)
-                + (
-                  depths: guide-depths,
-                  width: indentation.width,
-                  // Raw code uses a monospaced font, so guide positions are
-                  // integral space advances. Measure that advance once per
-                  // block instead of once for every row and nesting level.
-                  step: measure(text(" " * indentation.width)).width,
-                  inset: grid-inset.left,
-                  // Unindented continuation text must not run through a guide.
-                  max-height: if args.smart-indent { none } else {
-                    (
-                      measure[1].height
-                        + grid-inset.top.to-absolute()
-                        + grid-inset.bottom.to-absolute()
-                    )
-                  },
-                )
-            )
-          },
-        )
-      } else if numbers-format != none {
-        grid(
-          columns: if has-annotations {
-            (auto, 1fr, annot-width)
-          } else {
-            (auto, 1fr)
-          },
-          inset: grid-inset,
-          stroke: none,
-          align: (numbers-alignment, left + horizon),
-          fill: cell-fill,
-          column-gutter: 0pt,
-          gutter: 0pt,
-          row-gutter: 0pt,
-          ..header-block,
-          ..items,
-          ..footer-block,
-        )
-      } else {
-        grid(
-          columns: if has-annotations {
-            (1fr, annot-width)
-          } else {
-            1fr
-          },
-          inset: grid-inset,
-          stroke: none,
-          align: (numbers-alignment, left + horizon),
-          fill: cell-fill,
-          column-gutter: 0pt,
-          gutter: 0pt,
-          row-gutter: 0pt,
-          ..header-block,
-          ..items,
-          ..footer-block,
-        )
-      }
-    },
+    grid-content(intrinsic: intrinsic),
   )
+
+  let block_content = if args.width == auto {
+    layout(size => {
+      // A fractional code column collapses during an unconstrained measure.
+      // Use an auto code column for the natural width, then cap the complete
+      // rendered block (grid insets, number/annotation columns, and border)
+      // to the width available after the surrounding margins.
+      let natural-width = measure(render-block(auto, intrinsic: true)).width
+      render-block(calc.min(natural-width, size.width))
+    })
+  } else {
+    render-block(args.width)
+  }
 
   // Empty native reference anchors need no figure layout.
   show figure.where(kind: "codly-line"): it => {
