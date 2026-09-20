@@ -68,6 +68,44 @@
   )
 }
 
+/// Optional grammar-aware delimiter coloring.
+#let rainbow = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+  import "src/rainbow.typ" as r
+
+  let parser(default-parser, fields: (:), typecheck: true) = {
+    (args, include-required: true) => {
+      let result = default-parser(args, include-required: include-required)
+      if result.at(0) {
+        let value = result.at(1)
+        assert(value.at("palette", default: (black,)).len() > 0, message: "codly: rainbow palette must not be empty")
+        assert(value.at("depth-offset", default: 0) >= 0, message: "codly: rainbow depth-offset must be nonnegative")
+      }
+      result
+    }
+  }
+
+  e.types.declare(
+    "rainbow", prefix: __codly-prefix,
+    doc: "Color matching code delimiters by nesting depth, excluding strings and comments.",
+    parse-args: parser,
+    fields: (
+      e.field("enabled", bool, default: true, doc: "Whether to color delimiters."),
+      e.field("palette", e.types.array(color), default: r.palette, folds: false, doc: "Colors repeated at successive nesting depths; must not be empty."),
+      e.field("pairs", e.types.array(e.types.union("()", "[]", "{}")), default: ("()", "[]", "{}"), folds: false, doc: "Delimiter pairs that contribute to nesting."),
+      e.field("depth-offset", int, default: 0, doc: "Nonnegative offset into the palette."),
+      e.field("unmatched", e.types.option(color), default: none, doc: "Color for unmatched delimiters, or none to preserve their syntax style."),
+      e.field("code-scopes", str, default: r.code-scopes, doc: "Syntax scope selectors identifying code in the private classification theme."),
+      e.field("ignore-scopes", str, default: r.ignore-scopes, doc: "Syntax scope selectors excluding literals and comments."),
+    ),
+    casts: (
+      (from: dictionary),
+      (from: bool, with: constructor => value => constructor(enabled: value)),
+    ),
+  )
+}
+
 /// Configuration for smart skips, see the `smart-skip` field.
 #let smart-skip = {
   import "@preview/elembic:1.1.1" as e
@@ -639,6 +677,7 @@
       e.field("footer", e.types.option(content), doc: __doc("footer"), default: __default("footer")),
       e.field("radius", e.types.option(length), doc: __doc("radius"), default: __default("radius")),
       e.field("sublangs", e.types.option(e.types.array(sublang)), doc: "todo", default: none),
+      e.field("rainbow", e.types.option(rainbow), doc: "Opt-in syntax-aware delimiter colors; true or a rainbow configuration.", default: none),
     )
   )
 }

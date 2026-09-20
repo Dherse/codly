@@ -1,5 +1,6 @@
 #import "@preview/elembic:1.1.1" as e
 #import "geometry.typ" as geometry
+#import "rainbow.typ" as rainbow
 
 /// The prefix identifying codly's custom elements and types.
 #let __codly-prefix = "@preview/codly:v2.0.0"
@@ -798,6 +799,7 @@
   args,
   alias-style,
   it,
+  prepared-lines: none,
 ) = e.get(get => {
   if args.alias == none and args.aliases != none {
     if it.lang != none {
@@ -828,6 +830,19 @@
           )
         }
       }
+    }
+  }
+
+  if args.rainbow != none and args.rainbow.enabled {
+    if args.rainbow.pairs.len() > 0 and it.text.contains(rainbow.delimiters) {
+      let settings = e.fields(args.rainbow)
+      let sublangs = args.sublangs
+      let prepared = args + (rainbow: none, sublangs: none)
+      return rainbow.prepare(it, settings, sublangs, lines => __codly-show(
+        codly-line, codly-highlight, codly-lang, codly-header, codly-footer,
+        codly-number, codly-annotation, codly-ref, sublang-block, constructor,
+        prepared, alias-style, it, prepared-lines: lines,
+      ))
     }
   }
 
@@ -982,7 +997,7 @@
   // displayed line before codly-line applies its character-level formatting.
   let output-blocks = ()
   let sublang-lines = (:)
-  let lines = it.lines
+  let lines = if prepared-lines == none { it.lines } else { prepared-lines }
   if args.sublangs != none and args.sublangs.len() > 0 {
     let nl-regex = regex("(\r\n|\r|\n)")
     let raw-text-lines = it.text.split(nl-regex)
