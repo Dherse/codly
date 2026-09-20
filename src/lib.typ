@@ -186,6 +186,40 @@
   }
 }
 
+// Native figure targets emit these small elements instead of formatting their
+// reference bodies inline. The shared settings remain compatible with ref-set_.
+#let __codly-line-ref-show(codly-ref, it) = e.get(get => {
+  let shared = get(codly-ref)
+  let separator = if it.separator == auto { shared.sep } else { it.separator }
+  let numbering = if it.numbering == auto { shared.numbering } else { it.numbering }
+  [#ref(it.block)#separator#numbering(it.number)#if it.suffix != none { it.suffix }]
+})
+
+#let __codly-highlight-ref-show(codly-ref, it) = e.get(get => {
+  let shared = get(codly-ref)
+  let separator = if it.separator == auto { shared.sep } else { it.separator }
+  let numbering = if it.numbering == auto { shared.numbering } else { it.numbering }
+  let body = if it.by == "line" {
+    numbering(it.line)
+  } else {
+    assert(it.item != none, message: "codly: tag is required for item reference")
+    it.item
+  }
+  [#ref(it.block)#separator#__codly-trim(body)]
+})
+
+#let __codly-annotation-ref-show(codly-ref, it) = e.get(get => {
+  let shared = get(codly-ref)
+  let separator = if it.separator == auto { shared.sep } else { it.separator }
+  let numbering = if it.numbering == auto { shared.numbering } else { it.numbering }
+  let body = if it.by == "line" {
+    numbering(it.line) + if it.suffix == none { [] } else { it.suffix }
+  } else {
+    it.item
+  }
+  [#ref(it.block)#separator#__codly-trim(body)]
+})
+
 /// Cache nesting and boundary events by geometry, independently of line styles.
 #let __codly-highlight-layout(spans) = {
   let keys = ()
@@ -291,6 +325,7 @@
 /// the element's own fields, and references use the `codly-ref` settings.
 #let __codly-highlight-show(
   codly-ref,
+  codly-highlight-ref,
   it,
 ) = {
   let hl = it.highlight
@@ -317,23 +352,21 @@
         message: "codly: for labels on highlights to work, you must have the code block contained within a figure and that figure must have a label.",
       )
       let ref-set = get(codly-ref)
-      let referenced = if ref-set.by == "line" {
-        (ref-set.numbering)(hl.at("line-number"))
-      } else {
+      if ref-set.by == "item" {
         assert(hl.tag != none, message: "codly: tag is required for item reference")
-        hl.tag
       }
 
       let block-label = hl.at("block-label")
-      let sep = ref-set.sep
       place(hide(pdf.artifact[#figure(
           kind: "codly-referencer",
           supplement: none,
-          numbering: (..) => {
-            ref(block-label)
-            sep
-            __codly-trim(referenced)
-          },
+          numbering: (..) => codly-highlight-ref(
+            [],
+            block: block-label,
+            line: hl.at("line-number"),
+            item: hl.tag,
+            by: ref-set.by,
+          ),
           [],
         )#hl.label]))
     })
@@ -398,7 +431,7 @@
 /// (delegated to `codly-highlight`), and line reference figures.
 // Keep the shared rendering helpers out of each line's context captures.
 // Its font-dependent work still runs inside the caller's deferred context.
-#let __codly-line-render(codly-highlight, codly-ref, it, line-show) = {
+#let __codly-line-render(codly-highlight, codly-ref, codly-line-ref, it, line-show) = {
   let line = it.body
   let line-highlights = it.highlights
   let smart-indent = it.smart-indent
@@ -438,7 +471,7 @@
     // Highlight insets can change the width. Measure their ordinary renderer
     // before deciding whether to add any probes to this source row.
     let natural = if highlights.len() == 0 { line.body } else {
-      line-show(codly-highlight, codly-ref, it + (__wrap: none))
+      line-show(codly-highlight, codly-ref, codly-line-ref, it + (__wrap: none))
     }
     needs-marker = measure(natural).width > it.__wrap.width
   }
@@ -585,38 +618,34 @@
   let number = line.number
   let reference = it.reference
   if reference != none { number = reference.number }
-  e.get(get => {
-    let settings = get(codly-ref)
-    let sep = settings.sep
-    let number-format = settings.numbering
-    let line-label = label(
-      str(block-label)
-        + ":"
-        + if reference == none {
-          str(number)
-        } else {
-          reference.label
-        },
-    )
-    [#output#place(hide(pdf.artifact[#figure(
-          kind: "codly-line",
-          supplement: none,
-          caption: none,
-          outlined: false,
-          numbering: (..) => {
-            ref(block-label)
-            sep
-            number-format(number)
-            if reference != none { reference.suffix }
-          },
+  let line-label = label(
+    str(block-label)
+      + ":"
+      + if reference == none {
+        str(number)
+      } else {
+        reference.label
+      },
+  )
+  [#output#place(hide(pdf.artifact[#figure(
+        kind: "codly-line",
+        supplement: none,
+        caption: none,
+        outlined: false,
+        numbering: (..) => codly-line-ref(
           [],
-        )#line-label]))]
-  })
+          block: block-label,
+          number: number,
+          suffix: if reference == none { none } else { reference.suffix },
+        ),
+        [],
+      )#line-label]))]
 }
 
 #let __codly-line-show(
   codly-highlight,
   codly-ref,
+  codly-line-ref,
   it,
 ) = {
   let line = it.body
@@ -640,12 +669,14 @@
     return layout(size => __codly-line-show(
       codly-highlight,
       codly-ref,
+      codly-line-ref,
       it + (__wrap: it.__wrap + (width: size.width)),
     ))
   }
   context __codly-line-render(
     codly-highlight,
     codly-ref,
+    codly-line-ref,
     it,
     __codly-line-show,
   )
@@ -685,6 +716,7 @@
   skip-line,
   skip-number,
   codly-annotation,
+  codly-annotation-ref,
   ref-set,
   highlights,
   smart-indent,
@@ -887,19 +919,17 @@
 
     if current-annot != none and annotation-cell == none {
       let label = if current-annot.label != none {
-        let referenced = if ref-set.by == "line" {
-          (ref-set.numbering)(number) + if reference == none { [] } else { reference.suffix }
-        } else {
-          if current-annot.content == none { str(annots) } else { current-annot.content }
-        }
         place(hide(pdf.artifact[#figure(
             kind: "codly-referencer",
             supplement: none,
-            numbering: (..) => {
-              ref(block-label)
-              ref-set.sep
-              __codly-trim(referenced)
-            },
+            numbering: (..) => codly-annotation-ref(
+              [],
+              block: block-label,
+              line: number,
+              item: if current-annot.content == none { str(annots) } else { current-annot.content },
+              suffix: if reference == none { none } else { reference.suffix },
+              by: ref-set.by,
+            ),
             [],
           )#current-annot.label]))
       } else {
@@ -959,6 +989,7 @@
   codly-footer,
   codly-number,
   codly-annotation,
+  codly-annotation-ref,
   codly-ref,
   sublang-block,
   constructor,
@@ -1032,6 +1063,7 @@
         codly-footer,
         codly-number,
         codly-annotation,
+        codly-annotation-ref,
         codly-ref,
         sublang-block,
         constructor,
@@ -1264,6 +1296,7 @@
     args.skip-line,
     args.skip-number,
     codly-annotation,
+    codly-annotation-ref,
     ref-set,
     args.highlights,
     args.smart-indent,
@@ -1465,6 +1498,7 @@
   codly-footer,
   codly-number,
   codly-annotation,
+  codly-annotation-ref,
   codly-ref,
   sublang-block,
   constructor,
@@ -1482,6 +1516,7 @@
   codly-footer,
   codly-number,
   codly-annotation,
+  codly-annotation-ref,
   codly-ref,
   sublang-block,
   constructor,

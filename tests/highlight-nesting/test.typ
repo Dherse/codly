@@ -25,7 +25,7 @@
 #let check(highlights, expected, body: [abcdefghi]) = {
   show figure.where(kind: "__codly-raw-line"): it => []
   show raw.line: it => assert.eq(text-of(it.body), expected)
-  __codly-line-show(wrap, none, (
+  __codly-line-show(wrap, none, none, (
     body: raw.line(1, 1, "", body),
     highlights: highlights.map(hl => (line: 1, ..hl)),
     smart-indent: false,
@@ -151,6 +151,7 @@
     [skip],
     [], // skip-number
     none, // codly-annotation
+    none, // codly-annotation-ref
     none, // ref-set
     (last, second, first, (line: 50, start: 1, end: 2)),
     false, // smart-indent

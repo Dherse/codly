@@ -35,8 +35,9 @@
   ))
   assert.eq(query(<annotation-rowspan>).map(it => it.value), (2, 2))
   for annotation in query(<annotation-height>) { assert(annotation.value > 0pt) }
-  for (target, expected) in ((<first-note>, " / L12"), (<second-note>, " / L15")) {
+  for (target, expected) in ((<first-note>, (12, [first])), (<second-note>, (15, [second]))) {
     let target = query(target).first()
-    assert.eq(suffix((target.numbering)()), expected)
+    let reference = e.fields((target.numbering)())
+    assert.eq((reference.line, reference.item), expected)
   }
 }

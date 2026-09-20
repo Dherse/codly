@@ -7,10 +7,6 @@
 Hello, world!
 ```]
 
-#codly.new(enabled: false)[```typst
-Hello, world!
-```]
-
 #codly.new[```typst
 Hello, world!
 ```]
@@ -41,24 +37,6 @@ Hello, world!
 #{
   show: codly.line-set_(inset: 0.5pt)
   codly.new(number-enabled: false, highlights: ((line: 1, tag: "Hello, world!"),))[```typst
-  Hello, world!
-  ```]
-}
-
-#codly.new(enabled: false)[```typst
-Hello, world!
-```]
-
-#{
-  show: codly.line-set_(inset: 10pt)
-  codly.new(number-enabled: false)[```typst
-  Hello, world!
-  ```]
-}
-
-#{
-  show: codly.line-set_(inset: 0.5pt)
-  codly.new(number-enabled: false)[```typst
   Hello, world!
   ```]
 }

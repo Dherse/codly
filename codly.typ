@@ -783,6 +783,138 @@
   )
 }
 
+/// A native reference to a displayed line of a codly code block.
+#let codly-line-ref = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix, __codly-line-ref-show
+
+  e.element.declare(
+    "codly-line-ref",
+    prefix: __codly-prefix,
+    doc: "A native reference to a displayed line of a codly code block.",
+    display: __codly-line-ref-show.with(codly-ref),
+    labelable: false,
+    fields: (
+      e.field("body", e.types.option(content), doc: "Internal reference body.", required: true),
+      e.field("block", label, doc: "The containing code block label.", required: true, named: true),
+      e.field("number", int, doc: "The displayed line number.", required: true, named: true),
+      e.field(
+        "suffix",
+        e.types.option(content),
+        doc: "An optional displayed-number suffix.",
+        default: none,
+      ),
+      e.field(
+        "separator",
+        e.types.option(e.types.union(auto, str, content)),
+        doc: "Text between the code block and line number; `auto` uses `codly-ref` settings.",
+        default: auto,
+      ),
+      e.field(
+        "numbering",
+        e.types.option(e.types.union(auto, function)),
+        doc: "Line-number formatter; `auto` uses `codly-ref` settings.",
+        default: auto,
+      ),
+    ),
+  )
+}
+
+/// A native reference to a labelled highlight in a codly code block.
+#let codly-highlight-ref = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix, __codly-highlight-ref-show
+
+  e.element.declare(
+    "codly-highlight-ref",
+    prefix: __codly-prefix,
+    doc: "A native reference to a labelled highlight in a codly code block.",
+    display: __codly-highlight-ref-show.with(codly-ref),
+    labelable: false,
+    fields: (
+      e.field("body", e.types.option(content), doc: "Internal reference body.", required: true),
+      e.field("block", label, doc: "The containing code block label.", required: true, named: true),
+      e.field("line", int, doc: "The displayed line number.", required: true, named: true),
+      e.field(
+        "item",
+        e.types.option(content),
+        doc: "The highlight tag for item references.",
+        default: none,
+      ),
+      e.field(
+        "by",
+        e.types.union("line", "item"),
+        doc: "Whether the reference shows a line or item.",
+        required: true,
+        named: true,
+      ),
+      e.field(
+        "separator",
+        e.types.option(e.types.union(auto, str, content)),
+        doc: "Text between the code block and reference; `auto` uses `codly-ref` settings.",
+        default: auto,
+      ),
+      e.field(
+        "numbering",
+        e.types.option(e.types.union(auto, function)),
+        doc: "Line-number formatter; `auto` uses `codly-ref` settings.",
+        default: auto,
+      ),
+    ),
+  )
+}
+
+/// A native reference to a labelled annotation in a codly code block.
+#let codly-annotation-ref = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-annotation-ref-show, __codly-prefix
+
+  e.element.declare(
+    "codly-annotation-ref",
+    prefix: __codly-prefix,
+    doc: "A native reference to a labelled annotation in a codly code block.",
+    display: __codly-annotation-ref-show.with(codly-ref),
+    labelable: false,
+    fields: (
+      e.field("body", e.types.option(content), doc: "Internal reference body.", required: true),
+      e.field("block", label, doc: "The containing code block label.", required: true, named: true),
+      e.field("line", int, doc: "The displayed line number.", required: true, named: true),
+      e.field(
+        "item",
+        content,
+        doc: "The annotation item for item references.",
+        required: true,
+        named: true,
+      ),
+      e.field(
+        "suffix",
+        e.types.option(content),
+        doc: "An optional displayed-number suffix.",
+        default: none,
+      ),
+      e.field(
+        "by",
+        e.types.union("line", "item"),
+        doc: "Whether the reference shows a line or item.",
+        required: true,
+        named: true,
+      ),
+      e.field(
+        "separator",
+        e.types.option(e.types.union(auto, str, content)),
+        doc: "Text between the code block and reference; `auto` uses `codly-ref` settings.",
+        default: auto,
+      ),
+      e.field(
+        "numbering",
+        e.types.option(e.types.union(auto, function)),
+        doc: "Line-number formatter; `auto` uses `codly-ref` settings.",
+        default: auto,
+      ),
+    ),
+  )
+}
+
 /// A single highlight within a codly code block.
 #let codly-highlight = {
   import "@preview/elembic:1.1.1" as e
@@ -792,7 +924,7 @@
     "codly-highlight",
     prefix: __codly-prefix,
     doc: "A highlight over part of a line of a codly code block.",
-    display: __codly-highlight-show.with(codly-ref),
+    display: __codly-highlight-show.with(codly-ref, codly-highlight-ref),
     fields: (
       e.field("body", e.types.option(content), doc: "The highlighted content.", required: true),
       e.field(
@@ -869,7 +1001,7 @@
     "codly-line",
     prefix: __codly-prefix,
     doc: "A single line of a codly code block.",
-    display: __codly-line-show.with(codly-highlight, codly-ref),
+    display: __codly-line-show.with(codly-highlight, codly-ref, codly-line-ref),
     fields: (
       e.field("body", e.types.option(content), doc: "The content of the line.", required: true),
       e.field("radius", e.types.option(length), doc: __doc("radius"), default: __default("radius")),
@@ -1172,18 +1304,26 @@
 
 #let codly = {
   import "@preview/elembic:1.1.1" as e
-  import "src/lib.typ": __codly-prefix, __default, __doc
+  import "src/lib.typ": __codly-prefix, __default, __doc, __codly-show
+
+  let codly-show = __codly-show.with(
+    codly-line,
+    codly-highlight,
+    codly-lang,
+    codly-header,
+    codly-footer,
+    codly-number,
+    codly-annotation,
+    codly-annotation-ref,
+    codly-ref,
+    sublang-block,
+  )
 
   e.element.declare(
     "codly",
     prefix: __codly-prefix,
     doc: "Codly is a library that enhances the way you write code blocks in Typst.",
     display: it => {
-      if not it.enabled {
-        return it.body
-      }
-
-      import "src/lib.typ": __codly-show
       let body = it.remove("body")
       let data = it.remove("__elembic_stored_element_data")
       let constructor = if it.alias == none and it.aliases != none and it.aliases.len() > 0 {
@@ -1192,16 +1332,7 @@
       let alias-style = if constructor != none {
         (size: text.size, theme: raw.theme, syntaxes: raw.syntaxes)
       }
-      show raw.where(block: true): __codly-show.with(
-        codly-line,
-        codly-highlight,
-        codly-lang,
-        codly-header,
-        codly-footer,
-        codly-number,
-        codly-annotation,
-        codly-ref,
-        sublang-block,
+      show raw.where(block: true): codly-show.with(
         constructor,
         it,
         alias-style,
@@ -1222,12 +1353,6 @@
         doc: "Whether this is an already aliased block",
         required: false,
         default: none,
-      ),
-      e.field(
-        "enabled",
-        e.types.option(bool),
-        doc: __doc("enabled"),
-        default: __default("enabled"),
       ),
       e.field("number-enabled", e.types.option(bool), doc: "todo", default: true),
       e.field("offset", e.types.option(int), doc: __doc("offset"), default: __default("offset")),
@@ -1427,6 +1552,30 @@
 #let ref-set_(..args) = {
   import "@preview/elembic:1.1.1" as e
   e.set_(codly-ref, ..args)
+}
+#let line-ref-set_(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(codly-line-ref, ..args)
+}
+#let line-ref-show_(it, ..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.show_(codly-line-ref, it, ..args)
+}
+#let highlight-ref-set_(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(codly-highlight-ref, ..args)
+}
+#let highlight-ref-show_(it, ..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.show_(codly-highlight-ref, it, ..args)
+}
+#let annotation-ref-set_(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(codly-annotation-ref, ..args)
+}
+#let annotation-ref-show_(it, ..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.show_(codly-annotation-ref, it, ..args)
 }
 #let number-set_(..args) = {
   import "@preview/elembic:1.1.1" as e

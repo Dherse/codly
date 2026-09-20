@@ -19,11 +19,10 @@
 
 // Element-level rules receive resolved fields and are scoped to their block.
 #{
-  show: codly.set_(enabled: false, radius: 7pt)
+  show: codly.set_(radius: 7pt)
   show: codly.show_(it => {
     let fields = e.fields(it)
     [#metadata((
-        enabled: fields.enabled,
         radius: fields.radius,
         body-block: fields.body.fields().at("block", default: false),
       ))<codly-fields>#it]
@@ -39,12 +38,11 @@
   codly.new(raw("inline"))
 }
 #{
-  show: codly.set_(enabled: false)
   show: codly.show_(it => {
     let fields = e.fields(it)
-    [#metadata((enabled: fields.enabled, radius: fields.radius))<codly-override>#it]
+    [#metadata((radius: fields.radius))<codly-override>#it]
   })
-  codly.new(raw("enabled", block: true), enabled: true)
+  codly.new(raw("enabled", block: true))
 }
 
 // selector() matches codly instances, while show_() transforms all codly
@@ -52,10 +50,10 @@
 #{
   show codly.selector(): it => {
     let fields = e.fields(it)
-    [#metadata(fields.enabled)<selector-hit>#it]
+    [#metadata(true)<selector-hit>#it]
   }
-  codly.new(raw("selected", block: true), enabled: false)
-  codly.new(raw("other", block: true), enabled: true)
+  codly.new(raw("selected", block: true))
+  codly.new(raw("other", block: true))
 }
 
 // Language definitions and aliases are passed through to the language badge
@@ -201,10 +199,10 @@
 }
 
 #context {
-  assert.eq(query(<codly-fields>).first().value, (enabled: false, radius: 7pt, body-block: true))
+  assert.eq(query(<codly-fields>).first().value, (radius: 7pt, body-block: true))
   assert.eq(query(<inline-raw>).first().value, false)
-  assert.eq(query(<codly-override>).first().value, (enabled: true, radius: 0.32em))
-  assert.eq(query(<selector-hit>).map(it => it.value), (false, true))
+  assert.eq(query(<codly-override>).first().value, (radius: 0.32em))
+  assert.eq(query(<selector-hit>).map(it => it.value), (true, true))
   assert.eq(query(<language-fields>).map(it => it.value.body), ("python", "custom"))
   assert.eq(query(<language-fields>).first().value.python, [Python])
   assert.eq(query(<language-raw>).map(it => it.value), ("python", "custom", "python"))
