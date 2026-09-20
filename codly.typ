@@ -1415,6 +1415,14 @@
   import "@preview/elembic:1.1.1" as e
   e.set_(codly-ref, ..args)
 }
+#let number-set_(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(codly-number, ..args)
+}
+#let number-show_(it, ..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.show_(codly-number, it, ..args)
+}
 
 /// In context, read source line count and the last displayed number of a block.
 #import "src/lib.typ": __codly-block-info as info
