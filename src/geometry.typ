@@ -22,8 +22,7 @@
       let depth = guides.depths.at(it.y - 1, default: 0)
       for level in range(depth) {
         marks.push((
-          x: (guides.inset + guides.x-offset).to-absolute()
-            + measure(text(" " * (level * guides.width))).width,
+          x: (guides.inset + guides.x-offset).to-absolute() + guides.step * level,
           color: guides.palette.at(calc.rem(level + guides.depth-offset, guides.palette.len())),
           thickness: guides.thickness,
           max-height: guides.max-height,
@@ -212,27 +211,18 @@
             }
           }
         }
+        // Paint markers while the page geometry is already available. Keeping
+        // this with the background pass avoids rebuilding all regions and
+        // re-querying every wrap probe from the footer of every page.
+        for marker in page.wraps {
+          place(top + left, dx: marker.at.x - at.x, dy: marker.at.y - at.y, pdf.artifact(text(
+            top-edge: "baseline",
+            bottom-edge: "baseline",
+            marker.body,
+          )))
+        }
       },
     ))
-  }
-}
-
-#let wrap-foreground(origin, code-column, outside, wraps) = context {
-  let at = here().position()
-  let regions = pages(origin, code-column: code-column, outside: outside, wraps: wraps)
-  for region in regions.values() {
-    if (
-      region.origin.page != at.page
-        or region.origin.x != at.x
-        or calc.abs(region.bottom - at.y) > 0.001pt
-    ) { continue }
-    for marker in region.wraps {
-      place(top + left, dx: marker.at.x - at.x, dy: marker.at.y - at.y, pdf.artifact(text(
-        top-edge: "baseline",
-        bottom-edge: "baseline",
-        marker.body,
-      )))
-    }
   }
 }
 
@@ -269,7 +259,6 @@
   let footers = ()
   let end = grid.cell(colspan: columns.len(), inset: 0pt, [
     #metadata((kind: "region-end", origin: origin))<__codly-geometry>
-    #if wraps != none { wrap-foreground(origin, code-column, outside, wraps) }
   ])
   if footer.len() > 0 {
     let f = footer.first()

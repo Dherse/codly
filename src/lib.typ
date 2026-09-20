@@ -1297,6 +1297,10 @@
                 + (
                   depths: guide-depths,
                   width: indentation.width,
+                  // Raw code uses a monospaced font, so guide positions are
+                  // integral space advances. Measure that advance once per
+                  // block instead of once for every row and nesting level.
+                  step: measure(text(" " * indentation.width)).width,
                   inset: grid-inset.left,
                   // Unindented continuation text must not run through a guide.
                   max-height: if args.smart-indent { none } else {

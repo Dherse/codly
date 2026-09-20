@@ -1,5 +1,7 @@
 // Observe native line breaking with zero-width tags, without replacing source
 // text, adding break opportunities, or splitting grapheme clusters.
+#let standalone = regex("[\\p{Han}\\p{Hiragana}\\p{Katakana}\\p{Hangul}\\p{P}\\p{S}]")
+
 #let annotate(body, owner, row) = {
   if body.has("text") {
     let parts = ()
@@ -11,7 +13,6 @@
       ))<__codly-wrap-point>]]
     // Keep words (and their ligatures) intact. Punctuation, symbols, and East
     // Asian clusters also expose potential native line-break boundaries.
-    let standalone = regex("[\\p{Han}\\p{Hiragana}\\p{Katakana}\\p{Hangul}\\p{P}\\p{S}]")
     for c in body.text.clusters() {
       let separate = c.trim() == "" or (c != "_" and c.contains(standalone))
       if separate and token != "" {
