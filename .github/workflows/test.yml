@@ -17,7 +17,7 @@ jobs:
       - name: Probe runner package cache
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: cargo
+          packages: cargo poppler-utils
           version: 1.0
 
       - name: Install Tytanic

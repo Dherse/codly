@@ -1,4 +1,5 @@
 #import "@preview/elembic:1.1.1" as e
+#import "geometry.typ" as geometry
 
 /// The prefix identifying codly's custom elements and types.
 #let __codly-prefix = "@preview/codly:v2.0.0"
@@ -538,7 +539,7 @@
       let sep = settings.sep
       let number-format = settings.numbering
       let line-label = label(str(block-label) + ":" + str(number))
-      [#figure(
+      [#output#place(hide(pdf.artifact[#figure(
         kind: "codly-line",
         supplement: none,
         caption: none,
@@ -548,10 +549,16 @@
           sep
           number-format(number)
         },
-        output,
-      )#line-label]
+        [],
+      )#line-label]))]
     })
   }
+}
+
+#let __codly-annotation-cell(constructor, body, label, num, numbering) = {
+  block(height: 1fr, layout(size => constructor(
+    body, label, num: num, numbering: numbering, height: size.height,
+  )))
 }
 
 #let __codly-line-loop(
@@ -579,12 +586,12 @@
   let last-number = none
   let smart-skip-enabled = smart-skip.first or smart-skip.last or smart-skip.rest
   let current-annot = none
-  let first-annot = false
+  let annotation-cell = none
+  let annotation-rows = 0
   let annots = 0
   let in-skip = false
   let in-first = true
   let has-annots = annotations.len() > 0
-  let line-height = if has-annots { measure[1].height }
   let skip-index = 0
   let formatted-skips = 0
   let line-array = type(skip-line) == array
@@ -612,23 +619,26 @@
   }
 
   for line in lines {
-    first-annot = false
-
     if has-annots {
       let annot = annotations.at(annotations.len() - 1, default: none)
       if annot != none and line.number == annot.start {
         current-annot = annot
-        first-annot = true
         annots += 1
       }
 
       if current-annot != none and line.number > current-annot.end {
+        if annotation-cell != none {
+          items.at(annotation-cell) = grid.cell(
+            rowspan: annotation-rows, align: left + horizon, items.at(annotation-cell),
+          )
+          annotation-cell = none
+          annotation-rows = 0
+        }
         current-annot = none
         _ = annotations.pop()
         let annot = annotations.at(annotations.len() - 1, default: none)
         if annot != none and line.number == annot.start {
           current-annot = annot
-          first-annot = true
           annots += 1
         }
       }
@@ -657,7 +667,11 @@
         items.push(codly-number(if number == none { [] } else { number }))
       }
       let body = if explicit-skip and line-array { skip-line.at(formatted-skips, default: fallback-line) } else { fallback-line }
-      items.push(codly-line(body))
+      let body = codly-line(body)
+      items.push(if has-annots {
+        grid.cell(colspan: if annotation-cell == none { 2 } else { 1 }, body)
+      } else { body })
+      if annotation-cell != none { annotation-rows += 1 }
       lines_to_number.push(-99999999)
       if explicit-skip {
         formatted-skips += 1
@@ -705,8 +719,7 @@
       rendered-line
     })
 
-    if current-annot != none and first-annot {
-      let height = line-height * (current-annot.end - current-annot.start + 1)
+    if current-annot != none and annotation-cell == none {
       let label = if current-annot.label != none {
         let referenced = if ref-set.by == "line" {
           (ref-set.numbering)(line.number + offset)
@@ -727,18 +740,18 @@
         []
       }
 
-      items.push(grid.cell(
-        rowspan: current-annot.end - current-annot.start + 1,
-        align: left + horizon,
-        codly-annotation(
-          current-annot.content,
-          label,
-          num: annots,
-          height: height,
-          numbering: current-annot.numbering,
-        ),
+      annotation-cell = items.len()
+      items.push(__codly-annotation-cell(
+        codly-annotation, current-annot.content, label, annots, current-annot.numbering,
       ))
     }
+    if annotation-cell != none { annotation-rows += 1 }
+  }
+
+  if annotation-cell != none {
+    items.at(annotation-cell) = grid.cell(
+      rowspan: annotation-rows, align: left + horizon, items.at(annotation-cell),
+    )
   }
 
   (items: items, lines_to_number: lines_to_number, last-number: last-number)
@@ -747,7 +760,12 @@
 #let __codly-annotation-show(
   it
 ) = {
-  $lr(}, size: #it.height) #(it.numbering)(it.num) #it.body #it.label$
+  // Preserve the equation's typography and unbreakable layout for accessible text.
+  let body = text(font: "New Computer Modern Math", weight: 450)[#pdf.artifact[$lr(}, size: #it.height)$]
+    #(it.numbering)(it.num)
+    #it.body
+    #it.label]
+  box(width: measure(body).width, body)
 }
 
 #let __codly-show(
@@ -761,6 +779,7 @@
   codly-ref,
   constructor,
   args,
+  alias-style,
   it,
 ) = e.get(get => {
   if args.alias == none and args.aliases != none {
@@ -768,19 +787,29 @@
       if it.lang in args.aliases {
         let aliased-args = args
         let _ = aliased-args.remove("alias")
-        return constructor(
-          raw(
-            it.text,
-            block: true,
-            align: it.align,
-            lang: args.aliases.at(it.lang),
-            theme: it.theme,
-            syntaxes: it.syntaxes,
-            tab-size: it.tab-size,
-          ),
-          alias: it.lang,
-          ..aliased-args
+        let target-lang = args.aliases.at(it.lang)
+        let raw-args = (:)
+        let safe-resource(value) = type(value) != str and (
+          type(value) != array or value.all(value => type(value) != str)
         )
+        if not safe-resource(it.theme) and it.theme != alias-style.theme {
+          panic("codly: aliases cannot safely copy an explicit string `raw.theme`; use `path(\"...\")` or `read(\"...\")`")
+        }
+        if not safe-resource(it.syntaxes) and it.syntaxes != alias-style.syntaxes {
+          panic("codly: aliases cannot safely copy explicit string `raw.syntaxes`; use `path(\"...\")` or `read(\"...\")`")
+        }
+        if safe-resource(it.theme) { raw-args.insert("theme", it.theme) }
+        if safe-resource(it.syntaxes) { raw-args.insert("syntaxes", it.syntaxes) }
+        return context {
+          set text(size: alias-style.size)
+          constructor(
+            raw(
+              it.text, block: true, align: it.align, lang: target-lang,
+              tab-size: it.tab-size, ..raw-args,
+            ),
+            alias: it.lang, ..aliased-args,
+          )
+        }
       }
     }
   }
@@ -995,17 +1024,23 @@
     if line_colors == () { base } else { line_colors.at(y, default: base) }
   }
   let stroke = get-line.stroke
-  let last-row = lines_to_number.len() + (if args.footer != none { 1 } else { 0 }) - 1
-  let last-column = if has-annotations { 2 } else { 1 }
-
+  let stroke-inset = if stroke == none { 0pt } else if stroke.thickness == auto { 0.5pt } else { stroke.thickness / 2 }
   let block_content = block(
     breakable: args.breakable,
-    clip: true,
+    clip: not outside-column,
     width: 100%,
     radius: args.radius,
     stroke: if outside-column { none } else { get-line.stroke },
+    inset: stroke-inset,
+    outset: if outside-column { 0pt } else { -stroke-inset },
     {
-      if numbers-format != none {
+      if outside-column {
+        geometry.outside(
+          if has-annotations { (auto, 1fr, annot-width) } else { (auto, 1fr) },
+          grid-inset, (numbers-alignment, left + horizon), cell-fill,
+          stroke, args.radius, header-block, items, footer-block,
+        )
+      } else if numbers-format != none {
         grid(
           columns: if has-annotations {
             (auto, 1fr, annot-width)
@@ -1013,14 +1048,7 @@
             (auto, 1fr)
           },
           inset: grid-inset,
-          stroke: if outside-column {
-            (x, y) => (
-              left: if x == 1 { stroke },
-              right: if x == last-column { stroke },
-              top: if x != 0 and y == 0 { stroke },
-              bottom: if x != 0 and y == last-row { stroke },
-            )
-          },
+          stroke: none,
           align: (numbers-alignment, left + horizon),
           fill: cell-fill,
           column-gutter: 0pt,
@@ -1052,7 +1080,7 @@
     },
   )
 
-  // fix alignment of codly-line reference figures, and show only body
+  // Empty native reference anchors need no figure layout.
   show figure.where(kind: "codly-line"): it => {
     set align(left + horizon)
     it.body

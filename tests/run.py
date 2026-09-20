@@ -17,7 +17,35 @@ LAYOUT_ERRORS = {
     "duplicate-info": "expected a unique code block label",
     "info-without-code": "no code block found after",
     "missing-reference": "does not exist in the document",
+    "alias-theme": "explicit string `raw.theme`",
+    "alias-syntax": "explicit string `raw.syntaxes`",
 }
+
+
+def run_accessibility(output):
+    """Compile the accessibility fixture as PDF/UA and check text extraction."""
+    result = subprocess.run(
+        ["typst", "compile", "--root", str(ROOT), "--pdf-standard", "ua-1",
+         "--font-path", str(ROOT / "docs/fonts"),
+         str(ROOT / "tests/accessibility/test.typ"), str(output)],
+        cwd=ROOT, capture_output=True, text=True,
+    )
+    passed = result.returncode == 0
+    if passed:
+        extracted = subprocess.run(
+            ["pdftotext", "-layout", str(output), "-"],
+            capture_output=True, text=True,
+        )
+        passed = extracted.returncode == 0 and all(
+            text in extracted.stdout
+            for text in ("plain source", "fn main()", "return 1", "Returns one", "outside", "Remark")
+        )
+        if not passed:
+            result = extracted
+    print(f"{'pass' if passed else 'FAIL'} accessibility/pdf-ua", flush=True)
+    if not passed:
+        print(result.stderr or result.stdout)
+    return passed
 
 
 def main():
@@ -31,6 +59,8 @@ def main():
         )
         failed = result.returncode != 0
     with tempfile.TemporaryDirectory(prefix="codly-tests-") as temporary:
+        if not args.errors_only:
+            failed |= not run_accessibility(Path(temporary) / "accessibility.pdf")
         for case, expected in LAYOUT_ERRORS.items():
             result = subprocess.run(
                 ["typst", "compile", "--root", str(ROOT), "--font-path",

@@ -84,15 +84,18 @@
 #{
   show: e.set_(codly.codly-number, placement: "outside")
   show: codly.line-set_(stroke: red + 1pt)
-  show grid: it => {
-    assert.eq((it.stroke)(1, 3).bottom, red + 1pt)
-    assert.eq((it.stroke)(1, 4).bottom, none)
-    it
-  }
+  show block: it => if type(it.stroke) == stroke and it.stroke.thickness == 1pt {
+    [#metadata(it.height)<outside-outline>#it]
+  } else { it }
   codly.new(raw("1\n2\n3\n4\n5", block: true), range: (2, 3), header: [head], footer: [foot])
 }
 
 #context {
+  let outline = query(<outside-outline>).first()
+  let marks = query(<__codly-geometry>)
+  let top = marks.filter(it => it.value.kind == "cell-start").first().location().position().y
+  let bottom = marks.filter(it => it.value.kind == "cell-end").last().location().position().y
+  assert.eq(outline.value, bottom - top)
   for expected in query(<expected-lines>) {
     let actual = ()
     let end = query(selector(<__codly-block>).after(expected.location())).first()

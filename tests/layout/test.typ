@@ -23,8 +23,7 @@
   footer: codly.codly-footer([footer-plain], fill: purple, inset: 5pt),
 )
 
-// Complex paints use the main grid directly: outside numbers stay unfilled,
-// while zebra rows use the tiling and the alternating row uses the gradient.
+// Outside numbers stay unfilled while the geometry layer preserves complex paints.
 #let line-gradient = gradient.linear(red, blue)
 #let zebra-tiling = tiling(
   size: (4pt, 4pt), relative: "parent", rect(width: 2pt, height: 2pt),
@@ -32,12 +31,7 @@
 #{
   show: codly.line-set_(fill: line-gradient, zebra-fill: zebra-tiling)
   show: e.set_(codly.codly-number, placement: "outside")
-  show grid: it => {
-    assert.eq((it.fill)(0, 0), none)
-    assert.eq(type((it.fill)(1, 0)), type(zebra-tiling))
-    assert.eq(type((it.fill)(1, 1)), type(line-gradient))
-    it
-  }
+  show rect: it => [#metadata(it.fill)<complex-fill>#it]
   codly.new(raw("gradient\ntiling", block: true))
 }
 
@@ -58,6 +52,7 @@
 #repeat-case()
 
 #context {
+  assert.eq(query(<complex-fill>).map(it => type(it.value)), (type(zebra-tiling), type(line-gradient)))
   let cells = query(<grid-cell>).map(it => it.value).filter(it => it.fill in (
     red, blue, green, purple,
   ))

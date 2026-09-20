@@ -28,6 +28,8 @@
   context { codly.info(<empty>) }
 } else if case == "missing-reference" {
   ref(<missing-line:5>)
+} else if case in ("alias-theme", "alias-syntax") {
+  include "../aliases/errors.typ"
 } else {
   [#figure(caption: [Code])[
     #codly.new(raw("one\ntwo\nthree", block: true), ..cases.at(case))

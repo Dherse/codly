@@ -534,8 +534,9 @@
       import "src/lib.typ": __codly-show
       let body = it.remove("body")
       let data = it.remove("__elembic_stored_element_data")
-      let constructor = if it.alias == none and it.aliases != none { data.default-constructor }
-      show raw.where(block: true): __codly-show.with(codly-line, codly-highlight, codly-lang, codly-header, codly-footer, codly-number, codly-annotation, codly-ref, constructor, it)
+      let constructor = if it.alias == none and it.aliases != none and it.aliases.len() > 0 { data.default-constructor }
+      let alias-style = if constructor != none { (size: text.size, theme: raw.theme, syntaxes: raw.syntaxes) }
+      show raw.where(block: true): __codly-show.with(codly-line, codly-highlight, codly-lang, codly-header, codly-footer, codly-number, codly-annotation, codly-ref, constructor, it, alias-style)
       body
     },
     fields: (

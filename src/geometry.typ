@@ -1,0 +1,165 @@
+// Record cell bounds without measuring or duplicating their contents.
+#let cell(body, origin, role: "body") = {
+  let fields = if body.func() == grid.cell { body.fields() } else { (body: body) }
+  let body = fields.remove("body")
+  let fill = fields.remove("fill", default: auto)
+  [#grid.cell(fill: none, ..fields, [#metadata((fill: fill, role: role, origin: origin))#body])<__codly-painted-cell>]
+}
+
+#let mark(it, fill, origin) = {
+  let first = if it.body.func() == metadata { it.body } else { it.body.children.first() }
+  if first.value.origin != origin { return it }
+  let paint = if first.value.fill == auto { fill(it.x, it.y - 1) } else { first.value.fill }
+  if it.x != 0 or it.colspan > 1 {
+    place(top + left)[#metadata((kind: "cell-start", origin: origin, x: it.x, y: it.y, rowspan: it.rowspan, fill: paint, role: first.value.role))<__codly-geometry>]
+    place(bottom + right)[#metadata((kind: "cell-end", origin: origin))<__codly-geometry>]
+  }
+  it
+}
+
+#let region-key(pos) = repr((pos.page, pos.x, pos.y))
+
+#let pages(origin) = {
+  let end = query(metadata.where(value: (kind: "paint-end", origin: origin)))
+  if end.len() == 0 { return (:) }
+  let starts = ()
+  let ends = ()
+  let tops = ()
+  let bottoms = ()
+  // Location equality also separates nested blocks at identical page positions.
+  for mark in query(selector(<__codly-geometry>).after(origin).before(end.first().location())) {
+    if mark.value.origin != origin { continue }
+    if mark.value.kind == "cell-start" { starts.push(mark) }
+    else if mark.value.kind == "cell-end" { ends.push(mark) }
+    else if mark.value.kind == "region-start" { tops.push(mark) }
+    else { bottoms.push(mark) }
+  }
+  if tops.len() != bottoms.len() { return (:) }
+  let regions = ()
+  let by-page = (:)
+  for (i, top) in tops.enumerate() {
+    let at = top.location().position()
+    let bottom = bottoms.at(i).location().position().y
+    let page = str(at.page)
+    if page not in by-page { by-page.insert(page, ()) }
+    by-page.at(page).push(i)
+    regions.push((at: at, bottom: bottom, width: top.value.width, body-top: at.y, body-bottom: bottom, cells: ()))
+  }
+  let spans = ()
+  let rows = (:)
+  let gutter = 0pt
+  for (i, start) in starts.enumerate() {
+    let a = start.location().position()
+    let b = ends.at(i).location().position()
+    let region = none
+    for index in by-page.at(str(a.page), default: ()) {
+      let r = regions.at(index)
+      if a.x >= r.at.x and a.x < r.at.x + r.width and a.y >= r.at.y and a.y <= r.bottom {
+        region = index
+        break
+      }
+    }
+    if region == none { continue }
+    let value = start.value
+    if value.role == "body" {
+      spans.push((value: value, a: a, b: b, region: region))
+      if value.x == 1 {
+        rows.insert(str(value.y), (a: a, region: region))
+        gutter = a.x - regions.at(region).at.x
+      }
+    } else {
+      regions.at(region).cells.push((a: a, b: b, fill: value.fill))
+      if value.role == "header" { regions.at(region).body-top = calc.max(regions.at(region).body-top, b.y) }
+      if value.role == "footer" { regions.at(region).body-bottom = calc.min(regions.at(region).body-bottom, a.y) }
+    }
+  }
+  // A cell owns its fill until the next logical row, including continuation regions.
+  for span in spans {
+    let next = rows.at(str(span.value.y + span.value.rowspan), default: none)
+    let last = if next == none { regions.len() - 1 } else { next.region }
+    let index = span.region
+    while index <= last {
+      let r = regions.at(index)
+      let top = if index == span.region { span.a.y } else { r.body-top }
+      let bottom = if next != none and index == last { next.a.y } else { r.body-bottom }
+      let dx = r.at.x - regions.at(span.region).at.x
+      if bottom > top {
+        regions.at(index).cells.push((
+          a: (x: span.a.x + dx, y: top), b: (x: span.b.x + dx, y: bottom), fill: span.value.fill,
+        ))
+      }
+      index += 1
+    }
+  }
+  let pages = (:)
+  for r in regions {
+    pages.insert(region-key(r.at), (left: r.at.x + gutter, top: r.at.y, bottom: r.bottom, cells: r.cells))
+  }
+  pages
+}
+
+#let background(origin, width, radius, stroke) = context {
+  let at = here().position()
+  let page = pages(origin).at(region-key(at), default: none)
+  if page != none {
+    let code-left = if page.left == none { at.x } else { page.left }
+    place(top + left, dx: code-left - at.x, dy: page.top - at.y, block(
+      width: at.x + width - code-left,
+      height: page.bottom - page.top,
+      radius: radius, stroke: stroke, clip: true,
+      {
+        for cell in page.cells {
+          if cell.fill != none {
+            let x = calc.max(code-left, cell.a.x)
+            place(top + left, dx: x - code-left, dy: cell.a.y - page.top, rect(
+              width: cell.b.x - x, height: cell.b.y - cell.a.y,
+              fill: cell.fill, stroke: none,
+            ))
+          }
+        }
+      },
+    ))
+  }
+}
+
+#let outside(columns, inset, align, fill, stroke, radius, header, items, footer) = context {
+  let origin = here()
+  let cells = ()
+  for item in items { cells.push(cell(item, origin)) }
+  let headers = ()
+  if header.len() > 0 {
+    let h = header.first()
+    let fields = h.children.first().fields()
+    fields.y = 1
+    let body = fields.remove("body")
+    headers.push(grid.header(repeat: h.repeat, level: 2, cell(grid.cell(..fields, body), origin, role: "header")))
+  }
+  let footers = ()
+  let end = grid.cell(colspan: columns.len(), inset: 0pt, [#metadata((kind: "region-end", origin: origin))<__codly-geometry>])
+  if footer.len() > 0 {
+    let f = footer.first()
+    let content = cell(f.children.first(), origin, role: "footer")
+    if f.repeat {
+      footers.push(grid.footer(repeat: true, content, end))
+    } else {
+      cells.push(content)
+      footers.push(grid.footer(repeat: true, end))
+    }
+  } else {
+    footers.push(grid.footer(repeat: true, end))
+  }
+  show <__codly-painted-cell>: it => mark(it, fill, origin)
+  grid(
+    columns: columns, inset: inset, align: align, stroke: none, fill: none,
+    column-gutter: 0pt, row-gutter: 0pt, gutter: 0pt,
+    grid.header(repeat: true, level: 1, grid.cell(
+      colspan: columns.len(), inset: 0pt,
+      layout(size => {
+        [#metadata((kind: "region-start", origin: origin, width: size.width))<__codly-geometry>]
+        background(origin, size.width, radius, stroke)
+      }),
+    )),
+    ..headers, ..cells, ..footers,
+  )
+  metadata((kind: "paint-end", origin: origin))
+}

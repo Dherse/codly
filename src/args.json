@@ -450,7 +450,7 @@
     },
     "aliases": {
         "title": "Language name aliases",
-        "description": "Creates aliases between languages, allowing them to have separate `languages` but the same syntax highlighting. An example of that could be `cuda` and `c++` having the same highlighting but different icons.",
+        "description": "Creates aliases between languages, allowing them to have separate `languages` but the same syntax highlighting. An example of that could be `cuda` and `c++` having the same highlighting but different icons. Relative theme and syntax paths inherited through `set raw(...)` retain their origin. When passing these resources directly to an aliased `raw(...)`, use `path(...)` (Typst 0.15+) or `read(..., encoding: none)` instead of plain strings.",
         "default": "(:)",
         "ty": [ "dictionary" ],
         "function": false,
