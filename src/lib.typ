@@ -6,6 +6,7 @@
 
 /// The prefix identifying codly's custom elements and types.
 #let __codly-prefix = "@preview/codly:v2.0.0"
+#let __codly-whitespace = regex("\\s")
 
 /// Metadata for each codly argument, read from `src/args.json`.
 /// The `doc` of each field below is the argument's `title` in that file.
@@ -257,11 +258,10 @@
     let part = ""
     let token = ""
     let was-space = false
-    let whitespace = regex("\\s")
     let clusters = elem.text.clusters()
     clusters.push("")
     for cluster in clusters {
-      let is-space = cluster.contains(whitespace)
+      let is-space = cluster.contains(__codly-whitespace)
       if token != "" and (not is-space or not was-space) {
         offset += token.len()
         if next < boundaries.len() and boundaries.at(next) <= offset {
@@ -475,7 +475,7 @@
 
     // Continue wrapped lines at their original indentation.
     let width = none
-    let prefix = if smart-indent { indent.prefix(line.text) } else { "" }
+    let prefix = if smart-indent { line.text.match(indent.leading-spaces).text } else { "" }
     if smart-indent {
       if prefix != "" { width = measure(text(prefix)).width }
     }
@@ -598,11 +598,21 @@
     }
 
     let number = line.number
+    let reference = it.reference
+    if reference != none { number = reference.number }
     e.get(get => {
       let settings = get(codly-ref)
       let sep = settings.sep
       let number-format = settings.numbering
-      let line-label = label(str(block-label) + ":" + str(number))
+      let line-label = label(
+        str(block-label)
+          + ":"
+          + if reference == none {
+            str(number)
+          } else {
+            reference.label
+          },
+      )
       [#output#place(hide(pdf.artifact[#figure(
             kind: "codly-line",
             supplement: none,
@@ -612,6 +622,7 @@
               ref(block-label)
               sep
               number-format(number)
+              if reference != none { reference.suffix }
             },
             [],
           )#line-label]))]
@@ -662,6 +673,7 @@
   sublang-lines: (:),
   indentation: none,
   wrap-settings: none,
+  unnumbered: (),
 ) = {
   let items = ()
   let lines_to_number = ()
@@ -685,6 +697,13 @@
   let fallback-number = if number-array {
     skip-number.at(-1, default: __default("skip-number"))
   } else { skip-number }
+  let unnumbered-by-line = (:)
+  if unnumbered != none {
+    for entry in unnumbered {
+      unnumbered-by-line.insert(str(entry.line), entry.fill)
+    }
+  }
+  let unnumbered-after = 0
   let range-index = 0
   let has-ranges = ranges != none and ranges.len() > 0
   let last-line = lines.len()
@@ -792,16 +811,34 @@
       continue
     }
 
-    lines_to_number.push(line.number + offset)
+    let number = line.number + offset
+    let fill = unnumbered-by-line.at(str(line.number), default: none)
+    let unnumbered-line = fill != none
+    let reference = none
+    if unnumbered-line {
+      unnumbered-after += 1
+      number -= 1
+      reference = (
+        label: "l" + str(number) + "p" + str(unnumbered-after),
+        number: number,
+        suffix: [+#unnumbered-after],
+      )
+      // Keep subsequent displayed numbers contiguous with the prior line.
+      offset -= 1
+      lines_to_number.push(-99999998)
+    } else {
+      unnumbered-after = 0
+      lines_to_number.push(number)
+      last-number = number
+    }
     if indentation != none { guide-depths.push(indentation.depths.at(line.number - 1)) }
-    last-number = line.number + offset
     if number-enabled {
-      items.push(codly-number(line.number + offset))
+      items.push(codly-number(if unnumbered-line { fill } else { number }))
     }
 
     // The line's number carries the offset, matching its displayed number.
-    let numbered = if offset == 0 { line } else {
-      raw.line(line.number + offset, line.count, line.text, line.body)
+    let numbered = if number == line.number { line } else {
+      raw.line(number, line.count, line.text, line.body)
     }
     let line-source = sublang-lines.at(str(line.number), default: none)
     let render = if line-source == none { codly-line } else {
@@ -810,11 +847,12 @@
     let rendered-line = render(
       numbered,
       highlights: if has-highlights {
-        highlights-by-line.at(str(line.number + offset), default: ())
+        highlights-by-line.at(str(number), default: ())
       } else { highlights },
       smart-indent: smart-indent,
       __wrap: if wrap-settings == none { none } else { wrap-settings + (row: line.number) },
       block-label: block-label,
+      reference: reference,
     )
     if in-first {
       in-first = false
@@ -829,7 +867,7 @@
     if current-annot != none and annotation-cell == none {
       let label = if current-annot.label != none {
         let referenced = if ref-set.by == "line" {
-          (ref-set.numbering)(line.number + offset)
+          (ref-set.numbering)(number) + if reference == none { [] } else { reference.suffix }
         } else {
           if current-annot.content == none { str(annots) } else { current-annot.content }
         }
@@ -1211,6 +1249,7 @@
     sublang-lines: sublang-lines,
     indentation: indentation,
     wrap-settings: wrap-settings,
+    unnumbered: args.unnumbered,
   )
 
   // The header counts as a line for zebra striping purposes.

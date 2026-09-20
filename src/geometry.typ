@@ -211,18 +211,34 @@
             }
           }
         }
-        // Paint markers while the page geometry is already available. Keeping
-        // this with the background pass avoids rebuilding all regions and
-        // re-querying every wrap probe from the footer of every page.
-        for marker in page.wraps {
-          place(top + left, dx: marker.at.x - at.x, dy: marker.at.y - at.y, pdf.artifact(text(
-            top-edge: "baseline",
-            bottom-edge: "baseline",
-            marker.body,
-          )))
-        }
       },
     ))
+  }
+}
+
+#let wrap-foreground(origin, wraps) = context {
+  let at = here().position()
+  let start = none
+  for record in query(selector(<__codly-geometry>).after(origin).before(here())) {
+    if record.value.origin != origin or record.value.kind != "region-start" { continue }
+    let position = record.location().position()
+    if position.page == at.page and position.x == at.x { start = record }
+  }
+  if start == none { return }
+  let position = start.location().position()
+  let region = (
+    page: at.page,
+    x: position.x,
+    top: position.y,
+    bottom: at.y,
+    width: start.value.width,
+  )
+  for marker in wrap.marks-region(wraps.owner, here(), region) {
+    place(top + left, dx: marker.at.x - at.x, dy: marker.at.y - at.y, pdf.artifact(text(
+      top-edge: "baseline",
+      bottom-edge: "baseline",
+      marker.body,
+    )))
   }
 }
 
@@ -259,6 +275,7 @@
   let footers = ()
   let end = grid.cell(colspan: columns.len(), inset: 0pt, [
     #metadata((kind: "region-end", origin: origin))<__codly-geometry>
+    #if wraps != none { wrap-foreground(origin, wraps) }
   ])
   if footer.len() > 0 {
     let f = footer.first()
@@ -295,7 +312,7 @@
           stroke,
           code-column: code-column,
           outside: outside,
-          wraps: wraps,
+          wraps: none,
         )
       }),
     )),

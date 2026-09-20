@@ -698,6 +698,51 @@
   )
 }
 
+/// A source line excluded from line numbering, see the `unnumbered-lines` field.
+/// Can be constructed as `unnumbered-line(line)`, `unnumbered-line(line, fill)`,
+/// or cast from an integer or an array of the form `(line, fill)`.
+#let unnumbered-line = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+
+  e.types.declare(
+    "unnumbered-line",
+    prefix: __codly-prefix,
+    doc: "A source line excluded from numbering, with optional number-column content.",
+    fields: (
+      e.field(
+        "line",
+        int,
+        doc: "The source line to leave unnumbered (one-indexed).",
+        required: true,
+      ),
+      e.field(
+        "fill",
+        content,
+        doc: "Content to display in place of the line number.",
+        default: [],
+        named: false,
+      ),
+    ),
+    parse-args: __pair-parser("line"),
+    casts: (
+      (
+        from: dictionary,
+        with: __pair-dict-cast(("line", "fill")),
+      ),
+      (
+        from: int,
+        with: constructor => value => constructor(value),
+      ),
+      (
+        from: array,
+        check: value => value.len() in (1, 2),
+        with: constructor => value => constructor(..value),
+      ),
+    ),
+  )
+}
+
 /// Shared formatting settings read by the line, highlight, and annotation
 /// reference renderers. Generated references currently use figure numbering.
 #let codly-ref = {
@@ -865,6 +910,12 @@
         "block-label",
         e.types.option(label),
         doc: "The label of the containing code block.",
+        default: none,
+      ),
+      e.field(
+        "reference",
+        e.types.option(dictionary),
+        doc: "Internal reference details for an unnumbered source line.",
         default: none,
       ),
     ),
@@ -1250,6 +1301,13 @@
         e.types.option(e.types.union(content, e.types.array(e.types.option(content)))),
         doc: __doc("skip-number"),
         default: __default("skip-number"),
+        folds: false,
+      ),
+      e.field(
+        "unnumbered",
+        e.types.option(e.types.array(unnumbered-line)),
+        doc: __doc("unnumbered-lines"),
+        default: __default("unnumbered-lines"),
         folds: false,
       ),
       e.field(

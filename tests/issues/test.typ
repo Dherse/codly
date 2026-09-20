@@ -48,3 +48,6 @@
 #pagebreak()
 
 #include "67-show-rule-regex.typ"
+#pagebreak()
+
+#include "96-multiline-highlights.typ"

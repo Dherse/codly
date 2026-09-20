@@ -1,6 +1,6 @@
 // Work from raw.line.text: Typst has already normalized tabs and line endings.
 // Syntax highlighting can split or wrap the leading whitespace arbitrarily.
-#let prefix(value) = value.match(regex("^ *")).text
+#let leading-spaces = regex("^ *")
 
 // Vote on observed changes, rather than taking a GCD that collapses to one
 // after a single alignment outlier. Ties favor the smaller observed step.
@@ -30,7 +30,7 @@
 
 #let scan(lines, width: auto, blank-lines: true) = {
   let rows = lines.map(value => {
-    let spaces = prefix(value)
+    let spaces = value.match(leading-spaces).text
     (columns: spaces.len(), blank: spaces.len() == value.len())
   })
   if width == auto { width = detect(rows) }

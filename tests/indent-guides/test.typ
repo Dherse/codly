@@ -38,9 +38,9 @@
   0,
 ))
 #assert.eq(scan("    a\n\n    b", width: 4, blank-lines: false).depths, (1, 0, 1))
-#assert.eq(ind.prefix("  é😀"), "  ")
-#assert.eq(ind.prefix("\u{a0}text"), "")
-#assert.eq(ind.prefix("　text"), "")
+#assert.eq("  é😀".match(ind.leading-spaces).text, "  ")
+#assert.eq("\u{a0}text".match(ind.leading-spaces).text, "")
+#assert.eq("　text".match(ind.leading-spaces).text, "")
 
 // Match rendered whitespace across tab stops and CRLF, including a mixed prefix.
 #for size in (2, 4, 8) {
