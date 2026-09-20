@@ -473,6 +473,7 @@
       e.field("fill", e.types.option(e.types.union(e.types.paint, function)), doc: __doc("lang-fill"), default: __default("lang-fill")),
       e.field("display-name", e.types.option(bool), doc: __doc("display-name"), default: __default("display-name")),
       e.field("display-icon", e.types.option(bool), doc: __doc("display-icon"), default: __default("display-icon")),
+      e.field("align", e.types.option(alignment), doc: "todo", default: right + horizon),
     )
   )
 }

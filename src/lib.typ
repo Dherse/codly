@@ -829,7 +829,7 @@
 
     let lang-settings = get(codly-lang)
     place(
-      right + horizon,
+      lang-settings.align,
       dx: lang-settings.outset.x,
       dy: lang-settings.outset.y,
       lang-block
