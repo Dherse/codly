@@ -1,58 +1,55 @@
-// Compile with `typst compile tests/numbers-out-margin/test.typ --root . tests/numbers-out-margin/out/test.pdf` in root directory
-
-#import "../../codly.typ": *
-
-#set page("a4")
-
-#show: codly-init
+#import "../../codly.typ" as codly
+#import "@preview/elembic:1.1.1" as e
 
 = Code skips
 
-#codly(skips: ((4, 32), ))
-```py
+#codly.new(skips: ((4, 32),))[```py
 def fib(n):
     if n <= 1:
         return n
     return fib(n - 1) + fib(n - 2)
 
 fib(25)
-```
+```]
 
-#codly(number-placement: "outside")
-#codly(skips: ((4, 32), ))
-```py
-def fib(n):
+#{
+  show: e.set_(codly.codly-number, placement: "outside", fill: none)
+  codly.new(skips: ((4, 32),))[```py
+  def fib(n):
+      if n <= 1:
+          return n
+      return fib(n - 1) + fib(n - 2)
+
+  fib(25)
+  ```]
+}
+
+#{
+  show: e.set_(codly.codly-number, placement: "outside", fill: none)
+  codly.new(
+    skips: ((4, 120),),
+    skip-number: align(center, emoji.face.shock),
+  )[```py
+  def fib(n):
     if n <= 1:
-        return n
+      return n
     return fib(n - 1) + fib(n - 2)
 
-fib(25)
-```
+  fib(25)
+  ```]
+}
 
-#codly(
-  skips: ((4, 120), ),
-  skip-number: align(center, emoji.face.shock)
-)
-```py
-def fib(n):
-  if n <= 1:
-    return n
-  return fib(n - 1) + fib(n - 2)
-
-fib(25)
-```
-
-#codly(
-  skips: ((4, 120), ),
+#codly.new(
+  skips: ((4, 120),),
   skip-number: align(
-      center,
-      emoji.face.shock),
-  number-placement: "inside")
-```py
+    center,
+    emoji.face.shock,
+  ),
+)[```py
 def fib(n):
   if n <= 1:
     return n
   return fib(n - 1) + fib(n - 2)
 
 fib(25)
-```
+```]

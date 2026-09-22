@@ -1,12 +1,7 @@
-#import "../../codly.typ": *
+#import "../../codly.typ" as codly
 
-#set page(width: 300pt, height: auto)
-#show: codly-init.with()
-
-#codly-skip(2, 4)
-#codly(number-format: none)
-
-```txt
+#set page(width: 240pt, height: auto, margin: 5pt)
+#codly.new(number-enabled: false, skips: ((2, 4),), ```txt
 a
 b
 c
@@ -14,11 +9,9 @@ d
 e
 f
 g
-```
+```)
 
-#codly-skip(2, 4)
-#codly(number-format: numbering.with("1"))
-```txt
+#codly.new(skips: ((2, 4),), ```txt
 a
 b
 c
@@ -26,4 +19,4 @@ d
 e
 f
 g
-```
+```)

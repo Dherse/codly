@@ -1,607 +1,1821 @@
-#import "src/lib.typ": (
-  codly-init,
-  codly-reset,
-  no-codly,
-  yes-codly,
-  codly-enable,
-  codly-disable,
-  codly-range,
-  codly-offset,
-  codly-skip,
-  typst-icon,
-)
+/// A language definition, see the `languages` field.
+///
+/// Additional, unknown fields are preserved and override the corresponding
+/// `codly-lang` arguments for that language, e.g. `(py: (radius: 5pt))`
+/// overrides `radius` for the Python language badge.
+#let language = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
 
-#let __codly-default = context [ Codly Default ]
-
-/// See the full documentation: https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf
-/// 
-/// - enabled (bool, function): enabled
-/// - header (content, none, function): header
-/// - header-repeat (bool, function): header-repeat
-/// - header-cell-args (array, dictionary, arguments, function): header-cell-args
-/// - header-transform (function): header-transform
-/// - footer (content, none, function): footer
-/// - footer-repeat (bool, function): footer-repeat
-/// - footer-cell-args (array, dictionary, arguments, function): footer-cell-args
-/// - footer-transform (function): footer-transform
-/// - offset (int, function): offset
-/// - offset-from (none, label, function): offset-from
-/// - range (none, array, function): range
-/// - ranges (none, array, function): ranges
-/// - smart-skip (bool, dictionary, function): smart-skip
-/// - languages (dictionary, function): languages
-/// - default-color (color, gradient, tiling, function): default-color
-/// - radius (length, function): radius
-/// - inset (length, dictionary, function): inset
-/// - fill (none, color, gradient, tiling, function): fill
-/// - zebra-fill (none, color, gradient, tiling, function): zebra-fill
-/// - stroke (none, stroke, function): stroke
-/// - lang-inset (length, dictionary, function): lang-inset
-/// - lang-outset (dictionary, function): lang-outset
-/// - lang-radius (length, function): lang-radius
-/// - lang-stroke (none, stroke, function): lang-stroke
-/// - lang-fill (none, color, gradient, tiling, function): lang-fill
-/// - lang-format (auto, none, function): lang-format
-/// - display-name (bool, function): display-name
-/// - display-icon (bool, function): display-icon
-/// - filename (str, content, none, function): filename
-/// - filename-separator (str, content, function): filename-separator
-/// - number-format (function, none): number-format
-/// - number-align (alignment, function): number-align
-/// - number-placement (str): number-placement
-/// - smart-indent (bool): smart-indent
-/// - skip-last-empty (bool, function): skip-last-empty
-/// - breakable (bool): breakable
-/// - skips (array, none, function): skips
-/// - skip-line (content, none, function): skip-line
-/// - skip-number (content, none, function): skip-number
-/// - annotations (array, none, function): annotations
-/// - annotation-format (none, function): annotation-format
-/// - highlighted-lines (array, none, function): highlighted-lines
-/// - highlighted-default-color (color, tiling, gradient, function): highlighted-default-color
-/// - highlights (array, none, function): highlights
-/// - highlight-radius (length, function): highlight-radius
-/// - highlight-fill (function): highlight-fill
-/// - highlight-stroke (stroke, function): highlight-stroke
-/// - highlight-inset (length, dictionary, function): highlight-inset
-/// - highlight-outset (length, dictionary, function): highlight-outset
-/// - highlight-clip (bool, function): highlight-clip
-/// - reference-by (str, function): reference-by
-/// - reference-sep (str, content, function): reference-sep
-/// - reference-number-format (function): reference-number-format
-/// - aliases (dictionary): aliases
-/// -> content
-#let codly(
-  enabled: __codly-default,
-  header: __codly-default,
-  header-repeat: __codly-default,
-  header-cell-args: __codly-default,
-  header-transform: __codly-default,
-  footer: __codly-default,
-  footer-repeat: __codly-default,
-  footer-cell-args: __codly-default,
-  footer-transform: __codly-default,
-  offset: __codly-default,
-  offset-from: __codly-default,
-  range: __codly-default,
-  ranges: __codly-default,
-  smart-skip: __codly-default,
-  languages: __codly-default,
-  default-color: __codly-default,
-  radius: __codly-default,
-  inset: __codly-default,
-  fill: __codly-default,
-  zebra-fill: __codly-default,
-  stroke: __codly-default,
-  lang-inset: __codly-default,
-  lang-outset: __codly-default,
-  lang-radius: __codly-default,
-  lang-stroke: __codly-default,
-  lang-fill: __codly-default,
-  lang-format: __codly-default,
-  display-name: __codly-default,
-  display-icon: __codly-default,
-  filename: __codly-default,
-  filename-separator: __codly-default,
-  number-format: __codly-default,
-  number-align: __codly-default,
-  number-placement: __codly-default,
-  smart-indent: __codly-default,
-  skip-last-empty: __codly-default,
-  breakable: __codly-default,
-  skips: __codly-default,
-  skip-line: __codly-default,
-  skip-number: __codly-default,
-  annotations: __codly-default,
-  annotation-format: __codly-default,
-  highlighted-lines: __codly-default,
-  highlighted-default-color: __codly-default,
-  highlights: __codly-default,
-  highlight-radius: __codly-default,
-  highlight-fill: __codly-default,
-  highlight-stroke: __codly-default,
-  highlight-inset: __codly-default,
-  highlight-outset: __codly-default,
-  highlight-clip: __codly-default,
-  reference-by: __codly-default,
-  reference-sep: __codly-default,
-  reference-number-format: __codly-default,
-  aliases: __codly-default,
-) = {
-  import "src/lib.typ": __codly-inner
-  let out = (:)
-  if enabled != __codly-default {
-    out.insert("enabled", enabled)
-  }
-  if header != __codly-default {
-    out.insert("header", header)
-  }
-  if header-repeat != __codly-default {
-    out.insert("header-repeat", header-repeat)
-  }
-  if header-cell-args != __codly-default {
-    out.insert("header-cell-args", header-cell-args)
-  }
-  if header-transform != __codly-default {
-    out.insert("header-transform", header-transform)
-  }
-  if footer != __codly-default {
-    out.insert("footer", footer)
-  }
-  if footer-repeat != __codly-default {
-    out.insert("footer-repeat", footer-repeat)
-  }
-  if footer-cell-args != __codly-default {
-    out.insert("footer-cell-args", footer-cell-args)
-  }
-  if footer-transform != __codly-default {
-    out.insert("footer-transform", footer-transform)
-  }
-  if offset != __codly-default {
-    out.insert("offset", offset)
-  }
-  if offset-from != __codly-default {
-    out.insert("offset-from", offset-from)
-  }
-  if range != __codly-default {
-    out.insert("range", range)
-  }
-  if ranges != __codly-default {
-    out.insert("ranges", ranges)
-  }
-  if smart-skip != __codly-default {
-    out.insert("smart-skip", smart-skip)
-  }
-  if languages != __codly-default {
-    out.insert("languages", languages)
-  }
-  if default-color != __codly-default {
-    out.insert("default-color", default-color)
-  }
-  if radius != __codly-default {
-    out.insert("radius", radius)
-  }
-  if inset != __codly-default {
-    out.insert("inset", inset)
-  }
-  if fill != __codly-default {
-    out.insert("fill", fill)
-  }
-  if zebra-fill != __codly-default {
-    out.insert("zebra-fill", zebra-fill)
-  }
-  if stroke != __codly-default {
-    out.insert("stroke", stroke)
-  }
-  if lang-inset != __codly-default {
-    out.insert("lang-inset", lang-inset)
-  }
-  if lang-outset != __codly-default {
-    out.insert("lang-outset", lang-outset)
-  }
-  if lang-radius != __codly-default {
-    out.insert("lang-radius", lang-radius)
-  }
-  if lang-stroke != __codly-default {
-    out.insert("lang-stroke", lang-stroke)
-  }
-  if lang-fill != __codly-default {
-    out.insert("lang-fill", lang-fill)
-  }
-  if lang-format != __codly-default {
-    out.insert("lang-format", lang-format)
-  }
-  if display-name != __codly-default {
-    out.insert("display-name", display-name)
-  }
-  if display-icon != __codly-default {
-    out.insert("display-icon", display-icon)
-  }
-  if filename != __codly-default {
-    out.insert("filename", filename)
-  }
-  if filename-separator != __codly-default {
-    out.insert("filename-separator", filename-separator)
-  }
-  if number-format != __codly-default {
-    out.insert("number-format", number-format)
-  }
-  if number-align != __codly-default {
-    out.insert("number-align", number-align)
-  }
-  if number-placement != __codly-default {
-    out.insert("number-placement", number-placement)
-  }
-  if smart-indent != __codly-default {
-    out.insert("smart-indent", smart-indent)
-  }
-  if skip-last-empty != __codly-default {
-    out.insert("skip-last-empty", skip-last-empty)
-  }
-  if breakable != __codly-default {
-    out.insert("breakable", breakable)
-  }
-  if skips != __codly-default {
-    out.insert("skips", skips)
-  }
-  if skip-line != __codly-default {
-    out.insert("skip-line", skip-line)
-  }
-  if skip-number != __codly-default {
-    out.insert("skip-number", skip-number)
-  }
-  if annotations != __codly-default {
-    out.insert("annotations", annotations)
-  }
-  if annotation-format != __codly-default {
-    out.insert("annotation-format", annotation-format)
-  }
-  if highlighted-lines != __codly-default {
-    out.insert("highlighted-lines", highlighted-lines)
-  }
-  if highlighted-default-color != __codly-default {
-    out.insert("highlighted-default-color", highlighted-default-color)
-  }
-  if highlights != __codly-default {
-    out.insert("highlights", highlights)
-  }
-  if highlight-radius != __codly-default {
-    out.insert("highlight-radius", highlight-radius)
-  }
-  if highlight-fill != __codly-default {
-    out.insert("highlight-fill", highlight-fill)
-  }
-  if highlight-stroke != __codly-default {
-    out.insert("highlight-stroke", highlight-stroke)
-  }
-  if highlight-inset != __codly-default {
-    out.insert("highlight-inset", highlight-inset)
-  }
-  if highlight-outset != __codly-default {
-    out.insert("highlight-outset", highlight-outset)
-  }
-  if highlight-clip != __codly-default {
-    out.insert("highlight-clip", highlight-clip)
-  }
-  if reference-by != __codly-default {
-    out.insert("reference-by", reference-by)
-  }
-  if reference-sep != __codly-default {
-    out.insert("reference-sep", reference-sep)
-  }
-  if reference-number-format != __codly-default {
-    out.insert("reference-number-format", reference-number-format)
-  }
-  if aliases != __codly-default {
-    out.insert("aliases", aliases)
-  }
-
-  __codly-inner(..out)
+  e.types.declare(
+    "language",
+    prefix: __codly-prefix,
+    doc: "A language definition used for language block formatting.",
+    allow-unknown-fields: true,
+    fields: (
+      e.field(
+        "name",
+        e.types.union(str, content),
+        doc: "The \"pretty\" name of the language, as a showable value.",
+        required: true,
+        named: true,
+      ),
+      e.field(
+        "color",
+        e.types.option(e.types.paint),
+        doc: "The color of the language, if omitted uses the default color.",
+        default: none,
+      ),
+      e.field(
+        "icon",
+        e.types.option(e.types.union(str, content)),
+        doc: "The icon of the language, if omitted no icon is shown.",
+        default: none,
+      ),
+    ),
+    casts: (
+      (from: dictionary),
+      (from: str, with: constructor => value => constructor(name: value)),
+    ),
+  )
 }
 
-/// Allows setting codly setting locally.
-/// Anything that happens inside the block will have the settings applied only to it.
-/// The pre-existing settings will be restored after the block. This is useful
-/// if you want to apply settings to a specific block only.
-///
-/// *Special:*
-/// #local(default-color: red)[
-///   ```
-///   Hello, world!
-///   ```
-/// ]
-///
-/// *Normal:*
-/// ```
-/// Hello, world!
-/// ```
-///
-/// See the full documentation: https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf
-/// 
-/// - body (content): the content to be locally styled
-/// - nested (bool): whether to enable nested local states
-/// - enabled (bool, function): enabled
-/// - header (content, none, function): header
-/// - header-repeat (bool, function): header-repeat
-/// - header-cell-args (array, dictionary, arguments, function): header-cell-args
-/// - header-transform (function): header-transform
-/// - footer (content, none, function): footer
-/// - footer-repeat (bool, function): footer-repeat
-/// - footer-cell-args (array, dictionary, arguments, function): footer-cell-args
-/// - footer-transform (function): footer-transform
-/// - offset (int, function): offset
-/// - offset-from (none, label, function): offset-from
-/// - range (none, array, function): range
-/// - ranges (none, array, function): ranges
-/// - smart-skip (bool, dictionary, function): smart-skip
-/// - languages (dictionary, function): languages
-/// - default-color (color, gradient, tiling, function): default-color
-/// - radius (length, function): radius
-/// - inset (length, dictionary, function): inset
-/// - fill (none, color, gradient, tiling, function): fill
-/// - zebra-fill (none, color, gradient, tiling, function): zebra-fill
-/// - stroke (none, stroke, function): stroke
-/// - lang-inset (length, dictionary, function): lang-inset
-/// - lang-outset (dictionary, function): lang-outset
-/// - lang-radius (length, function): lang-radius
-/// - lang-stroke (none, stroke, function): lang-stroke
-/// - lang-fill (none, color, gradient, tiling, function): lang-fill
-/// - lang-format (auto, none, function): lang-format
-/// - display-name (bool, function): display-name
-/// - display-icon (bool, function): display-icon
-/// - filename (str, content, none, function): filename
-/// - filename-separator (str, content, function): filename-separator
-/// - number-format (function, none): number-format
-/// - number-align (alignment, function): number-align
-/// - number-placement (str): number-placement
-/// - smart-indent (bool): smart-indent
-/// - skip-last-empty (bool, function): skip-last-empty
-/// - breakable (bool): breakable
-/// - skips (array, none, function): skips
-/// - skip-line (content, none, function): skip-line
-/// - skip-number (content, none, function): skip-number
-/// - annotations (array, none, function): annotations
-/// - annotation-format (none, function): annotation-format
-/// - highlighted-lines (array, none, function): highlighted-lines
-/// - highlighted-default-color (color, tiling, gradient, function): highlighted-default-color
-/// - highlights (array, none, function): highlights
-/// - highlight-radius (length, function): highlight-radius
-/// - highlight-fill (function): highlight-fill
-/// - highlight-stroke (stroke, function): highlight-stroke
-/// - highlight-inset (length, dictionary, function): highlight-inset
-/// - highlight-outset (length, dictionary, function): highlight-outset
-/// - highlight-clip (bool, function): highlight-clip
-/// - reference-by (str, function): reference-by
-/// - reference-sep (str, content, function): reference-sep
-/// - reference-number-format (function): reference-number-format
-/// - aliases (dictionary): aliases
-/// -> content
-#let local(
-  body,
-  nested: false,
-  enabled: __codly-default,
-  header: __codly-default,
-  header-repeat: __codly-default,
-  header-cell-args: __codly-default,
-  header-transform: __codly-default,
-  footer: __codly-default,
-  footer-repeat: __codly-default,
-  footer-cell-args: __codly-default,
-  footer-transform: __codly-default,
-  offset: __codly-default,
-  offset-from: __codly-default,
-  range: __codly-default,
-  ranges: __codly-default,
-  smart-skip: __codly-default,
-  languages: __codly-default,
-  default-color: __codly-default,
-  radius: __codly-default,
-  inset: __codly-default,
-  fill: __codly-default,
-  zebra-fill: __codly-default,
-  stroke: __codly-default,
-  lang-inset: __codly-default,
-  lang-outset: __codly-default,
-  lang-radius: __codly-default,
-  lang-stroke: __codly-default,
-  lang-fill: __codly-default,
-  lang-format: __codly-default,
-  display-name: __codly-default,
-  display-icon: __codly-default,
-  filename: __codly-default,
-  filename-separator: __codly-default,
-  number-format: __codly-default,
-  number-align: __codly-default,
-  number-placement: __codly-default,
-  smart-indent: __codly-default,
-  skip-last-empty: __codly-default,
-  breakable: __codly-default,
-  skips: __codly-default,
-  skip-line: __codly-default,
-  skip-number: __codly-default,
-  annotations: __codly-default,
-  annotation-format: __codly-default,
-  highlighted-lines: __codly-default,
-  highlighted-default-color: __codly-default,
-  highlights: __codly-default,
-  highlight-radius: __codly-default,
-  highlight-fill: __codly-default,
-  highlight-stroke: __codly-default,
-  highlight-inset: __codly-default,
-  highlight-outset: __codly-default,
-  highlight-clip: __codly-default,
-  reference-by: __codly-default,
-  reference-sep: __codly-default,
-  reference-number-format: __codly-default,
-  aliases: __codly-default,
-) = {
-  import "src/lib.typ": __local-inner
-  let out = (:)
-  if enabled != __codly-default {
-    out.insert("enabled", enabled)
+/// A range of lines that should use a different syntax-highlighting language.
+#let __sublang-normalize(value) = {
+  let start = value.at("start")
+  assert(start > 0, message: "codly: sublang `start` must be greater than 0")
+
+  let end = value.at("end")
+  assert(end >= start, message: "codly: sublang `end` must be at least `start`")
+
+  value
+}
+
+#let __sublang-parser = {
+  (default-parser, fields: (:), typecheck: true) => {
+    (args, include-required: true) => {
+      let result = default-parser(args, include-required: include-required)
+      if result.at(0) {
+        result.at(1) = __sublang-normalize(result.at(1))
+      }
+      result
+    }
   }
-  if header != __codly-default {
-    out.insert("header", header)
-  }
-  if header-repeat != __codly-default {
-    out.insert("header-repeat", header-repeat)
-  }
-  if header-cell-args != __codly-default {
-    out.insert("header-cell-args", header-cell-args)
-  }
-  if header-transform != __codly-default {
-    out.insert("header-transform", header-transform)
-  }
-  if footer != __codly-default {
-    out.insert("footer", footer)
-  }
-  if footer-repeat != __codly-default {
-    out.insert("footer-repeat", footer-repeat)
-  }
-  if footer-cell-args != __codly-default {
-    out.insert("footer-cell-args", footer-cell-args)
-  }
-  if footer-transform != __codly-default {
-    out.insert("footer-transform", footer-transform)
-  }
-  if offset != __codly-default {
-    out.insert("offset", offset)
-  }
-  if offset-from != __codly-default {
-    out.insert("offset-from", offset-from)
-  }
-  if range != __codly-default {
-    out.insert("range", range)
-  }
-  if ranges != __codly-default {
-    out.insert("ranges", ranges)
-  }
-  if smart-skip != __codly-default {
-    out.insert("smart-skip", smart-skip)
-  }
-  if languages != __codly-default {
-    out.insert("languages", languages)
-  }
-  if default-color != __codly-default {
-    out.insert("default-color", default-color)
-  }
-  if radius != __codly-default {
-    out.insert("radius", radius)
-  }
-  if inset != __codly-default {
-    out.insert("inset", inset)
-  }
-  if fill != __codly-default {
-    out.insert("fill", fill)
-  }
-  if zebra-fill != __codly-default {
-    out.insert("zebra-fill", zebra-fill)
-  }
-  if stroke != __codly-default {
-    out.insert("stroke", stroke)
-  }
-  if lang-inset != __codly-default {
-    out.insert("lang-inset", lang-inset)
-  }
-  if lang-outset != __codly-default {
-    out.insert("lang-outset", lang-outset)
-  }
-  if lang-radius != __codly-default {
-    out.insert("lang-radius", lang-radius)
-  }
-  if lang-stroke != __codly-default {
-    out.insert("lang-stroke", lang-stroke)
-  }
-  if lang-fill != __codly-default {
-    out.insert("lang-fill", lang-fill)
-  }
-  if lang-format != __codly-default {
-    out.insert("lang-format", lang-format)
-  }
-  if display-name != __codly-default {
-    out.insert("display-name", display-name)
-  }
-  if display-icon != __codly-default {
-    out.insert("display-icon", display-icon)
-  }
-  if filename != __codly-default {
-    out.insert("filename", filename)
-  }
-  if filename-separator != __codly-default {
-    out.insert("filename-separator", filename-separator)
-  }
-  if number-format != __codly-default {
-    out.insert("number-format", number-format)
-  }
-  if number-align != __codly-default {
-    out.insert("number-align", number-align)
-  }
-  if number-placement != __codly-default {
-    out.insert("number-placement", number-placement)
-  }
-  if smart-indent != __codly-default {
-    out.insert("smart-indent", smart-indent)
-  }
-  if skip-last-empty != __codly-default {
-    out.insert("skip-last-empty", skip-last-empty)
-  }
-  if breakable != __codly-default {
-    out.insert("breakable", breakable)
-  }
-  if skips != __codly-default {
-    out.insert("skips", skips)
-  }
-  if skip-line != __codly-default {
-    out.insert("skip-line", skip-line)
-  }
-  if skip-number != __codly-default {
-    out.insert("skip-number", skip-number)
-  }
-  if annotations != __codly-default {
-    out.insert("annotations", annotations)
-  }
-  if annotation-format != __codly-default {
-    out.insert("annotation-format", annotation-format)
-  }
-  if highlighted-lines != __codly-default {
-    out.insert("highlighted-lines", highlighted-lines)
-  }
-  if highlighted-default-color != __codly-default {
-    out.insert("highlighted-default-color", highlighted-default-color)
-  }
-  if highlights != __codly-default {
-    out.insert("highlights", highlights)
-  }
-  if highlight-radius != __codly-default {
-    out.insert("highlight-radius", highlight-radius)
-  }
-  if highlight-fill != __codly-default {
-    out.insert("highlight-fill", highlight-fill)
-  }
-  if highlight-stroke != __codly-default {
-    out.insert("highlight-stroke", highlight-stroke)
-  }
-  if highlight-inset != __codly-default {
-    out.insert("highlight-inset", highlight-inset)
-  }
-  if highlight-outset != __codly-default {
-    out.insert("highlight-outset", highlight-outset)
-  }
-  if highlight-clip != __codly-default {
-    out.insert("highlight-clip", highlight-clip)
-  }
-  if reference-by != __codly-default {
-    out.insert("reference-by", reference-by)
-  }
-  if reference-sep != __codly-default {
-    out.insert("reference-sep", reference-sep)
-  }
-  if reference-number-format != __codly-default {
-    out.insert("reference-number-format", reference-number-format)
-  }
-  if aliases != __codly-default {
-    out.insert("aliases", aliases)
+}
+
+/// A syntax-highlighting language applied to an inclusive range of lines.
+#let sublang = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+
+  e.types.declare(
+    "sublang",
+    prefix: __codly-prefix,
+    doc: "A syntax-highlighting language applied to a range of lines.",
+    fields: (
+      e.field(
+        "start",
+        int,
+        doc: "The first line of the range (one-indexed).",
+        required: true,
+        named: true,
+      ),
+      e.field(
+        "end",
+        int,
+        doc: "The last line of the range (inclusive).",
+        required: true,
+        named: true,
+      ),
+      e.field(
+        "lang",
+        str,
+        doc: "The syntax-highlighting language key.",
+        required: true,
+        named: true,
+      ),
+    ),
+    parse-args: __sublang-parser,
+    casts: (
+      (from: dictionary),
+    ),
+  )
+}
+
+/// Optional grammar-aware delimiter coloring.
+#let rainbow = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+  import "src/rainbow.typ" as r
+
+  let parser(default-parser, fields: (:), typecheck: true) = {
+    (args, include-required: true) => {
+      let result = default-parser(args, include-required: include-required)
+      if result.at(0) {
+        let value = result.at(1)
+        assert(
+          value.at("palette", default: (black,)).len() > 0,
+          message: "codly: rainbow palette must not be empty",
+        )
+        assert(
+          value.at("depth-offset", default: 0) >= 0,
+          message: "codly: rainbow depth-offset must be nonnegative",
+        )
+      }
+      result
+    }
   }
 
-  __local-inner(body, nested: nested, ..out)
+  e.types.declare(
+    "rainbow",
+    prefix: __codly-prefix,
+    doc: "Color matching code delimiters by nesting depth, excluding strings and comments.",
+    parse-args: parser,
+    fields: (
+      e.field("enabled", bool, default: true, doc: "Whether to color delimiters."),
+      e.field(
+        "palette",
+        e.types.array(color),
+        default: r.palette,
+        folds: false,
+        doc: "Colors repeated at successive nesting depths; must not be empty.",
+      ),
+      e.field(
+        "pairs",
+        e.types.array(e.types.union("()", "[]", "{}")),
+        default: ("()", "[]", "{}"),
+        folds: false,
+        doc: "Delimiter pairs that contribute to nesting.",
+      ),
+      e.field("depth-offset", int, default: 0, doc: "Nonnegative offset into the palette."),
+      e.field(
+        "unmatched",
+        e.types.option(color),
+        default: none,
+        doc: "Color for unmatched delimiters, or none to preserve their syntax style.",
+      ),
+      e.field(
+        "code-scopes",
+        str,
+        default: r.code-scopes,
+        doc: "Syntax scope selectors identifying code in the private classification theme.",
+      ),
+      e.field(
+        "ignore-scopes",
+        str,
+        default: r.ignore-scopes,
+        doc: "Syntax scope selectors excluding literals and comments.",
+      ),
+    ),
+    casts: (
+      (from: dictionary),
+      (from: bool, with: constructor => value => constructor(enabled: value)),
+    ),
+  )
 }
+
+/// Optional indentation guides, independent of syntax delimiter nesting.
+#let indent-guides = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+
+  let parser(default-parser, fields: (:), typecheck: true) = {
+    (args, include-required: true) => {
+      let result = default-parser(args, include-required: include-required)
+      if result.at(0) {
+        let value = result.at(1)
+        let width = value.at("width", default: auto)
+        let palette = value.at("palette", default: auto)
+        let offset = value.at("depth-offset", default: auto)
+        assert(width == auto or width > 0, message: "codly: indent-guides width must be positive")
+        assert(
+          palette == auto or palette.len() > 0,
+          message: "codly: indent-guides palette must not be empty",
+        )
+        assert(
+          offset == auto or offset >= 0,
+          message: "codly: indent-guides depth-offset must be nonnegative",
+        )
+        let thickness = value.at("thickness", default: 0.5pt)
+        assert(
+          thickness.abs >= 0pt and thickness.em >= 0 and thickness != 0pt,
+          message: "codly: indent-guides thickness must be positive",
+        )
+      }
+      result
+    }
+  }
+
+  e.types.declare(
+    "indent-guides",
+    prefix: __codly-prefix,
+    doc: "Draw optional vertical guides at complete indentation levels.",
+    parse-args: parser,
+    fields: (
+      e.field("enabled", bool, default: true, doc: "Whether to draw indentation guides."),
+      e.field(
+        "width",
+        e.types.union(auto, int),
+        default: auto,
+        doc: "Spaces per level; auto votes on observed indentation changes.",
+      ),
+      e.field(
+        "blank-lines",
+        bool,
+        default: true,
+        doc: "Continue shared levels across interior blank lines.",
+      ),
+      e.field(
+        "rainbow",
+        e.types.union(auto, bool),
+        default: auto,
+        doc: "Color guides by level; auto follows delimiter rainbow enablement.",
+      ),
+      e.field(
+        "palette",
+        e.types.union(auto, e.types.array(color)),
+        default: auto,
+        folds: false,
+        doc: "Nonempty guide palette; auto shares the delimiter palette.",
+      ),
+      e.field(
+        "depth-offset",
+        e.types.union(auto, int),
+        default: auto,
+        doc: "Nonnegative palette offset; auto shares the delimiter offset.",
+      ),
+      e.field(
+        "color",
+        color,
+        default: luma(70%),
+        doc: "Guide color when rainbow guides are disabled.",
+      ),
+      e.field("thickness", length, default: 0.5pt, doc: "Positive guide stroke thickness."),
+      e.field(
+        "x-offset",
+        length,
+        default: 0pt,
+        doc: "Horizontal shift of every guide; positive moves right, negative moves left. Supports em lengths.",
+      ),
+    ),
+    casts: (
+      (from: dictionary),
+      (from: bool, with: constructor => value => constructor(enabled: value)),
+    ),
+  )
+}
+
+/// Configuration for smart skips, see the `smart-skip` field.
+#let smart-skip = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+
+  e.types.declare(
+    "smart-skip",
+    prefix: __codly-prefix,
+    doc: "Configuration for automatically inserting skips between displayed ranges.",
+    fields: (
+      e.field(
+        "first",
+        e.types.option(bool),
+        doc: "Whether to include a skip if the start of the block is outside of the ranges.",
+        default: none,
+      ),
+      e.field(
+        "last",
+        e.types.option(bool),
+        doc: "Whether to include a skip if the end of the code block is outside of the ranges.",
+        default: none,
+      ),
+      e.field(
+        "rest",
+        e.types.option(bool),
+        doc: "Whether to include a skip for unspecified values and/or in the middle of the code block.",
+        default: none,
+      ),
+    ),
+    casts: (
+      (
+        from: dictionary,
+        with: constructor => value => {
+          let rest = value.at("rest", default: false)
+          let first = value.at("first", default: rest)
+          let last = value.at("last", default: rest)
+          constructor(first: first, last: last, rest: rest)
+        },
+      ),
+      (
+        from: bool,
+        with: constructor => value => constructor(first: value, last: value, rest: value),
+      ),
+    ),
+  )
+}
+
+/// A single highlight, see the `highlights` field.
+#let __highlight-normalize(value) = {
+  let line = value.at("line")
+  assert(line > 0, message: "codly: highlight `line` must be greater than 0")
+
+  let start = value.at("start", default: none)
+  if start == none {
+    value.insert("start", 0)
+  } else {
+    assert(start >= 0, message: "codly: highlight `start` must be at least 0")
+  }
+
+  let end = value.at("end", default: none)
+  if end == none {
+    value.insert("end", 999999999)
+  } else {
+    assert(end >= 0, message: "codly: highlight `end` must be at least 0")
+  }
+
+  value
+}
+
+#let __highlight-parser = {
+  (default-parser, fields: (:), typecheck: true) => {
+    (args, include-required: true) => {
+      let result = default-parser(args, include-required: include-required)
+      if result.at(0) {
+        result.at(1) = __highlight-normalize(result.at(1))
+      }
+      result
+    }
+  }
+}
+
+#let highlight = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+
+  e.types.declare(
+    "highlight",
+    prefix: __codly-prefix,
+    doc: "A highlight over part of a line of the code block.",
+    fields: (
+      e.field(
+        "line",
+        int,
+        doc: "The line number to start highlighting (one-indexed).",
+        required: true,
+      ),
+      e.field(
+        "start",
+        e.types.option(int),
+        doc: "The character position to start highlighting, zero if omitted or `none` (zero-indexed).",
+        default: none,
+      ),
+      e.field(
+        "end",
+        e.types.option(int),
+        doc: "The character position to end highlighting, the end of the line if omitted or `none` (zero-indexed).",
+        default: none,
+      ),
+      e.field(
+        "fill",
+        e.types.option(e.types.union(e.types.paint, function)),
+        doc: "The fill of the highlight, defaults to the default color.",
+        default: none,
+      ),
+      e.field(
+        "tag",
+        e.types.option(e.types.union(str, content)),
+        doc: "An optional tag to be displayed alongside the highlight.",
+        default: none,
+      ),
+      e.field(
+        "inset",
+        e.types.option(e.types.union(length, dictionary)),
+        doc: "Overrides `codly-highlight`'s `inset`.",
+        default: none,
+      ),
+      e.field(
+        "baseline",
+        e.types.option(e.types.union(length, auto)),
+        doc: "Overrides the highlight box baseline; `auto` preserves the content's baseline.",
+        default: none,
+      ),
+      e.field(
+        "clip",
+        e.types.option(bool),
+        doc: "Overrides `codly-highlight`'s `clip`.",
+        default: none,
+      ),
+      e.field(
+        "outset",
+        e.types.option(e.types.union(length, dictionary)),
+        doc: "Overrides `codly-highlight`'s `outset`.",
+        default: none,
+      ),
+      e.field(
+        "radius",
+        e.types.option(length),
+        doc: "Overrides `codly-highlight`'s `radius`.",
+        default: none,
+      ),
+      e.field(
+        "label",
+        e.types.option(label),
+        doc: "If and only if the code block is in a `figure`, sets the label by which the highlight can be referenced.",
+        default: none,
+      ),
+      e.field(
+        "stroke",
+        e.types.option(e.types.union(stroke, function)),
+        doc: "Overrides `codly-highlight`'s `stroke`.",
+        default: none,
+      ),
+      e.field(
+        "depth",
+        e.types.option(int),
+        doc: "The depth of the highlight, used to determine which highlight is on top when multiple highlights overlap. Higher depth means on top.",
+      ),
+    ),
+    parse-args: __highlight-parser,
+    casts: (
+      (
+        from: dictionary,
+        with: constructor => value => {
+          let line = value.remove("line")
+          constructor(line, ..value)
+        },
+      ),
+    ),
+  )
+}
+
+/// A single annotation, see the `annotations` field.
+#let __annotation-normalize(value) = {
+  let start = value.at("start")
+  assert(start > 0, message: "codly: annotation `start` must be greater than 0")
+
+  let end = value.at("end", default: none)
+  if end == none {
+    end = start
+    value.insert("end", end)
+  } else {
+    assert(end > 0, message: "codly: annotation `end` must be greater than 0")
+  }
+
+  assert(end >= start, message: "codly: annotation `end` must be at least `start`")
+
+  if "content" not in value {
+    value.insert("content", none)
+  }
+
+  value
+}
+
+#let __annotation-parser = {
+  (default-parser, fields: (:), typecheck: true) => {
+    (args, include-required: true) => {
+      let result = default-parser(args, include-required: include-required)
+      if result.at(0) {
+        result.at(1) = __annotation-normalize(result.at(1))
+      }
+      result
+    }
+  }
+}
+
+#let annotation = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+
+  e.types.declare(
+    "annotation",
+    prefix: __codly-prefix,
+    doc: "An annotation displayed on the right side of the code block.",
+    fields: (
+      e.field(
+        "start",
+        int,
+        doc: "The line number to start the annotation (one-indexed).",
+        required: true,
+      ),
+      e.field(
+        "end",
+        e.types.option(int),
+        doc: "The line number to end the annotation, if missing or `none` the annotation will only contain the start line.",
+        default: none,
+      ),
+      e.field(
+        "content",
+        e.types.option(content),
+        doc: "The content of the annotation as a showable value, if missing or `none` the annotation will only contain the number.",
+        default: none,
+      ),
+      e.field(
+        "label",
+        e.types.option(label),
+        doc: "If and only if the code block is in a `figure`, sets the label by which the annotation can be referenced.",
+        default: none,
+      ),
+      e.field(
+        "numbering",
+        e.types.option(function),
+        doc: "The format of the annotation number, defaults to `(1)`.",
+        default: numbering.with("(1)"),
+      ),
+    ),
+    parse-args: __annotation-parser,
+    casts: (
+      (
+        from: dictionary,
+        with: constructor => value => {
+          let start = value.remove("start")
+          constructor(start, ..value)
+        },
+      ),
+    ),
+  )
+}
+
+/// A callout attached to a source line, see the `callouts` field.
+#let __callout-normalize(value) = {
+  let line = value.at("line")
+  assert(line > 0, message: "codly: callout `line` must be greater than 0")
+  value
+}
+
+#let __callout-parser = {
+  (default-parser, fields: (:), typecheck: true) => {
+    (args, include-required: true) => {
+      let result = default-parser(args, include-required: include-required)
+      if result.at(0) {
+        result.at(1) = __callout-normalize(result.at(1))
+      }
+      result
+    }
+  }
+}
+
+#let callout = {
+  import "src/callout.typ" as callout-impl
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+
+  e.types.declare(
+    "callout",
+    prefix: __codly-prefix,
+    doc: "A callout displayed above or below a source line.",
+    fields: (
+      e.field(
+        "line",
+        int,
+        doc: "The source line to which the callout is attached (one-indexed).",
+        required: true,
+        named: true,
+      ),
+      e.field(
+        "body",
+        content,
+        doc: "The content to display in the callout row.",
+        required: true,
+        named: true,
+      ),
+      e.field(
+        "align",
+        e.types.option(e.types.union(alignment, auto)),
+        doc: "The callout cell alignment.",
+        default: auto,
+      ),
+      e.field(
+        "breakable",
+        e.types.option(e.types.union(bool, auto)),
+        doc: "Whether the callout cell may break across pages.",
+        default: auto,
+      ),
+      e.field(
+        "inset",
+        e.types.option(e.types.union(length, dictionary, auto)),
+        doc: "The callout cell inset.",
+        default: auto,
+      ),
+      e.field(
+        "fill",
+        e.types.option(e.types.union(e.types.paint, auto)),
+        doc: "The callout cell fill.",
+        default: auto,
+      ),
+      e.field(
+        "stroke",
+        e.types.option(e.types.union(stroke, auto)),
+        doc: "The callout cell stroke.",
+        default: auto,
+      ),
+      ..callout-impl.fields(entry: true),
+    ),
+    parse-args: __callout-parser,
+    casts: (
+      (from: dictionary, with: constructor => value => constructor(..value)),
+    ),
+  )
+}
+
+/// A custom argument parser for the pair-like types below (range, skip,
+/// highlighted-line). It allows specifying the pair's fields either
+/// positionally, e.g. `range(2, 4)`, or by name, e.g. `range(start: 2, end: 4)`,
+/// unlike the default parser which only accepts positional arguments for
+/// required fields.
+#let __pair-parser(first-field) = {
+  (default-parser, fields: (:), typecheck: true) => {
+    let names = fields.user-fields.keys()
+    (args, include-required: true) => {
+      let positional = args.pos()
+      let named = args.named()
+      if include-required and positional.len() == 0 and first-field in named {
+        // All fields given by name: convert to positional order based on field
+        // declaration order.
+        let ordered = ()
+        for name in names {
+          if name in named {
+            ordered.push(named.remove(name))
+          }
+        }
+        // Any remaining named fields are unknown and will error in the default parser
+        if named.len() > 0 {
+          return default-parser(args, include-required: include-required)
+        }
+        default-parser(arguments(..ordered), include-required: include-required)
+      } else {
+        default-parser(args, include-required: include-required)
+      }
+    }
+  }
+}
+
+/// A cast from a dictionary for the pair-like types, converting the dict to
+/// positional arguments based on field order.
+#let __pair-dict-cast(field-names) = {
+  constructor => value => {
+    let ordered = ()
+    for name in field-names {
+      if name in value {
+        ordered.push(value.remove(name))
+      }
+    }
+    if value.len() > 0 {
+      assert(false, message: "elembic: unknown e.field(s) " + value.keys().join(", "))
+    }
+    constructor(..ordered)
+  }
+}
+
+/// A single range of line numbers, see the `range` and `ranges` fields.
+/// Can be constructed as `range(start, end)`, `range(start: .., end: ..)`,
+/// or cast from the array `(start, end)`.
+#let range = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+
+  e.types.declare(
+    "range",
+    prefix: __codly-prefix,
+    doc: "A range of line numbers to display (one-indexed, inclusive).",
+    fields: (
+      e.field("start", int, doc: "The first line of the range (one-indexed).", required: true),
+      e.field(
+        "end",
+        e.types.option(int),
+        doc: "The last line of the range (inclusive), `none` for the rest of the block.",
+        default: none,
+        named: false,
+      ),
+    ),
+    parse-args: __pair-parser("start"),
+    casts: (
+      (
+        from: dictionary,
+        with: __pair-dict-cast(("start", "end")),
+      ),
+      (
+        from: array,
+        check: value => value.len() in (1, 2),
+        with: constructor => value => constructor(..value),
+      ),
+    ),
+  )
+}
+
+/// A single skip, see the `skips` field.
+/// Can be constructed as `skip(position, length)`, `skip(position: .., length: ..)`,
+/// or cast from the array `(position, length)`.
+#let skip = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+
+  e.types.declare(
+    "skip",
+    prefix: __codly-prefix,
+    doc: "A skip of a number of lines at a position in the code block.",
+    fields: (
+      e.field(
+        "position",
+        int,
+        doc: "The line where the skip is inserted (zero-indexed).",
+        required: true,
+      ),
+      e.field("length", int, doc: "The number of lines of the skip.", default: 1, named: false),
+    ),
+    parse-args: __pair-parser("position"),
+    casts: (
+      (
+        from: dictionary,
+        with: __pair-dict-cast(("position", "length")),
+      ),
+      (
+        from: array,
+        check: value => value.len() in (1, 2),
+        with: constructor => value => constructor(..value),
+      ),
+    ),
+  )
+}
+
+/// A single highlighted line, see the `highlighted-lines` field.
+/// Can be constructed as `highlighted-line(line)`, `highlighted-line(line, color)`,
+/// or cast from an integer or an array of the form `(line, color)`.
+#let highlighted-line = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+
+  e.types.declare(
+    "highlighted-line",
+    prefix: __codly-prefix,
+    doc: "A line to be highlighted, with an optional custom highlight color.",
+    fields: (
+      e.field(
+        "line",
+        int,
+        doc: "The line number to highlight (one-indexed, as shown in the document).",
+        required: true,
+      ),
+      e.field(
+        "color",
+        e.types.option(e.types.paint),
+        doc: "The highlight color of the line, defaults to `codly-highlight`'s `fill`.",
+        default: none,
+        named: false,
+      ),
+    ),
+    parse-args: __pair-parser("line"),
+    casts: (
+      (
+        from: dictionary,
+        with: __pair-dict-cast(("line", "color")),
+      ),
+      (
+        from: int,
+        with: constructor => value => constructor(value),
+      ),
+      (
+        from: array,
+        check: value => value.len() in (1, 2),
+        with: constructor => value => constructor(..value),
+      ),
+    ),
+  )
+}
+
+/// A source line excluded from line numbering, see the `unnumbered-lines` field.
+/// Can be constructed as `unnumbered-line(line)`, `unnumbered-line(line, fill)`,
+/// or cast from an integer or an array of the form `(line, fill)`.
+#let unnumbered-line = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+
+  e.types.declare(
+    "unnumbered-line",
+    prefix: __codly-prefix,
+    doc: "A source line excluded from numbering, with optional number-column content.",
+    fields: (
+      e.field(
+        "line",
+        int,
+        doc: "The source line to leave unnumbered (one-indexed).",
+        required: true,
+      ),
+      e.field(
+        "fill",
+        content,
+        doc: "Content to display in place of the line number.",
+        default: [],
+        named: false,
+      ),
+    ),
+    parse-args: __pair-parser("line"),
+    casts: (
+      (
+        from: dictionary,
+        with: __pair-dict-cast(("line", "fill")),
+      ),
+      (
+        from: int,
+        with: constructor => value => constructor(value),
+      ),
+      (
+        from: array,
+        check: value => value.len() in (1, 2),
+        with: constructor => value => constructor(..value),
+      ),
+    ),
+  )
+}
+
+/// Shared formatting settings read by the line, highlight, and annotation
+/// reference renderers. Generated references currently use figure numbering.
+#let codly-ref = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix, __doc, __default
+
+  e.element.declare(
+    "codly-ref",
+    prefix: __codly-prefix,
+    doc: "A reference to a highlight or annotation of a codly code block.",
+    display: it => it.body,
+    fields: (
+      e.field(
+        "body",
+        e.types.option(content),
+        doc: "The content of the reference.",
+        required: true,
+      ),
+      e.field(
+        "by",
+        e.types.option(e.types.union("line", "item")),
+        doc: __doc("reference-by"),
+        default: __default("reference-by"),
+      ),
+      e.field(
+        "sep",
+        e.types.option(e.types.union(str, content)),
+        doc: __doc("reference-sep"),
+        default: __default("reference-sep"),
+      ),
+      e.field(
+        "numbering",
+        e.types.option(function),
+        doc: __doc("reference-number-format"),
+        default: __default("reference-number-format"),
+      ),
+    ),
+  )
+}
+
+/// A native reference to a displayed line of a codly code block.
+#let codly-line-ref = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix, __codly-line-ref-show
+
+  e.element.declare(
+    "codly-line-ref",
+    prefix: __codly-prefix,
+    doc: "A native reference to a displayed line of a codly code block.",
+    display: __codly-line-ref-show.with(codly-ref),
+    labelable: false,
+    fields: (
+      e.field("body", e.types.option(content), doc: "Internal reference body.", required: true),
+      e.field("block", label, doc: "The containing code block label.", required: true, named: true),
+      e.field("number", int, doc: "The displayed line number.", required: true, named: true),
+      e.field(
+        "suffix",
+        e.types.option(content),
+        doc: "An optional displayed-number suffix.",
+        default: none,
+      ),
+      e.field(
+        "separator",
+        e.types.option(e.types.union(auto, str, content)),
+        doc: "Text between the code block and line number; `auto` uses `codly-ref` settings.",
+        default: auto,
+      ),
+      e.field(
+        "numbering",
+        e.types.option(e.types.union(auto, function)),
+        doc: "Line-number formatter; `auto` uses `codly-ref` settings.",
+        default: auto,
+      ),
+    ),
+  )
+}
+
+/// A native reference to a labelled highlight in a codly code block.
+#let codly-highlight-ref = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix, __codly-highlight-ref-show
+
+  e.element.declare(
+    "codly-highlight-ref",
+    prefix: __codly-prefix,
+    doc: "A native reference to a labelled highlight in a codly code block.",
+    display: __codly-highlight-ref-show.with(codly-ref),
+    labelable: false,
+    fields: (
+      e.field("body", e.types.option(content), doc: "Internal reference body.", required: true),
+      e.field("block", label, doc: "The containing code block label.", required: true, named: true),
+      e.field("line", int, doc: "The displayed line number.", required: true, named: true),
+      e.field(
+        "item",
+        e.types.option(content),
+        doc: "The highlight tag for item references.",
+        default: none,
+      ),
+      e.field(
+        "by",
+        e.types.union("line", "item"),
+        doc: "Whether the reference shows a line or item.",
+        required: true,
+        named: true,
+      ),
+      e.field(
+        "separator",
+        e.types.option(e.types.union(auto, str, content)),
+        doc: "Text between the code block and reference; `auto` uses `codly-ref` settings.",
+        default: auto,
+      ),
+      e.field(
+        "numbering",
+        e.types.option(e.types.union(auto, function)),
+        doc: "Line-number formatter; `auto` uses `codly-ref` settings.",
+        default: auto,
+      ),
+    ),
+  )
+}
+
+/// A native reference to a labelled annotation in a codly code block.
+#let codly-annotation-ref = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-annotation-ref-show, __codly-prefix
+
+  e.element.declare(
+    "codly-annotation-ref",
+    prefix: __codly-prefix,
+    doc: "A native reference to a labelled annotation in a codly code block.",
+    display: __codly-annotation-ref-show.with(codly-ref),
+    labelable: false,
+    fields: (
+      e.field("body", e.types.option(content), doc: "Internal reference body.", required: true),
+      e.field("block", label, doc: "The containing code block label.", required: true, named: true),
+      e.field("line", int, doc: "The displayed line number.", required: true, named: true),
+      e.field(
+        "item",
+        content,
+        doc: "The annotation item for item references.",
+        required: true,
+        named: true,
+      ),
+      e.field(
+        "suffix",
+        e.types.option(content),
+        doc: "An optional displayed-number suffix.",
+        default: none,
+      ),
+      e.field(
+        "by",
+        e.types.union("line", "item"),
+        doc: "Whether the reference shows a line or item.",
+        required: true,
+        named: true,
+      ),
+      e.field(
+        "separator",
+        e.types.option(e.types.union(auto, str, content)),
+        doc: "Text between the code block and reference; `auto` uses `codly-ref` settings.",
+        default: auto,
+      ),
+      e.field(
+        "numbering",
+        e.types.option(e.types.union(auto, function)),
+        doc: "Line-number formatter; `auto` uses `codly-ref` settings.",
+        default: auto,
+      ),
+    ),
+  )
+}
+
+/// A single highlight within a codly code block.
+#let codly-highlight = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix, __doc, __default, __codly-highlight-show
+
+  e.element.declare(
+    "codly-highlight",
+    prefix: __codly-prefix,
+    doc: "A highlight over part of a line of a codly code block.",
+    display: __codly-highlight-show.with(codly-ref, codly-highlight-ref),
+    fields: (
+      e.field("body", e.types.option(content), doc: "The highlighted content.", required: true),
+      e.field(
+        "highlight",
+        e.types.option(highlight),
+        doc: "The highlight metadata for this content.",
+        default: none,
+      ),
+      e.field(
+        "__continuation-indent",
+        e.types.option(length),
+        default: none,
+        doc: "Internal smart indentation inside a wrapping highlight.",
+      ),
+      e.field(
+        "color",
+        e.types.paint,
+        doc: __doc("default-color"),
+        default: __default("default-color"),
+      ),
+      e.field(
+        "radius",
+        e.types.option(length),
+        doc: __doc("highlight-radius"),
+        default: __default("highlight-radius"),
+      ),
+      e.field(
+        "fill",
+        e.types.option(function),
+        doc: __doc("highlight-fill"),
+        default: __default("highlight-fill"),
+      ),
+      e.field(
+        "baseline",
+        e.types.option(e.types.union(length, auto)),
+        doc: "The highlight box baseline shift; `auto` uses Typst's content baseline.",
+        default: 0pt,
+      ),
+      e.field(
+        "stroke",
+        e.types.option(e.types.union(stroke, function)),
+        doc: __doc("highlight-stroke"),
+        default: __default("highlight-stroke"),
+      ),
+      e.field(
+        "inset",
+        e.types.option(e.types.union(length, dictionary)),
+        doc: __doc("highlight-inset"),
+        default: __default("highlight-inset"),
+      ),
+      e.field(
+        "outset",
+        e.types.option(e.types.union(length, dictionary)),
+        doc: __doc("highlight-outset"),
+        default: __default("highlight-outset"),
+      ),
+      e.field(
+        "clip",
+        e.types.option(bool),
+        doc: __doc("highlight-clip"),
+        default: __default("highlight-clip"),
+      ),
+    ),
+  )
+}
+
+/// A single line of a codly code block. Takes over the line-level styling
+/// arguments of `codly` (`radius`, `inset`, `fill`, `zebra-fill`, `stroke`).
+#let codly-line = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix, __doc, __default, __codly-line-show
+
+  e.element.declare(
+    "codly-line",
+    prefix: __codly-prefix,
+    doc: "A single line of a codly code block.",
+    display: __codly-line-show.with(codly-highlight, codly-ref, codly-line-ref),
+    fields: (
+      e.field("body", e.types.option(content), doc: "The content of the line.", required: true),
+      e.field("radius", e.types.option(length), doc: __doc("radius"), default: __default("radius")),
+      e.field(
+        "inset",
+        e.types.option(e.types.union(length, dictionary)),
+        doc: __doc("inset"),
+        default: __default("inset"),
+      ),
+      e.field(
+        "fill",
+        e.types.option(e.types.paint),
+        doc: __doc("fill"),
+        default: __default("fill"),
+      ),
+      e.field(
+        "zebra-fill",
+        e.types.option(e.types.paint),
+        doc: __doc("zebra-fill"),
+        default: __default("zebra-fill"),
+      ),
+      e.field("stroke", e.types.option(stroke), doc: __doc("stroke"), default: __default("stroke")),
+      e.field(
+        "highlights",
+        e.types.option(e.types.array(highlight)),
+        doc: __doc("highlights"),
+        default: __default("highlights"),
+        folds: false,
+      ),
+      e.field("smart-indent", bool, doc: __doc("smart-indent"), default: __default("smart-indent")),
+      e.field(
+        "__wrap",
+        e.types.option(dictionary),
+        default: none,
+        doc: "Internal block-owned continuation marker settings.",
+      ),
+      e.field(
+        "__callout",
+        e.types.option(dictionary),
+        default: none,
+        doc: "Internal character anchors.",
+      ),
+      e.field(
+        "block-label",
+        e.types.option(label),
+        doc: "The label of the containing code block.",
+        default: none,
+      ),
+      e.field(
+        "reference",
+        e.types.option(dictionary),
+        doc: "Internal reference details for an unnumbered source line.",
+        default: none,
+      ),
+    ),
+  )
+}
+
+/// The header of a codly code block. Takes over the `header-` prefixed
+/// arguments of `codly`.
+#let codly-header = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix, __doc, __default
+
+  e.element.declare(
+    "codly-header",
+    prefix: __codly-prefix,
+    doc: "The header of a codly code block.",
+    display: it => it.body,
+    fields: (
+      e.field("body", e.types.option(content), doc: __doc("header"), required: true),
+      e.field(
+        "repeat",
+        e.types.option(bool),
+        doc: __doc("header-repeat"),
+        default: __default("header-repeat"),
+      ),
+
+      // Replaces the old cell-args
+      e.field("align", e.types.option(alignment), doc: "todo", default: center + horizon),
+      e.field("breakable", e.types.option(e.types.union(bool, auto)), doc: "todo", default: auto),
+      e.field(
+        "inset",
+        e.types.option(e.types.union(length, dictionary, auto)),
+        doc: "todo",
+        default: auto,
+      ),
+      e.field(
+        "fill",
+        e.types.option(e.types.union(e.types.paint, auto)),
+        doc: "todo",
+        default: auto,
+      ),
+      e.field("stroke", e.types.option(e.types.union(stroke, auto)), doc: "todo", default: auto),
+    ),
+  )
+}
+
+/// The footer of a codly code block. Takes over the `footer-` prefixed
+/// arguments of `codly`.
+#let codly-footer = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix, __doc, __default
+
+  e.element.declare(
+    "codly-footer",
+    prefix: __codly-prefix,
+    doc: "The footer of a codly code block.",
+    display: it => it.body,
+    fields: (
+      e.field("body", e.types.option(content), doc: __doc("footer"), required: true),
+      e.field(
+        "repeat",
+        e.types.option(bool),
+        doc: __doc("footer-repeat"),
+        default: __default("footer-repeat"),
+      ),
+
+      // Replaces the old cell-args
+      e.field("align", e.types.option(alignment), doc: "todo", default: center + horizon),
+      e.field("breakable", e.types.option(e.types.union(bool, auto)), doc: "todo", default: auto),
+      e.field(
+        "inset",
+        e.types.option(e.types.union(length, dictionary, auto)),
+        doc: "todo",
+        default: auto,
+      ),
+      e.field(
+        "fill",
+        e.types.option(e.types.union(e.types.paint, auto)),
+        doc: "todo",
+        default: auto,
+      ),
+      e.field("stroke", e.types.option(e.types.union(stroke, auto)), doc: "todo", default: auto),
+    ),
+  )
+}
+
+/// The language badge of a codly code block. Takes over the `lang-` prefixed
+/// arguments of `codly`, as well as `display-name` and `display-icon`.
+#let codly-lang = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix, __doc, __default, __codly-lang-show
+
+  e.element.declare(
+    "codly-lang",
+    prefix: __codly-prefix,
+    doc: "The language badge of a codly code block.",
+    display: __codly-lang-show,
+    fields: (
+      e.field("body", str, doc: "The language key, e.g. \"py\".", required: true),
+      e.field(
+        "languages",
+        e.types.option(e.types.dict(language)),
+        doc: __doc("languages"),
+        default: __default("languages"),
+      ),
+      e.field(
+        "default-color",
+        e.types.option(e.types.paint),
+        doc: __doc("default-color"),
+        default: __default("default-color"),
+      ),
+      e.field(
+        "inset",
+        e.types.option(e.types.union(length, dictionary)),
+        doc: __doc("lang-inset"),
+        default: __default("lang-inset"),
+      ),
+      e.field(
+        "outset",
+        e.types.option(dictionary),
+        doc: __doc("lang-outset"),
+        default: __default("lang-outset"),
+      ),
+      e.field(
+        "radius",
+        e.types.option(e.types.union(length, dictionary)),
+        doc: __doc("lang-radius"),
+        default: __default("lang-radius"),
+      ),
+      e.field(
+        "stroke",
+        e.types.option(e.types.union(stroke, function)),
+        doc: __doc("lang-stroke"),
+        default: __default("lang-stroke"),
+      ),
+      e.field(
+        "fill",
+        e.types.option(e.types.union(e.types.paint, function)),
+        doc: __doc("lang-fill"),
+        default: __default("lang-fill"),
+      ),
+      e.field(
+        "display-name",
+        e.types.option(bool),
+        doc: __doc("display-name"),
+        default: __default("display-name"),
+      ),
+      e.field(
+        "display-icon",
+        e.types.option(bool),
+        doc: __doc("display-icon"),
+        default: __default("display-icon"),
+      ),
+      e.field("align", e.types.option(alignment), doc: "todo", default: right + horizon),
+    ),
+  )
+}
+
+/// A single annotation of a codly code block. Takes over the `annotation-`
+/// prefixed arguments of `codly`.
+#let codly-annotation = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix, __doc, __default, __codly-annotation-show
+
+  e.element.declare(
+    "codly-annotation",
+    prefix: __codly-prefix,
+    doc: "An annotation displayed on the right side of a codly code block.",
+    display: __codly-annotation-show,
+    labelable: false,
+    fields: (
+      e.field(
+        "body",
+        e.types.option(content),
+        doc: "The content of the annotation.",
+        required: true,
+      ),
+      e.field("label", e.types.option(content), doc: "todo", default: "todo", required: true),
+      e.field("height", e.types.option(length), doc: "todo", default: 0.0pt),
+      e.field("num", e.types.option(int), doc: "todo", default: 0),
+      e.field("numbering", e.types.option(function), doc: "todo", default: numbering.with("(1)")),
+    ),
+  )
+}
+
+/// The painted bubble inside a callout. Owns independent styling defaults.
+#let codly-bubble = {
+  import "src/callout.typ" as callout-impl
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+
+  e.element.declare(
+    "codly-bubble",
+    prefix: __codly-prefix,
+    doc: "A bubble generated by a pointed callout. Set rules provide its styling defaults.",
+    display: callout-impl.bubble-display,
+    fields: (
+      e.field("body", content, doc: "The bubble content.", required: true),
+      ..callout-impl.fields(bubble: true),
+      e.field("line", int, doc: "The attached source line.", required: true, named: true),
+      e.field("pointer", int, doc: "The source character anchor.", required: true, named: true),
+      e.field(
+        "placement",
+        e.types.union("above", "below"),
+        default: "below",
+        doc: "Side of the source line.",
+      ),
+      e.field(
+        "__layout",
+        e.types.option(dictionary),
+        default: none,
+        doc: "Internal packed geometry.",
+      ),
+      e.field(
+        "__anchor",
+        e.types.option(dictionary),
+        default: none,
+        doc: "Internal source anchor.",
+      ),
+    ),
+  )
+}
+
+/// A callout row. Its cell properties can be configured with set rules.
+#let codly-callout = {
+  import "src/callout.typ" as callout-impl
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+
+  e.element.declare(
+    "codly-callout",
+    prefix: __codly-prefix,
+    doc: "A callout displayed above or below a source line.",
+    display: callout-impl.display.with(codly-bubble),
+    fields: (
+      e.field("body", content, doc: "The callout content.", required: true),
+      e.field("line", int, doc: "The attached source line.", required: true, named: true),
+      e.field(
+        "align",
+        e.types.option(e.types.union(alignment, auto)),
+        doc: "The callout cell alignment.",
+        default: auto,
+      ),
+      e.field(
+        "breakable",
+        e.types.option(e.types.union(bool, auto)),
+        doc: "Whether the callout cell may break across pages.",
+        default: auto,
+      ),
+      e.field(
+        "inset",
+        e.types.option(e.types.union(length, dictionary, auto)),
+        doc: "The callout cell inset.",
+        default: auto,
+      ),
+      e.field(
+        "fill",
+        e.types.option(e.types.union(e.types.paint, auto)),
+        doc: "The callout cell fill.",
+        default: auto,
+      ),
+      e.field(
+        "stroke",
+        e.types.option(e.types.union(stroke, auto)),
+        doc: "The callout cell stroke.",
+        default: auto,
+      ),
+      ..callout-impl.fields(),
+      e.field(
+        "__layout",
+        e.types.option(dictionary),
+        default: none,
+        doc: "Internal packed bubble geometry.",
+      ),
+      e.field(
+        "__anchor",
+        e.types.option(dictionary),
+        default: none,
+        doc: "Internal source anchor.",
+      ),
+    ),
+  )
+}
+
+/// A line number of a codly code block. Takes over the `number-` prefixed
+/// arguments of `codly`.
+#let codly-number = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix, __doc, __default
+
+  e.element.declare(
+    "codly-number",
+    prefix: __codly-prefix,
+    doc: "A line number of a codly code block.",
+    display: it => it.body,
+    fields: (
+      e.field("body", e.types.union(int, content), doc: "The line number content.", required: true),
+      e.field(
+        "align",
+        e.types.option(alignment),
+        doc: __doc("number-align"),
+        default: __default("number-align"),
+      ),
+      e.field(
+        "placement",
+        e.types.option(e.types.union("inside", "outside")),
+        doc: __doc("number-placement"),
+        default: __default("number-placement"),
+      ),
+      e.field(
+        "fill",
+        e.types.option(e.types.union(auto, e.types.paint)),
+        doc: "The background fill of the number column. `auto` follows each code row's fill.",
+        default: auto,
+      ),
+    ),
+  )
+}
+
+#let sublang-block = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix, __doc, __default
+
+  e.element.declare(
+    "sublang-block",
+    prefix: __codly-prefix,
+    doc: "A sublanguage block within a codly code block.",
+    display: it => {
+      show raw.where(block: true): raw => {
+        let idx = str(it.idx)
+
+        for (i, line) in raw.lines.enumerate() {
+          let line-label = label("__codly_sublang_line_" + idx + "_" + str(i))
+          [
+            #metadata(line) #line-label
+          ]
+        }
+      }
+
+      it.body
+    },
+    fields: (
+      e.field("body", content, doc: "The content of the sublanguage block.", required: true),
+      e.field(
+        "idx",
+        int,
+        doc: "The index of the sublanguage block within the code block.",
+        required: true,
+      ),
+    ),
+  )
+}
+
+#let codly = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix, __default, __doc, __codly-show
+
+  let codly-show = __codly-show.with(
+    codly-line,
+    codly-highlight,
+    codly-lang,
+    codly-header,
+    codly-footer,
+    codly-number,
+    codly-annotation,
+    codly-callout,
+    codly-bubble,
+    codly-annotation-ref,
+    codly-ref,
+    sublang-block,
+  )
+
+  e.element.declare(
+    "codly",
+    prefix: __codly-prefix,
+    doc: "Codly is a library that enhances the way you write code blocks in Typst.",
+    display: it => {
+      let body = it.remove("body")
+      let data = it.remove("__elembic_stored_element_data")
+      let constructor = if it.alias == none and it.aliases != none and it.aliases.len() > 0 {
+        data.default-constructor
+      }
+      let alias-style = if constructor != none {
+        (size: text.size, theme: raw.theme, syntaxes: raw.syntaxes)
+      }
+      show raw.where(block: true): codly-show.with(
+        constructor,
+        it,
+        alias-style,
+      )
+      body
+    },
+    fields: (
+      e.field("body", e.types.option(content), doc: "The row block to style", required: true),
+      e.field(
+        "block-label",
+        e.types.option(label),
+        doc: "The label of the containing figure.",
+        default: none,
+      ),
+      e.field(
+        "alias",
+        e.types.option(str),
+        doc: "Whether this is an already aliased block",
+        required: false,
+        default: none,
+      ),
+      e.field("number-enabled", e.types.option(bool), doc: "todo", default: true),
+      e.field("offset", e.types.option(int), doc: __doc("offset"), default: __default("offset")),
+      e.field(
+        "offset-from",
+        e.types.option(label),
+        doc: __doc("offset-from"),
+        default: __default("offset-from"),
+      ),
+      e.field(
+        "range",
+        e.types.option(range),
+        doc: __doc("range"),
+        default: __default("range"),
+        folds: false,
+      ),
+      e.field(
+        "ranges",
+        e.types.option(e.types.array(range)),
+        doc: __doc("ranges"),
+        default: __default("ranges"),
+        folds: false,
+      ),
+      e.field(
+        "smart-skip",
+        e.types.option(smart-skip),
+        doc: __doc("smart-skip"),
+        default: __default("smart-skip"),
+        folds: false,
+      ),
+      e.field(
+        "aliases",
+        e.types.option(dictionary),
+        doc: __doc("aliases"),
+        default: __default("aliases"),
+      ),
+      e.field(
+        "smart-indent",
+        e.types.option(bool),
+        doc: __doc("smart-indent"),
+        default: __default("smart-indent"),
+      ),
+      e.field(
+        "wrap-marker",
+        e.types.option(content),
+        default: none,
+        doc: "Optional symbol at each wrapped continuation when smart-indent is enabled.",
+      ),
+      e.field(
+        "skip-last-empty",
+        e.types.option(bool),
+        doc: __doc("skip-last-empty"),
+        default: __default("skip-last-empty"),
+      ),
+      e.field(
+        "breakable",
+        e.types.option(bool),
+        doc: __doc("breakable"),
+        default: __default("breakable"),
+      ),
+      e.field(
+        "skips",
+        e.types.option(e.types.array(skip)),
+        doc: __doc("skips"),
+        default: __default("skips"),
+        folds: false,
+      ),
+      e.field(
+        "skip-line",
+        e.types.option(e.types.union(content, e.types.array(e.types.option(content)))),
+        doc: __doc("skip-line"),
+        default: __default("skip-line"),
+        folds: false,
+      ),
+      e.field(
+        "skip-number",
+        e.types.option(e.types.union(content, e.types.array(e.types.option(content)))),
+        doc: __doc("skip-number"),
+        default: __default("skip-number"),
+        folds: false,
+      ),
+      e.field(
+        "unnumbered",
+        e.types.option(e.types.array(unnumbered-line)),
+        doc: __doc("unnumbered-lines"),
+        default: __default("unnumbered-lines"),
+        folds: false,
+      ),
+      e.field(
+        "annotations",
+        e.types.option(e.types.array(annotation)),
+        doc: __doc("annotations"),
+        default: __default("annotations"),
+        folds: false,
+      ),
+      e.field(
+        "callouts",
+        e.types.option(e.types.array(callout)),
+        doc: __doc("callouts"),
+        default: __default("callouts"),
+        folds: false,
+      ),
+      e.field(
+        "highlighted",
+        e.types.option(e.types.array(highlighted-line)),
+        doc: __doc("highlighted-lines"),
+        default: __default("highlighted-lines"),
+        folds: false,
+      ),
+      e.field(
+        "highlights",
+        e.types.option(e.types.array(highlight)),
+        doc: __doc("highlights"),
+        default: __default("highlights"),
+        folds: false,
+      ),
+      e.field(
+        "header",
+        e.types.option(content),
+        doc: __doc("header"),
+        default: __default("header"),
+      ),
+      e.field(
+        "footer",
+        e.types.option(content),
+        doc: __doc("footer"),
+        default: __default("footer"),
+      ),
+      e.field("radius", e.types.option(length), doc: __doc("radius"), default: __default("radius")),
+      e.field(
+        "leading",
+        e.types.option(length),
+        doc: __doc("leading"),
+        default: __default("leading"),
+      ),
+      e.field("gutter", e.types.option(length), doc: __doc("gutter"), default: __default("gutter")),
+      e.field(
+        "column-gutter",
+        e.types.option(length),
+        doc: __doc("column-gutter"),
+        default: __default("column-gutter"),
+      ),
+      e.field(
+        "row-gutter",
+        e.types.option(length),
+        doc: __doc("row-gutter"),
+        default: __default("row-gutter"),
+      ),
+      e.field("sublangs", e.types.option(e.types.array(sublang)), doc: "todo", default: none),
+      e.field(
+        "rainbow",
+        e.types.option(rainbow),
+        doc: "Opt-in syntax-aware delimiter colors; true or a rainbow configuration.",
+        default: none,
+      ),
+      e.field(
+        "indent-guides",
+        e.types.option(indent-guides),
+        doc: "Opt-in indentation guides; true or an indent-guides configuration.",
+        default: none,
+      ),
+      e.field(
+        "width",
+        e.types.union(length, ratio, auto),
+        doc: "todo",
+        default: 100%,
+        folds: false,
+      ),
+    ),
+  )
+}
+
+
+#let new = codly
+#let set_(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(codly, ..args)
+}
+#let show_(it, ..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.show_(codly, it, ..args)
+}
+#let selector(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.selector(codly, ..args)
+}
+#let lang-set_(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(codly-lang, ..args)
+}
+#let lang-show_(it, ..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.show_(codly-lang, it, ..args)
+}
+#let header-set(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(codly-header, ..args)
+}
+#let line-set_(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(codly-line, ..args)
+}
+#let line-show_(it, ..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.show_(codly-line, it, ..args)
+}
+#let highlight-set_(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(codly-highlight, ..args)
+}
+#let highlight-show_(it, ..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.show_(codly-highlight, it, ..args)
+}
+#let annotation-set_(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(codly-annotation, ..args)
+}
+#let annotation-show_(it, ..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.show_(codly-annotation, it, ..args)
+}
+#let callout-set_(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(codly-callout, ..args)
+}
+#let callout-show_(it, ..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.show_(codly-callout, it, ..args)
+}
+#let bubble-set_(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(codly-bubble, ..args)
+}
+#let bubble-show_(it, ..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.show_(codly-bubble, it, ..args)
+}
+#let ref-set_(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(codly-ref, ..args)
+}
+#let line-ref-set_(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(codly-line-ref, ..args)
+}
+#let line-ref-show_(it, ..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.show_(codly-line-ref, it, ..args)
+}
+#let highlight-ref-set_(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(codly-highlight-ref, ..args)
+}
+#let highlight-ref-show_(it, ..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.show_(codly-highlight-ref, it, ..args)
+}
+#let annotation-ref-set_(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(codly-annotation-ref, ..args)
+}
+#let annotation-ref-show_(it, ..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.show_(codly-annotation-ref, it, ..args)
+}
+#let number-set_(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(codly-number, ..args)
+}
+#let number-show_(it, ..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.show_(codly-number, it, ..args)
+}
+
+/// In context, read source line count and the last displayed number of a block.
+#import "src/lib.typ": __codly-block-info as info

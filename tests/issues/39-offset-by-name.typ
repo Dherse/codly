@@ -1,10 +1,9 @@
-#import "../../codly.typ": *
+#import "../../codly.typ" as codly
 
-#show: codly-init.with()
+#set page(height: auto, margin: 5pt, width: 450pt)
 
 = First part
-#codly(offset: 10)
-```py
+#codly.new(offset: 10, ```py
 import pandas as pd
 
 def preprocess_headers(data: pd.DataFrame) -> None:
@@ -27,11 +26,10 @@ def preprocess_headers(data: pd.DataFrame) -> None:
         inplace=True,
         errors="raise",
     )
-``` <first-part>
+```)<first-part>
 
 = Second part
-#codly(offset-from: <first-part>)
-```py
+#codly.new(offset-from: <first-part>, ```py
     # Replace values with correct ones
     data.loc[data["Relation"] == "Mum", "Relation"] = "Mother"
     data.loc[data["Nationality"] == "KW", "Nationality"] = "Kuwait"
@@ -50,13 +48,13 @@ def preprocess_headers(data: pd.DataFrame) -> None:
     grade_ids = [f"G-{i:02d}" for i in range(1, 13)]
     data["GradeID"] = data["GradeID"].cat.set_categories(grade_ids, ordered=True)
     data["Class"] = pd.Categorical(data["Class"], ordered=True, categories=["L", "M", "H"])
-```
+```)
 
 = No offset
-```py
+#codly.new(```py
 def fib(n):
   if n <= 1:
       return n
   return fib(n - 1) + fib(n - 2)
 fib(11)
-```
+```)

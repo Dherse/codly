@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plist version="1.0"><dict>
+<key>name</key><string>Codly Dark Theme Regression</string>
+<key>settings</key><array>
+<dict><key>settings</key><dict>
+<key>foreground</key><string>#a9b1d6</string>
+<key>background</key><string>#1a1b26</string>
+</dict></dict>
+<dict><key>scope</key><string>keyword</string><key>settings</key><dict>
+<key>foreground</key><string>#bb9af7</string>
+</dict></dict>
+</array></dict></plist>

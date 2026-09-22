@@ -1,0 +1,2 @@
+# This raw-code fixture intentionally contains tab-indented Scala.
+tests/number-placement/4-longcode.typ whitespace=-space-before-tab

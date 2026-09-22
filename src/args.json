@@ -165,6 +165,38 @@
             }
         ]
     },
+    "leading": {
+        "title": "Leading",
+        "description": "Vertical padding for each code row. When set, this overrides the vertical component of the line inset while preserving its horizontal component. It increases or decreases the apparent spacing between code lines and automatically keeps the language badge inside the block border.",
+        "default": "none",
+        "ty": [ "type(none)", "length" ],
+        "function": true,
+        "example": "*Tighter rows:*\n#codly(leading: 0.2em)\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```\n\n*Looser rows:*\n#codly(leading: 0.6em)\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```"
+    },
+    "gutter": {
+        "title": "Grid gutter",
+        "description": "Default spacing between rows and columns of Codly's primary grid. Use `column-gutter` or `row-gutter` to override one direction.",
+        "default": "none",
+        "ty": [ "type(none)", "length" ],
+        "function": true,
+        "example": "#codly(gutter: 0.2em)\n```py\nprint('Hello, world!')\n```"
+    },
+    "column-gutter": {
+        "title": "Column gutter",
+        "description": "Horizontal spacing between columns of Codly's primary grid, such as the line-number and code columns. Overrides `gutter` horizontally when set.",
+        "default": "none",
+        "ty": [ "type(none)", "length" ],
+        "function": true,
+        "example": "#codly(column-gutter: 0.4em)\n```py\nprint('Hello, world!')\n```"
+    },
+    "row-gutter": {
+        "title": "Row gutter",
+        "description": "Vertical spacing between rows of Codly's primary grid. Overrides `gutter` vertically when set.",
+        "default": "none",
+        "ty": [ "type(none)", "length" ],
+        "function": true,
+        "example": "#codly(row-gutter: 0.2em)\n```py\nprint('Hello, world!')\n```"
+    },
     "fill": {
         "title": "Fill",
         "description": "The fill of the code block when not zebra-striped.",
@@ -209,7 +241,7 @@
         "title": "Language box radius",
         "description": "The radius of the border of the language block.",
         "default": "0.32em",
-        "ty": [ "length" ],
+        "ty": [ "length", "dictionary" ],
         "function": true,
         "example": "#codly(lang-radius: 10pt)\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```"
     },
@@ -278,9 +310,18 @@
         "example": "*Line number outside of the block:*\n#codly(number-placement: \"outside\")\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```\n*Line number inside of the block:*\n#codly(number-placement: \"inside\")\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```",
         "upcoming": false
     },
+    "unnumbered-lines": {
+        "title": "Unnumbered lines",
+        "description": "Source lines to omit from line numbering. Each entry can be a line number or `(line, fill)`, where `fill` replaces the empty number cell. Line numbers are one-indexed. An unnumbered line after displayed line 5 can be referenced as `@block:l5p1`; consecutive unnumbered lines increase the final number.",
+        "default": "()",
+        "ty": [ "array" ],
+        "function": true,
+        "reset": true,
+        "example": "#codly(unnumbered: ((1, emoji.face.happy), 4))\n```asm\nstart:\n  mov w0, 0\n  ret\ndone:\n```"
+    },
     "smart-indent": {
         "title": "Smart indentation",
-        "description": "Whether to use smart indentation, which will check for indentation on a line and use a bigger left side inset instead of spaces. This allows for linebreaks to continue at the same level of indentation. This is on by default, but disabling it can improve performance.",
+        "description": "Whether to continue wrapped lines at their original indentation. Leading spaces are read from the normalized raw line text, independently of syntax styling. Wrapping highlights also retain the indentation remaining inside their span. This is on by default, but disabling it can improve performance.",
         "default": "true",
         "ty": [ "bool" ],
         "function": false,
@@ -313,17 +354,17 @@
     },
     "skip-line": {
         "title": "Skip line",
-        "description": "Sets the content with which the line code is filled when a skip is encountered.",
+        "description": "Sets the content displayed for a skip. An array supplies one value per explicit skip in display order, ignoring duplicate skip records. Further skips reuse the final value. Smart skips use the final value without consuming an entry. An empty array uses the default; `none` entries display nothing.",
         "default": "align(center)[ ... ]",
-        "ty": [ "content", "type(none)" ],
+        "ty": [ "content", "type(none)", "array" ],
         "function": true,
         "example": "#codly(\n  skips: ((4, 32), ),\n  skip-line: align(center, emoji.face.shock)\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\nfib(25)\n```"
     },
     "skip-number": {
         "title": "Skip number",
-        "description": "Sets the content with which the line number columns is filled when a skip is encountered. If line numbers are disabled, this has no effect.",
+        "description": "Sets the number column content for a skip. Like @arg-skip-line, this accepts a single value or an array indexed by explicit skips. Further skips and smart skips reuse the final value; an empty array uses the default. `none` entries display nothing. If line numbers are disabled, this has no effect.",
         "default": "[ ... ]",
-        "ty": [ "content", "type(none)" ],
+        "ty": [ "content", "type(none)", "array" ],
         "function": true,
         "example": "#codly(\n  skips: ((4, 32), ),\n  skip-number: align(center, emoji.face.shock)\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\nfib(25)\n```"
     },
@@ -336,6 +377,14 @@
         "reset": true,
         "experimental": true,
         "example": "#codly(\n  annotations: (\n    (\n      start: 2, end: 5,\n      content: block(\n        width: 2em,\n        rotate(-90deg, reflow: true, \n          align(center)[Function body])\n      )\n    ),\n  ),\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```"
+    },
+    "callouts": {
+        "title": "Callout rows",
+        "description": "Content rows inserted immediately after selected source lines. Each entry is a dictionary with `line` (one-indexed source line number), `body`, and optional `align`, `breakable`, `fill`, `inset`, and `stroke` fields for that row's `grid.cell`. These fields override defaults set on @codly-callout. Multiple callouts may follow the same line. Codly always controls the cell body, position, and span: a callout spans the number and code columns, plus an inactive annotation column; only an active annotation brace retains the final column.",
+        "default": "none",
+        "ty": [ "array", "type(none)" ],
+        "function": true,
+        "example": "#codly(\n  callouts: (\n    (\n      line: 2,\n      body: [This branch handles the base case.],\n      fill: luma(240),\n      inset: 4pt,\n    ),\n  ),\n)\n```py\nif n <= 1:\n  return n\n```"
     },
     "annotation-format": {
         "title": "Annotation formatter",
@@ -365,7 +414,7 @@
     },
     "highlights": {
         "title": "Highlights",
-        "description": "You can apply highlights to the code block using the `highlights` argument. It consists of a list of dictionaries, each with the following keys:\n- `line`: the line number to start highlighting\n- `start`: the character position to start highlighting, zero if omitted or `none`\n- `end`: the character position to end highlighting, the end of the line if omitted or `none`\n- `fill`: the fill of the highlight, defaults to the default color\n- `tag`: an optional tag to be displayed alongside the highlight.\n- `inset`: overrides the global @arg-highlight-inset.\n- `baseline`: overrides the baseline which is set by default to the `bottom` component of @arg-highlight-inset.\n- `clip`: overrides the global @arg-highlight-clip.\n- `outset`: overrides the global @arg-highlight-outset.\n- `radius`: overrides the global @arg-highlight-radius.\n- `label`: *if and only if* the code block is in a `figure`, sets the label by which the highlight can be referenced.\n\nAs with other code block settings, annotations are reset after each code block. #one-indexed #zero-indexed",
+        "description": "You can apply highlights to the code block using the `highlights` argument. It consists of a list of dictionaries, each with the following keys:\n- `line`: the line number to start highlighting\n- `start`: the character position to start highlighting, zero if omitted or `none`\n- `end`: the character position to end highlighting, the end of the line if omitted or `none`\n- `fill`: the fill of the highlight, defaults to the default color\n- `tag`: an optional tag to be displayed alongside the highlight.\n- `inset`: overrides the global @arg-highlight-inset.\n- `baseline`: overrides the highlight box baseline. The default is `0pt` (no shift). Typst 0.15 and newer also accept `auto` to use the content baseline.\n- `clip`: overrides the global @arg-highlight-clip.\n- `outset`: overrides the global @arg-highlight-outset.\n- `radius`: overrides the global @arg-highlight-radius.\n- `label`: *if and only if* the code block is in a `figure`, sets the label by which the highlight can be referenced.\n\nAs with other code block settings, annotations are reset after each code block. #one-indexed #zero-indexed",
         "default": "none",
         "ty": [ "array", "type(none)" ],
         "function": true,
@@ -450,7 +499,7 @@
     },
     "aliases": {
         "title": "Language name aliases",
-        "description": "Creates aliases between languages, allowing them to have separate `languages` but the same syntax highlighting. An example of that could be `cuda` and `c++` having the same highlighting but different icons.",
+        "description": "Creates aliases between languages, allowing them to have separate `languages` but the same syntax highlighting. An example of that could be `cuda` and `c++` having the same highlighting but different icons. Relative theme and syntax paths inherited through `set raw(...)` retain their origin. When passing these resources directly to an aliased `raw(...)`, use `path(...)` (Typst 0.15+) or `read(..., encoding: none)` instead of plain strings.",
         "default": "(:)",
         "ty": [ "dictionary" ],
         "function": false,
