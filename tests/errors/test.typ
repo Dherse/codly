@@ -16,6 +16,7 @@
   ("greater than 0", (annotations: ((start: 0),))),
   ("greater than 0", (annotations: ((start: 1, end: 0),))),
   ("at least `start`", (annotations: ((start: 3, end: 2),))),
+  ("greater than 0", (callouts: ((line: 0, body: []),))),
 ) {
   rejects(expected, args)
 }

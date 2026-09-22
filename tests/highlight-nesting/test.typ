@@ -144,6 +144,7 @@
     (first: false, rest: false, last: false),
     range(1, 5).map(number => raw.line(number, 4, "abc", [abc])),
     (), // annotations
+    (), // callouts
     none, // ranges
     ((position: 2, length: 2), (position: 4, length: 3)),
     false, // skip-last-empty
@@ -151,6 +152,7 @@
     [skip],
     [], // skip-number
     none, // codly-annotation
+    none, // codly-callout
     none, // codly-annotation-ref
     none, // ref-set
     (last, second, first, (line: 50, start: 1, end: 2)),

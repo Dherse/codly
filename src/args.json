@@ -378,6 +378,14 @@
         "experimental": true,
         "example": "#codly(\n  annotations: (\n    (\n      start: 2, end: 5,\n      content: block(\n        width: 2em,\n        rotate(-90deg, reflow: true, \n          align(center)[Function body])\n      )\n    ),\n  ),\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```"
     },
+    "callouts": {
+        "title": "Callout rows",
+        "description": "Content rows inserted immediately after selected source lines. Each entry is a dictionary with `line` (one-indexed source line number), `body`, and optional `align`, `breakable`, `fill`, `inset`, and `stroke` fields for that row's `grid.cell`. These fields override defaults set on @codly-callout. Multiple callouts may follow the same line. Codly always controls the cell body, position, and span: a callout spans the number and code columns, plus an inactive annotation column; only an active annotation brace retains the final column.",
+        "default": "none",
+        "ty": [ "array", "type(none)" ],
+        "function": true,
+        "example": "#codly(\n  callouts: (\n    (\n      line: 2,\n      body: [This branch handles the base case.],\n      fill: luma(240),\n      inset: 4pt,\n    ),\n  ),\n)\n```py\nif n <= 1:\n  return n\n```"
+    },
     "annotation-format": {
         "title": "Annotation formatter",
         "description": "The format of the annotation number. Can be `none` or a function that formats the annotation number.",

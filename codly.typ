@@ -533,6 +533,86 @@
   )
 }
 
+/// A single row inserted after a source line, see the `callouts` field.
+#let __callout-normalize(value) = {
+  let line = value.at("line")
+  assert(line > 0, message: "codly: callout `line` must be greater than 0")
+  value
+}
+
+#let __callout-parser = {
+  (default-parser, fields: (:), typecheck: true) => {
+    (args, include-required: true) => {
+      let result = default-parser(args, include-required: include-required)
+      if result.at(0) {
+        result.at(1) = __callout-normalize(result.at(1))
+      }
+      result
+    }
+  }
+}
+
+#let callout = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+
+  e.types.declare(
+    "callout",
+    prefix: __codly-prefix,
+    doc: "A row displayed immediately after a source line.",
+    fields: (
+      e.field(
+        "line",
+        int,
+        doc: "The source line after which to insert the callout (one-indexed).",
+        required: true,
+        named: true,
+      ),
+      e.field(
+        "body",
+        content,
+        doc: "The content to display in the callout row.",
+        required: true,
+        named: true,
+      ),
+      e.field(
+        "align",
+        e.types.option(e.types.union(alignment, auto)),
+        doc: "The callout cell alignment.",
+        default: auto,
+      ),
+      e.field(
+        "breakable",
+        e.types.option(e.types.union(bool, auto)),
+        doc: "Whether the callout cell may break across pages.",
+        default: auto,
+      ),
+      e.field(
+        "inset",
+        e.types.option(e.types.union(length, dictionary, auto)),
+        doc: "The callout cell inset.",
+        default: auto,
+      ),
+      e.field(
+        "fill",
+        e.types.option(e.types.union(e.types.paint, auto)),
+        doc: "The callout cell fill.",
+        default: auto,
+      ),
+      e.field(
+        "stroke",
+        e.types.option(e.types.union(stroke, auto)),
+        doc: "The callout cell stroke.",
+        default: auto,
+      ),
+    ),
+    parse-args: __callout-parser,
+    casts: (
+      (from: dictionary, with: constructor => value => constructor(..value)),
+    ),
+  )
+}
+
 /// A custom argument parser for the pair-like types below (range, skip,
 /// highlighted-line). It allows specifying the pair's fields either
 /// positionally, e.g. `range(2, 4)`, or by name, e.g. `range(start: 2, end: 4)`,
@@ -1233,6 +1313,53 @@
   )
 }
 
+/// A callout row. Its cell properties can be configured with set rules.
+#let codly-callout = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+
+  e.element.declare(
+    "codly-callout",
+    prefix: __codly-prefix,
+    doc: "A row inserted after a source line.",
+    display: it => it.body,
+    fields: (
+      e.field("body", content, doc: "The callout content.", required: true),
+      e.field("line", int, doc: "The attached source line.", required: true, named: true),
+      e.field(
+        "align",
+        e.types.option(e.types.union(alignment, auto)),
+        doc: "The callout cell alignment.",
+        default: auto,
+      ),
+      e.field(
+        "breakable",
+        e.types.option(e.types.union(bool, auto)),
+        doc: "Whether the callout cell may break across pages.",
+        default: auto,
+      ),
+      e.field(
+        "inset",
+        e.types.option(e.types.union(length, dictionary, auto)),
+        doc: "The callout cell inset.",
+        default: auto,
+      ),
+      e.field(
+        "fill",
+        e.types.option(e.types.union(e.types.paint, auto)),
+        doc: "The callout cell fill.",
+        default: auto,
+      ),
+      e.field(
+        "stroke",
+        e.types.option(e.types.union(stroke, auto)),
+        doc: "The callout cell stroke.",
+        default: auto,
+      ),
+    ),
+  )
+}
+
 /// A line number of a codly code block. Takes over the `number-` prefixed
 /// arguments of `codly`.
 #let codly-number = {
@@ -1314,6 +1441,7 @@
     codly-footer,
     codly-number,
     codly-annotation,
+    codly-callout,
     codly-annotation-ref,
     codly-ref,
     sublang-block,
@@ -1449,6 +1577,13 @@
         folds: false,
       ),
       e.field(
+        "callouts",
+        e.types.option(e.types.array(callout)),
+        doc: __doc("callouts"),
+        default: __default("callouts"),
+        folds: false,
+      ),
+      e.field(
         "highlighted",
         e.types.option(e.types.array(highlighted-line)),
         doc: __doc("highlighted-lines"),
@@ -1567,6 +1702,14 @@
 #let annotation-show_(it, ..args) = {
   import "@preview/elembic:1.1.1" as e
   e.show_(codly-annotation, it, ..args)
+}
+#let callout-set_(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(codly-callout, ..args)
+}
+#let callout-show_(it, ..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.show_(codly-callout, it, ..args)
 }
 #let ref-set_(..args) = {
   import "@preview/elembic:1.1.1" as e

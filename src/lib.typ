@@ -709,6 +709,7 @@
   smart-skip,
   lines,
   annotations,
+  callouts,
   ranges,
   skips,
   skip-last-empty,
@@ -716,6 +717,7 @@
   skip-line,
   skip-number,
   codly-annotation,
+  codly-callout,
   codly-annotation-ref,
   ref-set,
   highlights,
@@ -724,6 +726,7 @@
   offset,
   lang-block,
   sublang-lines: (:),
+  get: none,
   indentation: none,
   wrap-settings: none,
   unnumbered: (),
@@ -774,6 +777,17 @@
         highlights-by-line.insert(key, ())
       }
       highlights-by-line.at(key).push(hl)
+    }
+  }
+
+  // Callouts are keyed by source line so offsets and inserted skips do not
+  // change the line they follow. Preserve input order for same-line rows.
+  let callouts-by-line = (:)
+  if callouts != none {
+    for callout in callouts {
+      let key = str(callout.line)
+      if key not in callouts-by-line { callouts-by-line.insert(key, ()) }
+      callouts-by-line.at(key).push(callout)
     }
   }
 
@@ -946,6 +960,35 @@
       ))
     }
     if annotation-cell != none { annotation-rows += 1 }
+
+    for callout in callouts-by-line.at(str(line.number), default: ()) {
+      let defaults = get(codly-callout)
+      let align = if callout.align == auto { defaults.align } else { callout.align }
+      let breakable = if callout.breakable == auto { defaults.breakable } else { callout.breakable }
+      let inset = if callout.inset == auto { defaults.inset } else { callout.inset }
+      let fill = if callout.fill == auto { defaults.fill } else { callout.fill }
+      let stroke = if callout.stroke == auto { defaults.stroke } else { callout.stroke }
+      let row = codly-callout(
+        callout.body,
+        line: line.number,
+        align: align,
+        breakable: breakable,
+        inset: inset,
+        fill: fill,
+        stroke: stroke,
+      )
+      // Callouts span the number and code columns. Only an active annotation
+      // keeps its final brace column separate.
+      let base-columns = if number-enabled { 2 } else { 1 }
+      let colspan = if has-annots and current-annot == none { base-columns + 1 } else {
+        base-columns
+      }
+      let cell-args = __codly-cell-args(align, breakable, fill, inset, stroke)
+      items.push(grid.cell(row, colspan: colspan, ..cell-args))
+      lines_to_number.push(-99999997)
+      if indentation != none { guide-depths.push(0) }
+      if annotation-cell != none { annotation-rows += 1 }
+    }
   }
 
   if annotation-cell != none {
@@ -989,6 +1032,7 @@
   codly-footer,
   codly-number,
   codly-annotation,
+  codly-callout,
   codly-annotation-ref,
   codly-ref,
   sublang-block,
@@ -1063,6 +1107,7 @@
         codly-footer,
         codly-number,
         codly-annotation,
+        codly-callout,
         codly-annotation-ref,
         codly-ref,
         sublang-block,
@@ -1292,6 +1337,7 @@
     smart-skip,
     lines,
     annotations,
+    args.callouts,
     ranges,
     skips,
     args.skip-last-empty,
@@ -1299,6 +1345,7 @@
     args.skip-line,
     args.skip-number,
     codly-annotation,
+    codly-callout,
     codly-annotation-ref,
     ref-set,
     args.highlights,
@@ -1307,6 +1354,7 @@
     offset,
     if args.header == none { lang-block } else { [] },
     sublang-lines: sublang-lines,
+    get: get,
     indentation: indentation,
     wrap-settings: wrap-settings,
     unnumbered: args.unnumbered,
@@ -1512,6 +1560,7 @@
   codly-footer,
   codly-number,
   codly-annotation,
+  codly-callout,
   codly-annotation-ref,
   codly-ref,
   sublang-block,
@@ -1530,6 +1579,7 @@
   codly-footer,
   codly-number,
   codly-annotation,
+  codly-callout,
   codly-annotation-ref,
   codly-ref,
   sublang-block,
