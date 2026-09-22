@@ -43,3 +43,10 @@
 
 // Continuation markers are decorative artifacts; the source remains text.
 #codly.new(raw("wrapped source " + "argument " * 15, block: true), wrap-marker: [↪])
+
+// The single bubble outline is decorative; its body stays accessible text.
+#codly.new(raw("bubble source extended", block: true), callouts: (
+  (line: 1, pointer: 8, body: [Accessible bubble], bubble-fill: gradient.linear(aqua, yellow)),
+  (line: 1, placement: "above", pointer: 1, body: [Above left], bubble-width: 90pt),
+  (line: 1, placement: "above", pointer: 22, body: [Above right], bubble-width: 90pt),
+))

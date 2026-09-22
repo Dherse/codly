@@ -16,14 +16,25 @@
   body: [Explanation],
   fill: yellow,
   inset: 3pt,
+  pointer: 2,
+  pointer-align: "end",
 ))
 #assert.eq(
-  (fields.line, text-of(fields.body), fields.fill, fields.inset),
+  (
+    fields.line,
+    text-of(fields.body),
+    fields.fill,
+    fields.inset,
+    fields.pointer,
+    fields.at("pointer-align"),
+  ),
   (
     2,
     "Explanation",
     yellow,
     3pt,
+    2,
+    "end",
   ),
 )
 

@@ -19,6 +19,17 @@ LAYOUT_ERRORS = {
     "missing-reference": "does not exist in the document",
     "alias-theme": "explicit string `raw.theme`",
     "alias-syntax": "explicit string `raw.syntaxes`",
+    "callout-pointer-negative": "pointer must be non-negative",
+    "callout-pointer-past-end": "pointer exceeds source line length",
+    "callout-negative-size": "pointer size and bubble radius must be non-negative",
+    "callout-negative-width": "bubble width must be non-negative",
+    "callout-negative-inset": "bubble inset and outset must be non-negative",
+    "callout-negative-gap": "bubble gap must be non-negative",
+    "callout-negative-gap-y": "bubble gap must be non-negative",
+    "callout-gap-keys": "bubble gap accepts only x and y",
+    "callout-gap-type": "bubble gap axes must be lengths",
+    "callout-negative-pointer-height": "pointer height and width must be non-negative",
+    "callout-negative-pointer-width": "pointer height and width must be non-negative",
 }
 
 
@@ -38,7 +49,7 @@ def run_accessibility(output):
         )
         passed = extracted.returncode == 0 and all(
             text in extracted.stdout
-            for text in ("plain source", "fn main()", "return 1", "Returns one", "outside", "Remark", "guided source", "guided child", "wrapped source")
+            for text in ("plain source", "fn main()", "return 1", "Returns one", "outside", "Remark", "guided source", "guided child", "wrapped source", "bubble source", "Accessible bubble", "Above left", "Above right")
         )
         if not passed:
             result = extracted

@@ -153,6 +153,7 @@
     [], // skip-number
     none, // codly-annotation
     none, // codly-callout
+    none, // codly-bubble
     none, // codly-annotation-ref
     none, // ref-set
     (last, second, first, (line: 50, start: 1, end: 2)),

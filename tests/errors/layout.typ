@@ -12,9 +12,27 @@
   annotation-label: (annotations: ((start: 1, label: <annotation>),)),
   item-without-tag: (block-label: <code>, highlights: ((line: 1, label: <item>),)),
   missing-offset: (offset-from: <missing>),
+  callout-pointer-negative: (callouts: ((line: 1, pointer: -1, body: []),)),
+  callout-pointer-past-end: (callouts: ((line: 1, pointer: 20, body: []),)),
+  callout-negative-size: (callouts: ((line: 1, pointer: 1, pointer-size: -1pt, body: []),)),
+  callout-negative-width: (callouts: ((line: 1, pointer: 1, bubble-width: -1pt, body: []),)),
+  callout-negative-inset: (callouts: ((line: 1, pointer: 1, bubble-inset: -1pt, body: []),)),
+  callout-negative-gap: (callouts: ((line: 1, pointer: 1, bubble-gap: -1pt, body: []),)),
+  callout-negative-gap-y: (callouts: ((line: 1, pointer: 1, bubble-gap: (y: -1pt), body: []),)),
+  callout-gap-keys: (callouts: ((line: 1, pointer: 1, bubble-gap: (z: 2pt), body: []),)),
+  callout-gap-type: (callouts: ((line: 1, pointer: 1, bubble-gap: (x: "bad"), body: []),)),
+  callout-negative-pointer-height: (
+    callouts: ((line: 1, pointer: 1, pointer-height: -1pt, body: []),),
+  ),
+  callout-negative-pointer-width: (
+    callouts: ((line: 1, pointer: 1, pointer-width: -1pt, body: []),),
+  ),
 )
 
-#if case == "highlight-label" {
+#if case == "bubble-negative-height" {
+  show: codly.bubble-set_(pointer-height: -1pt)
+  codly.new(raw("one", block: true), callouts: ((line: 1, pointer: 1, body: [Bad height]),))
+} else if case == "highlight-label" {
   include "../issues/47-crash-label.typ"
 } else if case == "duplicate-info" {
   [

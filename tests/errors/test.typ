@@ -17,6 +17,8 @@
   ("greater than 0", (annotations: ((start: 1, end: 0),))),
   ("at least `start`", (annotations: ((start: 3, end: 2),))),
   ("greater than 0", (callouts: ((line: 0, body: []),))),
+  ("placement", (callouts: ((line: 1, placement: "sideways", body: []),))),
+  ("bubble-align", (callouts: ((line: 1, bubble-align: "center", body: []),))),
 ) {
   rejects(expected, args)
 }
