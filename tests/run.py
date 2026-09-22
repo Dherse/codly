@@ -30,6 +30,7 @@ LAYOUT_ERRORS = {
     "callout-gap-type": "bubble gap axes must be lengths",
     "callout-negative-pointer-height": "pointer height and width must be non-negative",
     "callout-negative-pointer-width": "pointer height and width must be non-negative",
+    "bubble-negative-height": "pointer height and width must be non-negative",
 }
 
 
