@@ -1092,7 +1092,11 @@
     place(
       lang-settings.align,
       dx: lang-settings.outset.x,
-      dy: lang-settings.outset.y,
+      // Leading replaces the vertical line inset, so retain enough offset to
+      // keep the badge inside the code block's top border.
+      dy: if args.leading == none { lang-settings.outset.y } else {
+        calc.max(0em, 0.35em - args.leading)
+      },
       lang-block,
     )
   }
@@ -1172,7 +1176,6 @@
   }
 
   // Process range/ranges.
-  let std-range = range
   let range = args.range
   let ranges = args.ranges
   if range != none and ranges != none {
@@ -1260,7 +1263,7 @@
       output-blocks.push(sublang-block(new-block, idx))
       let idx = str(idx)
 
-      for i in std-range(source-lines.len()) {
+      for i in std.range(source-lines.len()) {
         sublang-lines.insert(
           str(s.start + i),
           label("__codly_sublang_line_" + idx + "_" + str(i)),
@@ -1338,13 +1341,27 @@
   let numbers-outside = number-settings.placement == "outside"
   let numbers-enabled = args.number-enabled
   let annot-width = auto
-  let padding = __codly-inset(get-line.inset)
+  let line-padding = __codly-inset(get-line.inset)
+  let padding = if args.leading == none {
+    line-padding
+  } else {
+    (
+      top: args.leading,
+      right: line-padding.right,
+      bottom: args.leading,
+      left: line-padding.left,
+    )
+  }
   let grid-inset = (
     top: padding.top * 1.5,
     right: padding.right * 1.5,
     bottom: padding.bottom * 1.5,
     left: padding.left * 1.5,
   )
+  let gutters = (:)
+  if args.gutter != none { gutters.insert("gutter", args.gutter) }
+  if args.column-gutter != none { gutters.insert("column-gutter", args.column-gutter) }
+  if args.row-gutter != none { gutters.insert("row-gutter", args.row-gutter) }
   let numbers-alignment = number-settings.align
   let outside-column = numbers-enabled and numbers-outside
   let number-fill = number-settings.fill
@@ -1390,6 +1407,7 @@
         code-column: if args.number-enabled { 1 } else { 0 },
         outside: outside-column,
         wraps: wrap-settings,
+        ..gutters,
         guides: if indentation == none { none } else {
           (
             indent.settings(guides, args.rainbow)
@@ -1424,9 +1442,7 @@
         stroke: none,
         align: (numbers-alignment, left + horizon),
         fill: cell-fill,
-        column-gutter: 0pt,
-        gutter: 0pt,
-        row-gutter: 0pt,
+        ..gutters,
         ..header-block,
         ..items,
         ..footer-block,
@@ -1442,9 +1458,7 @@
         stroke: none,
         align: (numbers-alignment, left + horizon),
         fill: cell-fill,
-        column-gutter: 0pt,
-        gutter: 0pt,
-        row-gutter: 0pt,
+        ..gutters,
         ..header-block,
         ..items,
         ..footer-block,

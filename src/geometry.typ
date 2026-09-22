@@ -277,6 +277,9 @@
   outside: true,
   guides: none,
   wraps: none,
+  gutter: none,
+  column-gutter: none,
+  row-gutter: none,
 ) = context {
   let origin = here()
   let cells = ()
@@ -318,9 +321,13 @@
     outside: outside,
     guides: guides,
   )
+  let gutters = (:)
+  if gutter != none { gutters.insert("gutter", gutter) }
+  if column-gutter != none { gutters.insert("column-gutter", column-gutter) }
+  if row-gutter != none { gutters.insert("row-gutter", row-gutter) }
   grid(
     columns: columns, inset: inset, align: align, stroke: none, fill: none,
-    column-gutter: 0pt, row-gutter: 0pt, gutter: 0pt,
+    ..gutters,
     grid.header(repeat: true, level: 1, grid.cell(
       colspan: columns.len(),
       inset: 0pt,

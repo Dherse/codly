@@ -1475,6 +1475,25 @@
         default: __default("footer"),
       ),
       e.field("radius", e.types.option(length), doc: __doc("radius"), default: __default("radius")),
+      e.field(
+        "leading",
+        e.types.option(length),
+        doc: __doc("leading"),
+        default: __default("leading"),
+      ),
+      e.field("gutter", e.types.option(length), doc: __doc("gutter"), default: __default("gutter")),
+      e.field(
+        "column-gutter",
+        e.types.option(length),
+        doc: __doc("column-gutter"),
+        default: __default("column-gutter"),
+      ),
+      e.field(
+        "row-gutter",
+        e.types.option(length),
+        doc: __doc("row-gutter"),
+        default: __default("row-gutter"),
+      ),
       e.field("sublangs", e.types.option(e.types.array(sublang)), doc: "todo", default: none),
       e.field(
         "rainbow",

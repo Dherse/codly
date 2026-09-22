@@ -165,6 +165,38 @@
             }
         ]
     },
+    "leading": {
+        "title": "Leading",
+        "description": "Vertical padding for each code row. When set, this overrides the vertical component of the line inset while preserving its horizontal component. It increases or decreases the apparent spacing between code lines and automatically keeps the language badge inside the block border.",
+        "default": "none",
+        "ty": [ "type(none)", "length" ],
+        "function": true,
+        "example": "*Tighter rows:*\n#codly(leading: 0.2em)\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```\n\n*Looser rows:*\n#codly(leading: 0.6em)\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```"
+    },
+    "gutter": {
+        "title": "Grid gutter",
+        "description": "Default spacing between rows and columns of Codly's primary grid. Use `column-gutter` or `row-gutter` to override one direction.",
+        "default": "none",
+        "ty": [ "type(none)", "length" ],
+        "function": true,
+        "example": "#codly(gutter: 0.2em)\n```py\nprint('Hello, world!')\n```"
+    },
+    "column-gutter": {
+        "title": "Column gutter",
+        "description": "Horizontal spacing between columns of Codly's primary grid, such as the line-number and code columns. Overrides `gutter` horizontally when set.",
+        "default": "none",
+        "ty": [ "type(none)", "length" ],
+        "function": true,
+        "example": "#codly(column-gutter: 0.4em)\n```py\nprint('Hello, world!')\n```"
+    },
+    "row-gutter": {
+        "title": "Row gutter",
+        "description": "Vertical spacing between rows of Codly's primary grid. Overrides `gutter` vertically when set.",
+        "default": "none",
+        "ty": [ "type(none)", "length" ],
+        "function": true,
+        "example": "#codly(row-gutter: 0.2em)\n```py\nprint('Hello, world!')\n```"
+    },
     "fill": {
         "title": "Fill",
         "description": "The fill of the code block when not zebra-striped.",

@@ -26,7 +26,7 @@ def run_accessibility(output):
     """Compile the accessibility fixture as PDF/UA and check text extraction."""
     result = subprocess.run(
         ["typst", "compile", "--root", str(ROOT), "--pdf-standard", "ua-1",
-         "--font-path", str(ROOT / "docs/fonts"),
+         "--font-path", str(ROOT / "fonts"),
          str(ROOT / "tests/accessibility/test.typ"), str(output)],
         cwd=ROOT, capture_output=True, text=True,
     )
@@ -55,7 +55,7 @@ def main():
     failed = False
     if not args.errors_only:
         result = subprocess.run(
-            ["tt", "run", "--no-fail-fast", "--font-path", "docs/fonts"], cwd=ROOT
+            ["tt", "run", "--no-fail-fast", "--font-path", "fonts"], cwd=ROOT
         )
         failed = result.returncode != 0
     with tempfile.TemporaryDirectory(prefix="codly-tests-") as temporary:
@@ -64,7 +64,7 @@ def main():
         for case, expected in LAYOUT_ERRORS.items():
             result = subprocess.run(
                 ["typst", "compile", "--root", str(ROOT), "--font-path",
-                 str(ROOT / "docs/fonts"), "--input", f"case={case}",
+                 str(ROOT / "fonts"), "--input", f"case={case}",
                  str(ROOT / "tests/errors/layout.typ"), str(Path(temporary) / "test.pdf")],
                 cwd=ROOT, capture_output=True, text=True,
             )
