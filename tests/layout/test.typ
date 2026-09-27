@@ -26,13 +26,13 @@
 
 // An explicit `none` preserves an unfilled outside number column.
 #let line-gradient = gradient.linear(red, blue)
-#let zebra-tiling = tiling(
+#let stripe-tiling = tiling(
   size: (4pt, 4pt),
   relative: "parent",
   rect(width: 2pt, height: 2pt),
 )
 #{
-  show: codly.line-set_(fill: line-gradient, zebra-fill: zebra-tiling)
+  show: codly.line-set_(fill: (stripe-tiling, line-gradient))
   show: e.set_(codly.codly-number, placement: "outside", fill: none)
   show rect: it => [#metadata(it.fill)<complex-fill>#it]
   codly.new(raw("gradient\ntiling", block: true))
@@ -57,7 +57,7 @@
 
 #context {
   assert.eq(query(<complex-fill>).map(it => type(it.value)), (
-    type(zebra-tiling),
+    type(stripe-tiling),
     type(line-gradient),
   ))
   let cells = query(<grid-cell>)

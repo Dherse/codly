@@ -5,6 +5,9 @@
 #set document(title: "Codly accessibility")
 #set text(lang: "en")
 
+// Filename and language badges remain accessible under their real elements.
+#codly.new("filename source", file: "accessible.txt", lang-position: bottom + right)
+
 // Plain code remains a normal accessible text block.
 #codly.new(raw("plain source", block: true))
 

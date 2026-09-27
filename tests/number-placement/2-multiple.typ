@@ -25,7 +25,7 @@ public static void main(String args[]) {
 
 == Without zebra fill
 #{
-  show: codly.line-set_(zebra-fill: none)
+  show: codly.line-set_(fill: none)
   show: e.set_(codly.codly-number, placement: "inside")
   codly.new[```java
   public static void main(String args[]) {
@@ -35,7 +35,7 @@ public static void main(String args[]) {
 }
 
 #{
-  show: codly.line-set_(zebra-fill: none)
+  show: codly.line-set_(fill: none)
   show: e.set_(codly.codly-number, placement: "outside", fill: none)
   codly.new[```java
   public static void main(String args[]) {

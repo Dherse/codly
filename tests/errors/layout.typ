@@ -6,6 +6,8 @@
 #show: codly.ref-set_(by: "item")
 
 #let cases = (
+  filename-position: (file: "main.py", file-position: center),
+  language-position: (lang-position: bottom + center),
   range-conflict: (range: (1, 2), ranges: ((2, 3),)),
   annotation-overlap: (annotations: ((start: 1, end: 3), (start: 2, end: 3))),
   annotation-touching: (annotations: ((start: 1, end: 2), (start: 2, end: 3))),
@@ -29,7 +31,12 @@
   ),
 )
 
-#if case == "bubble-negative-height" {
+#if case == "empty-fill" {
+  show: codly.line-set_(fill: ())
+  codly.new(raw("one", block: true))
+} else if case == "filename-missing" {
+  codly.new(path("no-such-source.py"))
+} else if case == "bubble-negative-height" {
   show: codly.bubble-set_(pointer-height: -1pt)
   codly.new(raw("one", block: true), callouts: ((line: 1, pointer: 1, body: [Bad height]),))
 } else if case == "highlight-label" {

@@ -16,7 +16,7 @@
 
 // #118: whole-line highlights remain effective when line numbers are hidden.
 #{
-  show: codly.line-set_(fill: luma(230), zebra-fill: none)
+  show: codly.line-set_(fill: luma(230))
   show: codly.highlight-set_(color: blue, fill: color => color)
   show grid: it => {
     assert.eq((it.fill)(0, 0), luma(230))

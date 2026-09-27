@@ -20,7 +20,7 @@
 }
 
 #let body-fill = rgb("#d7ecff")
-#let zebra-fill = rgb("#ffe2b8")
+#let alternate-fill = rgb("#ffe2b8")
 #let header-fill = rgb("#d9f5df")
 #let footer-fill = rgb("#f8d8e4")
 
@@ -28,7 +28,7 @@
 // reconstruction, rather than by the source grid (whose fill is none).
 #show rect: it => {
   let fill = it.fields().at("fill", default: none)
-  if fill in (body-fill, zebra-fill, header-fill, footer-fill) {
+  if fill in (body-fill, alternate-fill, header-fill, footer-fill) {
     [#metadata((fill: fill, width: it.width, height: it.height))<outside-paint>#it]
   } else { it }
 }
@@ -76,7 +76,7 @@
   set page(width: 210pt, height: 118pt, margin: 6pt)
   set text(size: 8pt)
   show: e.set_(codly.codly-number, placement: "outside")
-  show: codly.line-set_(fill: body-fill, zebra-fill: zebra-fill, stroke: blue + 3pt)
+  show: codly.line-set_(fill: (alternate-fill, body-fill), stroke: blue + 3pt)
   codly.new(
     raw(repeated-source, block: true),
     breakable: true,
@@ -95,7 +95,7 @@
   set page(width: 210pt, height: 105pt, margin: 6pt)
   set text(size: 8pt)
   show: e.set_(codly.codly-number, placement: "outside")
-  show: codly.line-set_(fill: body-fill, zebra-fill: zebra-fill, stroke: blue + 3pt)
+  show: codly.line-set_(fill: (alternate-fill, body-fill), stroke: blue + 3pt)
   codly.new(
     raw(range(1, 15).map(n => "O" + str(n)).join("\n"), block: true),
     breakable: true,
@@ -113,7 +113,7 @@
   set page(width: 210pt, height: 118pt, margin: 6pt, columns: 2)
   set text(size: 7pt)
   show: e.set_(codly.codly-number, placement: "outside")
-  show: codly.line-set_(fill: body-fill, zebra-fill: zebra-fill, stroke: purple + 3pt)
+  show: codly.line-set_(fill: (alternate-fill, body-fill), stroke: purple + 3pt)
   codly.new(
     raw(range(1, 30).map(n => "C" + str(n)).join("\n"), block: true),
     breakable: true,
@@ -129,7 +129,7 @@
   set page(width: 210pt, height: 118pt, margin: 6pt)
   set text(size: 8pt)
   show: e.set_(codly.codly-number, placement: "outside")
-  show: codly.line-set_(fill: body-fill, zebra-fill: zebra-fill, stroke: orange + 3pt)
+  show: codly.line-set_(fill: (alternate-fill, body-fill), stroke: orange + 3pt)
   codly.new(
     raw("outer one\nouter two", block: true),
     breakable: true,
@@ -209,7 +209,7 @@
       p.page == after-wrapped.location().position().page
         and calc.abs(p.x - after-wrapped.location().position().x) < 4pt
         and p.y < after-wrapped.location().position().y
-        and it.value.fill == zebra-fill
+        and it.value.fill == alternate-fill
     )
   })
   assert(wrapped-paint.len() > 0)
@@ -223,7 +223,7 @@
     (
       p.page == after-annotation.location().position().page
         and p.x > after-annotation.location().position().x
-        and it.value.fill == zebra-fill
+        and it.value.fill == alternate-fill
     )
   })
   assert(annotation-paint.len() > 0)

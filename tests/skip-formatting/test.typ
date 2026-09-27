@@ -12,7 +12,7 @@
     } else { it }
   })
   show: e.show_(codly.codly-number, it => {
-    let body = e.fields(it).body
+    let body = e.fields(it).number
     if type(body) != int { [#metadata(body)<skip-number>#it] } else { it }
   })
   [#metadata((lines: lines, numbers: numbers))<expected-skips>

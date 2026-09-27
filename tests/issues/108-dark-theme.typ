@@ -9,7 +9,7 @@
   let background = rgb("#1a1b26")
   set raw(theme: path("108-dark-theme.tmTheme"))
   show raw.line: set text(fill: foreground)
-  show: codly.line-set_(fill: background, zebra-fill: none)
+  show: codly.line-set_(fill: background)
   show: codly.number-set_(placement: "outside", fill: none)
   show: codly.highlight-set_(fill: color => color)
   show: codly.lang-set_(languages: (py: (name: "Python", color: blue)))

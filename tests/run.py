@@ -7,6 +7,10 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 LAYOUT_ERRORS = {
+    "empty-fill": "`fill` palettes must not be empty",
+    "filename-position": "file-position must select left/right and top/bottom",
+    "language-position": "lang-position must select left/right and top/bottom",
+    "filename-missing": "no-such-source.py",
     "range-conflict": "cannot specify both `range` and `ranges`",
     "annotation-overlap": "overlapping annotations",
     "annotation-touching": "overlapping annotations",
@@ -50,7 +54,7 @@ def run_accessibility(output):
         )
         passed = extracted.returncode == 0 and all(
             text in extracted.stdout
-            for text in ("plain source", "fn main()", "return 1", "Returns one", "outside", "Remark", "guided source", "guided child", "wrapped source", "bubble source", "Accessible bubble", "Above left", "Above right")
+            for text in ("filename source", "accessible.txt", "plain source", "fn main()", "return 1", "Returns one", "outside", "Remark", "guided source", "guided child", "wrapped source", "bubble source", "Accessible bubble", "Above left", "Above right")
         )
         if not passed:
             result = extracted

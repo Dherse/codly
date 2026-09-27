@@ -1074,7 +1074,7 @@
 }
 
 /// A single line of a codly code block. Takes over the line-level styling
-/// arguments of `codly` (`radius`, `inset`, `fill`, `zebra-fill`, `stroke`).
+/// arguments of `codly` (`radius`, `inset`, `fill`, `stroke`).
 #let codly-line = {
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default, __codly-line-show
@@ -1095,15 +1095,15 @@
       ),
       e.field(
         "fill",
-        e.types.option(e.types.paint),
+        e.types.option(e.types.union(
+          auto,
+          e.types.paint,
+          e.types.array(e.types.option(e.types.paint)),
+          function,
+        )),
         doc: __doc("fill"),
         default: __default("fill"),
-      ),
-      e.field(
-        "zebra-fill",
-        e.types.option(e.types.paint),
-        doc: __doc("zebra-fill"),
-        default: __default("zebra-fill"),
+        folds: false,
       ),
       e.field("stroke", e.types.option(stroke), doc: __doc("stroke"), default: __default("stroke")),
       e.field(
@@ -1174,8 +1174,8 @@
       e.field(
         "fill",
         e.types.option(e.types.union(e.types.paint, auto)),
-        doc: "todo",
-        default: auto,
+        doc: "The header cell background. `none` leaves it unfilled; `auto` uses the header's default. Independent of line and number fills.",
+        default: luma(240),
       ),
       e.field("stroke", e.types.option(e.types.union(stroke, auto)), doc: "todo", default: auto),
     ),
@@ -1214,8 +1214,8 @@
       e.field(
         "fill",
         e.types.option(e.types.union(e.types.paint, auto)),
-        doc: "todo",
-        default: auto,
+        doc: "The footer cell background. `none` leaves it unfilled; `auto` uses the footer's default. Independent of line and number fills.",
+        default: none,
       ),
       e.field("stroke", e.types.option(e.types.union(stroke, auto)), doc: "todo", default: auto),
     ),
@@ -1290,6 +1290,31 @@
         default: __default("display-icon"),
       ),
       e.field("align", e.types.option(alignment), doc: "todo", default: right + horizon),
+    ),
+  )
+}
+
+/// A filename badge, independently styleable from the language badge.
+#let codly-file = {
+  import "src/file.typ" as file-impl
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+  e.element.declare(
+    "codly-file",
+    prefix: __codly-prefix,
+    doc: "The filename badge in a code block header or footer.",
+    display: file-impl.badge,
+    fields: (
+      e.field("body", e.types.union(str, content), required: true, doc: "Displayed filename."),
+      e.field("fill", e.types.option(e.types.paint), default: luma(240), doc: "Badge fill."),
+      e.field("stroke", e.types.option(stroke), default: 0.5pt + luma(160), doc: "Badge stroke."),
+      e.field(
+        "inset",
+        e.types.union(length, dictionary),
+        default: (x: 0.4em, y: 0.2em),
+        doc: "Badge inset.",
+      ),
+      e.field("radius", e.types.union(length, dictionary), default: 2pt, doc: "Badge radius."),
     ),
   )
 }
@@ -1430,9 +1455,32 @@
     "codly-number",
     prefix: __codly-prefix,
     doc: "A line number of a codly code block.",
-    display: it => it.body,
+    display: it => if type(it.number) == content {
+      it.number
+    } else if type(it.number) == array {
+      (it.numbering)(..it.number)
+    } else {
+      (it.numbering)(it.number)
+    },
     fields: (
-      e.field("body", e.types.union(int, content), doc: "The line number content.", required: true),
+      e.field(
+        "number",
+        e.types.option(e.types.union(content, int, e.types.array(int))),
+        doc: "The line number.",
+        required: true,
+      ),
+      e.field(
+        "parent",
+        e.types.any,
+        doc: "The parent content of the line.",
+        required: true,
+      ),
+      e.field(
+        "numbering",
+        e.types.union(str, function),
+        doc: "The numbering style of the line.",
+        default: numbering.with("1"),
+      ),
       e.field(
         "align",
         e.types.option(alignment),
@@ -1497,6 +1545,7 @@
     codly-line,
     codly-highlight,
     codly-lang,
+    codly-file,
     codly-header,
     codly-footer,
     codly-number,
@@ -1513,7 +1562,13 @@
     prefix: __codly-prefix,
     doc: "Codly is a library that enhances the way you write code blocks in Typst.",
     display: it => {
+      import "src/file.typ" as file-impl
       let body = it.remove("body")
+      let prepared = file-impl.prepare(body, file: it.file, lang: it.lang)
+      body = prepared.body
+      it.file = prepared.file
+      if prepared.source and it.header == none { it.header = [] }
+      if prepared.source and it.at("lang-position") == auto { it.at("lang-position") = top + right }
       let data = it.remove("__elembic_stored_element_data")
       let constructor = if it.alias == none and it.aliases != none and it.aliases.len() > 0 {
         data.default-constructor
@@ -1529,7 +1584,36 @@
       body
     },
     fields: (
-      e.field("body", e.types.option(content), doc: "The row block to style", required: true),
+      e.field(
+        "body",
+        e.types.option(e.types.union(str, path, content)),
+        doc: "Raw content, literal source text, or a caller-resolved file path.",
+        required: true,
+      ),
+      e.field(
+        "file",
+        e.types.union(auto, none, str, path, content),
+        default: auto,
+        doc: "Filename badge: auto uses the input path basename; none hides it.",
+      ),
+      e.field(
+        "lang",
+        e.types.union(auto, none, str),
+        default: auto,
+        doc: "Language for source/path inputs; auto infers the file extension.",
+      ),
+      e.field(
+        "lang-position",
+        e.types.union(auto, none, alignment),
+        default: auto,
+        doc: "Language badge placement: top/bottom selects header/footer, left/right selects side. auto retains ordinary raw-block placement.",
+      ),
+      e.field(
+        "file-position",
+        e.types.option(alignment),
+        default: top + left,
+        doc: "Filename badge placement: top/bottom selects header/footer, left/right selects side; none hides the badge.",
+      ),
       e.field(
         "block-label",
         e.types.option(label),
@@ -1735,6 +1819,14 @@
 #let lang-show_(it, ..args) = {
   import "@preview/elembic:1.1.1" as e
   e.show_(codly-lang, it, ..args)
+}
+#let file-set_(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(codly-file, ..args)
+}
+#let file-show_(it, ..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.show_(codly-file, it, ..args)
 }
 #let header-set(..args) = {
   import "@preview/elembic:1.1.1" as e

@@ -79,6 +79,17 @@
   merged
 }
 
+/// Resolve a code-row fill once from the public scalar, palette, or callback
+/// form. The caller attaches an `index` to the row before calling this helper.
+#let __codly-row-fill(fill, row) = {
+  if type(fill) == array {
+    assert(fill.len() > 0, message: "codly: `fill` palettes must not be empty")
+    return fill.at(calc.rem(row.index, fill.len()))
+  }
+  if type(fill) == function { return fill(row) }
+  fill
+}
+
 #let __codly-lang-show(
   it,
 ) = {
@@ -734,9 +745,11 @@
   indentation: none,
   wrap-settings: none,
   unnumbered: (),
+  parent: [],
 ) = {
   let items = ()
   let lines_to_number = ()
+  let rows = ()
   let guide-depths = ()
   let last-number = none
   let smart-skip-enabled = smart-skip.first or smart-skip.last or smart-skip.rest
@@ -858,7 +871,7 @@
         let number = if explicit-skip and number-array {
           skip-number.at(formatted-skips, default: fallback-number)
         } else { fallback-number }
-        items.push(codly-number(if number == none { [] } else { number }))
+        items.push(codly-number(if number == none { [] } else { number }, parent))
       }
       let body = if explicit-skip and line-array {
         skip-line.at(formatted-skips, default: fallback-line)
@@ -869,6 +882,7 @@
       } else { body })
       if annotation-cell != none { annotation-rows += 1 }
       lines_to_number.push(-99999999)
+      rows.push((kind: "skip", source-line: none, number: none))
       if indentation != none { guide-depths.push(0) }
       if explicit-skip {
         formatted-skips += 1
@@ -960,13 +974,19 @@
         new-annotation = none
       }
       lines_to_number.push(-99999997)
+      rows.push((kind: "callout", source-line: line.number, number: number))
       if indentation != none { guide-depths.push(0) }
       if annotation-cell != none { annotation-rows += 1 }
     }
     lines_to_number.push(mapped-number)
+    rows.push((
+      kind: "code",
+      source-line: line.number,
+      number: if unnumbered-line { none } else { number },
+    ))
     if indentation != none { guide-depths.push(indentation.depths.at(line.number - 1)) }
     if number-enabled {
-      items.push(codly-number(if unnumbered-line { fill } else { number }))
+      items.push(codly-number(if unnumbered-line { fill } else { number }, parent))
     }
 
     // The line's number carries the offset, matching its displayed number.
@@ -1021,6 +1041,7 @@
     ) {
       items.push(row)
       lines_to_number.push(-99999997)
+      rows.push((kind: "callout", source-line: line.number, number: number))
       if indentation != none { guide-depths.push(0) }
       if annotation-cell != none { annotation-rows += 1 }
     }
@@ -1037,6 +1058,7 @@
   (
     items: items,
     lines_to_number: lines_to_number,
+    rows: rows,
     last-number: last-number,
     guide-depths: guide-depths,
   )
@@ -1063,6 +1085,7 @@
   codly-line,
   codly-highlight,
   codly-lang,
+  codly-file,
   codly-header,
   codly-footer,
   codly-number,
@@ -1139,6 +1162,7 @@
         codly-line,
         codly-highlight,
         codly-lang,
+        codly-file,
         codly-header,
         codly-footer,
         codly-number,
@@ -1163,8 +1187,45 @@
     args.alias
   }
 
-  // Build the language block.
-  let lang-block = if lang != none {
+  import "file.typ" as file-impl
+  let badge-position = args.at("lang-position")
+  if badge-position == auto and args.file != none { badge-position = top + right }
+  let positioned = badge-position != auto and badge-position != none
+  if positioned {
+    assert(
+      badge-position.x in (left, right, none) and badge-position.y in (top, bottom, none),
+      message: "codly: lang-position must select left/right and top/bottom",
+    )
+  }
+  let badge-bottom = positioned and badge-position.y == bottom
+  let badge-side = if positioned and badge-position.x == left { left } else { right }
+  let file-position = args.at("file-position")
+  if file-position != none {
+    assert(
+      file-position.x in (left, right, none) and file-position.y in (top, bottom, none),
+      message: "codly: file-position must select left/right and top/bottom",
+    )
+  }
+  let file-bottom = file-position != none and file-position.y == bottom
+  let file-side = if file-position != none and file-position.x == right { right } else { left }
+  let language-badge = if lang != none and positioned { codly-lang(lang) }
+  let file-badge = if args.file != none and file-position != none { codly-file(args.file) }
+  if (
+    args.header == none
+      and (
+        (file-badge != none and not file-bottom)
+          or (positioned and not badge-bottom and language-badge != none)
+      )
+  ) {
+    args.header = []
+  }
+  if (
+    args.footer == none
+      and ((badge-bottom and language-badge != none) or (file-bottom and file-badge != none))
+  ) { args.footer = [] }
+
+  // Preserve legacy in-code placement unless an explicit band is requested.
+  let lang-block = if lang != none and badge-position == auto {
     // construct externally to minimize hashing
     let lang-block = codly-lang(
       lang,
@@ -1193,12 +1254,21 @@
       (body: args.header)
     }
     let body = fields.remove("body")
-    let header = codly-header(body + lang-block, ..fields)
+    let body = if (file-badge != none and not file-bottom) or (positioned and not badge-bottom) {
+      file-impl.band(
+        body,
+        file: if not file-bottom { file-badge },
+        file-side: file-side,
+        language: if badge-bottom { none } else if positioned { language-badge },
+        side: badge-side,
+      )
+    } else { body + lang-block }
+    let header = codly-header(body, ..fields)
     let header-set = get(codly-header) + fields
     let cell-args = __codly-cell-args(
       header-set.align,
       header-set.breakable,
-      header-set.fill,
+      if header-set.fill == auto { luma(240) } else { header-set.fill },
       header-set.inset,
       header-set.stroke,
     )
@@ -1225,12 +1295,21 @@
       (body: args.footer)
     }
     let body = fields.remove("body")
+    let body = if badge-bottom or (file-bottom and file-badge != none) {
+      file-impl.band(
+        body,
+        file: if file-bottom { file-badge },
+        file-side: file-side,
+        language: if badge-bottom { language-badge },
+        side: badge-side,
+      )
+    } else { body }
     let footer = codly-footer(body, ..fields)
     let footer-set = get(codly-footer) + fields
     let cell-args = __codly-cell-args(
       footer-set.align,
       footer-set.breakable,
-      footer-set.fill,
+      if footer-set.fill == auto { none } else { footer-set.fill },
       footer-set.inset,
       footer-set.stroke,
     )
@@ -1366,6 +1445,7 @@
   let (
     items: items,
     lines_to_number: lines_to_number,
+    rows: rows,
     last-number: last-number,
     guide-depths: guide-depths,
   ) = __codly-line-loop(
@@ -1396,32 +1476,36 @@
     indentation: indentation,
     wrap-settings: wrap-settings,
     unnumbered: args.unnumbered,
+    parent: it,
   )
 
-  // The header counts as a line for zebra striping purposes.
+  // The header counts as a displayed row for palette compatibility.
   if args.header != none {
     lines_to_number.insert(0, -999999999)
+    rows.insert(0, (kind: "header", source-line: none, number: none))
     if indentation != none { guide-depths.insert(0, 0) }
   }
+  if args.footer != none {
+    rows.push((kind: "footer", source-line: none, number: none))
+  }
+
+  let indexed-rows = ()
+  for (index, row) in rows.enumerate() {
+    indexed-rows.push(row + (index: index))
+  }
+  rows = indexed-rows
 
   let get-line = get(codly-line)
-  let line-fill = get-line.fill
-  let zebra-fill = get-line.zebra-fill
-  let fill = get-line.fill
+  let fill = if get-line.fill == auto { __default("fill") } else { get-line.fill }
 
-  let line_colors = ()
-  if highlighted-by-line.len() > 0 {
-    for (i, line) in lines_to_number.enumerate() {
-      let highlighted = highlighted-by-line.at(str(line), default: none)
-      if highlighted != none {
-        line_colors.push(highlighted)
-      } else if zebra-fill != none and calc.rem(i, 2) == 0 {
-        line_colors.push(zebra-fill)
-      } else {
-        line_colors.push(line-fill)
-      }
+  let line-colors = rows.map(row => {
+    // Header/footer cells own their fills and never invoke the line callback.
+    if row.kind in ("header", "footer") { return none }
+    let highlighted = if row.number == none { none } else {
+      highlighted-by-line.at(str(row.number), default: none)
     }
-  }
+    if highlighted != none { highlighted } else { __codly-row-fill(fill, row) }
+  })
 
   let number-settings = get(codly-number)
   let numbers-outside = number-settings.placement == "outside"
@@ -1451,14 +1535,10 @@
   let numbers-alignment = number-settings.align
   let outside-column = numbers-enabled and numbers-outside
   let number-fill = number-settings.fill
-  let zebra-rows = if numbers-enabled { lines_to_number.len() } else { calc.inf }
   let cell-fill = (x, y) => if numbers-enabled and x == 0 and number-fill == none {
     none
   } else {
-    let base = if y < zebra-rows and zebra-fill != none and calc.rem(y, 2) == 0 {
-      zebra-fill
-    } else { fill }
-    let code-fill = if line_colors == () { base } else { line_colors.at(y, default: base) }
+    let code-fill = line-colors.at(y, default: none)
     if numbers-enabled and x == 0 {
       if number-fill == auto { code-fill } else { number-fill }
     } else {
@@ -1594,6 +1674,7 @@
   codly-line,
   codly-highlight,
   codly-lang,
+  codly-file,
   codly-header,
   codly-footer,
   codly-number,
@@ -1614,6 +1695,7 @@
   codly-line,
   codly-highlight,
   codly-lang,
+  codly-file,
   codly-header,
   codly-footer,
   codly-number,

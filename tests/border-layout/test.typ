@@ -4,7 +4,7 @@
 #set page(width: 200pt, height: auto, margin: 20pt)
 
 #let example(stroke, outside: false) = {
-  show: codly.line-set_(stroke: stroke, fill: white, zebra-fill: none)
+  show: codly.line-set_(stroke: stroke, fill: white)
   show: e.set_(codly.codly-number, placement: if outside { "outside" } else { "inside" })
   codly.new(raw("margin check\nsecond line", block: true), radius: 0pt)
 }

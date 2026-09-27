@@ -168,7 +168,7 @@
     [#metadata((number: fields.body.number, smart-indent: fields.smart-indent))<lines-seen>#it]
   })
   show: e.show_(codly.codly-number, it => {
-    [#metadata(e.fields(it).body)<numbers-seen>#it]
+    [#metadata(e.fields(it).number)<numbers-seen>#it]
   })
   show: codly.highlight-show_(it => {
     let fields = e.fields(it)

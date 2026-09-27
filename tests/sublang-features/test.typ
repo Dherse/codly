@@ -32,7 +32,7 @@
   [#metadata((tag: fields.highlight.tag, body: text-of(fields.body)))<sublang-highlight>#it]
 })
 #show: e.show_(codly.codly-number, it => {
-  [#metadata(e.fields(it).body)<sublang-number>#it]
+  [#metadata(e.fields(it).number)<sublang-number>#it]
 })
 #show: codly.annotation-show_(it => {
   let fields = e.fields(it)

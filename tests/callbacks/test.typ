@@ -23,7 +23,7 @@
 }
 
 #let number-fields(it) = {
-  [#metadata(e.fields(it).body)<callback-number>#it]
+  [#metadata(e.fields(it).number)<callback-number>#it]
 }
 
 #let highlight-fill(color) = {
