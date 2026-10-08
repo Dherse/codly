@@ -1,8 +1,7 @@
 #import "../../codly.typ" as codly
 #import "../../codly.typ": (
-  line, header, footer, lang, file, highlight, annotation, callout, bubble, number,
-  ref, line-ref, highlight-ref, annotation-ref,
-  highlight-config, annotation-config, callout-config,
+  line, header, footer, lang, file, highlight, annotation, callout, bubble, number, ref, line-ref,
+  highlight-ref, annotation-ref, highlight-config, annotation-config, callout-config,
 )
 #import "@preview/elembic:1.1.1" as e
 
@@ -11,10 +10,20 @@
 // Short names can be imported directly, while their Elembic identities keep
 // the existing component names used by selectors, metadata, and references.
 #for (name, component) in (
-  line: line, header: header, footer: footer, lang: lang, file: file,
-  highlight: highlight, annotation: annotation, callout: callout,
-  bubble: bubble, number: number, ref: ref,
-  line-ref: line-ref, highlight-ref: highlight-ref, annotation-ref: annotation-ref,
+  line: line,
+  header: header,
+  footer: footer,
+  lang: lang,
+  file: file,
+  highlight: highlight,
+  annotation: annotation,
+  callout: callout,
+  bubble: bubble,
+  number: number,
+  ref: ref,
+  line-ref: line-ref,
+  highlight-ref: highlight-ref,
+  annotation-ref: annotation-ref,
 ) {
   assert.eq(e.data(component).name, "codly-" + name)
 }
