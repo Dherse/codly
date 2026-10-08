@@ -7,6 +7,16 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 LAYOUT_ERRORS = {
+    "diff-language": "diff requires one nonempty language",
+    "diff-languages": "diff requires one nonempty language",
+    "diff-hunk": "invalid unified diff hunk header",
+    "diff-incomplete": "incomplete unified diff hunk",
+    "diff-counts": "unified diff hunk counts do not match",
+    "diff-extra": "unified diff hunk counts do not match",
+    "diff-prefix": "unified diff code lines must have",
+    "diff-combined": "combined merge diffs are not supported",
+    "diff-theme": "explicit string `raw.theme`",
+    "diff-syntax": "explicit string `raw.syntaxes`",
     "gutter-negative-width": "gutter width must be non-negative",
     "gutter-negative-ratio": "gutter width must be non-negative",
     "gutter-negative-fraction": "gutter width must be non-negative",
@@ -65,6 +75,8 @@ def run_accessibility(output):
             text in extracted.stdout
             for text in ("filename source", "accessible.txt", "inline source", "inline.py", "plain source", "fn main()", "return 1", "Returns one", "outside", "Remark", "guided source", "guided child", "wrapped source", "bubble source", "Accessible bubble", "Above left", "Above right", "gutter source", "gutter label", "alternate 1")
         )
+        passed &= all(extracted.stdout.count(token) == 1
+                      for token in ("deleted_diff_token", "added_diff_token", "context_diff_token"))
         if not passed:
             result = extracted
     print(f"{'pass' if passed else 'FAIL'} accessibility/pdf-ua", flush=True)

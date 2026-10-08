@@ -73,3 +73,13 @@
     row => "alternate " + str(row.source-line),
   ))
 }
+
+// Syntax-only old/new passes must not duplicate visible or extracted text.
+#{
+  set text(size: 8pt)
+  codly.new(raw(
+    "-deleted_diff_token\n+added_diff_token\n context_diff_token",
+    lang: "diff,py",
+    block: true,
+  ))
+}

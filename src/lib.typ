@@ -5,6 +5,7 @@
 #import "wrap.typ" as wrap
 #import "callout.typ" as callout-impl
 #import "gutter.typ" as gutter-impl
+#import "diff.typ" as diff-impl
 
 /// The prefix identifying codly's custom elements and types.
 #let __codly-prefix = "@preview/codly:v2.0.0"
@@ -1123,7 +1124,28 @@
   alias-style,
   it,
   prepared-lines: none,
+  gutter-constructor: none,
+  diff-defaults: (:),
 ) = {
+  if args.__diff == none and args.__diff-pass == none and args.diff != none {
+    let settings = if args.diff == auto { diff-defaults + args.__diff-colors } else {
+      e.fields(args.diff)
+    }
+    if settings.enabled {
+      let lang = diff-impl.language(it.lang)
+      if lang != none {
+        return diff-impl.prepare(
+          it,
+          args,
+          settings,
+          lang,
+          constructor,
+          alias-style,
+          gutter-constructor,
+        )
+      }
+    }
+  }
   if args.alias == none and args.aliases != none {
     if it.lang != none {
       if it.lang in args.aliases {
@@ -1168,7 +1190,7 @@
     }
   }
 
-  if args.rainbow != none and args.rainbow.enabled {
+  if args.__diff == none and args.rainbow != none and args.rainbow.enabled {
     if args.rainbow.pairs.len() > 0 and it.text.contains(rainbow.delimiters) {
       let settings = e.fields(args.rainbow)
       let sublangs = args.sublangs
@@ -1200,6 +1222,8 @@
         alias-style,
         it,
         prepared-lines: lines,
+        gutter-constructor: gutter-constructor,
+        diff-defaults: diff-defaults,
       ))
     }
   }
@@ -1449,7 +1473,9 @@
   // displayed line before codly-line applies its character-level formatting.
   let output-blocks = ()
   let sublang-lines = (:)
-  let lines = if prepared-lines == none { it.lines } else { prepared-lines }
+  let lines = if prepared-lines != none { prepared-lines } else if args.__diff != none {
+    args.__diff.lines
+  } else { it.lines }
   if args.sublangs != none and args.sublangs.len() > 0 {
     let nl-regex = regex("(\r\n|\r|\n)")
     let raw-text-lines = it.text.split(nl-regex)
@@ -1475,6 +1501,30 @@
         )
       }
     }
+  }
+
+  if args.__diff-pass != none {
+    return (
+      output-blocks.join()
+        + context {
+          let captured = lines
+          for (index, line) in captured.enumerate() {
+            let label = sublang-lines.at(str(index + 1), default: none)
+            if label != none {
+              let record = query(selector(label).before(here())).last(default: none)
+              if record != none {
+                captured.at(index) = raw.line(
+                  line.number,
+                  line.count,
+                  record.value.text,
+                  record.value.body,
+                )
+              }
+            }
+          }
+          diff-impl.capture(args.__diff-pass, captured)
+        }
+    )
   }
 
   // Handling of `smart-skip`
@@ -1555,7 +1605,12 @@
     let highlighted = if row.number == none { none } else {
       highlighted-by-line.at(str(row.number), default: none)
     }
-    if highlighted != none { highlighted } else { __codly-row-fill(fill, row) }
+    if highlighted != none { return highlighted }
+    if args.__diff != none {
+      let paint = diff-impl.fill(row, args.__diff)
+      if paint != auto { return paint }
+    }
+    __codly-row-fill(fill, row)
   })
 
   let number-settings = get(codly-number)
@@ -1734,6 +1789,8 @@
   alias-style,
   it,
   prepared-lines: none,
+  gutter-constructor: none,
+  diff-defaults: (:),
 ) = e.get(get => __codly-block-render(
   get,
   __codly-show,
@@ -1755,6 +1812,8 @@
   alias-style,
   it,
   prepared-lines: prepared-lines,
+  gutter-constructor: gutter-constructor,
+  diff-defaults: diff-defaults,
 ))
 
 #let typst-icon = (

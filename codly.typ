@@ -40,6 +40,36 @@
   )
 }
 
+/// Automatic two-view syntax highlighting for `diff,<language>` raw blocks.
+/// The diff prefix is removed from code and shown in a separate gutter.
+#let diff = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+
+  let paint = e.types.option(e.types.union(auto, e.types.paint, function))
+  e.types.declare(
+    "diff",
+    prefix: __codly-prefix,
+    fields: (
+      e.field("enabled", bool, default: true),
+      e.field("added-fill", paint, default: rgb("dafbe1")),
+      e.field("removed-fill", paint, default: rgb("ffebe9")),
+      e.field("meta-fill", paint, default: rgb("ddf4ff")),
+      e.field("context-fill", paint, default: auto),
+      e.field("numbers", bool, default: true, doc: "Show old/new line-number gutters by default."),
+      e.field("markers", bool, default: true),
+      e.field("added-marker", e.types.union(str, content), default: "+"),
+      e.field("removed-marker", e.types.union(str, content), default: "−"),
+      e.field("old-offset", int, default: 0),
+      e.field("new-offset", int, default: 0),
+    ),
+    casts: (
+      (from: dictionary),
+      (from: bool, with: constructor => value => constructor(enabled: value)),
+    ),
+  )
+}
+
 /// An independently styled gutter column. Arrays are indexed by source line;
 /// callbacks receive `index`, `kind`, `source-line`, `number`, and `text`.
 /// Only code and skip rows have gutter cells. `index` counts all displayed
@@ -1623,6 +1653,8 @@
     annotation-ref,
     ref,
     sublang-block,
+    gutter-constructor: gutter-column,
+    diff-defaults: e.fields(diff()),
   )
 
   e.element.declare(
@@ -1646,12 +1678,8 @@
         it.at("lang-position") = top + right
       }
       let data = it.remove("__elembic_stored_element_data")
-      let constructor = if it.alias == none and it.aliases != none and it.aliases.len() > 0 {
-        data.default-constructor
-      }
-      let alias-style = if constructor != none {
-        (size: text.size, theme: raw.theme, syntaxes: raw.syntaxes)
-      }
+      let constructor = data.default-constructor
+      let alias-style = (size: text.size, theme: raw.theme, syntaxes: raw.syntaxes)
       show raw.where(block: true): codly-show.with(
         constructor,
         it,
@@ -1706,6 +1734,16 @@
         default: none,
       ),
       e.field("number-enabled", e.types.option(bool), doc: "todo", default: true),
+      e.field(
+        "diff",
+        e.types.option(e.types.union(auto, diff)),
+        default: auto,
+        folds: false,
+        doc: "Auto-detect diff,<language>. false or none disables processing; true or a diff configuration enables it. Colors accept paints, none, auto (ordinary row fill), or callbacks receiving the row with a diff record. Explicit highlights override diff backgrounds. Context uses new-side syntax; hunks/files are highlighted independently. Custom gutters replace the automatic old/new/marker columns. References use displayed patch-row numbers; highlight/callout character positions refer to marker-free code.",
+      ),
+      e.field("__diff", e.types.option(dictionary), default: none, folds: false),
+      e.field("__diff-pass", e.types.option(dictionary), default: none, folds: false),
+      e.field("__diff-colors", dictionary, default: (:), folds: false),
       e.field(
         "gutters",
         e.types.union(auto, e.types.array(e.types.union(auto, gutter-column))),

@@ -36,7 +36,29 @@
   ),
 )
 
-#if case == "theme-name" {
+#if case.starts-with("diff-") {
+  let sources = (
+    diff-language: ("+one", "diff,"),
+    diff-languages: ("+one", "diff,py,c"),
+    diff-hunk: ("@@ bad @@", "diff,py"),
+    diff-incomplete: ("@@ -1,2 +1,2 @@\n one", "diff,py"),
+    diff-counts: ("@@ -1,0 +1,1 @@\n one", "diff,py"),
+    diff-extra: ("@@ -1 +1 @@\n one\n+extra", "diff,py"),
+    diff-prefix: ("@@ -1 +1 @@\none", "diff,py"),
+    diff-combined: ("@@@ -1 -1 +1 @@@", "diff,py"),
+  )
+  if case in ("diff-theme", "diff-syntax") {
+    let resource = if case == "diff-theme" {
+      (theme: "../aliases/99-local-resources.tmTheme")
+    } else {
+      (syntaxes: "../aliases/99-local-resources.sublime-syntax")
+    }
+    codly.new(raw("+one", lang: "diff,py", block: true, ..resource))
+  } else {
+    let (source, language) = sources.at(case)
+    codly.new(raw(source, lang: language, block: true))
+  }
+} else if case == "theme-name" {
   show: codly.theme("does-not-exist")
   codly.new(raw("one", block: true))
 } else if case == "theme-setting" {

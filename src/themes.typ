@@ -77,6 +77,7 @@
     highlight-fill: __default("highlight-fill"),
     file: (stroke: 0.5pt + luma(160), radius: 2pt),
     bubble: (stroke: 0.6pt + luma(80)),
+    block: (__diff-colors: (:)),
   ),
   dark: __editor(
     rgb("d4d4d4"),
@@ -94,7 +95,16 @@
       rgb("4ec9b0"),
     ),
   )
-    + (highlight-fill: color => color.darken(65%)),
+    + (
+      highlight-fill: color => color.darken(65%),
+      block: (
+        __diff-colors: (
+          added-fill: rgb("173b25"),
+          removed-fill: rgb("472124"),
+          meta-fill: rgb("18344d"),
+        ),
+      ),
+    ),
   clean: (
     foreground: auto,
     muted: luma(110),
