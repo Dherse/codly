@@ -69,3 +69,38 @@
   )
   if body == none or body == [] { row } else { stack(spacing: 0.5em, row, body) }
 }
+
+
+// Measure once, then reserve each side inside the actual code column. The
+// inset participates in intrinsic width measurement and leaves later source
+// rows at full width. Translated placements retain the badge's public outset.
+#let inline-row(badges, padding) = {
+  let measured = ()
+  let reserved = (left: 0pt, right: 0pt)
+  for badge in badges {
+    let width = measure(badge.body).width
+    let side = if badge.align.x == left { "left" } else { "right" }
+    measured.push(badge + (side: side, offset: reserved.at(side)))
+    if width > 0pt { reserved.at(side) += width + padding.left + padding.right }
+  }
+  let render = body => {
+    let placements = measured
+      .map(badge => place(
+        badge.align,
+        dx: badge.dx
+          + if badge.side == "left" {
+            badge.offset - reserved.left
+          } else { reserved.right - badge.offset },
+        dy: badge.dy,
+        badge.body,
+      ))
+      .join()
+    if reserved.left == 0pt and reserved.right == 0pt { return body + placements }
+    layout(size => block(
+      width: if size.width == calc.inf * 1pt { auto } else { size.width },
+      inset: reserved,
+      body + placements,
+    ))
+  }
+  (render: render, left: reserved.left)
+}

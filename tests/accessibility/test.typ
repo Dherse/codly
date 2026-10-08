@@ -53,3 +53,12 @@
   (line: 1, placement: "above", pointer: 1, body: [Above left], bubble-width: 90pt),
   (line: 1, placement: "above", pointer: 22, body: [Above right], bubble-width: 90pt),
 ))
+
+
+// Inline badges reserve wrapping space and keep filename/source text readable.
+#codly.new(
+  raw("inline source " + "argument " * 8, block: true, lang: "py"),
+  file: "inline.py",
+  file-position: left,
+  lang-position: right,
+)

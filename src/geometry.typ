@@ -20,9 +20,14 @@
     let marks = ()
     if guides != none and it.x == code-column and first.value.role == "body" {
       let depth = guides.depths.at(it.y - 1, default: 0)
+      let inset = (
+        guides.inset
+          + guides.x-offset
+          + guides.at("offsets", default: ()).at(it.y - 1, default: 0pt)
+      ).to-absolute()
       for level in range(depth) {
         marks.push((
-          x: (guides.inset + guides.x-offset).to-absolute() + guides.step * level,
+          x: inset + guides.step * level,
           color: guides.palette.at(calc.rem(level + guides.depth-offset, guides.palette.len())),
           thickness: guides.thickness,
           max-height: guides.max-height,

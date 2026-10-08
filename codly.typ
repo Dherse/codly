@@ -1302,7 +1302,7 @@
   e.element.declare(
     "codly-file",
     prefix: __codly-prefix,
-    doc: "The filename badge in a code block header or footer.",
+    doc: "The filename badge beside code or in a code block header or footer.",
     display: file-impl.badge,
     fields: (
       e.field("body", e.types.union(str, content), required: true, doc: "Displayed filename."),
@@ -1567,8 +1567,16 @@
       let prepared = file-impl.prepare(body, file: it.file, lang: it.lang)
       body = prepared.body
       it.file = prepared.file
-      if prepared.source and it.header == none { it.header = [] }
-      if prepared.source and it.at("lang-position") == auto { it.at("lang-position") = top + right }
+      let file-position = it.at("file-position")
+      let lang-position = it.at("lang-position")
+      let inline-file = it.file != none and file-position != none and file-position.y == none
+      let inline-lang = lang-position != auto and lang-position != none and lang-position.y == none
+      if prepared.source and it.header == none and not inline-file and not inline-lang {
+        it.header = []
+      }
+      if prepared.source and lang-position == auto and not inline-file {
+        it.at("lang-position") = top + right
+      }
       let data = it.remove("__elembic_stored_element_data")
       let constructor = if it.alias == none and it.aliases != none and it.aliases.len() > 0 {
         data.default-constructor
@@ -1606,13 +1614,15 @@
         "lang-position",
         e.types.union(auto, none, alignment),
         default: auto,
-        doc: "Language badge placement: top/bottom selects header/footer, left/right selects side. auto retains ordinary raw-block placement.",
+        doc: "Language badge placement: top/bottom selects header/footer; left/right alone reserves space beside the first code row. auto retains ordinary raw-block placement.",
+        folds: false,
       ),
       e.field(
         "file-position",
         e.types.option(alignment),
         default: top + left,
-        doc: "Filename badge placement: top/bottom selects header/footer, left/right selects side; none hides the badge.",
+        doc: "Filename badge placement: top/bottom selects header/footer; left/right alone reserves space beside the first code row; none hides the badge.",
+        folds: false,
       ),
       e.field(
         "block-label",

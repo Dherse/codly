@@ -54,7 +54,7 @@ def run_accessibility(output):
         )
         passed = extracted.returncode == 0 and all(
             text in extracted.stdout
-            for text in ("filename source", "accessible.txt", "plain source", "fn main()", "return 1", "Returns one", "outside", "Remark", "guided source", "guided child", "wrapped source", "bubble source", "Accessible bubble", "Above left", "Above right")
+            for text in ("filename source", "accessible.txt", "inline source", "inline.py", "plain source", "fn main()", "return 1", "Returns one", "outside", "Remark", "guided source", "guided child", "wrapped source", "bubble source", "Accessible bubble", "Above left", "Above right")
         )
         if not passed:
             result = extracted

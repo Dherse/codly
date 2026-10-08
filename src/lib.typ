@@ -746,6 +746,7 @@
   wrap-settings: none,
   unnumbered: (),
   parent: [],
+  badge-row: none,
 ) = {
   let items = ()
   let lines_to_number = ()
@@ -1017,7 +1018,9 @@
     )
     if in-first {
       in-first = false
-      rendered-line += lang-block
+      rendered-line = if badge-row == none { rendered-line + lang-block } else {
+        (badge-row.render)(rendered-line)
+      }
     }
     items.push(if has-annots {
       grid.cell(colspan: if current-annot != none { 1 } else { 2 }, rendered-line)
@@ -1189,9 +1192,13 @@
 
   import "file.typ" as file-impl
   let badge-position = args.at("lang-position")
-  if badge-position == auto and args.file != none { badge-position = top + right }
-  let positioned = badge-position != auto and badge-position != none
-  if positioned {
+  let file-position = args.at("file-position")
+  let inline-file = args.file != none and file-position != none and file-position.y == none
+  if badge-position == auto and args.file != none and not inline-file {
+    badge-position = top + right
+  }
+  let positioned = badge-position != auto and badge-position != none and badge-position.y != none
+  if badge-position != auto and badge-position != none {
     assert(
       badge-position.x in (left, right, none) and badge-position.y in (top, bottom, none),
       message: "codly: lang-position must select left/right and top/bottom",
@@ -1199,7 +1206,6 @@
   }
   let badge-bottom = positioned and badge-position.y == bottom
   let badge-side = if positioned and badge-position.x == left { left } else { right }
-  let file-position = args.at("file-position")
   if file-position != none {
     assert(
       file-position.x in (left, right, none) and file-position.y in (top, bottom, none),
@@ -1209,7 +1215,9 @@
   let file-bottom = file-position != none and file-position.y == bottom
   let file-side = if file-position != none and file-position.x == right { right } else { left }
   let language-badge = if lang != none and positioned { codly-lang(lang) }
-  let file-badge = if args.file != none and file-position != none { codly-file(args.file) }
+  let file-badge = if args.file != none and file-position != none and not inline-file {
+    codly-file(args.file)
+  }
   if (
     args.header == none
       and (
@@ -1224,24 +1232,45 @@
       and ((badge-bottom and language-badge != none) or (file-bottom and file-badge != none))
   ) { args.footer = [] }
 
-  // Preserve legacy in-code placement unless an explicit band is requested.
-  let lang-block = if lang != none and badge-position == auto {
-    // construct externally to minimize hashing
-    let lang-block = codly-lang(
-      lang,
-    )
-
-    let lang-settings = get(codly-lang)
-    place(
-      lang-settings.align,
-      dx: lang-settings.outset.x,
-      // Leading replaces the vertical line inset, so retain enough offset to
-      // keep the badge inside the code block's top border.
-      dy: if args.leading == none { lang-settings.outset.y } else {
-        calc.max(0em, 0.35em - args.leading)
+  // Inline badges shorten only the first displayed code row. Explicit band
+  // placements keep their independently reserved header/footer rows.
+  let inline-lang = (
+    badge-position == auto
+      or (
+        badge-position != none and badge-position.y == none
+      )
+  )
+  let lang-content = if lang != none and inline-lang { codly-lang(lang) }
+  let lang-settings = if lang-content != none { get(codly-lang) }
+  let lang-dy = if lang-content != none {
+    if args.leading == none { lang-settings.outset.y } else {
+      calc.max(0em, 0.35em - args.leading)
+    }
+  }
+  let lang-block = if lang-content != none and badge-position == auto and args.header != none {
+    place(lang-settings.align, dx: lang-settings.outset.x, dy: lang-dy, lang-content)
+  }
+  let inline-badges = ()
+  if inline-file {
+    inline-badges.push((
+      body: codly-file(args.file),
+      align: file-side + horizon,
+      dx: 0pt,
+      dy: 0pt,
+    ))
+  }
+  if lang-content != none and (args.header == none or badge-position != auto) {
+    inline-badges.push((
+      body: lang-content,
+      align: if badge-position == auto { lang-settings.align } else {
+        badge-position + lang-settings.align.y
       },
-      lang-block,
-    )
+      dx: lang-settings.outset.x,
+      dy: lang-dy,
+    ))
+  }
+  let badge-row = if inline-badges.len() > 0 {
+    file-impl.inline-row(inline-badges, __codly-inset(get(codly-line).inset))
   }
 
   let has-annotations = args.annotations != none and args.annotations.len() > 0
@@ -1477,6 +1506,7 @@
     wrap-settings: wrap-settings,
     unnumbered: args.unnumbered,
     parent: it,
+    badge-row: badge-row,
   )
 
   // The header counts as a displayed row for palette compatibility.
@@ -1494,6 +1524,10 @@
     indexed-rows.push(row + (index: index))
   }
   rows = indexed-rows
+  let guide-offsets = if indentation != none and badge-row != none {
+    let first = rows.position(row => row.kind == "code")
+    std.range(rows.len()).map(index => if index == first { badge-row.left } else { 0pt })
+  } else { () }
 
   let get-line = get(codly-line)
   let fill = if get-line.fill == auto { __default("fill") } else { get-line.fill }
@@ -1579,6 +1613,7 @@
             indent.settings(guides, args.rainbow)
               + (
                 depths: guide-depths,
+                offsets: guide-offsets,
                 width: indentation.width,
                 // Raw code uses a monospaced font, so guide positions are
                 // integral space advances. Measure that advance once per
