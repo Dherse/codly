@@ -1921,3 +1921,30 @@
 
 /// In context, read source line count and the last displayed number of a block.
 #import "src/lib.typ": __codly-block-info as info
+
+/// Built-in theme dictionaries and a constructor for reusable custom themes.
+#import "src/themes.typ": presets as themes, define as define-theme
+
+/// Load a preset or custom theme with scoped element set rules.
+/// Example: `#show: codly.theme("dark")`.
+#let theme(..options) = {
+  import "src/themes.typ" as impl
+  assert(options.pos().len() <= 1, message: "codly: theme accepts at most one preset")
+  let preset = options.pos().at(0, default: "thesis")
+  impl.apply.with(
+    config: define-theme(base: preset, ..options.named()),
+    elements: (
+      block: codly,
+      line: codly-line,
+      number: codly-number,
+      lang: codly-lang,
+      file: codly-file,
+      header: codly-header,
+      footer: codly-footer,
+      highlight: codly-highlight,
+      callout: codly-callout,
+      bubble: codly-bubble,
+      annotation: codly-annotation,
+    ),
+  )
+}

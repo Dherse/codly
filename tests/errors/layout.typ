@@ -31,7 +31,19 @@
   ),
 )
 
-#if case == "empty-fill" {
+#if case == "theme-name" {
+  show: codly.theme("does-not-exist")
+  codly.new(raw("one", block: true))
+} else if case == "theme-setting" {
+  show: codly.theme("dark", forground: white)
+  codly.new(raw("one", block: true))
+} else if case == "theme-section" {
+  show: codly.theme("dark", header: red)
+  codly.new(raw("one", block: true))
+} else if case == "theme-base" {
+  show: codly.theme(42)
+  codly.new(raw("one", block: true))
+} else if case == "empty-fill" {
   show: codly.line-set_(fill: ())
   codly.new(raw("one", block: true))
 } else if case == "filename-missing" {
