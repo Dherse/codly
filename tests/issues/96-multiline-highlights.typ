@@ -4,7 +4,7 @@
 
 // #96: the requested `line: (8, 10)` form is rejected during element parsing.
 #assert(
-  catch(() => codly.highlight(line: (8, 10), start: 5, fill: red)) != none,
+  catch(() => codly.highlight-config(line: (8, 10), start: 5, fill: red)) != none,
 )
 
 // The current workaround requires one span per source line.

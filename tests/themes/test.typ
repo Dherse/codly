@@ -30,14 +30,14 @@
   let config = codly.define-theme(base: case.name)
   show: codly.theme(case.name)
   e.get(get => {
-    assert.eq(get(codly.codly-line).fill, case.fill)
-    assert.eq(get(codly.codly-line).stroke, config.stroke)
+    assert.eq(get(codly.line).fill, case.fill)
+    assert.eq(get(codly.line).stroke, config.stroke)
     assert.eq(get(codly.codly).radius, config.radius)
-    assert.eq(get(codly.codly-header).fill, config.at("header-fill"))
-    assert.eq(get(codly.codly-footer).fill, config.at("footer-fill"))
-    assert.eq(get(codly.codly-number).fill, auto)
-    assert.eq(get(codly.codly-bubble).fill, config.at("bubble-fill"))
-    assert.eq(get(codly.codly-highlight).color, config.accent)
+    assert.eq(get(codly.header).fill, config.at("header-fill"))
+    assert.eq(get(codly.footer).fill, config.at("footer-fill"))
+    assert.eq(get(codly.number).fill, auto)
+    assert.eq(get(codly.bubble).fill, config.at("bubble-fill"))
+    assert.eq(get(codly.highlight).color, config.accent)
     []
   })
   show text: it => context {
@@ -82,10 +82,10 @@
 #{
   show: codly.theme(derived)
   e.get(get => {
-    assert.eq(get(codly.codly-line).fill, custom.fill)
-    assert.eq(get(codly.codly-highlight).color, orange)
-    assert.eq(get(codly.codly-header).inset, 4pt)
-    assert.eq(get(codly.codly-file).radius, 4pt)
+    assert.eq(get(codly.line).fill, custom.fill)
+    assert.eq(get(codly.highlight).color, orange)
+    assert.eq(get(codly.header).inset, 4pt)
+    assert.eq(get(codly.file).radius, 4pt)
     []
   })
   show text: it => context {
@@ -99,8 +99,8 @@
   show: codly.theme("dark", fill: red, header: (fill: blue))
   show: codly.line-set_(fill: green)
   e.get(get => {
-    assert.eq(get(codly.codly-line).fill, green)
-    assert.eq(get(codly.codly-header).fill, blue)
+    assert.eq(get(codly.line).fill, green)
+    assert.eq(get(codly.header).fill, blue)
     []
   })
   show grid: it => {
@@ -115,7 +115,7 @@
   }
   codly.new(
     raw("return identifier", block: true, lang: "py", theme: none),
-    header: codly.codly-header([Explicit], fill: orange),
+    header: codly.header([Explicit], fill: orange),
   )
 }
 
@@ -152,14 +152,14 @@
   {
     show: codly.theme()
     e.get(get => {
-      assert.eq(get(codly.codly-line).fill, (luma(240), none))
-      assert.eq(get(codly.codly-line).stroke, 1pt + luma(240))
+      assert.eq(get(codly.line).fill, (luma(240), none))
+      assert.eq(get(codly.line).stroke, 1pt + luma(240))
       []
     })
     codly.new(raw("reset", block: true))
   }
   e.get(get => {
-    assert.eq(get(codly.codly-line).fill, rgb("1e1e1e"))
+    assert.eq(get(codly.line).fill, rgb("1e1e1e"))
     []
   })
   codly.new(raw("outer", block: true))
@@ -169,7 +169,7 @@
   assert.eq(raw.theme, auto)
 }
 #e.get(get => {
-  assert.eq(get(codly.codly-line).fill, (luma(240), none))
+  assert.eq(get(codly.line).fill, (luma(240), none))
   []
 })
 

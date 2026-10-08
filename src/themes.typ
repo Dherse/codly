@@ -106,7 +106,7 @@
     bubble-fill: luma(245),
     syntax: auto,
     language-colors: false,
-    // codly-lang's scalar `none` uses the language color as a fallback;
+    // lang's scalar `none` uses the language color as a fallback;
     // a callback returning `none` gives the clean preset an unpainted badge.
     lang: (fill: _ => none, stroke: none, radius: 0pt),
     file: (fill: none, stroke: none, radius: 0pt),

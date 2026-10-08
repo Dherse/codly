@@ -11,7 +11,7 @@
 
 // The public type uses `body`, exposes the cell fields directly, and validates
 // its one-indexed source-line anchor.
-#let fields = e.fields(codly.callout(
+#let fields = e.fields(codly.callout-config(
   line: 2,
   body: [Explanation],
   fill: yellow,
@@ -55,7 +55,7 @@
   codly.new(
     raw("one\ntwo\nthree", block: true, lang: "rs"),
     callouts: (
-      (line: 1, body: [element defaults]),
+      codly.callout-config(line: 1, body: [element defaults]),
       (line: 2, body: [local fill override], fill: rgb("fff0d6"), align: center),
       (line: 2, body: [local none override], fill: none, align: center),
     ),

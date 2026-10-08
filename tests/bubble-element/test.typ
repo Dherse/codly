@@ -21,7 +21,7 @@
 )
 
 // Both the generic Elembic set rule and the convenience wrapper are supported.
-#show: e.set_(codly.codly-bubble, ..defaults)
+#show: e.set_(codly.bubble, ..defaults)
 #let observe(key, body) = {
   show: codly.bubble-show_(it => [#metadata((key: key, fields: e.fields(it)))<bubble>#it])
   show: codly.callout-show_(it => [#metadata((key: key, fields: e.fields(it)))<callout>#it])

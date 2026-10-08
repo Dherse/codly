@@ -36,7 +36,7 @@
     for highlights in (none, ((line: 1, start: 5, end: 14),)) {
       let expected = {
         set text(size: size, font: "Libertinus Serif", top-edge: "bounds", bottom-edge: "bounds")
-        codly.codly-line(source, highlights: highlights)
+        codly.line(source, highlights: highlights)
       }
       let actual = {
         show: codly.line-show_(it => text(
@@ -46,7 +46,7 @@
           bottom-edge: "bounds",
           it,
         ))
-        codly.codly-line(source, highlights: highlights)
+        codly.line(source, highlights: highlights)
       }
       assert.eq(measure(width: 70pt, actual), measure(width: 70pt, expected))
     }

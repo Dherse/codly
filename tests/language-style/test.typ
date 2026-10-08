@@ -101,7 +101,7 @@
     radius,
   ))
 
-  let rendered = e.query(codly.codly-lang).map(text-of)
+  let rendered = e.query(codly.lang).map(text-of)
   assert.eq(rendered, ("PPython", "P", "Python", "", ""))
   assert.eq(query(<badge-radius>).map(it => it.value), (radius, radius, radius))
   let images = query(<badge-image>)

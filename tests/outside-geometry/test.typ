@@ -1,7 +1,7 @@
 #import "../../codly.typ" as codly
 #import "@preview/elembic:1.1.1" as e
 
-#show: e.set_(codly.codly-number, fill: none)
+#show: e.set_(codly.number, fill: none)
 
 // Observe the geometry layer itself. The outer codly block has no stroke in
 // outside-number mode, so these are the clipped blocks drawn by geometry.outside.
@@ -75,15 +75,15 @@
 #{
   set page(width: 210pt, height: 118pt, margin: 6pt)
   set text(size: 8pt)
-  show: e.set_(codly.codly-number, placement: "outside")
+  show: e.set_(codly.number, placement: "outside")
   show: codly.line-set_(fill: (alternate-fill, body-fill), stroke: blue + 3pt)
   codly.new(
     raw(repeated-source, block: true),
     breakable: true,
     radius: 20pt,
     annotations: ((start: 2, end: 17, content: [spanning annotation]),),
-    header: codly.codly-header([repeat header], repeat: true, fill: header-fill, inset: 3pt),
-    footer: codly.codly-footer([repeat footer], repeat: true, fill: footer-fill, inset: 3pt),
+    header: codly.header([repeat header], repeat: true, fill: header-fill, inset: 3pt),
+    footer: codly.footer([repeat footer], repeat: true, fill: footer-fill, inset: 3pt),
   )
 }
 
@@ -94,14 +94,14 @@
 #{
   set page(width: 210pt, height: 105pt, margin: 6pt)
   set text(size: 8pt)
-  show: e.set_(codly.codly-number, placement: "outside")
+  show: e.set_(codly.number, placement: "outside")
   show: codly.line-set_(fill: (alternate-fill, body-fill), stroke: blue + 3pt)
   codly.new(
     raw(range(1, 15).map(n => "O" + str(n)).join("\n"), block: true),
     breakable: true,
     radius: 20pt,
-    header: codly.codly-header([once header], repeat: false, fill: header-fill, inset: 3pt),
-    footer: codly.codly-footer([once footer], repeat: false, fill: footer-fill, inset: 3pt),
+    header: codly.header([once header], repeat: false, fill: header-fill, inset: 3pt),
+    footer: codly.footer([once footer], repeat: false, fill: footer-fill, inset: 3pt),
   )
 }
 
@@ -112,7 +112,7 @@
 #{
   set page(width: 210pt, height: 118pt, margin: 6pt, columns: 2)
   set text(size: 7pt)
-  show: e.set_(codly.codly-number, placement: "outside")
+  show: e.set_(codly.number, placement: "outside")
   show: codly.line-set_(fill: (alternate-fill, body-fill), stroke: purple + 3pt)
   codly.new(
     raw(range(1, 30).map(n => "C" + str(n)).join("\n"), block: true),
@@ -128,13 +128,13 @@
 #{
   set page(width: 210pt, height: 118pt, margin: 6pt)
   set text(size: 8pt)
-  show: e.set_(codly.codly-number, placement: "outside")
+  show: e.set_(codly.number, placement: "outside")
   show: codly.line-set_(fill: (alternate-fill, body-fill), stroke: orange + 3pt)
   codly.new(
     raw("outer one\nouter two", block: true),
     breakable: true,
     radius: 18pt,
-    header: codly.codly-header(
+    header: codly.header(
       [outer header #{
           show: codly.line-set_(stroke: red + 2pt)
           codly.new(raw("nested", block: true), radius: 5pt)

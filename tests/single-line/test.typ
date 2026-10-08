@@ -16,14 +16,14 @@ Hello, world!
 ```]
 
 #{
-  show: e.show_(codly.codly-lang, it => [])
+  show: e.show_(codly.lang, it => [])
   codly.new(number-enabled: false)[```typst
   Hello, world!
   ```]
 }
 
 #{
-  show: e.show_(codly.codly-lang, it => [])
+  show: e.show_(codly.lang, it => [])
   codly.new(number-enabled: false, annotations: ((start: 1, content: "Hello, world!"),))[```typst
   Hello, world!
   ```]

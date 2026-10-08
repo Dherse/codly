@@ -160,7 +160,7 @@
   let short = raw("short", block: true, lang: "py")
   let plain = measure(codly.new(short, width: auto, lang-position: none), width: 1000pt)
   let badged = measure(codly.new(short, width: auto), width: 1000pt)
-  assert(badged.width >= plain.width + measure(codly.codly-lang("py")).width)
+  assert(badged.width >= plain.width + measure(codly.lang("py")).width)
   let narrow = measure(codly.new(raw(source, block: true, lang: "py"), width: auto), width: 120pt)
   assert(narrow.width <= 120pt)
 }

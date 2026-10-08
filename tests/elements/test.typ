@@ -1,7 +1,26 @@
 #import "../../codly.typ" as codly
+#import "../../codly.typ": (
+  line, header, footer, lang, file, highlight, annotation, callout, bubble, number,
+  ref, line-ref, highlight-ref, annotation-ref,
+  highlight-config, annotation-config, callout-config,
+)
 #import "@preview/elembic:1.1.1" as e
 
 #set page(width: 285pt, height: auto, margin: 5pt)
+
+// Short names can be imported directly, while their Elembic identities keep
+// the existing component names used by selectors, metadata, and references.
+#for (name, component) in (
+  line: line, header: header, footer: footer, lang: lang, file: file,
+  highlight: highlight, annotation: annotation, callout: callout,
+  bubble: bubble, number: number, ref: ref,
+  line-ref: line-ref, highlight-ref: highlight-ref, annotation-ref: annotation-ref,
+) {
+  assert.eq(e.data(component).name, "codly-" + name)
+}
+#assert.eq(e.data(highlight-config).name, "highlight")
+#assert.eq(e.data(annotation-config).name, "annotation")
+#assert.eq(e.data(callout-config).name, "callout")
 
 #let text-of(body) = {
   if body.has("text") {
@@ -109,21 +128,21 @@
 // Plain header/footer content and pre-built element instances both retain
 // their public fields when codly constructs the block grid.
 #{
-  show: e.show_(codly.codly-header, it => {
+  show: e.show_(codly.header, it => {
     let fields = e.fields(it)
     [#metadata((body: fields.body, fill: fields.fill))<header-hook>#it]
   })
-  show: e.show_(codly.codly-footer, it => {
+  show: e.show_(codly.footer, it => {
     let fields = e.fields(it)
     [#metadata((body: fields.body, fill: fields.fill))<footer-hook>#it]
   })
-  codly.codly-header([standalone-head], fill: red)
-  codly.codly-footer([standalone-foot], fill: blue)
+  codly.header([standalone-head], fill: red)
+  codly.footer([standalone-foot], fill: blue)
   codly.new(raw("one", block: true), header: [plain-head], footer: [plain-foot])
   codly.new(
     raw("two", block: true),
-    header: codly.codly-header([element-head], fill: red),
-    footer: codly.codly-footer([element-foot], fill: blue),
+    header: codly.header([element-head], fill: red),
+    footer: codly.footer([element-foot], fill: blue),
   )
 }
 
@@ -131,7 +150,7 @@
 // element fields override those defaults in the resulting grid cells.
 #{
   show: codly.header-set(fill: green)
-  show: e.set_(codly.codly-footer, fill: green)
+  show: e.set_(codly.footer, fill: green)
   show grid: it => {
     let edges = ()
     for child in it.children {
@@ -145,19 +164,19 @@
     }
     [#metadata(edges)<styled-cells>#it]
   }
-  codly.new(raw("style-one", block: true), header: [plain-header], footer: codly.codly-footer(
+  codly.new(raw("style-one", block: true), header: [plain-header], footer: codly.footer(
     [explicit-footer],
     fill: blue,
   ))
   codly.new(
     raw("style-two", block: true),
-    header: codly.codly-header([explicit-header], fill: red),
+    header: codly.header([explicit-header], fill: red),
     footer: [plain-footer],
   )
   codly.new(
     raw("style-three", block: true),
-    header: codly.codly-header([inherited-header]),
-    footer: codly.codly-footer([inherited-footer]),
+    header: codly.header([inherited-header]),
+    footer: codly.footer([inherited-footer]),
   )
 }
 
@@ -167,7 +186,7 @@
     let fields = e.fields(it)
     [#metadata((number: fields.body.number, smart-indent: fields.smart-indent))<lines-seen>#it]
   })
-  show: e.show_(codly.codly-number, it => {
+  show: e.show_(codly.number, it => {
     [#metadata(e.fields(it).number)<numbers-seen>#it]
   })
   show: codly.highlight-show_(it => {
@@ -180,8 +199,8 @@
   })
   codly.new(
     raw("abc\ndef", block: true),
-    highlights: ((line: 1, start: 0, end: 2),),
-    annotations: ((start: 2, content: [note]),),
+    highlights: (highlight-config(1, start: 0, end: 2),),
+    annotations: (annotation-config(2, content: [note]),),
   )
 }
 
@@ -215,7 +234,7 @@
     display-icon: false,
   ))
   assert.eq(query(<language-fallback>).first().value, (body: "missing", defined: none))
-  let headers = e.query(codly.codly-header)
+  let headers = e.query(codly.header)
   assert.eq(headers.map(it => text-of(it)), (
     "standalone-head",
     "plain-head",
@@ -224,7 +243,7 @@
     "explicit-header",
     "inherited-header",
   ))
-  let footers = e.query(codly.codly-footer)
+  let footers = e.query(codly.footer)
   assert.eq(footers.map(it => text-of(it)), (
     "standalone-foot",
     "plain-foot",

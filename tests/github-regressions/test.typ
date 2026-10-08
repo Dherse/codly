@@ -36,7 +36,7 @@
 // text when numbers are disabled.
 #for alignment in (left, top) [#figure[
   #{
-    show: e.set_(codly.codly-number, align: alignment)
+    show: e.set_(codly.number, align: alignment)
     show: codly.line-show_(it => {
       let body = e.fields(it).body
       [#metadata(body.text)<github-figure-line>#it]

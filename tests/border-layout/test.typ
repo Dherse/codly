@@ -5,7 +5,7 @@
 
 #let example(stroke, outside: false) = {
   show: codly.line-set_(stroke: stroke, fill: white)
-  show: e.set_(codly.codly-number, placement: if outside { "outside" } else { "inside" })
+  show: e.set_(codly.number, placement: if outside { "outside" } else { "inside" })
   codly.new(raw("margin check\nsecond line", block: true), radius: 0pt)
 }
 
@@ -35,7 +35,7 @@
         .join("\n"),
       block: true,
     ),
-    header: codly.codly-header([header], repeat: true, inset: 1em),
-    footer: codly.codly-footer([footer], repeat: true, inset: 1em),
+    header: codly.header([header], repeat: true, inset: 1em),
+    footer: codly.footer([footer], repeat: true, inset: 1em),
   )
 }

@@ -12,16 +12,16 @@
 #codly.new(
   raw("one\ntwo", block: true),
   annotations: ((start: 1, content: [note]),),
-  header: codly.codly-header([header-numbered], fill: red, inset: 2pt),
-  footer: codly.codly-footer([footer-numbered], fill: blue, inset: 3pt),
+  header: codly.header([header-numbered], fill: red, inset: 2pt),
+  footer: codly.footer([footer-numbered], fill: blue, inset: 3pt),
 )
 
 #codly.new(
   raw("one\ntwo", block: true),
   number-enabled: false,
   annotations: ((start: 1, content: [note]),),
-  header: codly.codly-header([header-plain], fill: green, inset: 4pt),
-  footer: codly.codly-footer([footer-plain], fill: purple, inset: 5pt),
+  header: codly.header([header-plain], fill: green, inset: 4pt),
+  footer: codly.footer([footer-plain], fill: purple, inset: 5pt),
 )
 
 // An explicit `none` preserves an unfilled outside number column.
@@ -33,7 +33,7 @@
 )
 #{
   show: codly.line-set_(fill: (stripe-tiling, line-gradient))
-  show: e.set_(codly.codly-number, placement: "outside", fill: none)
+  show: e.set_(codly.number, placement: "outside", fill: none)
   show rect: it => [#metadata(it.fill)<complex-fill>#it]
   codly.new(raw("gradient\ntiling", block: true))
 }
@@ -43,13 +43,13 @@
 // Explicit insets keep header text within Typst's continuation clipping region.
 #let repeat-case() = {
   set page(height: 180pt, margin: 6pt)
-  show: e.show_(codly.codly-header, it => [#metadata(e.fields(it).repeat)<header-repeat>#it])
-  show: e.show_(codly.codly-footer, it => [#metadata(e.fields(it).repeat)<footer-repeat>#it])
+  show: e.show_(codly.header, it => [#metadata(e.fields(it).repeat)<header-repeat>#it])
+  show: e.show_(codly.footer, it => [#metadata(e.fields(it).repeat)<footer-repeat>#it])
   codly.new(
     raw(range(1, 14).map(str).join("\n"), block: true),
     breakable: true,
-    header: codly.codly-header([repeat header], repeat: true, fill: luma(230), inset: 1em),
-    footer: codly.codly-footer([repeat footer], repeat: true, fill: luma(235), inset: 1em),
+    header: codly.header([repeat header], repeat: true, fill: luma(230), inset: 1em),
+    footer: codly.footer([repeat footer], repeat: true, fill: luma(235), inset: 1em),
   )
 }
 

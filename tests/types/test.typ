@@ -42,7 +42,7 @@
 
   // Optional values are retained, while omitted highlight bounds normalize.
   (
-    codly.highlight(8),
+    codly.highlight-config(8),
     (
       line: 8,
       start: 0,
@@ -60,7 +60,7 @@
     ),
   ),
   (
-    codly.highlight(
+    codly.highlight-config(
       9,
       start: 2,
       end: 6,
@@ -90,7 +90,7 @@
     ),
   ),
   (
-    codly.highlight(10, start: none, end: none),
+    codly.highlight-config(10, start: none, end: none),
     (
       line: 10,
       start: 0,
@@ -108,7 +108,7 @@
     ),
   ),
   (
-    codly.annotation(11),
+    codly.annotation-config(11),
     (
       start: 11,
       end: 11,
@@ -118,7 +118,7 @@
     ),
   ),
   (
-    codly.annotation(12, end: 14, content: [explanation]),
+    codly.annotation-config(12, end: 14, content: [explanation]),
     (
       start: 12,
       end: 14,
@@ -154,7 +154,7 @@
   // Highlight and annotation dictionary casts retain supplied values and
   // apply the same defaults as their constructors.
   (
-    codly.highlight,
+    codly.highlight-config,
     (line: 13, start: 1, end: 4, tag: "tag", clip: false, depth: 2),
     (
       line: 13,
@@ -173,7 +173,7 @@
     ),
   ),
   (
-    codly.annotation,
+    codly.annotation-config,
     (start: 15, end: 16, content: [note]),
     (
       start: 15,
@@ -230,8 +230,8 @@
   (codly.range, "range"),
   (codly.skip, true),
   (codly.highlighted-line, "line"),
-  (codly.highlight, false),
-  (codly.annotation, 0),
+  (codly.highlight-config, false),
+  (codly.annotation-config, 0),
 ) {
   assert.eq(e.types.cast(value, type).at(0), false)
 }

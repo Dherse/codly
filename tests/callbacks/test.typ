@@ -111,7 +111,7 @@
   },
 )
 #show: codly.highlight-show_(highlight-fields)
-#show: e.show_(codly.codly-number, number-fields)
+#show: e.show_(codly.number, number-fields)
 #codly.new(raw("one\ntwo", block: true), offset: 5)<offset-source>
 #codly.new(
   raw("three", block: true),

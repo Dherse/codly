@@ -20,15 +20,15 @@
   body
 }
 
-#check((red, red + 1pt, false, 0pt), codly.codly-highlight([word]))
-#check((blue, green + 2pt, true, 3pt), codly.codly-highlight([word], highlight: (
+#check((red, red + 1pt, false, 0pt), codly.highlight([word]))
+#check((blue, green + 2pt, true, 3pt), codly.highlight([word], highlight: (
   line: 1,
   fill: blue,
   stroke: green + 2pt,
   clip: true,
   baseline: 3pt,
 )))
-#check((blue, blue + 1pt, false, 0pt), codly.codly-highlight([word], highlight: (
+#check((blue, blue + 1pt, false, 0pt), codly.highlight([word], highlight: (
   line: 1,
   fill: color => {
     assert.eq(color, red)
@@ -38,7 +38,7 @@
 
 #{
   show: codly.highlight-set_(fill: none, stroke: none)
-  check((none, none, false, 0pt), codly.codly-highlight([word]))
+  check((none, none, false, 0pt), codly.highlight([word]))
 }
 
 #context assert.eq(query(<styled-highlight>).len(), 4)

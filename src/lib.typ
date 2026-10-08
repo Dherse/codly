@@ -334,7 +334,7 @@
 
 /// Renders a single highlighted span of a code line. All styling is resolved
 /// from the per-highlight overrides in the metadata record, falling back to
-/// the element's own fields, and references use the `codly-ref` settings.
+/// the element's own fields, and references use the `codly.ref` settings.
 #let __codly-highlight-show(
   codly-ref,
   codly-highlight-ref,
@@ -440,7 +440,7 @@
 }
 
 /// Renders a single code line: smart indentation, per-character highlights
-/// (delegated to `codly-highlight`), and line reference figures.
+/// (delegated to `codly.highlight`), and line reference figures.
 // Keep the shared rendering helpers out of each line's context captures.
 // Its font-dependent work still runs inside the caller's deferred context.
 #let __codly-line-render(codly-highlight, codly-ref, codly-line-ref, it, line-show) = {

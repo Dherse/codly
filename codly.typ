@@ -1,7 +1,7 @@
 /// A language definition, see the `languages` field.
 ///
 /// Additional, unknown fields are preserved and override the corresponding
-/// `codly-lang` arguments for that language, e.g. `(py: (radius: 5pt))`
+/// `codly.lang` arguments for that language, e.g. `(py: (radius: 5pt))`
 /// overrides `radius` for the Python language badge.
 #let language = {
   import "@preview/elembic:1.1.1" as e
@@ -346,7 +346,7 @@
   }
 }
 
-#let highlight = {
+#let highlight-config = {
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
 
@@ -388,7 +388,7 @@
       e.field(
         "inset",
         e.types.option(e.types.union(length, dictionary)),
-        doc: "Overrides `codly-highlight`'s `inset`.",
+        doc: "Overrides `codly.highlight`'s `inset`.",
         default: none,
       ),
       e.field(
@@ -400,19 +400,19 @@
       e.field(
         "clip",
         e.types.option(bool),
-        doc: "Overrides `codly-highlight`'s `clip`.",
+        doc: "Overrides `codly.highlight`'s `clip`.",
         default: none,
       ),
       e.field(
         "outset",
         e.types.option(e.types.union(length, dictionary)),
-        doc: "Overrides `codly-highlight`'s `outset`.",
+        doc: "Overrides `codly.highlight`'s `outset`.",
         default: none,
       ),
       e.field(
         "radius",
         e.types.option(length),
-        doc: "Overrides `codly-highlight`'s `radius`.",
+        doc: "Overrides `codly.highlight`'s `radius`.",
         default: none,
       ),
       e.field(
@@ -424,7 +424,7 @@
       e.field(
         "stroke",
         e.types.option(e.types.union(stroke, function)),
-        doc: "Overrides `codly-highlight`'s `stroke`.",
+        doc: "Overrides `codly.highlight`'s `stroke`.",
         default: none,
       ),
       e.field(
@@ -480,7 +480,7 @@
   }
 }
 
-#let annotation = {
+#let annotation-config = {
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
 
@@ -552,7 +552,7 @@
   }
 }
 
-#let callout = {
+#let callout-config = {
   import "src/callout.typ" as callout-impl
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
@@ -756,7 +756,7 @@
       e.field(
         "color",
         e.types.option(e.types.paint),
-        doc: "The highlight color of the line, defaults to `codly-highlight`'s `fill`.",
+        doc: "The highlight color of the line, defaults to `codly.highlight`'s `fill`.",
         default: none,
         named: false,
       ),
@@ -827,7 +827,7 @@
 
 /// Shared formatting settings read by the line, highlight, and annotation
 /// reference renderers. Generated references currently use figure numbering.
-#let codly-ref = {
+#let ref = {
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default
 
@@ -866,7 +866,7 @@
 }
 
 /// A native reference to a displayed line of a codly code block.
-#let codly-line-ref = {
+#let line-ref = {
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __codly-line-ref-show
 
@@ -874,7 +874,7 @@
     "codly-line-ref",
     prefix: __codly-prefix,
     doc: "A native reference to a displayed line of a codly code block.",
-    display: __codly-line-ref-show.with(codly-ref),
+    display: __codly-line-ref-show.with(ref),
     labelable: false,
     fields: (
       e.field("body", e.types.option(content), doc: "Internal reference body.", required: true),
@@ -889,13 +889,13 @@
       e.field(
         "separator",
         e.types.option(e.types.union(auto, str, content)),
-        doc: "Text between the code block and line number; `auto` uses `codly-ref` settings.",
+        doc: "Text between the code block and line number; `auto` uses `codly.ref` settings.",
         default: auto,
       ),
       e.field(
         "numbering",
         e.types.option(e.types.union(auto, function)),
-        doc: "Line-number formatter; `auto` uses `codly-ref` settings.",
+        doc: "Line-number formatter; `auto` uses `codly.ref` settings.",
         default: auto,
       ),
     ),
@@ -903,7 +903,7 @@
 }
 
 /// A native reference to a labelled highlight in a codly code block.
-#let codly-highlight-ref = {
+#let highlight-ref = {
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __codly-highlight-ref-show
 
@@ -911,7 +911,7 @@
     "codly-highlight-ref",
     prefix: __codly-prefix,
     doc: "A native reference to a labelled highlight in a codly code block.",
-    display: __codly-highlight-ref-show.with(codly-ref),
+    display: __codly-highlight-ref-show.with(ref),
     labelable: false,
     fields: (
       e.field("body", e.types.option(content), doc: "Internal reference body.", required: true),
@@ -933,13 +933,13 @@
       e.field(
         "separator",
         e.types.option(e.types.union(auto, str, content)),
-        doc: "Text between the code block and reference; `auto` uses `codly-ref` settings.",
+        doc: "Text between the code block and reference; `auto` uses `codly.ref` settings.",
         default: auto,
       ),
       e.field(
         "numbering",
         e.types.option(e.types.union(auto, function)),
-        doc: "Line-number formatter; `auto` uses `codly-ref` settings.",
+        doc: "Line-number formatter; `auto` uses `codly.ref` settings.",
         default: auto,
       ),
     ),
@@ -947,7 +947,7 @@
 }
 
 /// A native reference to a labelled annotation in a codly code block.
-#let codly-annotation-ref = {
+#let annotation-ref = {
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-annotation-ref-show, __codly-prefix
 
@@ -955,7 +955,7 @@
     "codly-annotation-ref",
     prefix: __codly-prefix,
     doc: "A native reference to a labelled annotation in a codly code block.",
-    display: __codly-annotation-ref-show.with(codly-ref),
+    display: __codly-annotation-ref-show.with(ref),
     labelable: false,
     fields: (
       e.field("body", e.types.option(content), doc: "Internal reference body.", required: true),
@@ -984,13 +984,13 @@
       e.field(
         "separator",
         e.types.option(e.types.union(auto, str, content)),
-        doc: "Text between the code block and reference; `auto` uses `codly-ref` settings.",
+        doc: "Text between the code block and reference; `auto` uses `codly.ref` settings.",
         default: auto,
       ),
       e.field(
         "numbering",
         e.types.option(e.types.union(auto, function)),
-        doc: "Line-number formatter; `auto` uses `codly-ref` settings.",
+        doc: "Line-number formatter; `auto` uses `codly.ref` settings.",
         default: auto,
       ),
     ),
@@ -998,7 +998,7 @@
 }
 
 /// A single highlight within a codly code block.
-#let codly-highlight = {
+#let highlight = {
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default, __codly-highlight-show
 
@@ -1006,12 +1006,12 @@
     "codly-highlight",
     prefix: __codly-prefix,
     doc: "A highlight over part of a line of a codly code block.",
-    display: __codly-highlight-show.with(codly-ref, codly-highlight-ref),
+    display: __codly-highlight-show.with(ref, highlight-ref),
     fields: (
       e.field("body", e.types.option(content), doc: "The highlighted content.", required: true),
       e.field(
         "highlight",
-        e.types.option(highlight),
+        e.types.option(highlight-config),
         doc: "The highlight metadata for this content.",
         default: none,
       ),
@@ -1075,7 +1075,7 @@
 
 /// A single line of a codly code block. Takes over the line-level styling
 /// arguments of `codly` (`radius`, `inset`, `fill`, `stroke`).
-#let codly-line = {
+#let line = {
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default, __codly-line-show
 
@@ -1083,7 +1083,7 @@
     "codly-line",
     prefix: __codly-prefix,
     doc: "A single line of a codly code block.",
-    display: __codly-line-show.with(codly-highlight, codly-ref, codly-line-ref),
+    display: __codly-line-show.with(highlight, ref, line-ref),
     fields: (
       e.field("body", e.types.option(content), doc: "The content of the line.", required: true),
       e.field("radius", e.types.option(length), doc: __doc("radius"), default: __default("radius")),
@@ -1108,7 +1108,7 @@
       e.field("stroke", e.types.option(stroke), doc: __doc("stroke"), default: __default("stroke")),
       e.field(
         "highlights",
-        e.types.option(e.types.array(highlight)),
+        e.types.option(e.types.array(highlight-config)),
         doc: __doc("highlights"),
         default: __default("highlights"),
         folds: false,
@@ -1144,7 +1144,7 @@
 
 /// The header of a codly code block. Takes over the `header-` prefixed
 /// arguments of `codly`.
-#let codly-header = {
+#let header = {
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default
 
@@ -1184,7 +1184,7 @@
 
 /// The footer of a codly code block. Takes over the `footer-` prefixed
 /// arguments of `codly`.
-#let codly-footer = {
+#let footer = {
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default
 
@@ -1224,7 +1224,7 @@
 
 /// The language badge of a codly code block. Takes over the `lang-` prefixed
 /// arguments of `codly`, as well as `display-name` and `display-icon`.
-#let codly-lang = {
+#let lang = {
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default, __codly-lang-show
 
@@ -1295,7 +1295,7 @@
 }
 
 /// A filename badge, independently styleable from the language badge.
-#let codly-file = {
+#let file = {
   import "src/file.typ" as file-impl
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
@@ -1321,7 +1321,7 @@
 
 /// A single annotation of a codly code block. Takes over the `annotation-`
 /// prefixed arguments of `codly`.
-#let codly-annotation = {
+#let annotation = {
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default, __codly-annotation-show
 
@@ -1347,7 +1347,7 @@
 }
 
 /// The painted bubble inside a callout. Owns independent styling defaults.
-#let codly-bubble = {
+#let bubble = {
   import "src/callout.typ" as callout-impl
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
@@ -1385,7 +1385,7 @@
 }
 
 /// A callout row. Its cell properties can be configured with set rules.
-#let codly-callout = {
+#let callout = {
   import "src/callout.typ" as callout-impl
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
@@ -1394,7 +1394,7 @@
     "codly-callout",
     prefix: __codly-prefix,
     doc: "A callout displayed above or below a source line.",
-    display: callout-impl.display.with(codly-bubble),
+    display: callout-impl.display.with(bubble),
     fields: (
       e.field("body", content, doc: "The callout content.", required: true),
       e.field("line", int, doc: "The attached source line.", required: true, named: true),
@@ -1447,7 +1447,7 @@
 
 /// A line number of a codly code block. Takes over the `number-` prefixed
 /// arguments of `codly`.
-#let codly-number = {
+#let number = {
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default
 
@@ -1542,18 +1542,18 @@
   import "src/lib.typ": __codly-prefix, __default, __doc, __codly-show
 
   let codly-show = __codly-show.with(
-    codly-line,
-    codly-highlight,
-    codly-lang,
-    codly-file,
-    codly-header,
-    codly-footer,
-    codly-number,
-    codly-annotation,
-    codly-callout,
-    codly-bubble,
-    codly-annotation-ref,
-    codly-ref,
+    line,
+    highlight,
+    lang,
+    file,
+    header,
+    footer,
+    number,
+    annotation,
+    callout,
+    bubble,
+    annotation-ref,
+    ref,
     sublang-block,
   )
 
@@ -1726,14 +1726,14 @@
       ),
       e.field(
         "annotations",
-        e.types.option(e.types.array(annotation)),
+        e.types.option(e.types.array(annotation-config)),
         doc: __doc("annotations"),
         default: __default("annotations"),
         folds: false,
       ),
       e.field(
         "callouts",
-        e.types.option(e.types.array(callout)),
+        e.types.option(e.types.array(callout-config)),
         doc: __doc("callouts"),
         default: __default("callouts"),
         folds: false,
@@ -1747,7 +1747,7 @@
       ),
       e.field(
         "highlights",
-        e.types.option(e.types.array(highlight)),
+        e.types.option(e.types.array(highlight-config)),
         doc: __doc("highlights"),
         default: __default("highlights"),
         folds: false,
@@ -1824,99 +1824,99 @@
 }
 #let lang-set_(..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.set_(codly-lang, ..args)
+  e.set_(lang, ..args)
 }
 #let lang-show_(it, ..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.show_(codly-lang, it, ..args)
+  e.show_(lang, it, ..args)
 }
 #let file-set_(..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.set_(codly-file, ..args)
+  e.set_(file, ..args)
 }
 #let file-show_(it, ..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.show_(codly-file, it, ..args)
+  e.show_(file, it, ..args)
 }
 #let header-set(..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.set_(codly-header, ..args)
+  e.set_(header, ..args)
 }
 #let line-set_(..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.set_(codly-line, ..args)
+  e.set_(line, ..args)
 }
 #let line-show_(it, ..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.show_(codly-line, it, ..args)
+  e.show_(line, it, ..args)
 }
 #let highlight-set_(..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.set_(codly-highlight, ..args)
+  e.set_(highlight, ..args)
 }
 #let highlight-show_(it, ..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.show_(codly-highlight, it, ..args)
+  e.show_(highlight, it, ..args)
 }
 #let annotation-set_(..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.set_(codly-annotation, ..args)
+  e.set_(annotation, ..args)
 }
 #let annotation-show_(it, ..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.show_(codly-annotation, it, ..args)
+  e.show_(annotation, it, ..args)
 }
 #let callout-set_(..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.set_(codly-callout, ..args)
+  e.set_(callout, ..args)
 }
 #let callout-show_(it, ..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.show_(codly-callout, it, ..args)
+  e.show_(callout, it, ..args)
 }
 #let bubble-set_(..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.set_(codly-bubble, ..args)
+  e.set_(bubble, ..args)
 }
 #let bubble-show_(it, ..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.show_(codly-bubble, it, ..args)
+  e.show_(bubble, it, ..args)
 }
 #let ref-set_(..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.set_(codly-ref, ..args)
+  e.set_(ref, ..args)
 }
 #let line-ref-set_(..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.set_(codly-line-ref, ..args)
+  e.set_(line-ref, ..args)
 }
 #let line-ref-show_(it, ..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.show_(codly-line-ref, it, ..args)
+  e.show_(line-ref, it, ..args)
 }
 #let highlight-ref-set_(..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.set_(codly-highlight-ref, ..args)
+  e.set_(highlight-ref, ..args)
 }
 #let highlight-ref-show_(it, ..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.show_(codly-highlight-ref, it, ..args)
+  e.show_(highlight-ref, it, ..args)
 }
 #let annotation-ref-set_(..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.set_(codly-annotation-ref, ..args)
+  e.set_(annotation-ref, ..args)
 }
 #let annotation-ref-show_(it, ..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.show_(codly-annotation-ref, it, ..args)
+  e.show_(annotation-ref, it, ..args)
 }
 #let number-set_(..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.set_(codly-number, ..args)
+  e.set_(number, ..args)
 }
 #let number-show_(it, ..args) = {
   import "@preview/elembic:1.1.1" as e
-  e.show_(codly-number, it, ..args)
+  e.show_(number, it, ..args)
 }
 
 /// In context, read source line count and the last displayed number of a block.
@@ -1935,16 +1935,16 @@
     config: define-theme(base: preset, ..options.named()),
     elements: (
       block: codly,
-      line: codly-line,
-      number: codly-number,
-      lang: codly-lang,
-      file: codly-file,
-      header: codly-header,
-      footer: codly-footer,
-      highlight: codly-highlight,
-      callout: codly-callout,
-      bubble: codly-bubble,
-      annotation: codly-annotation,
+      line: line,
+      number: number,
+      lang: lang,
+      file: file,
+      header: header,
+      footer: footer,
+      highlight: highlight,
+      callout: callout,
+      bubble: bubble,
+      annotation: annotation,
     ),
   )
 }

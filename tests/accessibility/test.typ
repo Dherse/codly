@@ -24,7 +24,7 @@
 ]<code>
 
 #{
-  show: e.set_(codly.codly-number, placement: "outside")
+  show: e.set_(codly.number, placement: "outside")
   show: codly.line-set_(stroke: blue + 1pt)
   codly.new(raw("outside\nsecond", block: true), radius: 8pt, annotations: (
     (start: 1, end: 2, content: [Remark]),

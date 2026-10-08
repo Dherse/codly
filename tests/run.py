@@ -7,6 +7,10 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 LAYOUT_ERRORS = {
+    "theme-name": "unknown theme: does-not-exist",
+    "theme-setting": "unknown theme setting: forground",
+    "theme-section": "theme header must be a dictionary",
+    "theme-base": "a theme must be a name or dictionary",
     "empty-fill": "`fill` palettes must not be empty",
     "filename-position": "file-position must select left/right and top/bottom",
     "language-position": "lang-position must select left/right and top/bottom",

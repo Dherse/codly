@@ -4,7 +4,7 @@
 
 #let mark(name) = [#metadata(name)<baseline>word]
 #let sample(highlight: none) = [
-  #box(mark("plain")) #codly.codly-highlight(mark("highlight"), highlight: highlight)
+  #box(mark("plain")) #codly.highlight(mark("highlight"), highlight: highlight)
   #parbreak()
 ]
 

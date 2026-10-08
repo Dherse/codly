@@ -31,7 +31,7 @@
   let fields = e.fields(it)
   [#metadata((tag: fields.highlight.tag, body: text-of(fields.body)))<sublang-highlight>#it]
 })
-#show: e.show_(codly.codly-number, it => {
+#show: e.show_(codly.number, it => {
   [#metadata(e.fields(it).number)<sublang-number>#it]
 })
 #show: codly.annotation-show_(it => {

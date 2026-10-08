@@ -18,7 +18,7 @@
     let origin = here()
     for enabled in (false, true) {
       pagebreak(weak: true)
-      show: e.set_(codly.codly-number, placement: if outside { "outside" } else { "inside" })
+      show: e.set_(codly.number, placement: if outside { "outside" } else { "inside" })
       show: codly.line-set_(stroke: 0.6pt + black)
       show: codly.line-show_(it => [#metadata((enabled, e.fields(it).body.number))<guide-row>#it])
       codly.new(
@@ -77,8 +77,8 @@
       + strong("  ")
       + text("wrapped source source source source source source"),
   )
-  assert.eq(measure(codly.codly-line(original), width: 90pt), measure(
-    codly.codly-line(split),
+  assert.eq(measure(codly.line(original), width: 90pt), measure(
+    codly.line(split),
     width: 90pt,
   ))
 }

@@ -36,7 +36,7 @@
 #for outside in (false, true) {
   context {
     let origin = here()
-    show: e.set_(codly.codly-number, placement: if outside { "outside" } else { "inside" })
+    show: e.set_(codly.number, placement: if outside { "outside" } else { "inside" })
     codly.new(
       raw("    call(" + "argument, " * 80 + ");", block: true),
       wrap-marker: marker,

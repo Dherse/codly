@@ -3,7 +3,7 @@
 #set page(width: 260pt, height: 160pt, margin: 8pt)
 #show: codly.line-set_(fill: white)
 #show: codly.header-set(repeat: true)
-#show: e.set_(codly.codly-footer, repeat: true)
+#show: e.set_(codly.footer, repeat: true)
 #show: codly.file-show_(it => [#metadata(e.fields(it).body)<file>#it])
 #show: codly.lang-show_(it => [#metadata(e.fields(it).body)<lang>#it])
 #show: codly.line-show_(it => {

@@ -20,7 +20,7 @@
     fill: gutter,
   )
   show: codly.header-set(fill: head)
-  show: e.set_(codly.codly-footer, fill: foot)
+  show: e.set_(codly.footer, fill: foot)
   show: codly.line-set_(fill: if style == "defaults" { gradient.linear(aqua, blue) } else if style
     == "explicit" {
     row => {
@@ -54,11 +54,11 @@
   codly.new(
     raw("first\nsecond", block: true),
     number-enabled: enabled,
-    header: codly.codly-header(
+    header: codly.header(
       [Header],
       fill: if style == "defaults" { auto } else { expected.first() },
     ),
-    footer: codly.codly-footer(
+    footer: codly.footer(
       [Footer],
       fill: if style == "defaults" { auto } else { expected.last() },
     ),
