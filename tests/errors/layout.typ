@@ -6,6 +6,11 @@
 #show: codly.ref-set_(by: "item")
 
 #let cases = (
+  gutter-negative-width: (gutters: ((values: (), width: -1pt),)),
+  gutter-negative-ratio: (gutters: ((values: (), width: -10%),)),
+  gutter-negative-fraction: (gutters: ((values: (), width: -1fr),)),
+  gutter-empty-fill: (gutters: ((values: (), fill: ()),)),
+  gutter-invalid-value: (gutters: ((_ => true),)),
   filename-position: (file: "main.py", file-position: center),
   language-position: (lang-position: bottom + center),
   range-conflict: (range: (1, 2), ranges: ((2, 3),)),

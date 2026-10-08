@@ -4,6 +4,7 @@
 #import "indent.typ" as indent
 #import "wrap.typ" as wrap
 #import "callout.typ" as callout-impl
+#import "gutter.typ" as gutter-impl
 
 /// The prefix identifying codly's custom elements and types.
 #let __codly-prefix = "@preview/codly:v2.0.0"
@@ -747,7 +748,13 @@
   unnumbered: (),
   parent: [],
   badge-row: none,
+  gutter-columns: none,
+  row-offset: 0,
 ) = {
+  let gutter-columns = if gutter-columns == none {
+    if number-enabled { (auto,) } else { () }
+  } else { gutter-columns }
+  let gutter-count = gutter-columns.len()
   let items = ()
   let lines_to_number = ()
   let rows = ()
@@ -868,12 +875,16 @@
     )
 
     if explicit-skip or insert-skip {
-      if number-enabled {
-        let number = if explicit-skip and number-array {
-          skip-number.at(formatted-skips, default: fallback-number)
-        } else { fallback-number }
-        items.push(codly-number(if number == none { [] } else { number }, parent))
-      }
+      let number = if explicit-skip and number-array {
+        skip-number.at(formatted-skips, default: fallback-number)
+      } else { fallback-number }
+      items += gutter-impl.cells(
+        gutter-columns,
+        (index: rows.len() + row-offset, kind: "skip", source-line: none, number: none, text: none),
+        if number == none { [] } else { number },
+        codly-number,
+        parent,
+      )
       let body = if explicit-skip and line-array {
         skip-line.at(formatted-skips, default: fallback-line)
       } else { fallback-line }
@@ -957,8 +968,7 @@
     }
 
     let callout-colspan = (
-      (if number-enabled { 2 } else { 1 })
-        + (if has-annots and current-annot == none { 1 } else { 0 })
+      gutter-count + 1 + (if has-annots and current-annot == none { 1 } else { 0 })
     )
     for row in callout-impl.row-cells(
       row-callouts.filter(c => c.placement == "above"),
@@ -986,9 +996,19 @@
       number: if unnumbered-line { none } else { number },
     ))
     if indentation != none { guide-depths.push(indentation.depths.at(line.number - 1)) }
-    if number-enabled {
-      items.push(codly-number(if unnumbered-line { fill } else { number }, parent))
-    }
+    items += gutter-impl.cells(
+      gutter-columns,
+      (
+        index: rows.len() - 1 + row-offset,
+        kind: "code",
+        source-line: line.number,
+        number: if unnumbered-line { none } else { number },
+        text: line.text,
+      ),
+      if unnumbered-line { fill } else { number },
+      codly-number,
+      parent,
+    )
 
     // The line's number carries the offset, matching its displayed number.
     let numbered = if number == line.number { line } else {
@@ -1274,8 +1294,10 @@
   }
 
   let has-annotations = args.annotations != none and args.annotations.len() > 0
+  let gutter-columns = gutter-impl.columns(args.gutters, args.number-enabled)
+  let gutter-count = gutter-columns.len()
   let column-count = (
-    (if args.number-enabled { 2 } else { 1 }) + (if has-annotations { 1 } else { 0 })
+    gutter-count + 1 + (if has-annotations { 1 } else { 0 })
   )
 
   let header-block = if args.header != none {
@@ -1392,13 +1414,6 @@
     previous = annot.start
   }
 
-  // handle number formatting
-  let numbers-format = if args.number-enabled {
-    codly-number
-  } else {
-    none
-  }
-
   // handle offset and `offset-from`:
   let offset = args.offset
   if args.offset-from != none {
@@ -1507,6 +1522,8 @@
     unnumbered: args.unnumbered,
     parent: it,
     badge-row: badge-row,
+    gutter-columns: gutter-columns,
+    row-offset: if args.header == none { 0 } else { 1 },
   )
 
   // The header counts as a displayed row for palette compatibility.
@@ -1567,17 +1584,24 @@
   if args.column-gutter != none { gutters.insert("column-gutter", args.column-gutter) }
   if args.row-gutter != none { gutters.insert("row-gutter", args.row-gutter) }
   let numbers-alignment = number-settings.align
-  let outside-column = numbers-enabled and numbers-outside
+  let outside-column = gutter-count > 0 and numbers-outside
   let number-fill = number-settings.fill
-  let cell-fill = (x, y) => if numbers-enabled and x == 0 and number-fill == none {
-    none
-  } else {
-    let code-fill = line-colors.at(y, default: none)
-    if numbers-enabled and x == 0 {
-      if number-fill == auto { code-fill } else { number-fill }
-    } else {
-      code-fill
-    }
+  let gutter-fills = if args.gutters == auto { () } else {
+    gutter-impl.fills(
+      gutter-columns,
+      rows,
+      line-colors,
+      number-fill,
+      source: it.lines.map(line => line.text),
+    )
+  }
+  let cell-fill = (x, y) => {
+    // Preserve the ordinary number-column paint on spanning callout rows.
+    if args.gutters == auto and numbers-enabled and x == 0 {
+      if number-fill == auto { line-colors.at(y, default: none) } else { number-fill }
+    } else if x < gutter-count {
+      gutter-fills.at(x).at(y, default: none)
+    } else { line-colors.at(y, default: none) }
   }
   let stroke = get-line.stroke
   let stroke-inset = if stroke == none { 0pt } else if stroke.thickness == auto { 0.5pt } else {
@@ -1586,6 +1610,14 @@
 
   let grid-content = (intrinsic: false) => {
     let code-width = if intrinsic { auto } else { 1fr }
+    let columns = (
+      gutter-columns.map(column => if column == auto { auto } else { column.width })
+        + (code-width,)
+        + (if has-annotations { (annot-width,) } else { () })
+    )
+    let alignment = if args.gutters == auto { (numbers-alignment, left + horizon) } else {
+      (x, _) => if x < gutter-count { numbers-alignment } else { left + horizon }
+    }
     set block(breakable: true)
     if (
       outside-column
@@ -1593,18 +1625,16 @@
         or (indentation != none and guide-depths.any(d => d > 0))
     ) {
       geometry.outside(
-        (if args.number-enabled { (auto,) } else { () })
-          + (code-width,)
-          + (if has-annotations { (annot-width,) } else { () }),
+        columns,
         grid-inset,
-        (numbers-alignment, left + horizon),
+        alignment,
         cell-fill,
         if outside-column { stroke } else { none },
         if outside-column { args.radius } else { 0pt },
         header-block,
         items,
         footer-block,
-        code-column: if args.number-enabled { 1 } else { 0 },
+        code-column: gutter-count,
         outside: outside-column,
         wraps: wrap-settings,
         ..gutters,
@@ -1632,32 +1662,12 @@
           )
         },
       )
-    } else if numbers-format != none {
-      grid(
-        columns: if has-annotations {
-          (auto, code-width, annot-width)
-        } else {
-          (auto, code-width)
-        },
-        inset: grid-inset,
-        stroke: none,
-        align: (numbers-alignment, left + horizon),
-        fill: cell-fill,
-        ..gutters,
-        ..header-block,
-        ..items,
-        ..footer-block,
-      )
     } else {
       grid(
-        columns: if has-annotations {
-          (code-width, annot-width)
-        } else {
-          code-width
-        },
+        columns: columns,
         inset: grid-inset,
         stroke: none,
-        align: (numbers-alignment, left + horizon),
+        align: alignment,
         fill: cell-fill,
         ..gutters,
         ..header-block,

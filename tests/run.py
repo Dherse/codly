@@ -7,6 +7,11 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 LAYOUT_ERRORS = {
+    "gutter-negative-width": "gutter width must be non-negative",
+    "gutter-negative-ratio": "gutter width must be non-negative",
+    "gutter-negative-fraction": "gutter width must be non-negative",
+    "gutter-empty-fill": "gutter fill palettes must not be empty",
+    "gutter-invalid-value": "gutter values must be content, strings, numbers, or none",
     "theme-name": "unknown theme: does-not-exist",
     "theme-setting": "unknown theme setting: forground",
     "theme-section": "theme header must be a dictionary",
@@ -58,7 +63,7 @@ def run_accessibility(output):
         )
         passed = extracted.returncode == 0 and all(
             text in extracted.stdout
-            for text in ("filename source", "accessible.txt", "inline source", "inline.py", "plain source", "fn main()", "return 1", "Returns one", "outside", "Remark", "guided source", "guided child", "wrapped source", "bubble source", "Accessible bubble", "Above left", "Above right")
+            for text in ("filename source", "accessible.txt", "inline source", "inline.py", "plain source", "fn main()", "return 1", "Returns one", "outside", "Remark", "guided source", "guided child", "wrapped source", "bubble source", "Accessible bubble", "Above left", "Above right", "gutter source", "gutter label", "alternate 1")
         )
         if not passed:
             result = extracted

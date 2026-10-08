@@ -16,7 +16,7 @@
   let first = if it.body.func() == metadata { it.body } else { it.body.children.first() }
   if first.value.origin != origin { return it }
   let paint = if first.value.fill == auto { fill(it.x, it.y - 1) } else { first.value.fill }
-  if not outside or it.x != 0 or it.colspan > 1 or paint != none {
+  if not outside or it.x >= code-column or it.colspan > 1 or paint != none {
     let marks = ()
     if guides != none and it.x == code-column and first.value.role == "body" {
       let depth = guides.depths.at(it.y - 1, default: 0)
@@ -129,7 +129,7 @@
       if bottom > top {
         let a = (x: span.a.x + dx, y: top)
         let b = (x: span.b.x + dx, y: bottom)
-        if outside and span.value.x == 0 {
+        if outside and span.value.x < code-column {
           regions.at(index).numbers.push((a: a, b: b, fill: span.value.fill))
         } else {
           let guides = if index == span.region { span.value.guides } else {

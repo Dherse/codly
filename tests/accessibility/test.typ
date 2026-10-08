@@ -62,3 +62,14 @@
   file-position: left,
   lang-position: right,
 )
+
+// Generic gutters contain accessible content, not decorative artifacts.
+#{
+  set text(size: 8pt)
+  show: codly.number-set_(placement: "outside")
+  codly.new(raw("gutter source\nsecond gutter source", block: true), gutters: (
+    auto,
+    (values: ("gutter label", none), fill: yellow.lighten(80%)),
+    row => "alternate " + str(row.source-line),
+  ))
+}

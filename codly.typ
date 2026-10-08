@@ -40,6 +40,74 @@
   )
 }
 
+/// An independently styled gutter column. Arrays are indexed by source line;
+/// callbacks receive `index`, `kind`, `source-line`, `number`, and `text`.
+/// Only code and skip rows have gutter cells. `index` counts all displayed
+/// rows, including headers and callouts, matching body-fill palette indexing.
+/// Source lines are one-indexed; skipped/generated rows have no source or text.
+/// Short arrays and `none` entries leave cells empty. `auto` styling inherits
+/// the grid's number alignment/insets; `fill: auto` follows the body row.
+#let gutter-column = {
+  import "@preview/elembic:1.1.1" as e
+  import "src/lib.typ": __codly-prefix
+
+  e.types.declare(
+    "gutter-column",
+    prefix: __codly-prefix,
+    parse-args: (default-parser, ..options) => {
+      (args, include-required: true) => {
+        let result = default-parser(args, include-required: include-required)
+        if result.first() {
+          let width = result.last().at("width", default: auto)
+          assert(
+            width == auto
+              or if type(width) == length {
+                width.abs >= 0pt and width.em >= 0
+              } else { width >= if type(width) == ratio { 0% } else { 0fr } },
+            message: "codly: gutter width must be non-negative",
+          )
+        }
+        result
+      }
+    },
+    fields: (
+      e.field(
+        "values",
+        e.types.union(
+          e.types.array(e.types.option(e.types.union(str, int, float, content))),
+          function,
+        ),
+        required: true,
+        named: true,
+        folds: false,
+        doc: "Source-row values, or a callback receiving the rendered row dictionary.",
+      ),
+      e.field("width", e.types.union(auto, length, ratio, fraction), default: auto),
+      e.field("align", e.types.union(auto, alignment), default: auto),
+      e.field("inset", e.types.union(auto, length, dictionary), default: auto),
+      e.field("stroke", e.types.option(e.types.union(auto, stroke, dictionary)), default: auto),
+      e.field(
+        "fill",
+        e.types.option(e.types.union(
+          auto,
+          e.types.paint,
+          e.types.array(e.types.option(e.types.paint)),
+          function,
+        )),
+        default: auto,
+        folds: false,
+        doc: "auto follows the body row; otherwise a paint, palette, or row callback.",
+      ),
+      e.field("text", dictionary, default: (:), doc: "Arguments passed to text for this column."),
+    ),
+    casts: (
+      (from: dictionary),
+      (from: array, with: constructor => values => constructor(values: values)),
+      (from: function, with: constructor => values => constructor(values: values)),
+    ),
+  )
+}
+
 /// A range of lines that should use a different syntax-highlighting language.
 #let __sublang-normalize(value) = {
   let start = value.at("start")
@@ -1638,6 +1706,13 @@
         default: none,
       ),
       e.field("number-enabled", e.types.option(bool), doc: "todo", default: true),
+      e.field(
+        "gutters",
+        e.types.union(auto, e.types.array(e.types.union(auto, gutter-column))),
+        default: auto,
+        folds: false,
+        doc: "Ordered columns before the code. auto keeps the ordinary number column; in an array, auto includes that column if enabled. Arrays and functions cast to gutter-column. An empty array hides all gutters. All columns follow codly.number's placement; custom columns remain when number-enabled is false.",
+      ),
       e.field("offset", e.types.option(int), doc: __doc("offset"), default: __default("offset")),
       e.field(
         "offset-from",
