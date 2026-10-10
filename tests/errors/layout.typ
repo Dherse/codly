@@ -18,7 +18,7 @@
   annotation-touching: (annotations: ((start: 1, end: 2), (start: 2, end: 3))),
   annotation-label: (annotations: ((start: 1, label: <annotation>),)),
   item-without-tag: (block-label: <code>, highlights: ((line: 1, label: <item>),)),
-  missing-offset: (offset-from: <missing>),
+  missing-offset: (offset: <missing>),
   callout-pointer-negative: (callouts: ((line: 1, pointer: -1, body: []),)),
   callout-pointer-past-end: (callouts: ((line: 1, pointer: 20, body: []),)),
   callout-negative-size: (callouts: ((line: 1, pointer: 1, pointer-size: -1pt, body: []),)),

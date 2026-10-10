@@ -69,12 +69,12 @@
 ]<mixed>
 
 // Reusing sublanguage index zero in later blocks must resolve their own text.
-// Cover numbering disabled, offset-from, and a trailing empty sublanguage line.
+// Cover numbering disabled, a label offset, and a trailing empty sublanguage line.
 #codly.new(
   raw("let other = 2;\n", lang: "sh", block: true),
   sublangs: ((start: 1, end: 2, lang: "rs"),),
   number-enabled: false,
-  offset-from: <mixed>,
+  offset: <mixed>,
   smart-indent: false,
   highlights: ((line: 21, start: 1, end: 3, tag: "later"),),
 )<later>

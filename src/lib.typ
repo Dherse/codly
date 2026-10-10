@@ -1481,10 +1481,18 @@
     previous = annot.start
   }
 
-  // handle offset and `offset-from`:
-  let offset = args.offset
-  if args.offset-from != none {
-    let last-number = __codly-block-info(args.offset-from).last-number
+  // Resolve the numeric shift, automatic excerpt origin, or labeled block.
+  let offset = if type(args.offset) == int { args.offset } else { 0 }
+  if args.offset == auto and ranges != none {
+    // Anchor to the first actual source line, not declaration order or an
+    // empty/out-of-bounds interval. Only the displayed numbering is shifted.
+    let first = ranges.find(interval => (
+      interval.last() >= calc.max(1, interval.first()) and interval.first() <= it.lines.len()
+    ))
+    if first != none { offset -= calc.max(1, first.first()) - 1 }
+  }
+  if type(args.offset) == label {
+    let last-number = __codly-block-info(args.offset).last-number
     if last-number != none {
       offset += last-number
     }

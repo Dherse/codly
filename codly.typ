@@ -1760,12 +1760,11 @@
         folds: false,
         doc: "Ordered columns before the code. auto keeps the ordinary number column; in an array, auto includes that column if enabled. Arrays and functions cast to gutter-column. An empty array hides all gutters. All columns follow codly.number's placement; custom columns remain when number-enabled is false.",
       ),
-      e.field("offset", e.types.option(int), doc: __doc("offset"), default: __default("offset")),
       e.field(
-        "offset-from",
-        e.types.option(label),
-        doc: __doc("offset-from"),
-        default: __default("offset-from"),
+        "offset",
+        e.types.union(int, label, auto),
+        doc: __doc("offset"),
+        default: __default("offset"),
       ),
       e.field(
         "range",

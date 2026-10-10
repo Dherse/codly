@@ -8,15 +8,15 @@
   skips: ((2, 3),),
   number-enabled: false,
 )<first>
-#codly.new(raw("next", block: true), offset-from: <first>)
+#codly.new(raw("next", block: true), offset: <first>)
 
 #codly.new(raw("", block: true), skip-last-empty: true)<empty>
-#codly.new(raw("after empty", block: true), offset-from: <empty>)
+#codly.new(raw("after empty", block: true), offset: <empty>)
 
 #figure[
   #codly.new(raw("a\nb", block: true), offset: 20, block-label: <labeled>)
 ]<labeled>
-#codly.new(raw("after labeled", block: true), offset-from: <labeled>)
+#codly.new(raw("after labeled", block: true), offset: <labeled>)
 
 #context {
   assert.eq(codly.info(<first>), (last-number: 16, lines: 3))

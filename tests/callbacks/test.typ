@@ -96,8 +96,8 @@
   codly.new(raw("outer", lang: "py", block: true), highlights: ((line: 1, start: 1, end: 1),))
 }
 
-// Offset-from uses the preceding block's displayed number. The second block
-// keeps a character highlight on displayed line 9 while callbacks receive a
+// A label offset uses the preceding block's displayed number. The second block
+// keeps a character highlight on displayed line 8 while callbacks receive a
 // scalar color from the configured highlight element.
 #show: codly.highlight-set_(
   color: green,
@@ -115,14 +115,13 @@
 #codly.new(raw("one\ntwo", block: true), offset: 5)<offset-source>
 #codly.new(
   raw("three", block: true),
-  offset: 1,
-  offset-from: <offset-source>,
-  highlights: ((line: 9, start: 1, end: 1),),
+  offset: <offset-source>,
+  highlights: ((line: 8, start: 1, end: 1),),
 )
 
 #context {
   assert.eq(query(<callback-line-fill>).map(it => it.value), (red, blue, red))
   assert.eq(query(<callback-highlight-color>).map(it => it.value), (red, blue, red, green))
   assert.eq(query(<callback-lang-color>).map(it => it.value), (red, blue, red))
-  assert.eq(query(<callback-number>).map(it => it.value), (6, 7, 9))
+  assert.eq(query(<callback-number>).map(it => it.value), (6, 7, 8))
 }

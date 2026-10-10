@@ -29,7 +29,7 @@ def preprocess_headers(data: pd.DataFrame) -> None:
 ```)<first-part>
 
 = Second part
-#codly.new(offset-from: <first-part>, ```py
+#codly.new(offset: <first-part>, ```py
     # Replace values with correct ones
     data.loc[data["Relation"] == "Mum", "Relation"] = "Mother"
     data.loc[data["Nationality"] == "KW", "Nationality"] = "Kuwait"
