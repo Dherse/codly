@@ -57,3 +57,16 @@ texts and copyright notices are alongside the font files.
 | [Source Sans 3](https://github.com/adobe-fonts/source-sans) | Copyright 2010-2020 Adobe, with Reserved Font Name 'Source'. | [SIL Open Font License 1.1](fonts/Source%20Sans%203/LICENSE). |
 | [Tabler Icons](https://github.com/tabler/tabler-icons) | Copyright (c) 2020-2024 Paweł Kuna. | [MIT](fonts/Tabler%20Icons/LICENSE). |
 | [Noto Color Emoji](https://github.com/googlefonts/noto-emoji) | Copyright 2021 Google Inc. All Rights Reserved. | [SIL Open Font License 1.1](fonts/Noto%20Color%20Emoji/LICENSE). |
+
+## Documentation site assets
+
+The documentation's third-party sources are pinned Git submodules in `docs/vendor/`.
+Generated site assets include their license texts and notices.
+
+| Submodule | Assets used | License source |
+| --- | --- | --- |
+| Elembic | Browser preview runtime dependency, v1.1.1 | Upstream `LICENSE`, `LICENSE-MIT`, `LICENSE-APACHE` |
+| [Typst assets](https://github.com/typst/typst-assets) | DejaVu Sans Mono and Libertinus Serif | Upstream `NOTICE` contains the font licenses and copyright notices |
+| [Noto Sans Mono](https://github.com/notofonts/NotoSansMono) | Optional preview font | SIL OFL 1.1, upstream `LICENSE` |
+| [Source Sans](https://github.com/adobe-fonts/source-sans) | Source Sans 3 preview font | SIL OFL 1.1, upstream `LICENSE.md` |
+| [Font Awesome](https://github.com/FortAwesome/Font-Awesome/tree/v4.7.0) | Appearance controls | Font by Dave Gandy, SIL OFL 1.1; upstream `README.md` identifies the license |

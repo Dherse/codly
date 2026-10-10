@@ -84,3 +84,15 @@ docs-check:
 
 docs-dev:
 	just --justfile docs/justfile dev
+
+docs-serve:
+	just --justfile docs/justfile serve
+
+docs-site:
+	just --justfile docs/justfile site
+
+docs-serve-site:
+	just --justfile docs/justfile serve-site
+
+docs-deploy:
+	gh workflow run pages.yml --ref main

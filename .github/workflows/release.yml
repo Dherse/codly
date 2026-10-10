@@ -76,3 +76,11 @@ jobs:
           git add .
           git commit -m "${PKG_NAME}:${PKG_VERSION}"
           git push --set-upstream origin "${PKG_NAME}-${PKG_VERSION}"
+
+  documentation:
+    needs: validate
+    uses: ./.github/workflows/pages.yml
+    with:
+      release_ref: ${{ github.ref_name }}
+    secrets:
+      DOCS_DEPLOY_TOKEN: ${{ secrets.DOCS_DEPLOY_TOKEN }}

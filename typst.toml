@@ -9,7 +9,7 @@ license = "MIT"
 description = "Code blocks for Typst with line numbers, annotations, themes, and syntax-aware diffs."
 repository = "https://github.com/Dherse/codly"
 exclude = [
-    ".github", ".agents", ".codex", ".aws", ".gitignore", ".gitattributes",
+    ".github", ".agents", ".codex", ".aws", ".gitignore", ".gitattributes", ".gitmodules",
     "tests", "example", "examples", "fonts", "assets",
     "scripts", "Justfile", "bench", "docs",
 ]

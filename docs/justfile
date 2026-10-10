@@ -1,0 +1,29 @@
+set shell := ["bash", "--noprofile", "--norc", "-e", "-c"]
+export PATH := justfile_directory() / ".tools/node/bin" + ":" + justfile_directory() / ".tools" + ":" + env_var("PATH")
+
+default:
+    @just --list
+
+setup:
+    git -C .. submodule update --init --recursive
+    python3 scripts/bootstrap.py
+    npm ci
+
+build:
+    node scripts/build.mjs
+
+check: build
+    node --test tests/*.test.mjs
+    python3 -m unittest discover -s tests -p 'test_*.py'
+
+dev:
+    node scripts/dev.mjs
+
+serve:
+    python3 -m http.server 8001 --bind 127.0.0.1 --directory book
+
+site: check
+    python3 scripts/site.py
+
+serve-site:
+    python3 -m http.server 8001 --bind 127.0.0.1 --directory .site
