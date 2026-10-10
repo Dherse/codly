@@ -12,11 +12,11 @@
   } else { "" }
 }
 
-// Native figures stay on their own image/table tracks.
+// Images, tables, and listings have separate counters.
 #figure(rect(width: 15pt, height: 8pt), alt: "A small rectangle", caption: [Image])<image-before>
 #figure(table(columns: 1)[Table], caption: [Table])<table-before>
 
-// Construction and pre-layout fields must remain available without preparation.
+// Elembic fields and identities must be accessible before layout.
 #let code-block = codly.new(
   raw("raw_listing_token", block: true),
   radius: 6pt,
@@ -39,8 +39,7 @@
   caption: [Context input],
 )<context-code>
 
-// Hidden line/highlight/annotation targets retain their own kinds and use the
-// enclosing listing's number, not the image counter.
+// Reference targets keep their kinds but use the enclosing listing's number.
 #figure(caption: [Marked input])[
   #codly.new(
     raw("marked_listing_token\nsecond line", block: true),

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render the curated README gallery, or check its committed PNGs."""
+"""Render the README gallery or check its PNGs."""
 import argparse
 from pathlib import Path
 import re

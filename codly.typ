@@ -16,20 +16,20 @@
       e.field(
         "name",
         e.types.union(str, content),
-        doc: "The \"pretty\" name of the language, as a showable value.",
+        doc: "The displayed name of the language.",
         required: true,
         named: true,
       ),
       e.field(
         "color",
         e.types.option(e.types.paint),
-        doc: "The color of the language, if omitted uses the default color.",
+        doc: "The language color. If omitted, the default color is used.",
         default: none,
       ),
       e.field(
         "icon",
         e.types.option(e.types.union(str, content)),
-        doc: "The icon of the language, if omitted no icon is shown.",
+        doc: "The language icon. If omitted, no icon is shown.",
         default: none,
       ),
     ),
@@ -1268,13 +1268,22 @@
         default: __default("header-repeat"),
       ),
 
-      // Replaces the old cell-args
-      e.field("align", e.types.option(alignment), doc: "todo", default: center + horizon),
-      e.field("breakable", e.types.option(e.types.union(bool, auto)), doc: "todo", default: auto),
+      e.field(
+        "align",
+        e.types.option(alignment),
+        doc: "Alignment of the header content.",
+        default: center + horizon,
+      ),
+      e.field(
+        "breakable",
+        e.types.option(e.types.union(bool, auto)),
+        doc: "Whether the header may break across pages.",
+        default: auto,
+      ),
       e.field(
         "inset",
         e.types.option(e.types.union(length, dictionary, auto)),
-        doc: "todo",
+        doc: "Inset around the header content.",
         default: auto,
       ),
       e.field(
@@ -1283,7 +1292,12 @@
         doc: "The header cell background. `none` leaves it unfilled; `auto` uses the header's default. Independent of line and number fills.",
         default: luma(240),
       ),
-      e.field("stroke", e.types.option(e.types.union(stroke, auto)), doc: "todo", default: auto),
+      e.field(
+        "stroke",
+        e.types.option(e.types.union(stroke, auto)),
+        doc: "Stroke around the header cell.",
+        default: auto,
+      ),
     ),
   )
 }
@@ -1308,13 +1322,22 @@
         default: __default("footer-repeat"),
       ),
 
-      // Replaces the old cell-args
-      e.field("align", e.types.option(alignment), doc: "todo", default: center + horizon),
-      e.field("breakable", e.types.option(e.types.union(bool, auto)), doc: "todo", default: auto),
+      e.field(
+        "align",
+        e.types.option(alignment),
+        doc: "Alignment of the footer content.",
+        default: center + horizon,
+      ),
+      e.field(
+        "breakable",
+        e.types.option(e.types.union(bool, auto)),
+        doc: "Whether the footer may break across pages.",
+        default: auto,
+      ),
       e.field(
         "inset",
         e.types.option(e.types.union(length, dictionary, auto)),
-        doc: "todo",
+        doc: "Inset around the footer content.",
         default: auto,
       ),
       e.field(
@@ -1323,7 +1346,12 @@
         doc: "The footer cell background. `none` leaves it unfilled; `auto` uses the footer's default. Independent of line and number fills.",
         default: none,
       ),
-      e.field("stroke", e.types.option(e.types.union(stroke, auto)), doc: "todo", default: auto),
+      e.field(
+        "stroke",
+        e.types.option(e.types.union(stroke, auto)),
+        doc: "Stroke around the footer cell.",
+        default: auto,
+      ),
     ),
   )
 }
@@ -1395,7 +1423,12 @@
         doc: __doc("display-icon"),
         default: __default("display-icon"),
       ),
-      e.field("align", e.types.option(alignment), doc: "todo", default: right + horizon),
+      e.field(
+        "align",
+        e.types.option(alignment),
+        doc: "Alignment of the language badge.",
+        default: right + horizon,
+      ),
     ),
   )
 }
@@ -1669,7 +1702,7 @@
   e.element.declare(
     "codly",
     prefix: __codly-prefix,
-    doc: "Codly is a library that enhances the way you write code blocks in Typst.",
+    doc: "Format Typst code blocks with syntax highlighting and configurable line styling.",
     construct: constructor => (..args) => {
       let element = constructor(..args)
       let body = e.fields(element).body
@@ -1756,7 +1789,12 @@
         required: false,
         default: none,
       ),
-      e.field("number-enabled", e.types.option(bool), doc: "todo", default: true),
+      e.field(
+        "number-enabled",
+        e.types.option(bool),
+        doc: "Whether to show the automatic line-number column.",
+        default: true,
+      ),
       e.field(
         "diff",
         e.types.option(e.types.union(auto, diff)),
@@ -1926,7 +1964,12 @@
         doc: __doc("row-gutter"),
         default: __default("row-gutter"),
       ),
-      e.field("sublangs", e.types.option(e.types.array(sublang)), doc: "todo", default: none),
+      e.field(
+        "sublangs",
+        e.types.option(e.types.array(sublang)),
+        doc: "Syntax-highlighting languages for inclusive source-line ranges.",
+        default: none,
+      ),
       e.field(
         "rainbow",
         e.types.option(rainbow),
@@ -1942,7 +1985,7 @@
       e.field(
         "width",
         e.types.union(length, ratio, auto),
-        doc: "todo",
+        doc: "Block width. `auto` fits the natural width, up to the available width.",
         default: 100%,
         folds: false,
       ),

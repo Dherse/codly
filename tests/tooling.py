@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check release tooling and compile a small, development-asset-free package."""
+"""Check release configuration and smoke-test a package without development assets."""
 from pathlib import Path
 import re
 import shutil
@@ -39,7 +39,7 @@ def main():
                        cwd=ROOT, check=True)
         built = output / "out" / package["name"] / package["version"]
         files = [path for path in built.rglob("*") if path.is_file()]
-        forbidden = {"fonts", "assets", "examples", "tests", "scripts", "bench",
+        forbidden = {"fonts", "assets", "examples", "tests", "scripts", "bench", "docs",
                      ".github", ".agents", ".codex", ".aws"}
         assert all(path.relative_to(built).parts[0] not in forbidden for path in files)
         assert not (built / "docs.pdf").exists()

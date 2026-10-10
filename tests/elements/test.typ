@@ -7,8 +7,7 @@
 
 #set page(width: 285pt, height: auto, margin: 5pt)
 
-// Short names can be imported directly, while their Elembic identities keep
-// the existing component names used by selectors, metadata, and references.
+// Public names are unprefixed; Elembic identities keep the codly- prefix.
 #for (name, component) in (
   line: line,
   header: header,
@@ -73,8 +72,7 @@
   codly.new(raw("enabled", block: true))
 }
 
-// selector() matches codly instances, while show_() transforms all codly
-// instances in its scope.
+// selector() matches codly instances in this scope.
 #{
   show codly.selector(): it => {
     let fields = e.fields(it)
@@ -84,8 +82,7 @@
   codly.new(raw("other", block: true))
 }
 
-// Language definitions and aliases are passed through to the language badge
-// and syntax raw block respectively.
+// Definitions style the badge; aliases select the syntax language.
 #{
   show: codly.lang-set_(languages: languages)
   show: codly.lang-show_(it => {
@@ -108,8 +105,7 @@
   )
 }
 
-// Language badge visibility is independently configurable, and unknown keys
-// fall back to their raw language name.
+// Badge visibility is configurable; unknown languages use their raw name.
 #{
   show: codly.lang-set_(languages: languages, display-name: false, display-icon: false)
   show: codly.lang-show_(it => {

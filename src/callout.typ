@@ -355,8 +355,7 @@
   }))
 }
 
-// The bubble is a real sub-element, so show rules can observe each painted
-// instance. Callout cell styles never leak into its fill, padding or alignment.
+// Show rules can inspect each bubble. Its styling is independent of the callout cell.
 #let bubble-display(it) = {
   let row = (
     body: it.body,

@@ -231,9 +231,8 @@
   base
 }
 
-/// Define a reusable theme from a preset name or a previously defined theme.
-/// Shared tokens provide a compact API; element dictionaries override them.
-/// `text` within an element dictionary is a dictionary of native text settings.
+/// Define a theme from a preset or theme dictionary.
+/// Element dictionaries override shared tokens; their `text` key accepts native text settings.
 #let define(base: "thesis", ..overrides) = {
   assert(overrides.pos().len() == 0, message: "codly: theme overrides must be named")
   assert(type(base) in (str, dictionary), message: "codly: a theme must be a name or dictionary")
@@ -247,8 +246,7 @@
     assert(colors.len() > 0, message: "codly: highlight color palettes must not be empty")
   }
   if "accent" in overrides.named() and "highlight-colors" not in overrides.named() {
-    // An inherited scalar is a one-color palette; an explicit palette supplied
-    // alongside the accent wins unchanged, just as for array palettes.
+    // Accent overrides replace the first inherited color, unless a palette is also supplied.
     if type(colors) == array {
       result.at("highlight-colors").at(0) = result.accent
     } else {

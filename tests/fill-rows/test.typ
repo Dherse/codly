@@ -9,9 +9,8 @@
 #let unnumbered = rgb("dff6df")
 #let fourth = rgb("ffe1e8")
 
-// Capture the resolved primary-grid colors after Codly has evaluated a fill
-// palette or row callback. The default inside number gutter is included so
-// each assertion also proves that `codly-number(fill: auto)` follows it.
+// Record code and number-column fills after evaluating palettes and callbacks.
+// With fill: auto, the number column should match the code column.
 #let record-fills(tag, rows, it) = {
   if it.fill == none { return it }
   let fills = ()
@@ -42,9 +41,7 @@
   [#metadata(none)<outside-auto-end>]
 }
 
-// Callbacks receive complete row metadata for every body row. This combines
-// code, a generated skip, a generated callout, and an unnumbered source line;
-// returned colors make the resolved grid order observable as well.
+// Check row metadata and fill order for code, skips, callouts, and unnumbered lines.
 #let callback-fill(row) = {
   if row.kind == "callout" {
     assert.eq((row.index, row.at("source-line"), row.number), (1, 1, 1))

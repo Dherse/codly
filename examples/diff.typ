@@ -3,7 +3,7 @@
 #import "_common.typ": frame
 #show: frame
 
-// A realistic patch: retry only transient failures, add a timeout, and back off.
+// Add a timeout and backoff; retry only transient failures.
 #let rows = (
   "+import time",
   "+",

@@ -1,6 +1,6 @@
 root := justfile_directory()
 
-# Set the shell on Windows to using PowerShell.
+# Use PowerShell on Windows.
 set windows-shell := ["powershell.exe", "-c"]
 
 export TYPST_ROOT := root
@@ -9,50 +9,50 @@ export TYPST_ROOT := root
 default:
 	@just --list --unsorted
 
-# run the complete suite, including diagnostics, PDF/UA, and package checks
+# Run rendering tests, diagnostics, PDF/UA checks, and package checks.
 test:
 	python3 tests/run.py
 
-# run selected rendering/assertion tests quickly
+# Run selected rendering and assertion tests.
 test-focused *args:
 	tt run --no-fail-fast --font-path ./fonts {{ args }}
 
-# compile fixtures with the installed Typst CLI (including minimum-version CI)
+# Compile compatible fixtures with the installed Typst CLI.
 test-compat:
 	python3 tests/run.py --compile-only
 
-# build and smoke-test a temporary release artifact
+# Build a temporary package and compile a smoke test against it.
 package-check:
 	python3 tests/tooling.py
 
-# render the curated README gallery
+# Render the README gallery.
 examples:
 	python3 scripts/examples.py
 
-# verify that gallery sources and committed PNGs agree
+# Check that gallery PNGs match their sources.
 examples-check:
 	python3 scripts/examples.py --check
 
-# update test cases
+# Update test references.
 update *args:
 	tt update --font-path ./fonts {{ args }}
 
-# format Typst library, tests, and documentation sources
+# Format Typst library, test, and example sources.
 fmt:
 	typstyle --inplace --line-width 100 --indent-width 2 --no-reorder-import-items codly.typ src tests examples
 
-# verify Typst formatting without changing files
+# Check Typst formatting.
 fmt-check:
 	typstyle --check --line-width 100 --indent-width 2 --no-reorder-import-items codly.typ src tests examples
 
-# package the library into the specified destination folder
+# Package the library into the specified folder.
 package target:
   ./scripts/package "{{target}}"
 
-# install the library with the "@local" prefix
+# Install the library with the "@local" prefix.
 install: (package "@local")
 
-# install the library with the "@preview" prefix (for pre-release testing)
+# Install the library with the "@preview" prefix for pre-release testing.
 install-preview: (package "@preview")
 
 # Legacy benchmarks (requires crityp)
@@ -64,11 +64,23 @@ bench *args:
 remove target:
   ./scripts/uninstall "{{target}}"
 
-# uninstalls the library from the "@local" prefix
+# Uninstall the library from the "@local" prefix.
 uninstall: (remove "@local")
 
-# uninstalls the library from the "@preview" prefix (for pre-release testing)
+# Uninstall the library from the "@preview" prefix.
 uninstall-preview: (remove "@preview")
 
-# run ci suite
+# Run formatting and test checks.
 ci: fmt-check test
+
+docs-setup:
+	just --justfile docs/justfile setup
+
+docs-build:
+	just --justfile docs/justfile build
+
+docs-check:
+	just --justfile docs/justfile check
+
+docs-dev:
+	just --justfile docs/justfile dev

@@ -3,9 +3,8 @@
 
 #set page(width: 285pt, height: auto, margin: 5pt)
 
-// Hooks project the resolved element fields into metadata so the scoped
-// values can be checked after layout, while the callbacks below assert their
-// scalar inputs at the point they are evaluated.
+// Hooks record resolved fields for post-layout assertions.
+// Fill and stroke callbacks check their inputs when called.
 #let line-fields(it) = {
   let fields = e.fields(it)
   [#metadata(fields.fill)<callback-line-fill>#it]
@@ -43,8 +42,7 @@
   0.5pt + red
 }
 
-// A nested scope overrides line, highlight, and language settings, then the
-// enclosing values are restored for the following block.
+// The inner scope overrides styles without changing the next outer block.
 #{
   show: codly.line-set_(fill: red)
   show: codly.highlight-set_(color: red, fill: highlight-fill, stroke: highlight-stroke)
@@ -96,9 +94,7 @@
   codly.new(raw("outer", lang: "py", block: true), highlights: ((line: 1, start: 1, end: 1),))
 }
 
-// A label offset uses the preceding block's displayed number. The second block
-// keeps a character highlight on displayed line 8 while callbacks receive a
-// scalar color from the configured highlight element.
+// Label offsets continue numbering; highlight callbacks still receive a color.
 #show: codly.highlight-set_(
   color: green,
   fill: color => {

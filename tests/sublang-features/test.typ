@@ -39,9 +39,8 @@
   [#metadata((num: fields.num, height: fields.height))<sublang-annotation>#it]
 })
 
-// Both sublanguages participate in the SAME source-line loop: a hidden line,
-// a smart skip, an explicit skip, offsets, nested highlights, and an annotation
-// spanning the language boundary all retain their parent-block coordinates.
+// Sublanguages share source coordinates across hidden lines, skips, offsets,
+// nested highlights, and annotations spanning the language boundary.
 @mixed:12 @rust-mark @c-mark @mixed-note
 #figure(caption: [Mixed languages])[
   #codly.new(

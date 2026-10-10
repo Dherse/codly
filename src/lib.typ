@@ -12,11 +12,10 @@
 #let __codly-prefix = "@preview/codly:v2.0.0"
 #let __codly-whitespace = regex("\\s")
 
-/// Metadata for each codly argument, read from `src/args.json`.
-/// The `doc` of each field below is the argument's `title` in that file.
+/// Argument titles and defaults from `src/args.json`.
 #let __codly-args = json("args.json")
 
-/// Returns the documentation title of the argument with the given name.
+/// Look up an argument's documentation title.
 #let __doc(name) = {
   if name not in __codly-args {
     panic("codly: missing argument definition for: " + name)
@@ -24,8 +23,7 @@
   __codly-args.at(name).title
 }
 
-/// Returns the default value of the argument with the given name, evaluated
-/// from its string representation in `src/args.json`.
+/// Evaluate an argument's default from `src/args.json`.
 #let __default(name) = {
   if name not in __codly-args {
     panic("codly: missing argument definition for: " + name)
@@ -82,8 +80,7 @@
   merged
 }
 
-/// Resolve a code-row fill once from the public scalar, palette, or callback
-/// form. The caller attaches an `index` to the row before calling this helper.
+/// Resolve a paint, palette, or callback. The caller supplies the row's index.
 #let __codly-row-fill(fill, row) = {
   if type(fill) == array {
     assert(fill.len() > 0, message: "codly: `fill` palettes must not be empty")
@@ -128,7 +125,6 @@
   // The body is the language key as a string, e.g. "py".
   let lang-key = it.body
 
-  // Look up the language definition, if there is one.
   let lang-def = if it.languages != none {
     it.languages.at(lang-key, default: none)
   } else {
@@ -376,9 +372,8 @@
   }
 }
 
-/// Renders a single highlighted span of a code line. All styling is resolved
-/// from the per-highlight overrides in the metadata record, falling back to
-/// the element's own fields, and references use the `codly.ref` settings.
+/// Render a span with per-highlight overrides, falling back to element fields.
+/// References use `codly.ref` settings.
 #let __codly-highlight-show(
   codly-ref,
   codly-highlight-ref,
@@ -757,8 +752,7 @@
   )))
 }
 
-/// Resolve syntax-highlighted content before constructing the line element so
-/// its show rules, highlights, indentation, and references see a real raw.line.
+/// Resolve syntax before constructing the line so hooks receive a raw.line.
 #let __codly-sublang-line(constructor, line, source: none, ..args) = context {
   let record = query(selector(source).before(here())).last(default: none)
   let resolved = if record == none { line } else { record.value }
@@ -1459,14 +1453,12 @@
     ()
   }
 
-  // Process skips.
   let skips = if args.skips != none {
     args.skips.sorted(key: x => x.position)
   } else {
     ()
   }
 
-  // Process range/ranges.
   let range = args.range
   let ranges = args.ranges
   if range != none and ranges != none {
@@ -1589,7 +1581,6 @@
     )
   }
 
-  // Handling of `smart-skip`
   let smart-skip = args.smart-skip
   let guides = args.indent-guides
   let wrap-settings = if args.smart-indent and args.wrap-marker != none and args.wrap-marker != [] {
@@ -1775,9 +1766,7 @@
                 depths: guide-depths,
                 offsets: guide-offsets,
                 width: indentation.width,
-                // Raw code uses a monospaced font, so guide positions are
-                // integral space advances. Measure that advance once per
-                // block instead of once for every row and nesting level.
+                // Monospaced guides use whole space advances, measured once per block.
                 step: measure(text(" " * indentation.width)).width,
                 inset: grid-inset.left + if outside-column { edge-padding.left } else { 0pt },
                 // Unindented continuation text must not run through a guide.

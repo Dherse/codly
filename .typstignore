@@ -21,3 +21,4 @@ assets
 scripts
 Justfile
 bench
+docs

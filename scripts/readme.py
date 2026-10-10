@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compile each standalone Typst snippet in the README against this checkout."""
+"""Compile standalone Typst snippets from the README against this checkout."""
 from pathlib import Path
 import re
 import subprocess

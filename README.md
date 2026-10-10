@@ -37,9 +37,8 @@ pub fn greeting(name: &str) -> String {
 [Rendered example source](examples/quickstart.typ). The screenshot also applies
 the `github-light` theme and a filename badge.
 
-For icons and language names, the optional
-[codly-languages](https://typst.app/universe/package/codly-languages/) companion
-works through the language component:
+Use [codly-languages](https://typst.app/universe/package/codly-languages/) for
+language names and icons:
 
 ```typ
 #import "@preview/codly:2.0.0" as codly
@@ -61,8 +60,8 @@ file paths. No initialization rule is required for explicit blocks.
 // For a real source file: #codly.new(path("src/main.rs"))
 ```
 
-Defaults are ordinary scoped show rules, not persistent global state. Place
-automatic conversion in a content block when it should apply only there:
+Defaults use scoped show rules. Put the conversion rule in a content block to
+limit it to that block:
 
 ````typ
 #import "@preview/codly:2.0.0" as codly
@@ -78,8 +77,7 @@ automatic conversion in a content block when it should apply only there:
 // Outside that scope, code blocks retain native Typst formatting.
 ````
 
-To opt out selected blocks document-wide, use a single conditional conversion
-rule instead of the unconditional one:
+To leave selected blocks unstyled, replace the conversion rule with a conditional one:
 
 ```typ
 #import "@preview/codly:2.0.0" as codly
@@ -92,7 +90,7 @@ rule instead of the unconditional one:
 
 Choose `thesis` (the defaults), `dark`, `clean`, `github-light`,
 `solarized-light`, or `one-light`. Each preset includes a five-color highlight
-palette. Theme settings remain overridable by subsequent component rules.
+palette. Override theme settings with later component rules.
 
 ```typ
 #import "@preview/codly:2.0.0" as codly
@@ -200,4 +198,4 @@ continue its last displayed number. Disjoint excerpts preserve their gaps.
 - Ranges and span positions are one-based; highlight ends are inclusive.
 
 See [CHANGELOG.md](CHANGELOG.md) for release history and contributor credits.
-The [online manual](https://codly.dherse.dev/) describes the new v2 API with a migration guide.
+The [online manual](https://codly.dherse.dev/) includes the v2 API and migration guide.

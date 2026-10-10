@@ -3,9 +3,7 @@
 
 #set page(width: 160pt, height: auto, margin: 5pt)
 
-// Keep the expected values as data so every constructor and cast follows the
-// same assertion path. `e.fields` removes the implementation metadata from
-// the comparison.
+// Compare public fields, excluding Elembic metadata.
 #let check-constructors(cases) = {
   for case in cases {
     assert.eq(e.fields(case.at(0)), case.at(1))

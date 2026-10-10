@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Use release-tag URLs for README links excluded from the runtime package."""
+"""Rewrite README example links to point to the package's release tag."""
 from pathlib import Path
 import re
 import sys

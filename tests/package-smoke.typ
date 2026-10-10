@@ -1,5 +1,4 @@
-// Compiled by tooling.py with the built package as the Typst root. This must
-// never import the checkout or depend on its development fonts/resources.
+// Compile against the built package, without checkout imports or development assets.
 #import "/codly.typ" as codly
 #set page(width: 400pt, height: auto, margin: 10pt)
 #show: codly.theme("dark")

@@ -152,8 +152,8 @@
 
 #let capture(tag, lines) = [#metadata((tag: tag, lines: lines))<__codly-diff-pass>]
 
-// Both actual syntax passes re-enter Codly through a new raw block. Only their
-// styled raw.lines are retained; references, callouts, and gutters render once.
+// Re-enter Codly with a raw block for each syntax pass. Retain only styled
+// raw.lines so references, callouts, and gutters render once.
 #let prepare(source, args, settings, lang, constructor, style, column) = context {
   let origin = here()
   let model = parse(source.text, old-offset: settings.old-offset, new-offset: settings.new-offset)

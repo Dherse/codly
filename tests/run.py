@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run visual/assertion tests and check errors raised during deferred layout."""
+"""Run tests, accessibility checks, and deferred-layout diagnostic checks."""
 import argparse
 from pathlib import Path
 import re
@@ -67,7 +67,7 @@ LAYOUT_ERRORS = {
 
 
 def run_accessibility(output):
-    """Compile the accessibility fixture as PDF/UA and check text extraction."""
+    """Compile the PDF/UA fixture and verify extracted text."""
     result = subprocess.run(
         ["typst", "compile", "--root", str(ROOT), "--pdf-standard", "ua-1",
          "--font-path", str(ROOT / "fonts"),
@@ -96,7 +96,7 @@ def run_accessibility(output):
 
 
 def run_listing_accessibility(output):
-    """Check that figure-kind hints never duplicate code in PDF/UA output."""
+    """Verify figure-kind hints do not duplicate code in PDF/UA output."""
     result = subprocess.run(
         ["typst", "compile", "--root", str(ROOT), "--pdf-standard", "ua-1",
          "--font-path", str(ROOT / "fonts"),

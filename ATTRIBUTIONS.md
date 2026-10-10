@@ -1,7 +1,7 @@
 # Attributions and third-party licenses
 
-Codly is developed by Sébastien d'Herbais de Thun and contributors and is
-licensed under the [MIT License](LICENSE).
+Codly is developed by Sébastien d'Herbais de Thun and contributors, under the
+[MIT License](LICENSE).
 
 ## Typesetting, elements, and code presentation
 
@@ -15,7 +15,7 @@ licensed under the [MIT License](LICENSE).
 ## Theme palettes
 
 The presets in [`src/themes.typ`](src/themes.typ) adapt colors from these
-projects into Codly styling.
+projects.
 
 | Upstream project | Codly preset | License and original notice |
 | --- | --- | --- |
@@ -49,8 +49,8 @@ SOFTWARE.
 
 ## Bundled fonts and icons
 
-The repository includes these assets for documentation and examples. Their
-full license texts and copyright notices are kept alongside the font files.
+These assets are included for documentation and examples. Their full license
+texts and copyright notices are alongside the font files.
 
 | Asset | Author / copyright notice | License included in this repository |
 | --- | --- | --- |

@@ -1,11 +1,12 @@
 # Codly example gallery
 
-Run `just examples` to regenerate the eight PNGs. `just examples-check` checks that committed images match.
+Run `just examples` to regenerate the PNGs. Use `just examples-check` to check that
+the committed images match the sources.
 
-- [Automatic conversion](quickstart.typ)
+- [Code-block conversion](quickstart.typ)
 - [Six themes](themes.typ)
 - [Highlights, annotations, and callouts](annotations.typ)
-- [Realistic Git diff](diff.typ)
+- [Git diff](diff.typ)
 - [Custom gutters](gutters.typ)
 - [Palette and callback fills](presentation.typ)
 - [Wrapping and indentation](wrapping.typ)

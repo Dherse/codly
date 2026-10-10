@@ -2,10 +2,8 @@ name: Tests
 on:
   workflow_call:
   push:
-    # ensures this is not run for PRs too
     branches: [ main ]
   pull_request:
-    # optional but a good default
     branches: [ main ]
 
 jobs:

@@ -10,8 +10,7 @@
   } else { "" }
 }
 
-// Check the highlighted source content, not just the gallery screenshot.
-// Positions are one-based and inclusive, and include indentation.
+// Check highlighted text with one-based, inclusive positions, counting indentation.
 #show: codly.highlight-show_(it => {
   let fields = e.fields(it)
   let expected = if fields.highlight.line == 3 { "value * 2" } else if fields.highlight.line == 4 {
@@ -20,7 +19,7 @@
   assert.eq(text-of(fields.body), expected)
   [#metadata(expected)<gallery-highlight>#it]
 })
-// Exercise the actual gallery sources, so changing a range there breaks this test.
+// Include the examples so their ranges cannot drift from this test.
 #include "../../examples/annotations.typ"
 #include "../../examples/themes.typ"
 
