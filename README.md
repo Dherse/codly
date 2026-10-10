@@ -1,4 +1,4 @@
-# Codly: simple yet beautiful and powerful code blocks
+# 🐟 Codly: Proper Code Block Management for Typst
 
 <p align="center">
   <a href="https://github.com/Dherse/codly/blob/main/docs.pdf">
@@ -10,9 +10,12 @@
   <img src="https://github.com/Dherse/codly/actions/workflows/test.yml/badge.svg" />
 </p>
 
-Codly superchargescode blocks for your Typst documents. It allows you to add annotations, skip lines, customize numberings, add language icons, and much more. Codly is even better with its companion package [`codly-languages`](https://typst.app/universe/package/codly-languages) which provides a wide range of language icons and colors to choose from.
+Codly supercharges code blocks for your Typst documents. It allows you to add annotations, skip lines, customize numberings, add language icons, and much more. Codly is even better with its companion package [`codly-languages`](https://typst.app/universe/package/codly-languages) which provides a wide range of language icons and colors to choose from.
 
-A full set of documentation can be found [in the repo](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf).
+A full set of documentation can be found [at codly.dherse.dev](https://codly.dherse.dev/).
+
+See [attributions and third-party licenses](ATTRIBUTIONS.md) for the projects,
+theme palettes, fonts, and icons used by or inspiring Codly.
 
 ![Example](./assets/demo.png)
 
@@ -115,7 +118,7 @@ References remain native Typst references and do not require a custom `ref` show
 #context [This block has #codly.info(<source>).lines source lines.]
 ```
 
-`lines` counts source lines before ranges and skips. `last-number` is the last displayed line number, including offsets, or `none` for an empty block. `offset-from` uses the same record. Pass the label of the code block or its containing figure.
+`lines` counts source lines before ranges and skips. `last-number` is the last displayed line number, including offsets, or `none` for an empty block. A label passed to `offset` uses the same record. Pass the label of the code block or its containing figure.
 
 ### Setting an offset
 
@@ -130,13 +133,13 @@ If you wish to add an offset to your code block, but without selecting a subset 
 
 ### Setting an offset relative to another code block
 
-This is done by using the `offset-from` argument and by specifying a Typst `label` to the "parent" code block:
+Pass a Typst `label` to `offset` to continue the numbering from the "parent" code block. Use a number to shift source numbers, or `auto` to make an excerpt's first selected source line number 1 (disjoint ranges retain their gaps):
 
 ````typ
-#codly(offset-from: <parent>)
+#codly.new(raw("next line", block: true), offset: <parent>)
 ````
 
-![offset-from](./assets/offset-from.png)
+![Numbering continued from another block](./assets/offset-from.png)
 
 ### Selecting a subset of lines
 
@@ -218,11 +221,31 @@ You can configure this with the `codly` function:
 
 ### Disabling zebra striping
 
-You disable zebra striping by setting the `zebra-fill` to white or none.
+Set a single fill to use the same background for every body row:
 
 ```typ
-#codly(zebra-fill: none)
+#show: codly.line-set_(fill: none)
 ```
+
+Use an array to cycle through row backgrounds:
+
+```typ
+#show: codly.line-set_(fill: (luma(240), none, luma(248)))
+```
+
+Header and footer backgrounds are independent. Set their `fill` directly on
+`codly.header` and `codly.footer`, or use element set rules:
+
+```typ
+#import "@preview/elembic:1.1.1" as e
+#show: codly.header-set(fill: luma(230))
+#show: e.set_(codly.footer, fill: luma(245))
+```
+
+To place a badge beside the first code row, use `file-position: left` or
+`right`, and `lang-position: left` or `right`. The first row wraps in the
+remaining space; subsequent rows keep their full width. Corner positions such
+as `top + left` keep badges in a separate header or footer band.
 
 ### Customize the stroke
 

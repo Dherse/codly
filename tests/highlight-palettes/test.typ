@@ -9,7 +9,6 @@
   range(7).map(index => __codly-highlight-color(palette, index: index)),
   palette + (red, green),
 )
-#assert(catch(() => __codly-highlight-color(())).contains("highlight color palettes"))
 
 // Observe the actual rendered component colors, not only a selector helper.
 #show: codly.highlight-show_(it => {
@@ -49,6 +48,81 @@
     "range",
     "reset",
   ))
+}
+
+// Per-record fill callbacks consume palette slots and receive the selected
+// paint, while explicit paints leave the palette index untouched.
+#{
+  show: codly.highlight-set_(color: (red, green, blue), fill: color => color, stroke: none)
+  codly.new(raw("one\ntwo\nthree\nfour\nfive", block: true), highlights: (
+    (
+      line: 1,
+      tag: "callback-red",
+      fill: color => {
+        assert.eq(color, red)
+        color
+      },
+    ),
+    (line: 2, tag: "explicit-paint", fill: aqua),
+    (
+      line: 3,
+      tag: "callback-green",
+      fill: color => {
+        assert.eq(color, green)
+        color
+      },
+    ),
+    (line: 4, tag: "implicit-blue"),
+    (
+      line: 5,
+      tag: "callback-wrap",
+      fill: color => {
+        assert.eq(color, red)
+        color
+      },
+    ),
+  ))
+}
+#context {
+  let tags = ("callback-red", "explicit-paint", "callback-green", "implicit-blue", "callback-wrap")
+  let spans = query(<palette-span>).map(it => it.value).filter(it => it.tag in tags)
+  assert.eq(spans.map(it => it.color), (red, red, green, blue, red))
+}
+
+// Splitting/reopening callback spans must not consume additional colors.
+#{
+  show: codly.highlight-set_(color: palette, fill: color => color)
+  codly.new(raw("abcdefghijk", block: true), highlights: (
+    (
+      line: 1,
+      start: 1,
+      end: 7,
+      tag: "callback-outer",
+      fill: color => {
+        assert.eq(color, red)
+        color
+      },
+    ),
+    (
+      line: 1,
+      start: 4,
+      end: 10,
+      tag: "callback-cross",
+      fill: color => {
+        assert.eq(color, green)
+        color
+      },
+    ),
+  ))
+}
+#context {
+  let spans = query(<palette-span>)
+    .map(it => it.value)
+    .filter(it => it.tag in ("callback-outer", "callback-cross"))
+  assert(spans.len() > 2)
+  for span in spans {
+    assert.eq(span.color, if span.tag == "callback-outer" { red } else { green })
+  }
 }
 
 // Splitting/reopening overlapping spans must retain each declaration's paint.

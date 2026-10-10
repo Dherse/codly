@@ -95,6 +95,30 @@
   codly.new(raw("return identifier", block: true, lang: "py"), header: [Custom])
 }
 
+// Scalar paints are valid reusable palettes. Accent derivation replaces an
+// inherited scalar; an explicit paint supplied with the accent takes priority.
+#let scalar = codly.define-theme(base: "dark", highlight-colors: red)
+#let scalar-derived = codly.define-theme(base: scalar, accent: orange)
+#assert.eq(scalar.at("highlight-colors"), red)
+#assert.eq(scalar-derived.at("highlight-colors"), orange)
+#assert.eq(
+  codly.define-theme(base: scalar, accent: orange, highlight-colors: blue).at("highlight-colors"),
+  blue,
+)
+#let palette-derived = codly.define-theme(base: "dark", highlight-colors: (red, blue))
+#assert.eq(codly.define-theme(base: palette-derived, accent: orange).at("highlight-colors"), (
+  orange,
+  blue,
+))
+#{
+  show: codly.theme(scalar-derived)
+  show: codly.highlight-set_(fill: color => {
+    assert.eq(color, orange)
+    color
+  })
+  codly.new(raw("scalar theme", block: true), highlights: ((line: 1),))
+}
+
 // Later scoped set rules, explicit element fields, and raw themes still win.
 #{
   show: codly.theme("dark", fill: red, header: (fill: blue))

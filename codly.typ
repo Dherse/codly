@@ -474,7 +474,7 @@
       e.field(
         "fill",
         e.types.option(e.types.union(e.types.paint, function)),
-        doc: "The fill of the highlight, defaults to the default color.",
+        doc: "An explicit highlight paint, or a callback receiving the next default palette paint. Explicit paints do not consume a palette slot; callbacks do. `none` uses the default palette paint.",
         default: none,
       ),
       e.field(
@@ -614,7 +614,7 @@
       e.field(
         "numbering",
         e.types.option(function),
-        doc: "The format of the annotation number, defaults to `(1)`.",
+        doc: "The format of the annotation number, defaults to `(1)`; `none` hides the number.",
         default: numbering.with("(1)"),
       ),
     ),
@@ -993,7 +993,7 @@
       e.field(
         "numbering",
         e.types.option(e.types.union(auto, function)),
-        doc: "Line-number formatter; `auto` uses `codly.ref` settings.",
+        doc: "Line-number formatter; `auto` uses `codly.ref` settings, `none` shows only the block reference.",
         default: auto,
       ),
     ),
@@ -1037,7 +1037,7 @@
       e.field(
         "numbering",
         e.types.option(e.types.union(auto, function)),
-        doc: "Line-number formatter; `auto` uses `codly.ref` settings.",
+        doc: "Line-number formatter; `auto` uses `codly.ref` settings, `none` hides the numeric reference part.",
         default: auto,
       ),
     ),
@@ -1088,7 +1088,7 @@
       e.field(
         "numbering",
         e.types.option(e.types.union(auto, function)),
-        doc: "Line-number formatter; `auto` uses `codly.ref` settings.",
+        doc: "Line-number formatter; `auto` uses `codly.ref` settings, `none` hides the numeric reference part.",
         default: auto,
       ),
     ),
@@ -1556,18 +1556,18 @@
 /// arguments of `codly`.
 #let number = {
   import "@preview/elembic:1.1.1" as e
-  import "src/lib.typ": __codly-prefix, __doc, __default
+  import "src/lib.typ": __codly-prefix, __doc, __default, __codly-numbering
 
   e.element.declare(
     "codly-number",
     prefix: __codly-prefix,
     doc: "A line number of a codly code block.",
-    display: it => if type(it.number) == content {
+    display: it => if it.number == none { [] } else if type(it.number) == content {
       it.number
     } else if type(it.number) == array {
-      (it.numbering)(..it.number)
+      __codly-numbering(it.numbering, ..it.number)
     } else {
-      (it.numbering)(it.number)
+      __codly-numbering(it.numbering, it.number)
     },
     fields: (
       e.field(

@@ -8,6 +8,10 @@ authors = [
 license = "MIT"
 description = "Codly is a beautiful code presentation template with many features like smart indentation, line numbering, highlighting, etc."
 repository = "https://github.com/Dherse/codly"
-exclude = [ "assets/*", "docs.pdf" ]
+exclude = [
+    ".github", ".agents", ".codex", ".aws", ".gitignore", ".gitattributes",
+    "tests", "example", "examples", "fonts", "assets",
+    "scripts", "Justfile", "bench",
+]
 compiler = "0.15.0"
 keywords = [ "code", "pretty", "template", "raw" ]

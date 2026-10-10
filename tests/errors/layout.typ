@@ -72,6 +72,9 @@
 } else if case == "theme-palette-empty" {
   show: codly.theme("dark", highlight-colors: ())
   codly.new(raw("one", block: true), highlights: ((line: 1),))
+} else if case == "theme-derived-palette-empty" {
+  show: codly.theme(codly.define-theme(base: (highlight-colors: ()), accent: orange))
+  codly.new(raw("one", block: true))
 } else if case == "theme-name" {
   show: codly.theme("does-not-exist")
   codly.new(raw("one", block: true))

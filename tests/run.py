@@ -2,7 +2,9 @@
 """Run visual/assertion tests and check errors raised during deferred layout."""
 import argparse
 from pathlib import Path
+import re
 import subprocess
+import sys
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -13,6 +15,7 @@ LAYOUT_ERRORS = {
     "padding-type": "padding values must be lengths",
     "highlight-palette-empty": "highlight color palettes must not be empty",
     "theme-palette-empty": "highlight color palettes must not be empty",
+    "theme-derived-palette-empty": "highlight color palettes must not be empty",
     "diff-language": "diff requires one nonempty language",
     "diff-languages": "diff requires one nonempty language",
     "diff-hunk": "invalid unified diff hunk header",
@@ -95,14 +98,38 @@ def run_accessibility(output):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--errors-only", action="store_true")
+    parser.add_argument("--compile-only", action="store_true",
+                        help="compile CLI-compatible fixtures with the installed Typst instead of Tytanic")
     args = parser.parse_args()
     failed = False
-    if not args.errors_only:
+    if not args.errors_only and not args.compile_only:
         result = subprocess.run(
             ["tt", "run", "--no-fail-fast", "--font-path", "fonts"], cwd=ROOT
         )
         failed = result.returncode != 0
     with tempfile.TemporaryDirectory(prefix="codly-tests-") as temporary:
+        if args.compile_only and not args.errors_only:
+            # Tytanic supplies a native catch() helper that the CLI cannot
+            # inject. Those tests remain covered by the normal Tytanic job.
+            count = 0
+            skipped = 0
+            for fixture in sorted(ROOT.glob("tests/*/test.typ")):
+                sources = [fixture, *fixture.parent.glob("*.typ")]
+                if any(re.search(r"\bcatch\s*\(", path.read_text()) for path in sources):
+                    skipped += 1
+                    continue
+                result = subprocess.run(
+                    ["typst", "compile", "--root", str(ROOT), "--font-path", str(ROOT / "fonts"),
+                     str(fixture), str(Path(temporary) / "compat.pdf")],
+                    cwd=ROOT, capture_output=True, text=True,
+                )
+                passed = result.returncode == 0
+                print(f"{'pass' if passed else 'FAIL'} compatibility/{fixture.parent.name}", flush=True)
+                if not passed:
+                    print(result.stderr)
+                    failed = True
+                count += 1
+            print(f"Compiled {count} fixtures; {skipped} require Tytanic catch()", flush=True)
         if not args.errors_only:
             failed |= not run_accessibility(Path(temporary) / "accessibility.pdf")
         for case, expected in LAYOUT_ERRORS.items():
@@ -117,6 +144,9 @@ def main():
             if not passed:
                 print(result.stderr or f"Expected a diagnostic containing: {expected}")
                 failed = True
+    if not args.errors_only:
+        result = subprocess.run([sys.executable, str(ROOT / "tests/tooling.py")], cwd=ROOT)
+        failed |= result.returncode != 0
     return int(failed)
 
 

@@ -242,8 +242,18 @@
     presets.at(base)
   } else { base }
   let result = __merge(__merge(presets.thesis, chosen), overrides.named())
+  let colors = result.at("highlight-colors")
+  if type(colors) == array {
+    assert(colors.len() > 0, message: "codly: highlight color palettes must not be empty")
+  }
   if "accent" in overrides.named() and "highlight-colors" not in overrides.named() {
-    result.at("highlight-colors").at(0) = result.accent
+    // An inherited scalar is a one-color palette; an explicit palette supplied
+    // alongside the accent wins unchanged, just as for array palettes.
+    if type(colors) == array {
+      result.at("highlight-colors").at(0) = result.accent
+    } else {
+      result.insert("highlight-colors", result.accent)
+    }
   }
   result
 }

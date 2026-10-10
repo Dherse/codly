@@ -9,13 +9,21 @@ export TYPST_ROOT := root
 default:
 	@just --list --unsorted
 
-# generate the codly function signature in codly.typ
-signature:
-	python3 ./scripts/gen-signature.py
+# run the complete suite, including diagnostics, PDF/UA, and package checks
+test:
+	python3 tests/run.py
 
-# run test suite
-test *args:
+# run selected rendering/assertion tests quickly
+test-focused *args:
 	tt run --no-fail-fast --font-path ./fonts {{ args }}
+
+# compile fixtures with the installed Typst CLI (including minimum-version CI)
+test-compat:
+	python3 tests/run.py --compile-only
+
+# build and smoke-test a temporary release artifact
+package-check:
+	python3 tests/tooling.py
 
 # update test cases
 update *args:

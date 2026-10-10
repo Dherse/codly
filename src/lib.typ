@@ -108,7 +108,7 @@
     let key = str(hl.line)
     if key not in result { result.insert(key, ()) }
     let color = __codly-highlight-color(colors)
-    if hl.fill == none {
+    if hl.fill == none or type(hl.fill) == function {
       let identity = repr(hl)
       color = seen.at(identity, default: none)
       if color == none {
@@ -230,21 +230,32 @@
   }
 }
 
+// Normalize native numbering patterns and callbacks, including optional labels.
+#let __codly-numbering(format, ..numbers) = {
+  if format == none { [] } else if type(format) == str {
+    numbering(format, ..numbers)
+  } else { (format)(..numbers) }
+}
+
 // Native figure targets emit these small elements instead of formatting their
 // reference bodies inline. The shared settings remain compatible with ref-set_.
 #let __codly-line-ref-show(codly-ref, it) = e.get(get => {
   let shared = get(codly-ref)
   let separator = if it.separator == auto { shared.sep } else { it.separator }
   let numbering = if it.numbering == auto { shared.numbering } else { it.numbering }
-  [#ref(it.block)#separator#numbering(it.number)#if it.suffix != none { it.suffix }]
+  if numbering == none { return ref(it.block) }
+  [#ref(it.block)#separator#__codly-numbering(numbering, it.number)#if it.suffix != none {
+      it.suffix
+    }]
 })
 
 #let __codly-highlight-ref-show(codly-ref, it) = e.get(get => {
   let shared = get(codly-ref)
   let separator = if it.separator == auto { shared.sep } else { it.separator }
   let numbering = if it.numbering == auto { shared.numbering } else { it.numbering }
+  if it.by == "line" and numbering == none { return ref(it.block) }
   let body = if it.by == "line" {
-    numbering(it.line)
+    __codly-numbering(numbering, it.line)
   } else {
     assert(it.item != none, message: "codly: tag is required for item reference")
     it.item
@@ -256,8 +267,9 @@
   let shared = get(codly-ref)
   let separator = if it.separator == auto { shared.sep } else { it.separator }
   let numbering = if it.numbering == auto { shared.numbering } else { it.numbering }
+  if it.by == "line" and numbering == none { return ref(it.block) }
   let body = if it.by == "line" {
-    numbering(it.line) + if it.suffix == none { [] } else { it.suffix }
+    __codly-numbering(numbering, it.line) + if it.suffix == none { [] } else { it.suffix }
   } else {
     it.item
   }
@@ -1139,7 +1151,7 @@
     font: "New Computer Modern Math",
     weight: 450,
   )[#pdf.artifact[$lr(}, size: #it.height)$]
-    #(it.numbering)(it.num)
+    #__codly-numbering(it.numbering, it.num)
     #it.body
     #it.label]
   box(width: measure(body).width, body)

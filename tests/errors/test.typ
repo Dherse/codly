@@ -1,6 +1,9 @@
 #import "../../codly.typ" as codly
+#import "../../src/lib.typ": __codly-highlight-color
 
 #set page(width: 160pt, height: auto, margin: 5pt)
+
+#assert(catch(() => __codly-highlight-color(())).contains("highlight color palettes"))
 
 // Check immediate argument diagnostics; run.py covers deferred layout failures.
 #let rejects(expected, args) = context {
