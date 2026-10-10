@@ -145,6 +145,11 @@ def main():
                 print(result.stderr or f"Expected a diagnostic containing: {expected}")
                 failed = True
     if not args.errors_only:
+        gallery = [sys.executable, str(ROOT / "scripts/examples.py"),
+                   "--compile-only" if args.compile_only else "--check"]
+        failed |= subprocess.run(gallery, cwd=ROOT).returncode != 0
+        failed |= subprocess.run([sys.executable, str(ROOT / "scripts/readme.py")],
+                                 cwd=ROOT).returncode != 0
         result = subprocess.run([sys.executable, str(ROOT / "tests/tooling.py")], cwd=ROOT)
         failed |= result.returncode != 0
     return int(failed)

@@ -25,6 +25,8 @@ def main():
     assert "python3 tests/run.py" in recipes, "local suite must use the complete runner"
     release = (ROOT / ".github/workflows/release.yml").read_text()
     workflow = (ROOT / ".github/workflows/test.yml").read_text()
+    assert "workflow_call:" in workflow, "release validation workflow is not reusable"
+    assert "needs: validate" in release, "release must wait for validation of the tagged commit"
     assert f"'{package['compiler']}'" in workflow, "minimum compiler missing from CI matrix"
     for setup in re.findall(r"setup-typst@v4\s+with:\s+(\S+):", release + workflow):
         assert setup == "typst-version", "incorrect setup-typst version input"
@@ -43,6 +45,8 @@ def main():
         assert not (built / "docs.pdf").exists()
         assert (built / "src/typst-small.png").is_file(), "runtime icon must be retained"
         assert (built / package["entrypoint"]).is_file()
+        assert not re.search(r"\(examples/", (built / "README.md").read_text())
+        assert f"/v{package['version']}/examples/" in (built / "README.md").read_text()
         size = sum(path.stat().st_size for path in files)
         assert size < 1024 * 1024, f"unexpected package growth: {size} bytes"
         smoke = built / ".package-smoke.typ"
@@ -50,6 +54,16 @@ def main():
         subprocess.run(["typst", "compile", "--root", str(built),
                         "--ignore-system-fonts", str(smoke), str(output / "smoke.pdf")],
                        cwd=output, check=True)
+        # Resolve the actual name/version import from an isolated package path.
+        packages = output / "packages"
+        installed = packages / "local" / package["name"] / package["version"]
+        shutil.copytree(built, installed)
+        source = (ROOT / "tests/package-smoke.typ").read_text().replace(
+            '"/codly.typ"', f'"@local/{package["name"]}:{package["version"]}"')
+        subprocess.run(["typst", "compile", "--root", str(output),
+                        "--package-path", str(packages), "--ignore-system-fonts",
+                        "-", str(output / "versioned-smoke.pdf")],
+                       input=source, text=True, cwd=output, check=True)
         print(f"pass tooling/package-smoke ({size:,} bytes)", flush=True)
     return 0
 

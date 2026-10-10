@@ -10,7 +10,7 @@ licensed under the [MIT License](LICENSE).
 | [Typst](https://github.com/typst/typst) | Typesetting system on which Codly runs, including native raw text rendering and syntax highlighting. | [Apache-2.0](https://github.com/typst/typst/blob/main/LICENSE); see also Typst's [third-party notices](https://github.com/typst/typst/blob/main/NOTICE). |
 | [Elembic](https://github.com/PgBiel/elembic), by PgBiel | Runtime dependency (`@preview/elembic:1.1.1`) providing custom elements, typed fields, and scoped rules. | [MIT OR Apache-2.0](https://github.com/PgBiel/elembic/blob/main/LICENSE), at your option; [MIT text](https://github.com/PgBiel/elembic/blob/main/LICENSE-MIT) and [Apache text](https://github.com/PgBiel/elembic/blob/main/LICENSE-APACHE). |
 | [Zebraw](https://github.com/hongjr03/typst-zebraw), by hongjr03 | Related code presentation package acknowledged for ideas and inspiration. | [MIT](https://github.com/typst/packages/blob/main/packages/preview/zebraw/0.6.3/LICENSE). |
-| [codly-languages](https://github.com/swaits/typst-collection), by Stephen Waits | Companion language configurations, icons, and colors used in examples and documentation. | [MIT](https://github.com/typst/packages/blob/main/packages/preview/codly-languages/0.1.1/LICENSE). Copyright (c) 2024 Stephen Waits. |
+| [codly-languages](https://github.com/swaits/typst-collection), by Stephen Waits | Companion language configurations, icons, and colors used in examples and documentation. | [MIT](https://github.com/typst/packages/blob/main/packages/preview/codly-languages/0.1.8/LICENSE). Copyright (c) 2025 Stephen Waits. |
 
 ## Theme palettes
 

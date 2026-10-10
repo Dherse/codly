@@ -137,11 +137,11 @@
 // Plain header/footer content and pre-built element instances both retain
 // their public fields when codly constructs the block grid.
 #{
-  show: e.show_(codly.header, it => {
+  show: codly.header-show_(it => {
     let fields = e.fields(it)
     [#metadata((body: fields.body, fill: fields.fill))<header-hook>#it]
   })
-  show: e.show_(codly.footer, it => {
+  show: codly.footer-show_(it => {
     let fields = e.fields(it)
     [#metadata((body: fields.body, fill: fields.fill))<footer-hook>#it]
   })
@@ -158,8 +158,8 @@
 // Header/footer set rules provide defaults for plain content; explicit
 // element fields override those defaults in the resulting grid cells.
 #{
-  show: codly.header-set(fill: green)
-  show: e.set_(codly.footer, fill: green)
+  show: codly.header-set_(fill: green)
+  show: codly.footer-set_(fill: green)
   show grid: it => {
     let edges = ()
     for child in it.children {

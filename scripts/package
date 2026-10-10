@@ -74,6 +74,8 @@ for f in "${files[@]}"; do
   cp -r "$ROOT/$f" "$TMP/$f"
 done
 
+python3 "$ROOT/scripts/package-readme.py" "$TMP"
+
 TARGET="${TARGET:?}/${PKG_PREFIX:?}/${VERSION:?}"
 echo "Packaged to: $TARGET"
 if rm -r "${TARGET:?}" 2>/dev/null; then

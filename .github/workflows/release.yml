@@ -13,7 +13,11 @@ env:
   PATH_PREFIX: packages/preview
 
 jobs:
+  validate:
+    uses: ./.github/workflows/test.yml
+
   release:
+    needs: validate
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

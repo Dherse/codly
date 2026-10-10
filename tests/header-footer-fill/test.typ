@@ -19,7 +19,7 @@
     placement: if mode == "outside" { "outside" } else { "inside" },
     fill: gutter,
   )
-  show: codly.header-set(fill: head)
+  show: codly.header-set_(fill: head)
   show: e.set_(codly.footer, fill: foot)
   show: codly.line-set_(fill: if style == "defaults" { gradient.linear(aqua, blue) } else if style
     == "explicit" {

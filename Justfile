@@ -25,17 +25,25 @@ test-compat:
 package-check:
 	python3 tests/tooling.py
 
+# render the curated README gallery
+examples:
+	python3 scripts/examples.py
+
+# verify that gallery sources and committed PNGs agree
+examples-check:
+	python3 scripts/examples.py --check
+
 # update test cases
 update *args:
 	tt update --font-path ./fonts {{ args }}
 
 # format Typst library, tests, and documentation sources
 fmt:
-	typstyle --inplace --line-width 100 --indent-width 2 --no-reorder-import-items codly.typ src tests
+	typstyle --inplace --line-width 100 --indent-width 2 --no-reorder-import-items codly.typ src tests examples
 
 # verify Typst formatting without changing files
 fmt-check:
-	typstyle --check --line-width 100 --indent-width 2 --no-reorder-import-items codly.typ src tests
+	typstyle --check --line-width 100 --indent-width 2 --no-reorder-import-items codly.typ src tests examples
 
 # package the library into the specified destination folder
 package target:
@@ -48,6 +56,10 @@ install: (package "@local")
 install-preview: (package "@preview")
 
 # Benchmark codly
+bench-release *args:
+	python3 scripts/benchmark.py {{ args }}
+
+# Legacy benchmarks (requires crityp)
 bench *args:
 	crityp bench/test-codly-12/main.typ --bench-output .
 	crityp bench/test-codly-main/main.typ --root . --bench-output .

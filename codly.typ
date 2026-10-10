@@ -1966,9 +1966,21 @@
   import "@preview/elembic:1.1.1" as e
   e.show_(file, it, ..args)
 }
-#let header-set(..args) = {
+#let header-set_(..args) = {
   import "@preview/elembic:1.1.1" as e
   e.set_(header, ..args)
+}
+#let header-show_(it, ..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.show_(header, it, ..args)
+}
+#let footer-set_(..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.set_(footer, ..args)
+}
+#let footer-show_(it, ..args) = {
+  import "@preview/elembic:1.1.1" as e
+  e.show_(footer, it, ..args)
 }
 #let line-set_(..args) = {
   import "@preview/elembic:1.1.1" as e
