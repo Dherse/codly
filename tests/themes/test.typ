@@ -37,7 +37,8 @@
     assert.eq(get(codly.footer).fill, config.at("footer-fill"))
     assert.eq(get(codly.number).fill, auto)
     assert.eq(get(codly.bubble).fill, config.at("bubble-fill"))
-    assert.eq(get(codly.highlight).color, config.accent)
+    assert.eq(get(codly.highlight).color, config.at("highlight-colors"))
+    assert.eq(config.at("highlight-colors").len(), 5)
     []
   })
   show text: it => context {
@@ -83,7 +84,7 @@
   show: codly.theme(derived)
   e.get(get => {
     assert.eq(get(codly.line).fill, custom.fill)
-    assert.eq(get(codly.highlight).color, orange)
+    assert.eq(get(codly.highlight).color.first(), orange)
     assert.eq(get(codly.header).inset, 4pt)
     assert.eq(get(codly.file).radius, 4pt)
     []

@@ -187,6 +187,8 @@
   code-column: 1,
   outside: true,
   wraps: none,
+  padding: (top: 0pt, right: 0pt, bottom: 0pt, left: 0pt),
+  padding-fill: none,
 ) = context {
   let at = here().position()
   let page = pages(origin, code-column: code-column, outside: outside, wraps: wraps).at(
@@ -204,18 +206,52 @@
         ))
       }
     }
-    let code-left = if page.left == none { at.x } else { page.left }
-    place(top + left, dx: code-left - at.x, dy: page.top - at.y, block(
-      width: at.x + width - code-left,
-      height: page.bottom - page.top,
+    let code-left = (
+      (if page.left == none { at.x } else { page.left }) - if outside { 0pt } else { padding.left }
+    )
+    let frame-top = page.top - padding.top
+    place(top + left, dx: code-left - at.x, dy: frame-top - at.y, block(
+      width: at.x + width - code-left + padding.right,
+      height: page.bottom - page.top + padding.top + padding.bottom,
       radius: radius,
       stroke: stroke,
       clip: true,
       {
+        // Paint only the new edge space: a block-wide fill would repaint
+        // intentionally transparent rows, headers, and footers as well.
+        if padding-fill != none {
+          let frame-width = at.x + width - code-left + padding.right
+          let frame-height = page.bottom - page.top + padding.top + padding.bottom
+          for (x, y, w, h) in (
+            (0pt, 0pt, frame-width, padding.top),
+            (0pt, frame-height - padding.bottom, frame-width, padding.bottom),
+            (
+              0pt,
+              padding.top,
+              if outside { 0pt } else { padding.left },
+              frame-height - padding.top - padding.bottom,
+            ),
+            (
+              frame-width - padding.right,
+              padding.top,
+              padding.right,
+              frame-height - padding.top - padding.bottom,
+            ),
+          ) {
+            if w > 0pt and h > 0pt {
+              place(top + left, dx: x, dy: y, rect(
+                width: w,
+                height: h,
+                fill: padding-fill,
+                stroke: none,
+              ))
+            }
+          }
+        }
         for cell in page.cells {
           if cell.fill != none {
             let x = calc.max(code-left, cell.a.x)
-            place(top + left, dx: x - code-left, dy: cell.a.y - page.top, rect(
+            place(top + left, dx: x - code-left, dy: cell.a.y - frame-top, rect(
               width: cell.b.x - x,
               height: cell.b.y - cell.a.y,
               fill: cell.fill,
@@ -225,7 +261,7 @@
           for guide in cell.guides {
             let x = cell.a.x + guide.x
             if cell.a.x <= x and x < cell.b.x {
-              place(top + left, dx: x - code-left, dy: cell.a.y - page.top, pdf.artifact(line(
+              place(top + left, dx: x - code-left, dy: cell.a.y - frame-top, pdf.artifact(line(
                 end: (
                   0pt,
                   if guide.max-height == none { cell.b.y - cell.a.y } else {
@@ -282,6 +318,8 @@
   outside: true,
   guides: none,
   wraps: none,
+  padding: (top: 0pt, right: 0pt, bottom: 0pt, left: 0pt),
+  padding-fill: none,
   gutter: none,
   column-gutter: none,
   row-gutter: none,
@@ -346,6 +384,8 @@
           code-column: code-column,
           outside: outside,
           wraps: none,
+          padding: padding,
+          padding-fill: padding-fill,
         )
       }),
     )),

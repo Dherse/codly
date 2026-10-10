@@ -83,3 +83,15 @@
     block: true,
   ))
 }
+
+// Edge spacing and indented notes remain native, searchable text.
+#{
+  set text(size: 8pt)
+  show: codly.callout-set_(source-indent: true)
+  codly.new(
+    raw("    padded_accessible_source", lang: "py", block: true),
+    padding: 6pt,
+    highlighted: (1,),
+    callouts: ((line: 1, body: [Indented accessible explanation]),),
+  )
+}

@@ -59,117 +59,132 @@
   bubble: (stroke: 0.5pt + band),
 )
 
+// Five accents for each preset, shared with the ordinary highlight defaults.
+#let __palettes = (
+  thesis: ("283593", "2e7d32", "ef6c00", "6a1b9a", "00838f"),
+  dark: ("569cd6", "c586c0", "4ec9b0", "dcdcaa", "ce9178"),
+  clean: ("283593", "287d3c", "b55b00", "7b3fb0", "007a82"),
+  github-light: ("0969da", "1a7f37", "9a6700", "8250df", "bc4c00"),
+  solarized-light: ("268bd2", "859900", "b58900", "d33682", "2aa198"),
+  one-light: ("4078f2", "50a14f", "986801", "a626a4", "0184bc"),
+)
 /// Six built-in themes. `thesis` uses Codly's ordinary visual defaults.
-#let presets = (
-  thesis: (
-    foreground: auto,
-    muted: auto,
-    fill: __default("fill"),
-    accent: __default("default-color"),
-    stroke: __default("stroke"),
-    radius: __default("radius"),
-    inset: __default("inset"),
-    header-fill: luma(240),
-    footer-fill: none,
-    bubble-fill: luma(245),
-    syntax: auto,
-    language-colors: true,
-    highlight-fill: __default("highlight-fill"),
-    file: (stroke: 0.5pt + luma(160), radius: 2pt),
-    bubble: (stroke: 0.6pt + luma(80)),
-    block: (__diff-colors: (:)),
-  ),
-  dark: __editor(
-    rgb("d4d4d4"),
-    rgb("1e1e1e"),
-    rgb("a0a0a0"),
-    rgb("569cd6"),
-    rgb("2d2d2d"),
-    __syntax(
-      rgb("d4d4d4"),
-      rgb("6a9955"),
-      rgb("c586c0"),
-      rgb("ce9178"),
-      rgb("b5cea8"),
-      rgb("dcdcaa"),
-      rgb("4ec9b0"),
+#let presets = {
+  let result = (
+    thesis: (
+      foreground: auto,
+      muted: auto,
+      fill: __default("fill"),
+      accent: __default("default-color"),
+      stroke: __default("stroke"),
+      radius: __default("radius"),
+      inset: __default("inset"),
+      header-fill: luma(240),
+      footer-fill: none,
+      bubble-fill: luma(245),
+      syntax: auto,
+      language-colors: true,
+      highlight-fill: __default("highlight-fill"),
+      file: (stroke: 0.5pt + luma(160), radius: 2pt),
+      bubble: (stroke: 0.6pt + luma(80)),
+      block: (__diff-colors: (:)),
     ),
-  )
-    + (
-      highlight-fill: color => color.darken(65%),
-      block: (
-        __diff-colors: (
-          added-fill: rgb("173b25"),
-          removed-fill: rgb("472124"),
-          meta-fill: rgb("18344d"),
+    dark: __editor(
+      rgb("d4d4d4"),
+      rgb("1e1e1e"),
+      rgb("a0a0a0"),
+      rgb("569cd6"),
+      rgb("2d2d2d"),
+      __syntax(
+        rgb("d4d4d4"),
+        rgb("6a9955"),
+        rgb("c586c0"),
+        rgb("ce9178"),
+        rgb("b5cea8"),
+        rgb("dcdcaa"),
+        rgb("4ec9b0"),
+      ),
+    )
+      + (
+        highlight-fill: color => color.darken(65%),
+        block: (
+          __diff-colors: (
+            added-fill: rgb("173b25"),
+            removed-fill: rgb("472124"),
+            meta-fill: rgb("18344d"),
+          ),
         ),
       ),
+    clean: (
+      foreground: auto,
+      muted: luma(110),
+      fill: none,
+      stroke: none,
+      radius: 0pt,
+      header-fill: none,
+      footer-fill: none,
+      bubble-fill: luma(245),
+      syntax: auto,
+      language-colors: false,
+      // lang's scalar `none` uses the language color as a fallback;
+      // a callback returning `none` gives the clean preset an unpainted badge.
+      lang: (fill: _ => none, stroke: none, radius: 0pt),
+      file: (fill: none, stroke: none, radius: 0pt),
     ),
-  clean: (
-    foreground: auto,
-    muted: luma(110),
-    fill: none,
-    stroke: none,
-    radius: 0pt,
-    header-fill: none,
-    footer-fill: none,
-    bubble-fill: luma(245),
-    syntax: auto,
-    language-colors: false,
-    // lang's scalar `none` uses the language color as a fallback;
-    // a callback returning `none` gives the clean preset an unpainted badge.
-    lang: (fill: _ => none, stroke: none, radius: 0pt),
-    file: (fill: none, stroke: none, radius: 0pt),
-  ),
-  github-light: __editor(
-    rgb("1f2328"),
-    white,
-    rgb("656d76"),
-    rgb("0969da"),
-    rgb("f6f8fa"),
-    __syntax(
+    github-light: __editor(
       rgb("1f2328"),
-      rgb("6e7781"),
-      rgb("cf222e"),
-      rgb("0a3069"),
-      rgb("0550ae"),
-      rgb("8250df"),
-      rgb("953800"),
+      white,
+      rgb("656d76"),
+      rgb("0969da"),
+      rgb("f6f8fa"),
+      __syntax(
+        rgb("1f2328"),
+        rgb("6e7781"),
+        rgb("cf222e"),
+        rgb("0a3069"),
+        rgb("0550ae"),
+        rgb("8250df"),
+        rgb("953800"),
+      ),
     ),
-  ),
-  solarized-light: __editor(
-    rgb("657b83"),
-    rgb("fdf6e3"),
-    rgb("586e75"),
-    rgb("268bd2"),
-    rgb("eee8d5"),
-    __syntax(
+    solarized-light: __editor(
       rgb("657b83"),
-      rgb("93a1a1"),
-      rgb("859900"),
-      rgb("2aa198"),
-      rgb("d33682"),
+      rgb("fdf6e3"),
+      rgb("586e75"),
       rgb("268bd2"),
-      rgb("b58900"),
+      rgb("eee8d5"),
+      __syntax(
+        rgb("657b83"),
+        rgb("93a1a1"),
+        rgb("859900"),
+        rgb("2aa198"),
+        rgb("d33682"),
+        rgb("268bd2"),
+        rgb("b58900"),
+      ),
     ),
-  ),
-  one-light: __editor(
-    rgb("383a42"),
-    rgb("fafafa"),
-    rgb("696c77"),
-    rgb("4078f2"),
-    rgb("f0f0f1"),
-    __syntax(
+    one-light: __editor(
       rgb("383a42"),
-      rgb("a0a1a7"),
-      rgb("a626a4"),
-      rgb("50a14f"),
-      rgb("986801"),
+      rgb("fafafa"),
+      rgb("696c77"),
       rgb("4078f2"),
-      rgb("c18401"),
+      rgb("f0f0f1"),
+      __syntax(
+        rgb("383a42"),
+        rgb("a0a1a7"),
+        rgb("a626a4"),
+        rgb("50a14f"),
+        rgb("986801"),
+        rgb("4078f2"),
+        rgb("c18401"),
+      ),
     ),
-  ),
-)
+  )
+  for (name, palette) in __palettes {
+    result.at(name).insert("highlight-colors", palette.map(rgb))
+  }
+  result
+}
 
 #let __sections = (
   "block",
@@ -197,6 +212,7 @@
   "bubble-fill",
   "syntax",
   "highlight-fill",
+  "highlight-colors",
   "language-colors",
 )
 
@@ -225,7 +241,11 @@
     assert(base in presets, message: "codly: unknown theme: " + base)
     presets.at(base)
   } else { base }
-  __merge(__merge(presets.thesis, chosen), overrides.named())
+  let result = __merge(__merge(presets.thesis, chosen), overrides.named())
+  if "accent" in overrides.named() and "highlight-colors" not in overrides.named() {
+    result.at("highlight-colors").at(0) = result.accent
+  }
+  result
 }
 
 /// Produce the element set rules for a theme without changing block content,
@@ -248,7 +268,7 @@
     header: (fill: config.at("header-fill")),
     footer: (fill: config.at("footer-fill")),
     highlight: (
-      color: config.accent,
+      color: config.at("highlight-colors"),
       fill: config.at("highlight-fill"),
       stroke: __default("highlight-stroke"),
       radius: __default("highlight-radius"),

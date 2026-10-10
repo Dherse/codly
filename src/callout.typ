@@ -34,6 +34,12 @@
   }
   (
     field(
+      "source-indent",
+      bool,
+      false,
+      "Align plain callouts to their source indentation, reserving the gutter columns. Pointed bubbles keep their character anchors.",
+    ),
+    field(
       "placement",
       e.types.union("above", "below"),
       "below",
@@ -118,7 +124,7 @@
 
 #let resolve(value, defaults, bubble-defaults: none) = {
   let result = (:)
-  for name in ("placement", "pointer", ..style-names) {
+  for name in ("source-indent", "placement", "pointer", ..style-names) {
     let local = value.at(name)
     let chosen = if local == auto { defaults.at(name) } else { local }
     if chosen == auto and bubble-defaults != none and name in style-names {
@@ -365,7 +371,16 @@
 }
 
 #let display(bubble, it) = {
-  if it.pointer == none { return it.body }
+  if it.pointer == none {
+    if not it.source-indent { return it.body }
+    return block(
+      width: 100%,
+      above: 0pt,
+      below: 0pt,
+      inset: (left: it.__indent),
+      it.body,
+    )
+  }
   e.get(get => {
     let settings = resolve(it, it, bubble-defaults: get(bubble))
     let args = (:)
@@ -451,7 +466,16 @@
 // Consecutive bubbles with identical cell styling can share a grid cell.
 // Plain rows or different cell styles form a boundary, preserving their fills
 // and spacing. Within a group, collision lanes retain declaration order.
-#let row-cells(entries, constructor, defaults, owner, source-line, colspan) = {
+#let row-cells(
+  entries,
+  constructor,
+  defaults,
+  owner,
+  source-line,
+  colspan,
+  gutter-count: 0,
+  source-text: "",
+) = {
   let groups = ()
   for entry in entries {
     let settings = resolve(entry, defaults)
@@ -465,6 +489,10 @@
     }
     if settings.pointer != none { cell.insert("breakable", false) }
     let row = (body: entry.body, line: source-line, __anchor: (owner: owner), ..settings)
+    if settings.source-indent and settings.pointer == none {
+      let prefix = source-text.match(regex("^ *")).text
+      row.insert("__indent", measure(text(prefix)).width)
+    }
     if (
       settings.pointer != none
         and groups.len() > 0
@@ -482,6 +510,13 @@
       let body = row.remove("body")
       constructor(body, ..row)
     } else { pack(group.rows, constructor) }
-    grid.cell(body, colspan: colspan, ..group.cell)
+    if not group.bubbles and group.rows.first().source-indent {
+      (
+        (grid.cell([]),) * gutter-count
+          + (grid.cell(body, colspan: colspan - gutter-count, ..group.cell),)
+      )
+    } else {
+      (grid.cell(body, colspan: colspan, ..group.cell),)
+    }
   })
 }

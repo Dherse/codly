@@ -7,6 +7,12 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 LAYOUT_ERRORS = {
+    "padding-negative": "padding must be non-negative",
+    "padding-axis-negative": "padding must be non-negative",
+    "padding-key": "padding accepts only sides",
+    "padding-type": "padding values must be lengths",
+    "highlight-palette-empty": "highlight color palettes must not be empty",
+    "theme-palette-empty": "highlight color palettes must not be empty",
     "diff-language": "diff requires one nonempty language",
     "diff-languages": "diff requires one nonempty language",
     "diff-hunk": "invalid unified diff hunk header",
@@ -77,6 +83,7 @@ def run_accessibility(output):
         )
         passed &= all(extracted.stdout.count(token) == 1
                       for token in ("deleted_diff_token", "added_diff_token", "context_diff_token"))
+        passed &= "padded_accessible_source" in extracted.stdout and "Indented accessible" in extracted.stdout
         if not passed:
             result = extracted
     print(f"{'pass' if passed else 'FAIL'} accessibility/pdf-ua", flush=True)

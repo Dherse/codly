@@ -6,6 +6,7 @@
 #import "callout.typ" as callout-impl
 #import "gutter.typ" as gutter-impl
 #import "diff.typ" as diff-impl
+#import "padding.typ" as block-padding
 
 /// The prefix identifying codly's custom elements and types.
 #let __codly-prefix = "@preview/codly:v2.0.0"
@@ -90,6 +91,35 @@
   }
   if type(fill) == function { return fill(row) }
   fill
+}
+
+// Select before slicing/ranging or splitting a span into styled fragments.
+#let __codly-highlight-color(colors, index: 0) = {
+  if type(colors) != array { return colors }
+  assert(colors.len() > 0, message: "codly: highlight color palettes must not be empty")
+  colors.at(calc.rem(index, colors.len()))
+}
+
+#let __codly-highlight-colors(highlights, colors) = {
+  let result = (:)
+  let next = 0
+  let seen = (:)
+  for hl in (if highlights == none { () } else { highlights }) {
+    let key = str(hl.line)
+    if key not in result { result.insert(key, ()) }
+    let color = __codly-highlight-color(colors)
+    if hl.fill == none {
+      let identity = repr(hl)
+      color = seen.at(identity, default: none)
+      if color == none {
+        color = __codly-highlight-color(colors, index: next)
+        seen.insert(identity, color)
+        next += 1
+      }
+    }
+    result.at(key).push(color)
+  }
+  result
 }
 
 #let __codly-lang-show(
@@ -348,8 +378,9 @@
     body = par(hanging-indent: it.__continuation-indent, body)
   }
 
-  let base = if hl != none and hl.fill != none { hl.fill } else { it.color }
-  if type(base) == function { base = base(it.color) }
+  let color = __codly-highlight-color(it.color)
+  let base = if hl != none and hl.fill != none { hl.fill } else { color }
+  if type(base) == function { base = base(color) }
   let style = (:)
   for name in ("radius", "clip", "inset", "outset", "baseline") {
     style.insert(name, if hl != none and hl.at(name) != none { hl.at(name) } else { it.at(name) })
@@ -454,8 +485,11 @@
   let layout = none
   if line-highlights != none and line-highlights.len() > 0 {
     let spans = ()
-    for hl in line-highlights {
+    for (index, hl) in line-highlights.enumerate() {
       if hl.line == line.number {
+        if it.__highlight-colors != none {
+          hl.insert("__color", it.__highlight-colors.at(index))
+        }
         if hl.at("label", default: none) != none {
           hl.insert("line-number", line.number)
           hl.insert("block-label", block-label)
@@ -525,6 +559,12 @@
         + if wrap-data == none { 0pt } else { wrap-data.advance },
     )
   }
+  let render-highlight(body, hl, start) = {
+    let color = hl.remove("__color", default: none)
+    let options = highlight-options(start)
+    if color != none { options.insert("color", color) }
+    codly-highlight(body, highlight: hl, ..options)
+  }
 
   // Split before applying `set par`, which would otherwise wrap each fragment.
   let highlighted = body
@@ -588,9 +628,7 @@
         }
         while open.len() > shared {
           let hl = highlights.at(open.pop())
-          let content = codly-highlight(groups.pop().join(), highlight: hl, ..highlight-options(
-            starts.pop(),
-          ))
+          let content = render-highlight(groups.pop().join(), hl, starts.pop())
           groups.last().push(content)
         }
         while open.len() < active.len() {
@@ -606,9 +644,7 @@
     // Close spans that continue through or beyond the end of the line.
     while open.len() > 0 {
       let hl = highlights.at(open.pop())
-      let content = codly-highlight(groups.pop().join(), highlight: hl, ..highlight-options(
-        starts.pop(),
-      ))
+      let content = render-highlight(groups.pop().join(), hl, starts.pop())
       groups.last().push(content)
     }
 
@@ -679,6 +715,7 @@
     reference: if it.block-label != none { it.reference },
     __wrap: if it.smart-indent { it.__wrap },
     __callout: it.at("__callout", default: none),
+    __highlight-colors: it.at("__highlight-colors", default: none),
   )
   let smart-indent = it.smart-indent
   if smart-indent and it.__wrap != none and "width" not in it.__wrap {
@@ -751,6 +788,7 @@
   badge-row: none,
   gutter-columns: none,
   row-offset: 0,
+  highlight-colors: (:),
 ) = {
   let gutter-columns = if gutter-columns == none {
     if number-enabled { (auto,) } else { () }
@@ -978,8 +1016,10 @@
       callout-owner,
       line.number,
       callout-colspan,
+      gutter-count: gutter-count,
+      source-text: line.text,
     ) {
-      items.push(row)
+      items += row
       if new-annotation != none {
         annotation-cell = items.len()
         items.push(new-annotation)
@@ -1029,6 +1069,7 @@
       highlights: if has-highlights {
         highlights-by-line.at(str(number), default: ())
       } else { highlights },
+      __highlight-colors: highlight-colors.at(str(number), default: none),
       smart-indent: smart-indent,
       __wrap: if wrap-settings == none { none } else { wrap-settings + (row: line.number) },
       block-label: block-label,
@@ -1062,8 +1103,10 @@
       callout-owner,
       line.number,
       callout-colspan,
+      gutter-count: gutter-count,
+      source-text: line.text,
     ) {
-      items.push(row)
+      items += row
       lines_to_number.push(-99999997)
       rows.push((kind: "callout", source-line: line.number, number: number))
       if indentation != none { guide-depths.push(0) }
@@ -1449,15 +1492,14 @@
 
   let highlighted-by-line = (:)
   if args.highlighted != none {
-    let default-fill = auto
+    let settings = get(codly-highlight)
+    let next = 0
     for hl in args.highlighted {
       let fill = hl.color
       if fill == none {
-        if default-fill == auto {
-          let settings = get(codly-highlight)
-          default-fill = (settings.fill)(settings.color)
-        }
-        fill = default-fill
+        let color = __codly-highlight-color(settings.color, index: next)
+        fill = if settings.fill == none { none } else { (settings.fill)(color) }
+        next += 1
       }
       highlighted-by-line.insert(str(hl.line), fill)
     }
@@ -1574,6 +1616,7 @@
     badge-row: badge-row,
     gutter-columns: gutter-columns,
     row-offset: if args.header == none { 0 } else { 1 },
+    highlight-colors: __codly-highlight-colors(args.highlights, get(codly-highlight).color),
   )
 
   // The header counts as a displayed row for palette compatibility.
@@ -1640,6 +1683,7 @@
   if args.row-gutter != none { gutters.insert("row-gutter", args.row-gutter) }
   let numbers-alignment = number-settings.align
   let outside-column = gutter-count > 0 and numbers-outside
+  let edge-padding = block-padding.resolve(args.padding)
   let number-fill = number-settings.fill
   let gutter-fills = if args.gutters == auto { () } else {
     gutter-impl.fills(
@@ -1664,6 +1708,14 @@
   }
 
   let grid-content = (intrinsic: false) => {
+    // Keep outside gutter widths unchanged: the left code-edge space belongs
+    // inside the first code column, not in front of the outside numbers.
+    let inset = if outside-column and edge-padding.left > 0pt {
+      (x, _) => (
+        grid-inset
+          + (left: grid-inset.left + if x == gutter-count { edge-padding.left } else { 0pt })
+      )
+    } else { grid-inset }
     let code-width = if intrinsic { auto } else { 1fr }
     let columns = (
       gutter-columns.map(column => if column == auto { auto } else { column.width })
@@ -1678,10 +1730,11 @@
       outside-column
         or wrap-settings != none
         or (indentation != none and guide-depths.any(d => d > 0))
+        or edge-padding.values().any(value => value > 0pt)
     ) {
       geometry.outside(
         columns,
-        grid-inset,
+        inset,
         alignment,
         cell-fill,
         if outside-column { stroke } else { none },
@@ -1691,6 +1744,8 @@
         footer-block,
         code-column: gutter-count,
         outside: outside-column,
+        padding: edge-padding,
+        padding-fill: if type(fill) in (color, gradient, tiling) { fill } else { none },
         wraps: wrap-settings,
         ..gutters,
         guides: if indentation == none { none } else {
@@ -1704,7 +1759,7 @@
                 // integral space advances. Measure that advance once per
                 // block instead of once for every row and nesting level.
                 step: measure(text(" " * indentation.width)).width,
-                inset: grid-inset.left,
+                inset: grid-inset.left + if outside-column { edge-padding.left } else { 0pt },
                 // Unindented continuation text must not run through a guide.
                 max-height: if args.smart-indent { none } else {
                   (
@@ -1738,7 +1793,12 @@
     width: width,
     radius: args.radius,
     stroke: if outside-column { none } else { get-line.stroke },
-    inset: stroke-inset,
+    inset: (
+      top: stroke-inset + edge-padding.top,
+      right: stroke-inset + edge-padding.right,
+      bottom: stroke-inset + edge-padding.bottom,
+      left: stroke-inset + if outside-column { 0pt } else { edge-padding.left },
+    ),
     outset: if outside-column { 0pt } else { -stroke-inset },
     grid-content(intrinsic: intrinsic),
   )

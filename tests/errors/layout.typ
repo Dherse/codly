@@ -58,6 +58,20 @@
     let (source, language) = sources.at(case)
     codly.new(raw(source, lang: language, block: true))
   }
+} else if case.starts-with("padding-") {
+  let cases = (
+    padding-negative: -1pt,
+    padding-axis-negative: (y: -1em),
+    padding-key: (vertical: 2pt),
+    padding-type: (left: "wrong"),
+  )
+  codly.new(raw("one", block: true), padding: cases.at(case))
+} else if case == "highlight-palette-empty" {
+  show: codly.highlight-set_(color: ())
+  codly.new(raw("one", block: true), highlighted: (1,))
+} else if case == "theme-palette-empty" {
+  show: codly.theme("dark", highlight-colors: ())
+  codly.new(raw("one", block: true), highlights: ((line: 1),))
 } else if case == "theme-name" {
   show: codly.theme("does-not-exist")
   codly.new(raw("one", block: true))

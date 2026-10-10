@@ -1099,6 +1099,7 @@
 #let highlight = {
   import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default, __codly-highlight-show
+  import "src/themes.typ" as themes-impl
 
   e.element.declare(
     "codly-highlight",
@@ -1121,9 +1122,10 @@
       ),
       e.field(
         "color",
-        e.types.paint,
-        doc: __doc("default-color"),
-        default: __default("default-color"),
+        e.types.union(e.types.paint, e.types.array(e.types.paint)),
+        doc: "Default highlight paint or nonempty cycling palette. Whole-row and span highlights have independent, per-block cycles in declaration order; explicit paints do not consume a color.",
+        default: themes-impl.presets.thesis.at("highlight-colors"),
+        folds: false,
       ),
       e.field(
         "radius",
@@ -1223,6 +1225,12 @@
         e.types.option(dictionary),
         default: none,
         doc: "Internal character anchors.",
+      ),
+      e.field(
+        "__highlight-colors",
+        e.types.option(e.types.array(e.types.paint)),
+        default: none,
+        folds: false,
       ),
       e.field(
         "block-label",
@@ -1539,6 +1547,7 @@
         default: none,
         doc: "Internal source anchor.",
       ),
+      e.field("__indent", length, default: 0pt, doc: "Internal source indentation width."),
     ),
   )
 }
@@ -1878,6 +1887,13 @@
         default: __default("footer"),
       ),
       e.field("radius", e.types.option(length), doc: __doc("radius"), default: __default("radius")),
+      e.field(
+        "padding",
+        e.types.union(length, dictionary),
+        default: 0pt,
+        folds: false,
+        doc: "Extra inner space at the block edges, separate from row inset and leading. A length or a dictionary with top/right/bottom/left, x/y, and rest. Gutters remain outside the code border when placed outside.",
+      ),
       e.field(
         "leading",
         e.types.option(length),
