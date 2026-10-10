@@ -19,12 +19,15 @@ export async function createEngine({ compilerWasm, rendererWasm, fonts, files })
   }
   const renderer = createTypstRenderer();
   await renderer.init({ getModule: () => rendererWasm });
-  return async (source, theme = 'dark', font = 'dejavu') => {
+  return async source => {
     if (source.length > 30000) throw new Error('Keep examples under 30,000 characters.');
-    compiler.addSource('/main.typ', files['/setup.typ'] + '\n' + source);
-    const compiled = await compiler.compile({ mainFilePath: '/main.typ', inputs: { theme, font }, diagnostics: 'full' });
+    const localSource = source.replaceAll('import "@preview/codly:2.0.0"', 'import "codly.typ"');
+    compiler.addSource('/main.typ', files['/setup.typ'] + '\n' + localSource);
+    const compiled = await compiler.compile({ mainFilePath: '/main.typ', diagnostics: 'full' });
     if (!compiled.result) throw new Error((compiled.diagnostics || []).map(d => `${d.path || ''}: ${d.message}`).join('\n') || 'Typst could not compile this example.');
-    const svg = await renderer.renderSvg({ artifactContent: compiled.result, data_selection: { body: true, defs: true, css: true, js: false } });
+    const rendered = await renderer.renderSvg({ artifactContent: compiled.result, data_selection: { body: true, defs: true, css: true, js: false } });
+    // Reference links retain handlers with js:false; image previews cannot use them.
+    const svg = rendered.replace(/\s+on[\w:-]+\s*=\s*(?:"[^"]*"|'[^']*')/gi, '');
     if (svg.length > 8_000_000) throw new Error('Preview is too large; shorten the example.');
     return svg;
   };

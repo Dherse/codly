@@ -10,9 +10,11 @@ export const fontFiles = {
   'LibertinusSerif-Bold.otf': asset('typst-assets/files/fonts/LibertinusSerif-Bold.otf'),
   'LibertinusSerif-Italic.otf': asset('typst-assets/files/fonts/LibertinusSerif-Italic.otf'),
   'LibertinusSerif-BoldItalic.otf': asset('typst-assets/files/fonts/LibertinusSerif-BoldItalic.otf'),
+  'NewCMMath-Book.otf': asset('typst-assets/files/fonts/NewCMMath-Book.otf'),
   'NotoSansMono-Regular.ttf': asset('noto-sans-mono/fonts/ttf/hinted/instance_ttf/NotoSansMono-Regular.ttf'),
   'SourceSans3-Regular.ttf': asset('source-sans/TTF/SourceSans3-Regular.ttf'),
   'FontAwesome.woff2': asset('font-awesome/fonts/fontawesome-webfont.woff2'),
+  'NotoColorEmoji-Regular.ttf': path.join(root, '..', 'fonts', 'Noto Color Emoji', 'NotoColorEmoji-Regular.ttf'),
 };
 
 export const compilerFontFiles = Object.entries(fontFiles)

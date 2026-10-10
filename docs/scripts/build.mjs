@@ -3,8 +3,9 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
-import { createEngine } from '../runtime/compiler.mjs';
+import { previewConcurrency, renderPreviews } from './previews.mjs';
 import { fontFiles, compilerFontFiles } from './assets.mjs';
+import { configureLinks } from './links.mjs';
 const root = fileURLToPath(new URL('../',import.meta.url));
 process.chdir(root);
 process.env.PATH = `${root}/.tools/node/bin:${root}/.tools:${process.env.PATH}`;
@@ -47,6 +48,7 @@ async function collectNotices(dir) {
 await collectNotices('vendor');
 notices.push('\nFont Awesome 4.7.0 by Dave Gandy; Copyright (c) 2016 Dave Gandy.\nFont license: SIL Open Font License 1.1.\n' + await fs.readFile('vendor/noto-sans-mono/LICENSE', 'utf8'));
 notices.push(await fs.readFile(path.join(codlySource, 'LICENSE'), 'utf8'));
+notices.push('\n===== Noto Color Emoji =====\n' + await fs.readFile(path.join(path.dirname(fontFiles['NotoColorEmoji-Regular.ttf']), 'LICENSE'), 'utf8'));
 await collectNotices('node_modules');
 await fs.writeFile(`${assets}/THIRD_PARTY_NOTICES.txt`,notices.join('\n'));
 await build({entryPoints:{docs:'runtime/docs.mjs',worker:'runtime/worker.mjs',highlight:'runtime/highlight.mjs'},bundle:true,splitting:true,format:'esm',platform:'browser',target:'es2022',outdir:assets,minify:true,legalComments:'linked',metafile:true}).then(async result => { await fs.mkdir('.cache',{recursive:true}); await fs.writeFile('.cache/bundle-meta.json',JSON.stringify(result.metafile)); });
@@ -54,13 +56,12 @@ console.log('Building Markdown and highlighting…');
 execFileSync('.tools/mdbook',['build'],{stdio:'inherit'});
 const examples = JSON.parse(await fs.readFile(`${assets}/examples.json`,'utf8'));
 const fonts = await Promise.all(compilerFontFiles.map(file => fs.readFile(file)));
-const compile = await createEngine({compilerWasm,rendererWasm,fonts,files});
 const unique = [...new Map(examples.map(e=>[e.id,e])).values()];
-console.log(`Rendering ${unique.length} examples in two themes and two fonts with the actual WASM engine…`);
-for (const example of unique) for (const theme of ['dark','light']) for (const font of ['noto','dejavu']) {
-  try { await fs.writeFile(`${assets}/previews/${example.id}-${theme}-${font}.svg`,await compile(example.source,theme,font)); }
-  catch (error) { throw new Error(`${example.chapter} (${theme}/${font}): ${error.message}`); }
-}
+const workers = previewConcurrency(unique.length);
+console.log(`Rendering ${unique.length} examples with ${workers} WASM workers…`);
+const previewStart = performance.now();
+await renderPreviews({ examples: unique, engine: { compilerWasm, rendererWasm, fonts, files }, outputDirectory: `${assets}/previews`, workers });
+console.log(`Rendered ${unique.length} previews in ${((performance.now() - previewStart) / 1000).toFixed(2)}s.`);
 await fs.cp(assets,'book/assets',{recursive:true});
 await fs.copyFile('theme/docs.css','book/docs.css');
 await fs.writeFile('book/.nojekyll','');
@@ -74,8 +75,8 @@ async function fixNavigation(dir) {
     else if(entry.name.endsWith('.html')) {
       const prefix=path.relative(path.dirname(file),'book').split(path.sep).join('/');
       let html=await fs.readFile(file,'utf8');
-      html=html.replace(/(<nav aria-label="Documentation">)([\s\S]*?)(<\/nav>)/,(_,start,nav,end)=>start+nav.replace(/href="(?!https?:|#)([^"]+)"/g,(_,href)=>`href="${prefix ? prefix+'/' : ''}${href}"`)+end);
-      await fs.writeFile(file,html);
+      html=html.replace(/(<nav aria-label="Documentation">)([\s\S]*?)(<\/nav>)/,(_,start,nav,end)=>start+nav.replace(/href="(?!https?:|#|\.\.\/)([^"]+)"/g,(_,href)=>`href="${prefix ? prefix+'/' : ''}${href}"`)+end);
+      await fs.writeFile(file,configureLinks(html));
     }
   }
 }

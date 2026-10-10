@@ -1,5 +1,6 @@
 import { validateWidgets, widgetDefaults, exampleSource } from './widgets.mjs';
 import { initializeVersionSelector } from './versions.mjs';
+import { initializeSidebar } from './sidebar.mjs';
 const root = new URL(document.body.dataset.root || './', location.href);
 const themeSwitch = document.querySelector('#theme');
 const fontSelect = document.querySelector('#code-font');
@@ -12,7 +13,7 @@ const cache = new Map();
 let highlighter;
 const theme = () => document.documentElement.dataset.theme;
 const font = () => fontSelect.value;
-const key = state => JSON.stringify([state.source, theme(), font()]);
+const key = state => state.source;
 
 function status(state, text, error = false) {
   state.status.textContent = text;
@@ -26,6 +27,12 @@ function showSvg(state, svg) {
   img.src = state.blob;
   state.card.dataset.live = 'true';
   status(state, 'Rendered on your device');
+}
+function showDefault(state) {
+  state.card.removeAttribute('data-live');
+  state.card.querySelector('.live-preview')?.remove();
+  if (state.blob) { URL.revokeObjectURL(state.blob); state.blob = undefined; }
+  status(state, 'Pre-rendered default');
 }
 function startNext() {
   if (active || !queue.length) return;
@@ -52,20 +59,21 @@ function startNext() {
     worker.onerror = () => failWorker('The compiler could not start. Check your connection and use Run again.');
   }
   timeout = setTimeout(() => failWorker('Compilation timed out. Shorten the example and run again.'), 45000);
-  worker.postMessage({ id: job.id, source: job.state.source, theme: theme(), font: font() });
+  worker.postMessage({ id: job.id, source: job.state.source });
 }
 function failWorker(message) {
   clearTimeout(timeout);
   worker?.terminate(); worker = undefined;
-  if (active) status(active.state, message, true);
-  for (const job of queue) status(job.state, 'Compiler stopped. Use Run to retry.', true);
+  if (active && active.key === key(active.state)) status(active.state, message, true);
+  for (const job of queue) if (job.key === key(job.state)) status(job.state, 'Compiler stopped. Use Run to retry.', true);
   active = null; queue = [];
 }
 function schedule(state) {
+  queue = queue.filter(job => job.state !== state);
+  if (state.source === state.defaultSource) { showDefault(state); return; }
   if (state.source.length > 30000) { status(state, 'Keep examples under 30,000 characters.', true); return; }
   const currentKey = key(state);
   if (cache.has(currentKey)) { showSvg(state, cache.get(currentKey)); return; }
-  queue = queue.filter(job => job.state !== state);
   if (active?.state === state && active.key === currentKey) return;
   queue.push({ id: ++counter, state, key: currentKey });
   status(state, 'Queued…'); startNext();
@@ -73,7 +81,11 @@ function schedule(state) {
 function updateLinks() {
   for (const a of document.querySelectorAll('a[href]')) {
     const url = new URL(a.href);
-    if (url.origin !== location.origin || !/\.html$|\/$/.test(url.pathname)) continue;
+    if (url.origin !== location.origin) continue;
+    a.removeAttribute('target');
+    a.querySelector('.external-link-icon')?.remove();
+    if (a.title === 'Opens in a new tab') a.removeAttribute('title');
+    if (!/\.html$|\/$/.test(url.pathname)) continue;
     if (a.closest('.chapter')) {
       const current = url.pathname.replace(/\/index\.html$/, '/') === location.pathname.replace(/\/index\.html$/, '/');
       a.classList.toggle('active', current);
@@ -92,13 +104,6 @@ function updatePreferences() {
   url.searchParams.set('theme', theme()); url.searchParams.set('font', font());
   history.replaceState(null, '', url);
   updateLinks();
-  for (const state of states.values()) {
-    // Static fallbacks have both font variants; no WASM download for reading.
-    for (const img of state.card.querySelectorAll('.static-preview')) {
-      img.src = new URL(`assets/previews/${state.card.dataset.example}-${img.dataset.theme}-${font()}.svg`, root);
-    }
-    if (state.enabled) schedule(state);
-  }
 }
 themeSwitch.addEventListener('click', () => {
   document.documentElement.dataset.theme = theme() === 'dark' ? 'light' : 'dark';
@@ -116,28 +121,34 @@ document.addEventListener('keydown', event => {
   }
 });
 const menu = document.querySelector('#menu-toggle');
-menu.addEventListener('click', () => { const open = menu.getAttribute('aria-expanded') !== 'true'; menu.setAttribute('aria-expanded', open); document.querySelector('#sidebar').classList.toggle('open', open); });
+menu.addEventListener('click', () => { const open = menu.getAttribute('aria-expanded') !== 'true'; menu.setAttribute('aria-expanded', open); document.querySelector('#sidebar').classList.toggle('open', open); if (open) sidebarNavigation.revealCurrent(); });
 
 for (const card of cards) {
   const textarea = card.querySelector('textarea');
   const widgets = validateWidgets(JSON.parse(card.dataset.widgets || '[]'));
-  const state = { card, widgets, values: widgetDefaults(widgets), source: exampleSource(textarea.value, widgets), original: textarea.value, status: card.querySelector('.example-status'), enabled: false };
+  const source = exampleSource(textarea.value, widgets);
+  const state = { card, widgets, values: widgetDefaults(widgets), source, defaultSource: source, original: textarea.value, highlighted: textarea.value, status: card.querySelector('.example-status') };
   states.set(card, state);
-  card.querySelector('details').addEventListener('toggle', event => {
-    if (event.target.open && !state.enabled) { state.enabled = true; schedule(state); }
-  });
   let debounce;
   async function updateHighlight(source) {
+    if (source === state.highlighted) return;
     try {
       highlighter ||= import('./highlight.mjs');
       const html = await (await highlighter).highlight(source);
-      if (textarea.value === source) card.querySelector('.highlighted').innerHTML = html; // Shiki escapes source text.
+      if (textarea.value === source) {
+        card.querySelector('.highlighted').innerHTML = html; // Shiki escapes source text.
+        state.highlighted = source;
+      }
     } catch { status(state, 'Highlighting unavailable; plain source remains editable.', true); }
   }
   function updateExample() {
-    state.enabled = true;
     state.source = exampleSource(textarea.value, widgets, state.values);
     clearTimeout(debounce);
+    if (state.source === state.defaultSource) {
+      updateHighlight(textarea.value);
+      schedule(state);
+      return;
+    }
     status(state, 'Waiting for changes…');
     debounce = setTimeout(() => {
       updateHighlight(textarea.value);
@@ -210,3 +221,4 @@ search.addEventListener('input', async () => {
 });
 document.addEventListener('keydown', e => { if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) { e.preventDefault(); if (matchMedia('(max-width:720px)').matches && menu.getAttribute('aria-expanded') !== 'true') menu.click(); search.focus(); } if (e.key === 'Escape') { search.value = ''; results.hidden = true; if (menu.getAttribute('aria-expanded') === 'true') menu.click(); } });
 updatePreferences();
+const sidebarNavigation = initializeSidebar(document.querySelector('#sidebar'));
