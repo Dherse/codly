@@ -19,7 +19,7 @@ on:
 permissions:
   contents: read
 env:
-  DOCS_REMOTE: https://github.com/Dherse/codly.github.io.git
+  DOCS_REMOTE: https://github.com/Dherse/codly.git
   DOCS_BRANCH: gh-pages
 concurrency:
   group: codly-docs-pages
