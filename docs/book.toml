@@ -1,0 +1,26 @@
+[book]
+title = "Codly"
+authors = ["Sébastien d'Herbais de Thun"]
+language = "en"
+src = "src"
+
+[build]
+build-dir = "book"
+
+[preprocessor.codly]
+command = "node scripts/preprocessor.mjs"
+
+[output.html]
+theme = "theme"
+default-theme = "navy"
+preferred-dark-theme = "navy"
+no-section-label = true
+additional-css = ["theme/docs.css"]
+additional-js = []
+hash-files = false
+
+[output.html.search]
+enable = false
+
+[output.html.print]
+enable = false

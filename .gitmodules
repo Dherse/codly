@@ -1,0 +1,20 @@
+[submodule "docs/vendor/elembic"]
+	path = docs/vendor/elembic
+	shallow = true
+	url = https://github.com/PgBiel/elembic.git
+[submodule "docs/vendor/typst-assets"]
+	path = docs/vendor/typst-assets
+	shallow = true
+	url = https://github.com/typst/typst-assets.git
+[submodule "docs/vendor/noto-sans-mono"]
+	path = docs/vendor/noto-sans-mono
+	shallow = true
+	url = https://github.com/notofonts/NotoSansMono.git
+[submodule "docs/vendor/source-sans"]
+	path = docs/vendor/source-sans
+	shallow = true
+	url = https://github.com/adobe-fonts/source-sans.git
+[submodule "docs/vendor/font-awesome"]
+	path = docs/vendor/font-awesome
+	shallow = true
+	url = https://github.com/FortAwesome/Font-Awesome.git

@@ -1,9 +1,7 @@
-#import "../../codly.typ": *
+#import "../../codly.typ" as codly
 
-#set page(width: 300pt, height: 300pt)
-#show: codly-init.with()
-#codly(
-  enabled: true,
+#set page(width: 240pt, height: auto, margin: 5pt)
+#codly.new(
   annotations: (
     (start: 1),
     (start: 3),
@@ -11,15 +9,15 @@
     (start: 7),
     (start: 9),
   ),
+  ```
+  a
+  b
+  c
+  d
+  e
+  f
+  g
+  h
+  i
+  ```,
 )
-```
-a
-b
-c
-d
-e
-f
-g
-h
-i
-```

@@ -1,0 +1,224 @@
+#import "../../codly.typ" as codly
+#import "@preview/elembic:1.1.1" as e
+
+#set page(width: 320pt, height: auto, margin: 8pt)
+
+#let cases = (
+  (name: "thesis", fill: (luma(240), none), foreground: black, keyword: auto),
+  (name: "dark", fill: rgb("1e1e1e"), foreground: rgb("d4d4d4"), keyword: rgb("c586c0")),
+  (name: "clean", fill: none, foreground: black, keyword: auto),
+  (name: "github-light", fill: white, foreground: rgb("1f2328"), keyword: rgb("cf222e")),
+  (
+    name: "solarized-light",
+    fill: rgb("fdf6e3"),
+    foreground: rgb("657b83"),
+    keyword: rgb("859900"),
+  ),
+  (name: "one-light", fill: rgb("fafafa"), foreground: rgb("383a42"), keyword: rgb("a626a4")),
+)
+#assert.eq(codly.themes.keys(), cases.map(it => it.name))
+
+#let text-of(body) = {
+  if body == none { return "" }
+  if body.has("text") { body.text } else if body.has("child") {
+    text-of(body.child)
+  } else if body.has("children") { body.children.map(text-of).join() } else { "" }
+}
+
+// Every preset must apply actual element settings and its syntax foreground.
+#for case in cases {
+  let config = codly.define-theme(base: case.name)
+  show: codly.theme(case.name)
+  e.get(get => {
+    assert.eq(get(codly.line).fill, case.fill)
+    assert.eq(get(codly.line).stroke, config.stroke)
+    assert.eq(get(codly.codly).radius, config.radius)
+    assert.eq(get(codly.header).fill, config.at("header-fill"))
+    assert.eq(get(codly.footer).fill, config.at("footer-fill"))
+    assert.eq(get(codly.number).fill, auto)
+    assert.eq(get(codly.bubble).fill, config.at("bubble-fill"))
+    assert.eq(get(codly.highlight).color, config.at("highlight-colors"))
+    assert.eq(config.at("highlight-colors").len(), 5)
+    []
+  })
+  show text: it => context {
+    if it.text in ("identifier", "return", "1") {
+      [#metadata((theme: case.name, token: it.text, color: text.fill))<theme-token>#it]
+    } else { it }
+  }
+  show box: it => {
+    if text-of(it.body) == "py" {
+      let expected = if case.name == "thesis" { rgb("283593").lighten(80%) } else if (
+        case.name == "clean"
+      ) { none } else { config.at("header-fill") }
+      assert.eq(it.fill, expected)
+    }
+    it
+  }
+  text(weight: "bold", case.name)
+  codly.new(
+    raw("return identifier\n# comment\nvalue = \"hello\" + 42", block: true, lang: "py"),
+    file: "example.py",
+    header: [Header],
+    footer: [Footer],
+    callouts: ((line: 3, pointer: 8, body: [Bubble]),),
+  )
+}
+
+// Custom themes inherit one preset and merge element fields independently.
+#let custom = codly.define-theme(
+  base: "dark",
+  accent: orange,
+  fill: (rgb("222233"), rgb("333344")),
+  radius: 6pt,
+  number: (text: (fill: yellow)),
+  header: (fill: rgb("444455"), align: left),
+  file: (radius: 4pt),
+)
+#let derived = codly.define-theme(base: custom, header: (inset: 4pt))
+#assert.eq(derived.header, (fill: rgb("444455"), align: left, inset: 4pt))
+#assert.eq(derived.file.radius, 4pt)
+#assert.eq(derived.file.stroke, 0.5pt + rgb("2d2d2d"))
+
+#{
+  show: codly.theme(derived)
+  e.get(get => {
+    assert.eq(get(codly.line).fill, custom.fill)
+    assert.eq(get(codly.highlight).color.first(), orange)
+    assert.eq(get(codly.header).inset, 4pt)
+    assert.eq(get(codly.file).radius, 4pt)
+    []
+  })
+  show text: it => context {
+    if it.text == "1" { [#metadata(text.fill)<custom-number-color>#it] } else { it }
+  }
+  codly.new(raw("return identifier", block: true, lang: "py"), header: [Custom])
+}
+
+// Scalar paints are valid reusable palettes. Accent derivation replaces an
+// inherited scalar; an explicit paint supplied with the accent takes priority.
+#let scalar = codly.define-theme(base: "dark", highlight-colors: red)
+#let scalar-derived = codly.define-theme(base: scalar, accent: orange)
+#assert.eq(scalar.at("highlight-colors"), red)
+#assert.eq(scalar-derived.at("highlight-colors"), orange)
+#assert.eq(
+  codly.define-theme(base: scalar, accent: orange, highlight-colors: blue).at("highlight-colors"),
+  blue,
+)
+#let palette-derived = codly.define-theme(base: "dark", highlight-colors: (red, blue))
+#assert.eq(codly.define-theme(base: palette-derived, accent: orange).at("highlight-colors"), (
+  orange,
+  blue,
+))
+#{
+  show: codly.theme(scalar-derived)
+  show: codly.highlight-set_(fill: color => {
+    assert.eq(color, orange)
+    color
+  })
+  codly.new(raw("scalar theme", block: true), highlights: ((line: 1),))
+}
+
+// Later scoped set rules, explicit element fields, and raw themes still win.
+#{
+  show: codly.theme("dark", fill: red, header: (fill: blue))
+  show: codly.line-set_(fill: green)
+  e.get(get => {
+    assert.eq(get(codly.line).fill, green)
+    assert.eq(get(codly.header).fill, blue)
+    []
+  })
+  show grid: it => {
+    let header = it.children.find(child => child.func() == grid.header)
+    assert.eq(header.children.first().fill, orange)
+    it
+  }
+  show text: it => context {
+    if it.text.contains("return") {
+      [#metadata(text.fill)<explicit-syntax-color>#it]
+    } else { it }
+  }
+  codly.new(
+    raw("return identifier", block: true, lang: "py", theme: none),
+    header: codly.header([Explicit], fill: orange),
+  )
+}
+
+// Generated bytes carry their own origin through aliases, sublanguages, and
+// the rainbow classification pass. The loader also handles source strings.
+#{
+  show: codly.theme("dark")
+  codly.new(
+    raw("return identifier", block: true, lang: "custom-python"),
+    aliases: ("custom-python": "py"),
+  )
+  codly.new(
+    raw("return identifier\nreturn another", block: true, lang: "py"),
+    sublangs: ((start: 2, end: 2, lang: "py"),),
+    rainbow: true,
+  )
+  codly.new("return (identifier)", lang: "py", rainbow: true)
+  // Ordinary raw and inline text outside Codly are unaffected.
+  show raw.where(block: false): it => {
+    assert.eq(it.theme, auto)
+    it
+  }
+  raw("inline")
+}
+
+// A nested thesis theme restores the standard style and does not leak out.
+#{
+  show: codly.theme("dark")
+  show text: it => context {
+    if it.text in ("reset", "outer") {
+      [#metadata((it.text, text.fill))<nested-theme-color>#it]
+    } else { it }
+  }
+  {
+    show: codly.theme()
+    e.get(get => {
+      assert.eq(get(codly.line).fill, (luma(240), none))
+      assert.eq(get(codly.line).stroke, 1pt + luma(240))
+      []
+    })
+    codly.new(raw("reset", block: true))
+  }
+  e.get(get => {
+    assert.eq(get(codly.line).fill, rgb("1e1e1e"))
+    []
+  })
+  codly.new(raw("outer", block: true))
+}
+#context {
+  assert.eq(text.fill, black)
+  assert.eq(raw.theme, auto)
+}
+#e.get(get => {
+  assert.eq(get(codly.line).fill, (luma(240), none))
+  []
+})
+
+#context {
+  assert.eq(query(<custom-number-color>).map(it => it.value), (yellow,))
+  assert.eq(query(<explicit-syntax-color>).map(it => it.value), (rgb("d4d4d4"),))
+  assert.eq(query(<nested-theme-color>).map(it => it.value), (
+    ("reset", black),
+    ("outer", rgb("d4d4d4")),
+  ))
+  let tokens = query(<theme-token>).map(it => it.value)
+  for case in cases {
+    let names = tokens.filter(it => it.theme == case.name and it.token == "identifier")
+    assert(names.len() > 0)
+    assert(names.all(it => it.color == case.foreground))
+    let numbers = tokens.filter(it => it.theme == case.name and it.token == "1")
+    let config = codly.define-theme(base: case.name)
+    let muted = if config.muted == auto { case.foreground } else { config.muted }
+    assert(numbers.len() > 0)
+    assert(numbers.all(it => it.color == muted))
+    if case.keyword != auto {
+      let keywords = tokens.filter(it => it.theme == case.name and it.token == "return")
+      assert(keywords.len() > 0)
+      assert(keywords.all(it => it.color == case.keyword))
+    }
+  }
+}

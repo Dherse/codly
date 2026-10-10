@@ -22,10 +22,9 @@ fi
 TARGET="$(resolve-target "${1:?Missing target path, @local or @preview}")"
 echo "Install dir: $TARGET"
 
-# ignore rules
 readarray -t ignores < <(grep -v '^#' .typstignore | grep '[^[:blank:]]')
 
-# recursively print all files that are not excluded via .typstignore
+# List files not excluded by .typstignore.
 function enumerate {
 	local root="$1"
 	if [[ -f "$root" ]]; then
@@ -36,7 +35,6 @@ function enumerate {
       -mindepth 1 -maxdepth 1 \
       -not -name .git \
       -not -name .typstignore)
-		# declare -p files >&2
 
 		local f
 		for f in "${files[@]}"; do
@@ -48,11 +46,9 @@ function enumerate {
 				if [[ "$ignore" =~ ^! ]]; then
 					ignore="${ignore:1}"
 					if [[ "$f" == ./$ignore ]]; then
-						# echo "\"$f\" matched \"!$ignore\"" >&2
 						include=1
 					fi
 				elif [[ "$f" == ./$ignore ]]; then
-					# echo "\"$f\" matched \"$ignore\"" >&2
 					include=0
 				fi
 			done
@@ -63,9 +59,7 @@ function enumerate {
 	fi
 }
 
-# List of all files that get packaged
 readarray -t files < <(enumerate ".")
-# declare -p files >&2
 
 TMP="$(mktemp -d)"
 
@@ -74,6 +68,8 @@ for f in "${files[@]}"; do
   cp -r "$ROOT/$f" "$TMP/$f"
 done
 
+python3 "$ROOT/scripts/package-readme.py" "$TMP"
+
 TARGET="${TARGET:?}/${PKG_PREFIX:?}/${VERSION:?}"
 echo "Packaged to: $TARGET"
 if rm -r "${TARGET:?}" 2>/dev/null; then
@@ -81,6 +77,6 @@ if rm -r "${TARGET:?}" 2>/dev/null; then
 fi
 mkdir -p "$TARGET"
 
-# include hidden files by setting dotglob
+# Include hidden files.
 shopt -s dotglob
 mv "$TMP"/* "$TARGET"

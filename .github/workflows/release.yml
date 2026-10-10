@@ -4,16 +4,17 @@ on:
     tags: [ v* ]
 
 env:
-  # the repository to which to push the release version
-  # usually a fork of typst/packages (https://github.com/typst/packages/)
-  # that you have push privileges to
+  # Writable fork of typst/packages.
   REGISTRY_REPO: Dherse/typst-packages
-  # the path within that repo where the "<name>/<version>" directory should be put
-  # for the Typst package registry, keep this as is
+  # Packages are published under <prefix>/<name>/<version>.
   PATH_PREFIX: packages/preview
 
 jobs:
+  validate:
+    uses: ./.github/workflows/test.yml
+
   release:
+    needs: validate
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,7 +34,7 @@ jobs:
       - name: Setup typst
         uses: typst-community/setup-typst@v4
         with:
-          typst-version: latest
+          typst-version: '0.15.1'
 
       - name: Determine and check package metadata
         run: |
@@ -48,7 +49,7 @@ jobs:
 
       - name: Build package
         run: |
-          just doc
+          just package-check
           just package out
 
       - name: Checkout package registry
@@ -75,3 +76,11 @@ jobs:
           git add .
           git commit -m "${PKG_NAME}:${PKG_VERSION}"
           git push --set-upstream origin "${PKG_NAME}-${PKG_VERSION}"
+
+  documentation:
+    needs: validate
+    uses: ./.github/workflows/pages.yml
+    with:
+      release_ref: ${{ github.ref_name }}
+    secrets:
+      DOCS_DEPLOY_TOKEN: ${{ secrets.DOCS_DEPLOY_TOKEN }}

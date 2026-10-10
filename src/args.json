@@ -74,22 +74,12 @@
     },
     "offset": {
         "title": "Offset",
-        "description": "The offset to apply to line numbers.\n\n This is purely cosmetic, only impacting the shown line numbers in the final output.",
+        "description": "The offset to apply to displayed line numbers. A number is added to the source line numbers; the default 0 preserves them. `auto` shifts the first selected source line to 1, retaining gaps between disjoint ranges. A label uses the referenced code block's last displayed number as the offset, continuing numbering across blocks. Labels can identify a code block or its containing figure; an empty referenced block contributes 0. Source-indexed ranges, callouts, and gutter values are unchanged. To combine a label's offset with an additional numeric shift, use `codly.info(label).last-number` in context.",
         "default": "0",
-        "ty": [ "int" ],
+        "ty": [ "int", "label", "type(auto)" ],
         "function": true,
         "reset": true,
-        "example": "*No offset:*\n```typ\nHello, world!\n```\n\n*Offset by 5:*\n#codly(offset: 5)\n```typ\nHello, world!\n```"
-    },
-    "offset-from": {
-        "title": "Offset from other code block",
-        "description": "The offset to apply to line numbers, relative to another code block. This is useful when you want to match line numbers between two code blocks. This code block will continue the line numbers from the other code block, with the specified offset.\n\n This is done by giving a `label` to the parent raw block, and then setting it as the `offset-from` on the second code block.\n#info[Note that the offset obtained from the other code block is added to the offset specified in the `offset` argument.]\n#warning[*Important*: this feature works with any `offset` set on the other code block, including `offset-from` but may give unexpected results if both code blocks have `offset-from` set to each other or if the preceeding code block has #link(<arg-range>)[`range`] or #link(<arg-skips>)[`skips`] set.]",
-        "default": "none",
-        "ty": [ "type(none)", "label" ],
-        "experimental": true,
-        "function": true,
-        "reset": true,
-        "example": "```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\n``` <fib-fn>\n\n*Will continue at line 5*\n#codly(offset-from: <fib-fn>)\n```py\nfib(25)\n```"
+        "example": "#codly.new(raw(\"first\\nsecond\", block: true))<parent>\n#codly.new(raw(\"next\", block: true), offset: <parent>)\n#codly.new(raw(\"a\\nb\\nc\\nd\", block: true), range: (3, 4), offset: auto)"
     },
     "range": {
         "title": "Range",
@@ -165,21 +155,45 @@
             }
         ]
     },
+    "leading": {
+        "title": "Leading",
+        "description": "Vertical padding for each code row. When set, this overrides the vertical component of the line inset while preserving its horizontal component. It increases or decreases the apparent spacing between code lines and automatically keeps the language badge inside the block border.",
+        "default": "none",
+        "ty": [ "type(none)", "length" ],
+        "function": true,
+        "example": "*Tighter rows:*\n#codly(leading: 0.2em)\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```\n\n*Looser rows:*\n#codly(leading: 0.6em)\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```"
+    },
+    "gutter": {
+        "title": "Grid gutter",
+        "description": "Default spacing between rows and columns of Codly's primary grid. Use `column-gutter` or `row-gutter` to override one direction.",
+        "default": "none",
+        "ty": [ "type(none)", "length" ],
+        "function": true,
+        "example": "#codly(gutter: 0.2em)\n```py\nprint('Hello, world!')\n```"
+    },
+    "column-gutter": {
+        "title": "Column gutter",
+        "description": "Horizontal spacing between columns of Codly's primary grid, such as the line-number and code columns. Overrides `gutter` horizontally when set.",
+        "default": "none",
+        "ty": [ "type(none)", "length" ],
+        "function": true,
+        "example": "#codly(column-gutter: 0.4em)\n```py\nprint('Hello, world!')\n```"
+    },
+    "row-gutter": {
+        "title": "Row gutter",
+        "description": "Vertical spacing between rows of Codly's primary grid. Overrides `gutter` vertically when set.",
+        "default": "none",
+        "ty": [ "type(none)", "length" ],
+        "function": true,
+        "example": "#codly(row-gutter: 0.2em)\n```py\nprint('Hello, world!')\n```"
+    },
     "fill": {
         "title": "Fill",
-        "description": "The fill of the code block when not zebra-striped.",
-        "default": "none",
-        "ty": [ "type(none)", "color", "gradient", "tiling" ],
+        "description": "The background fill of displayed body rows. Header and footer backgrounds are set by the `fill` field on `codly.header` and `codly.footer` independently. A paint or `none` applies to every body row. An array cycles through its entries, and a function receives a row dictionary with `index` (zero-indexed displayed row), `kind` (`code`, `skip`, or `callout`), `source-line` (or `none` for generated rows), and `number` (the displayed line number, or `none`). The default palette is `(luma(240), none)`; `auto` restores that palette. Header rows count toward `index` but are not passed to the callback. Whole-line highlights override this fill, and a number column with `fill: auto` follows the resolved row fill.",
+        "default": "(luma(240), none)",
+        "ty": [ "type(auto)", "type(none)", "color", "gradient", "tiling", "array", "function" ],
         "function": true,
-        "example": "*Default fill:*\n```py\nprint('Hello, world!')\nprint('Hello, world!')\n```\n*Overriden fill:*\n#codly(fill: gradient.linear(..color.map.flare))\n```py\nprint('Hello, world!')\nprint('Hello, world!')\n```\n*No fill:*\n#codly(fill: none)\n```py\nprint('Hello, world!')\nprint('Hello, world!')\n```"
-    },
-    "zebra-fill": {
-        "title": "Zebra fill",
-        "description": "Background color of the code lines when zebra-stripped. If set to `none`, no zebra-striping is applied.",
-        "default": "luma(240)",
-        "ty": [ "type(none)", "color", "gradient", "tiling" ],
-        "function": true,
-        "example": "*Default zebra:*\n```py\nprint('Hello, world!')\nprint('Hello, world!')\n```\n*No zebra:*\n#codly(zebra-fill: none)\n```py\nprint('Hello, world!')\nprint('Hello, world!')\n```\n*Overriden zebra:*\n#codly(zebra-fill: gradient.linear(..color.map.flare))\n```py\nprint('Hello, world!')\n```"
+        "example": "*Cyclic palette:*\n#show: codly.line-set_(fill: (luma(240), none, luma(248)))\n```py\nprint('Hello, world!')\nprint('Hello, world!')\nprint('Again!')\n```\n\n*Dynamic fill:*\n#show: codly.line-set_(fill: row => if row.kind == \"code\" and row.number % 5 == 0 { yellow.lighten(80%) } else { none })"
     },
     "stroke": {
         "title": "Stroke",
@@ -209,7 +223,7 @@
         "title": "Language box radius",
         "description": "The radius of the border of the language block.",
         "default": "0.32em",
-        "ty": [ "length" ],
+        "ty": [ "length", "dictionary" ],
         "function": true,
         "example": "#codly(lang-radius: 10pt)\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```"
     },
@@ -278,9 +292,18 @@
         "example": "*Line number outside of the block:*\n#codly(number-placement: \"outside\")\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```\n*Line number inside of the block:*\n#codly(number-placement: \"inside\")\n```py\nprint('Hello, world!')\nprint('Goodbye, world!')\n```",
         "upcoming": false
     },
+    "unnumbered-lines": {
+        "title": "Unnumbered lines",
+        "description": "Source lines to omit from line numbering. Each entry can be a line number or `(line, fill)`, where `fill` replaces the empty number cell. Line numbers are one-indexed. An unnumbered line after displayed line 5 can be referenced as `@block:l5p1`; consecutive unnumbered lines increase the final number.",
+        "default": "()",
+        "ty": [ "array" ],
+        "function": true,
+        "reset": true,
+        "example": "#codly(unnumbered: ((1, emoji.face.happy), 4))\n```asm\nstart:\n  mov w0, 0\n  ret\ndone:\n```"
+    },
     "smart-indent": {
         "title": "Smart indentation",
-        "description": "Whether to use smart indentation, which will check for indentation on a line and use a bigger left side inset instead of spaces. This allows for linebreaks to continue at the same level of indentation. This is on by default, but disabling it can improve performance.",
+        "description": "Whether to continue wrapped lines at their original indentation. Leading spaces are read from the normalized raw line text, independently of syntax styling. Wrapping highlights also retain the indentation remaining inside their span. This is on by default, but disabling it can improve performance.",
         "default": "true",
         "ty": [ "bool" ],
         "function": false,
@@ -313,17 +336,17 @@
     },
     "skip-line": {
         "title": "Skip line",
-        "description": "Sets the content with which the line code is filled when a skip is encountered.",
+        "description": "Sets the content displayed for a skip. An array supplies one value per explicit skip in display order, ignoring duplicate skip records. Further skips reuse the final value. Smart skips use the final value without consuming an entry. An empty array uses the default; `none` entries display nothing.",
         "default": "align(center)[ ... ]",
-        "ty": [ "content", "type(none)" ],
+        "ty": [ "content", "type(none)", "array" ],
         "function": true,
         "example": "#codly(\n  skips: ((4, 32), ),\n  skip-line: align(center, emoji.face.shock)\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\nfib(25)\n```"
     },
     "skip-number": {
         "title": "Skip number",
-        "description": "Sets the content with which the line number columns is filled when a skip is encountered. If line numbers are disabled, this has no effect.",
+        "description": "Sets the number column content for a skip. Like @arg-skip-line, this accepts a single value or an array indexed by explicit skips. Further skips and smart skips reuse the final value; an empty array uses the default. `none` entries display nothing. If line numbers are disabled, this has no effect.",
         "default": "[ ... ]",
-        "ty": [ "content", "type(none)" ],
+        "ty": [ "content", "type(none)", "array" ],
         "function": true,
         "example": "#codly(\n  skips: ((4, 32), ),\n  skip-number: align(center, emoji.face.shock)\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  return fib(n - 1) + fib(n - 2)\nfib(25)\n```"
     },
@@ -336,6 +359,14 @@
         "reset": true,
         "experimental": true,
         "example": "#codly(\n  annotations: (\n    (\n      start: 2, end: 5,\n      content: block(\n        width: 2em,\n        rotate(-90deg, reflow: true, \n          align(center)[Function body])\n      )\n    ),\n  ),\n)\n```py\ndef fib(n):\n  if n <= 1:\n    return n\n  else:\n    return fib(n - 1) + fib(n - 2)\nfib(25)\n```"
+    },
+    "callouts": {
+        "title": "Callout rows",
+        "description": "Content rows attached to selected source lines. Each entry has `line` (one-indexed source line) and `body`; `placement` selects `\"below\"` (default) or `\"above\"`. Optional `align`, `breakable`, `fill`, `inset`, and `stroke` style the grid cell. Set `pointer` to a character position in the attached source line (one-based, like highlights; 0 is line start) to render a pointed bubble. The arrow follows the rendered character, including native source wrapping, and faces the source line. `pointer-align` is `\"center\"` by default, or `\"start\"` / `\"end\"`; the bubble shifts to fit the available row. Consecutive bubbles on the same side with matching cell styles share a row when their anchored outlines fit; collisions start another lane in declaration order. Plain rows or different cell styles start a separate grid row. `bubble-gap` (default `0.5em`) sets the minimum separation: a length applies to both axes, or use `(x: 12pt, y: 4pt)` independently (omitted axes default to `0.5em`). The larger gap wins between neighbors; vertical gaps apply only to adjacent lanes. `bubble-align` aligns the body text and defaults to `center`, independently of the grid cell alignment. Independent bubble fields are `bubble-fill`, `bubble-stroke`, `bubble-inset`, `bubble-outset`, `bubble-radius`, `bubble-width`, and `pointer-size`. The latter defaults the arrow height and half-base width; `pointer-height` and `pointer-width` independently override its height and full base width. `pointer-offset` shifts the tip horizontally from the source character (positive right, negative left, default `0pt`), clamped to the bubble; it does not move the body. The arrow and body share a single outline and paint, including gradients and tilings. Bubble text wraps natively at the available width. A grouped set of bubbles stays together on one page; their outsets and strokes are reserved in the row. Styling defaults live on `codly.bubble`: use `bubble-set_(fill: ..., inset: ..., align: ...)`, with unprefixed bubble fields and the same `pointer-*` fields. Precedence is entry fields, then explicit `codly.callout` settings, then `codly.bubble` settings. Unspecified or `auto` callout styling inherits; explicit `none` still disables a fill or stroke. Generated bubbles support `bubble-show_`. Placement and source pointer remain callout properties; `pointer: none` disables an inherited bubble. Callouts span the number and code columns plus any inactive annotation column; an active brace retains the last column and spans the callouts attached to its source lines.",
+        "default": "none",
+        "ty": [ "array", "type(none)" ],
+        "function": true,
+        "example": "#codly.new(\n  raw(\"if n <= 1:\\n  return n\", block: true, lang: \"py\"),\n  callouts: ((\n    line: 2,\n    pointer: 5,\n    body: [This branch handles the base case.],\n    bubble-fill: gradient.linear(aqua.lighten(70%), purple.lighten(80%)),\n    bubble-inset: 4pt,\n  ),),\n)"
     },
     "annotation-format": {
         "title": "Annotation formatter",
@@ -365,7 +396,7 @@
     },
     "highlights": {
         "title": "Highlights",
-        "description": "You can apply highlights to the code block using the `highlights` argument. It consists of a list of dictionaries, each with the following keys:\n- `line`: the line number to start highlighting\n- `start`: the character position to start highlighting, zero if omitted or `none`\n- `end`: the character position to end highlighting, the end of the line if omitted or `none`\n- `fill`: the fill of the highlight, defaults to the default color\n- `tag`: an optional tag to be displayed alongside the highlight.\n- `inset`: overrides the global @arg-highlight-inset.\n- `baseline`: overrides the baseline which is set by default to the `bottom` component of @arg-highlight-inset.\n- `clip`: overrides the global @arg-highlight-clip.\n- `outset`: overrides the global @arg-highlight-outset.\n- `radius`: overrides the global @arg-highlight-radius.\n- `label`: *if and only if* the code block is in a `figure`, sets the label by which the highlight can be referenced.\n\nAs with other code block settings, annotations are reset after each code block. #one-indexed #zero-indexed",
+        "description": "You can apply highlights to the code block using the `highlights` argument. It consists of a list of dictionaries, each with the following keys:\n- `line`: the line number to start highlighting\n- `start`: the character position to start highlighting, zero if omitted or `none`\n- `end`: the character position to end highlighting, the end of the line if omitted or `none`\n- `fill`: the fill of the highlight, defaults to the default color\n- `tag`: an optional tag to be displayed alongside the highlight.\n- `inset`: overrides the global @arg-highlight-inset.\n- `baseline`: overrides the highlight box baseline. The default is `0pt` (no shift). Typst 0.15 and newer also accept `auto` to use the content baseline.\n- `clip`: overrides the global @arg-highlight-clip.\n- `outset`: overrides the global @arg-highlight-outset.\n- `radius`: overrides the global @arg-highlight-radius.\n- `label`: *if and only if* the code block is in a `figure`, sets the label by which the highlight can be referenced.\n\nAs with other code block settings, annotations are reset after each code block. #one-indexed #zero-indexed",
         "default": "none",
         "ty": [ "array", "type(none)" ],
         "function": true,
@@ -450,7 +481,7 @@
     },
     "aliases": {
         "title": "Language name aliases",
-        "description": "Creates aliases between languages, allowing them to have separate `languages` but the same syntax highlighting. An example of that could be `cuda` and `c++` having the same highlighting but different icons.",
+        "description": "Creates aliases between languages, allowing them to have separate `languages` but the same syntax highlighting. An example of that could be `cuda` and `c++` having the same highlighting but different icons. Relative theme and syntax paths inherited through `set raw(...)` retain their origin. When passing these resources directly to an aliased `raw(...)`, use `path(...)` (Typst 0.15+) or `read(..., encoding: none)` instead of plain strings.",
         "default": "(:)",
         "ty": [ "dictionary" ],
         "function": false,

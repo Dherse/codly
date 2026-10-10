@@ -1,0 +1,83 @@
+name: Deploy documentation
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      release_ref:
+        description: 'Optional release tag to publish (for example v2.0.0)'
+        required: false
+        type: string
+  workflow_call:
+    inputs:
+      release_ref:
+        required: true
+        type: string
+    secrets:
+      DOCS_DEPLOY_TOKEN:
+        required: true
+permissions:
+  contents: read
+env:
+  DOCS_REMOTE: https://github.com/Dherse/codly.github.io.git
+  DOCS_BRANCH: gh-pages
+concurrency:
+  group: codly-docs-pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          submodules: recursive
+          persist-credentials: false
+      - name: Check publishing credentials
+        env:
+          DOCS_DEPLOY_TOKEN: ${{ secrets.DOCS_DEPLOY_TOKEN }}
+        run: |
+          if [[ -z "$DOCS_DEPLOY_TOKEN" ]]; then
+            echo "Set DOCS_DEPLOY_TOKEN with Contents write access to Dherse/codly.github.io." >&2
+            exit 1
+          fi
+      - name: Validate release input
+        if: inputs.release_ref != ''
+        env:
+          RELEASE_REF: ${{ inputs.release_ref }}
+        run: |
+          [[ "$RELEASE_REF" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          git rev-parse --verify "refs/tags/$RELEASE_REF"
+      - name: Install documentation tools
+        working-directory: docs
+        run: |
+          python3 scripts/bootstrap.py
+          export PATH="$PWD/.tools/node/bin:$PWD/.tools:$PATH"
+          npm ci
+      - name: Restore published versions
+        run: python3 docs/scripts/archive.py restore --remote "$DOCS_REMOTE" --branch "$DOCS_BRANCH"
+      - name: Build and test main documentation
+        working-directory: docs
+        run: |
+          export PATH="$PWD/.tools/node/bin:$PWD/.tools:$PATH"
+          node scripts/build.mjs
+          node --test tests/*.test.mjs
+          python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Build missing or requested release documentation
+        env:
+          RELEASE_REF: ${{ inputs.release_ref }}
+        run: python3 docs/scripts/releases.py --release-ref "$RELEASE_REF"
+      - name: Assemble versioned site
+        run: |
+          python3 docs/scripts/site.py \
+            --book docs/book --site docs/.site --version main \
+            --config docs/site.json --package typst.toml
+      - name: Publish to hosting repository
+        env:
+          DOCS_DEPLOY_TOKEN: ${{ secrets.DOCS_DEPLOY_TOKEN }}
+          GIT_ASKPASS: ${{ github.workspace }}/docs/scripts/git-askpass.py
+          GIT_TERMINAL_PROMPT: '0'
+        run: |
+          chmod +x "$GIT_ASKPASS"
+          python3 docs/scripts/archive.py publish --remote "$DOCS_REMOTE" --branch "$DOCS_BRANCH"

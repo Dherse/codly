@@ -1,0 +1,9 @@
+%YAML 1.2
+---
+name: Codly Alias Test
+file_extensions: [codly-alias-test]
+scope: source.codly-alias-test
+contexts:
+  main:
+    - match: '\bkeyword\b'
+      scope: keyword.control.custom

@@ -1,0 +1,8 @@
+.tools/
+node_modules/
+book/
+src/assets/
+.cache/
+*.log
+.site/
+__pycache__/

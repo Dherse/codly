@@ -1,8 +1,8 @@
-# Codly: simple yet beautiful and powerful code blocks
+# 🐟 Codly
 
 <p align="center">
-  <a href="https://github.com/Dherse/codly/blob/main/docs.pdf">
-    <img alt="Documentation" src="https://img.shields.io/website?down_message=offline&label=manual&up_color=007aff&up_message=online&url=https%3A%2F%2Fgithub.com%2FDherse%2Fcodly%2Fblob%2Fmain%2Fdocs.pdf" />
+  <a href="https://codly.dherse.dev">
+    <img alt="Documentation" src="https://img.shields.io/website?down_message=offline&label=manual&up_color=007aff&up_message=online&url=https%3A%2F%2Fcodly.dherse.dev" />
   </a>
   <a href="https://github.com/Dherse/codly/blob/main/LICENSE">
     <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-brightgreen">
@@ -10,230 +10,192 @@
   <img src="https://github.com/Dherse/codly/actions/workflows/test.yml/badge.svg" />
 </p>
 
-Codly superchargescode blocks for your Typst documents. It allows you to add annotations, skip lines, customize numberings, add language icons, and much more. Codly is even better with its companion package [`codly-languages`](https://typst.app/universe/package/codly-languages) which provides a wide range of language icons and colors to choose from.
+Code blocks for Typst with line numbers, references, annotations, themes, custom
+gutters, and syntax-aware diffs.
 
-A full set of documentation can be found [in the repo](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf).
+This branch prepares **v2.0.0** and requires **Typst 0.15.0 or newer**. Until v2 is
+published, import `"codly.typ"` from this checkout, or run `just install` and use
+`"@local/codly:2.0.0"`. The `@preview` imports below are for the upcoming release.
 
-![Example](./assets/demo.png)
+## Quickstart
+
+One show rule converts ordinary fenced blocks. Inline code stays untouched.
 
 ````typ
-#import "@preview/codly:1.3.1": *
-#import "@preview/codly-languages:0.1.1": *
-#show: codly-init.with()
+#import "@preview/codly:2.0.0" as codly
+#show raw.where(block: true): codly.new
 
-#codly(languages: codly-languages)
-```rust
-pub fn main() {
-    println!("Hello, world!");
+```rs
+pub fn greeting(name: &str) -> String {
+    format!("Hello, {name}!")
 }
 ```
 ````
 
-### Setup
+[![Automatic code-block conversion](examples/quickstart.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/quickstart.typ)
 
-To start using codly, you need to initialize codly using a show rule, this need only be done once per document:
+[Rendered example source](examples/quickstart.typ). The screenshot also applies
+the `github-light` theme and a filename badge.
 
-```typ
-#show: codly-init.with()
-```
-
-Then you *can* configure codly with your parameters:
+Use [codly-languages](https://typst.app/universe/package/codly-languages/) for
+language names and icons:
 
 ```typ
-#codly(
-  languages: (
-    rust: (name: "Rust", icon: "🦀", color: rgb("#CE412B")),
-  )
-)
+#import "@preview/codly:2.0.0" as codly
+#import "@preview/codly-languages:0.1.8": codly-languages
+#show: codly.lang-set_(languages: codly-languages)
+#show raw.where(block: true): codly.new
+#raw("print(42)", lang: "py", block: true)
 ```
 
----
-**Note**: Any parameter that you leave blank will use the previous values (or the default value if never set) similar to a `set` rule in regular typst. But the changes are always global unless you use the provided `codly.local` function. To get a full list of all settings, see the [documentation](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf).
+## Explicit blocks and scoped defaults
 
----
-
-Then you just need to add a code block and it will be automatically displayed correctly:
-
-````
-```rust
-pub fn main() {
-    println!("Hello, world!");
-}
-```
-````
-
-![Crab](./assets/crab.png)
-
-### Disabling & Enabling
-
-To locally disable codly, you can just do the following, you can then later re-enable it using the `codly` configuration function.
+Use `codly.new` for per-block settings, literal source strings, or caller-resolved
+file paths. No initialization rule is required for explicit blocks.
 
 ```typ
-#codly-disable()
+#import "@preview/codly:2.0.0" as codly
+#codly.new(raw("return value", lang: "py", block: true), file: "result.py")
+#codly.new("print(42)", lang: "py", file: "answer.py")
+// For a real source file: #codly.new(path("src/main.rs"))
 ```
 
-![codly-disable](./assets/codly-disable.png)
-
-Alternatively, you can use the `no-codly` function to achieve the same effect locally:
+Defaults use scoped show rules. Put the conversion rule in a content block to
+limit it to that block:
 
 ````typ
-#no-codly[
-  ```typ
-  I will be displayed using the normal raw blocks.
+#import "@preview/codly:2.0.0" as codly
+#[
+  #show: codly.theme("dark")
+  #show: codly.set_(padding: 4pt, radius: 5pt)
+  #show: codly.number-set_(numbering: "1.")
+  #show raw.where(block: true): codly.new
+  ```py
+  print("styled")
   ```
 ]
+// Outside that scope, code blocks retain native Typst formatting.
 ````
 
-### Smart indentation
-
-By default Codly ships with `smart-indent` enabled, this means that Codly will automatically detect the indentation of your code block and adjust the horizontal offset on line wrapping accordingly. This can be disabled using the `smart-indent` parameter.
+To leave selected blocks unstyled, replace the conversion rule with a conditional one:
 
 ```typ
-#codly(smart-indent: false)
+#import "@preview/codly:2.0.0" as codly
+#show raw.where(block: true): it => if it.lang == "plain" { it } else { codly.new(it) }
+#raw("native formatting", lang: "plain", block: true)
+#raw("print(42)", lang: "py", block: true)
 ```
 
-![smart-ident](./assets/smart-indent.png)
+## Themes
 
-### Referencing code blocks
-
-Codly offers a wide range of features for referencing code blocks, lines, highlights, and annotations. This is done using:
-- the line shorthand `@<label>:<line>`
-- the highlight or annotation label `@<highlight>`
-
-![line-ref](./assets/line-ref.png)
-
-![highlight-ref](./assets/highlight-ref.png)
-
-### Setting an offset
-
-If you wish to add an offset to your code block, but without selecting a subset of lines, you can use the `codly-offset` function:
+Choose `thesis` (the defaults), `dark`, `clean`, `github-light`,
+`solarized-light`, or `one-light`. Each preset includes a five-color highlight
+palette. Override theme settings with later component rules.
 
 ```typ
-// Sets a 5 line offset
-#codly-offset(5)
+#import "@preview/codly:2.0.0" as codly
+#show: codly.theme("github-light", accent: rgb("8250df"))
+#codly.new(raw("return value * 2", lang: "py", block: true))
 ```
 
-![codly-offset](./assets/codly-offset.png)
+[![The six built-in themes](examples/themes.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/themes.typ)
 
-### Setting an offset relative to another code block
+[Theme example](examples/themes.typ) · [Theme definitions](src/themes.typ)
 
-This is done by using the `offset-from` argument and by specifying a Typst `label` to the "parent" code block:
+## Highlights, annotations, and references
 
-````typ
-#codly(offset-from: <parent>)
-````
+Span highlights can carry tags and labels; braces annotate line ranges; callouts
+can follow source indentation or point to a character. References are native
+Typst references: use `@block:5` for a line and `@highlight` for a labeled span.
+Put labeled highlights inside a figure.
 
-![offset-from](./assets/offset-from.png)
+Highlight character positions are **one-based and inclusive**, counting leading
+indentation. On `            return operation()`, `operation()` is positions
+20–30. Omitted bounds select the corresponding line edge; whitespace runs stay
+whole when a boundary falls inside them.
 
-### Selecting a subset of lines
+[![Annotated retry loop with exact token highlights](examples/annotations.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/annotations.typ)
 
-If you wish to select a subset of lines, you can use the `codly-range` function. By setting the start to 1 and the end to `none` you can select all lines from the start to the end of the code block.
+[Annotation and reference example](examples/annotations.typ)
+
+## Syntax-aware diffs
+
+Set `lang: "diff,py"` (or another language) on a raw block. Codly highlights old
+and new source separately, strips patch markers from the code, and adds old/new
+number and change-marker gutters. Unified hunks and simple `-`/`+` fragments are
+supported. Diff colors and gutters are configurable; themes supply matching
+defaults.
 
 ```typ
-#codly-range(start: 5, end: 10)
+#import "@preview/codly:2.0.0" as codly
+#codly.new(raw("-return 1\n+return 2", lang: "diff,py", block: true))
 ```
 
-![codly-range](./assets/codly-range.png)
+Use `raw(...)`: Typst 0.15 does not parse a comma-containing fenced language tag
+as `diff,py`.
 
-### Adding a "skip"
+[![HTTP client diff with timeout and bounded retries](examples/diff.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/diff.typ)
 
-You can add a "fake" skip between lines using the `skips` parameters:
+[Diff example](examples/diff.typ)
 
-```typ
-// Before the 5th line (indexing start at 0), insert a 32 line jump.
-#codly(skips: ((5, 32), ))
-```
-The code inside your block will be the same (except for the added line containing the … character), but the line numbers will be adjusted to reflect the skip. 
+## Custom gutters
 
-This can be customized using the `skip-line` and `skip-number` to customize what it looks like.
+Add columns with arrays or row callbacks, independent fills, widths, alignment,
+and typography. Array entries refer to original source lines, even in excerpts.
+Include `auto` in `gutters` to retain the ordinary number column; `gutters: ()`
+hides all gutters.
 
-### Adding highlights
+[![Coverage and review gutters](examples/gutters.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/gutters.typ)
 
-You can highlight part of lines using the `highlights` parameters:
+[Gutter example](examples/gutters.typ)
 
-````typ
-#codly(highlights: (
-  (line: 4, start: 2, end: none, fill: red),
-  (line: 5, start: 13, end: 19, fill: green, tag: "(a)"),
-  (line: 5, start: 26, fill: blue, tag: "(b)"),
-))
-```py
-def fib(n):
-  if n <= 1:
-    return n
-  else:
-    return fib(n - 1) + fib(n - 2)
-print(fib(25))
-```
-````
+## Fills and layout
 
-![highlights](./assets/highlights.png)
+`codly.line-set_(fill: ...)` accepts a paint, a cycling array of paints, or a
+function receiving the row. A row includes `index`, `kind`, `source-line`,
+`number`, and `text`. Generated rows may have no source line or text; guard those
+fields in callbacks. Header and footer styles are independent. `padding`
+controls block-edge space separately from row insets and leading.
 
-### Adding annotations
+[![Palette fills, callback fills, and independent bands](examples/presentation.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/presentation.typ)
 
-You can annotate a line/group of lines using the `annotations` parameters :
+[Fill and layout example](examples/presentation.typ)
 
-```typ
-// Add an annotation from the second line (0 indexing) to the 5th line included.
-#codly(
-  annotations: (
-    (
-      start: 2,
-      end: 4,
-      content: block(
-        width: 2em,
-        // Rotate the element to make it look nice
-        rotate(
-          -90deg,
-          align(center, box(width: 100pt)[Function body])
-        )
-      )
-    ), 
-  )
-)
-```
+## Wrapping and indentation
 
-![annotations](./assets/annotations.png)
+Smart indentation is enabled by default. Indentation guides, rainbow delimiters,
+and continuation markers are opt-in through `indent-guides`, `rainbow`, and
+`wrap-marker`. Wrapped rows retain their original source number.
 
-### Disabling line numbers
+[![Wrapped Rust with guides and rainbow delimiters](examples/wrapping.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/wrapping.typ)
 
-You can configure this with the `codly` function:
+[Wrapping example](examples/wrapping.typ)
 
-```typ
-#codly(number-format: none)
-```
+## Excerpts and numbering
 
-### Disabling zebra striping
+`range` selects one interval; `ranges` selects multiple intervals. `offset`
+accepts a number, `auto` to start the excerpt at one, or a block/figure label to
+continue its last displayed number. Disjoint excerpts preserve their gaps.
+`codly.info(label)` exposes `lines` and `last-number` in context.
 
-You disable zebra striping by setting the `zebra-fill` to white or none.
+[![Source excerpts and continued numbering](examples/excerpts.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/excerpts.typ)
 
-```typ
-#codly(zebra-fill: none)
-```
+[Excerpt example](examples/excerpts.typ)
 
-### Customize the stroke
+## Migrating from v1
 
-You can customize the stroke surrounding the figure using the `stroke` parameter of the `codly` function:
+- Replace `codly-init` and configuration calls with `codly.new` and scoped
+  `#show: codly.set_(...)` or component rules.
+- Exported component names are unprefixed: `codly.line`, `codly.highlight`,
+  `codly.header`, and so on. Their internal selector identities still use
+  `codly-...`. Component helpers consistently end in `_`, including
+  `header-set_`, `header-show_`, `footer-set_`, and `footer-show_`.
+- Use `codly.lang-set_(languages: ...)` for language definitions,
+  `codly.number-set_(numbering: ...)` for numbers, and
+  `codly.highlight-set_(...)` for highlight styling.
+- Replace zebra-specific settings with a `fill` palette or callback.
+- Replace `offset-from` and offset helper calls with the single `offset` field.
+- Ranges and span positions are one-based; highlight ends are inclusive.
 
-```typ
-#codly(stroke: 1pt + red)
-```
-
-### Misc
-
-You can also disable the icon by setting the `display-icon` parameter to `false`:
-
-```typ
-#codly(display-icon: false)
-```
-
-This applies to:
-- the name
-- the radius
-- whether the block is breakable
-- the padding
-- the width of the numbers columns 
-
-and so many more.
-
-For more detailed information check out the [documentation](https://raw.githubusercontent.com/Dherse/codly/main/docs.pdf).
+See [CHANGELOG.md](CHANGELOG.md) for release history and contributor credits.
+The [online manual](https://codly.dherse.dev/) includes the v2 API and migration guide.

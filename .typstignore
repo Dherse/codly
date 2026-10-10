@@ -10,8 +10,16 @@
 .github
 tests
 example
+examples
+fonts
+assets
+.agents
+.codex
+.aws
+.gitignore
+.gitattributes
 scripts
 Justfile
-# PDF manuals should be included so that they can be linked, but not their sources
-docs/*
 bench
+docs
+.gitmodules

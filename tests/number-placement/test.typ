@@ -1,23 +1,16 @@
-#import "../../codly.typ": codly-reset
-
 #set text(font: ("libertinus serif", "Noto Color Emoji"))
+#set page(width: 16cm + 10pt, height: auto, margin: 5pt)
 
 #include "1-trivial.typ"
 #pagebreak()
-#codly-reset()
 
 #include "2-multiple.typ"
 #pagebreak()
-#codly-reset()
 
 #include "3-highlight-bug.typ"
 #pagebreak()
-#codly-reset()
 
 #include "4-longcode.typ"
 #pagebreak()
-#codly-reset()
 
-#include "5-skips.typ"  
-#pagebreak()
-#codly-reset()
+#include "5-skips.typ"

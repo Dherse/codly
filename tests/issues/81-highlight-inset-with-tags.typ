@@ -1,11 +1,11 @@
-#import "../../codly.typ": *
-#show: codly-init
+#import "../../codly.typ" as codly
 
-#codly(
-  highlight-inset: (x: 0.2em, y: 0pt),
+#set page(width: 240pt, height: auto, margin: 5pt)
+
+#show: codly.highlight-set_(inset: (x: 0.2em, y: 0pt))
+#codly.new(
   highlights: ((line: 1, tag: "(1)"),),
+  ```
+  code
+  ```,
 )
-
-```
-code
-```

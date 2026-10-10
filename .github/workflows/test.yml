@@ -1,13 +1,29 @@
 name: Tests
 on:
+  workflow_call:
   push:
-    # ensures this is not run for PRs too
     branches: [ main ]
   pull_request:
-    # optional but a good default
     branches: [ main ]
 
 jobs:
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Typstyle
+        uses: baptiste0928/cargo-install@v3.0.0
+        with:
+          crate: typstyle
+          version: '0.15.1'
+
+      - name: Check Typst formatting
+        run: >-
+          typstyle --check --line-width 100 --indent-width 2
+          --no-reorder-import-items codly.typ src tests examples
+
   tests:
     runs-on: ubuntu-latest
     steps:
@@ -17,20 +33,24 @@ jobs:
       - name: Probe runner package cache
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: cargo
+          packages: cargo poppler-utils
           version: 1.0
 
-      - name: Install tytanic from github
+      - name: Install Tytanic
         uses: baptiste0928/cargo-install@v3.0.0
         with:
           crate: tytanic
-          version: '0.2.1'
+          version: '0.4.1'
+      - name: Install just
+        uses: baptiste0928/cargo-install@v3
+        with:
+          crate: just
       - name: Setup typst
         uses: typst-community/setup-typst@v4
         with:
-          version: 'v0.13.1'
+          typst-version: '0.15.1'
       - name: Run test suite
-        run: tt run --no-fail-fast --font-path ./docs/fonts
+        run: python3 tests/run.py
       - name: Archive diffs
         uses: actions/upload-artifact@v4
         if: always()
@@ -41,3 +61,26 @@ jobs:
             tests/**/out/*.png
             tests/**/ref/*.png
           retention-days: 5
+
+  compatibility:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        typst: ['0.15.0', '0.15.1']
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PDF text extraction
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+      - name: Install just
+        uses: baptiste0928/cargo-install@v3
+        with:
+          crate: just
+      - name: Setup Typst
+        uses: typst-community/setup-typst@v4
+        with:
+          typst-version: '${{ matrix.typst }}'
+      - name: Verify selected compiler
+        run: typst --version | grep -F "typst ${{ matrix.typst }} "
+      - name: Compile fixtures, diagnostics, PDF/UA, and packaged smoke test
+        run: python3 tests/run.py --compile-only

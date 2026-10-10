@@ -1,61 +1,59 @@
-#import "../../codly.typ": codly-reset
+#import "../../codly.typ" as codly
 
 #include "22-highlight-align.typ"
 #pagebreak()
-#codly-reset()
 
 #include "32-spacing.typ"
 #pagebreak()
-#codly-reset()
 
 #include "36-highlight-bug.typ"
 #pagebreak()
-#codly-reset()
 
 #include "39-offset-by-name.typ"
 #pagebreak()
-#codly-reset()
 
-#include "40-header-no-number.typ"  
+#include "40-header-no-number.typ"
 #pagebreak()
-#codly-reset()
 
-/*
-Waiting for typst-test update:
-#assert-panic(() => {
-  include "47-crash-label.typ"
-  pagebreak()
-}, message: "inequality assertion failed: codly: for labels on highlights to work, you must have the code block 
-contained within a figure and that figure must have a label.")*/
-#codly-reset()
+// Issue 47 is checked as an expected compiler error by tests/run.py.
 
 #include "50-skips-no-reset.typ"
 #pagebreak()
-#codly-reset()
 
 #include "52-skip-line-disabled.typ"
 #pagebreak()
-#codly-reset()
 
 #include "56-contextual-funcs.typ"
 #pagebreak()
-#codly-reset()
 
 #include "63-continue-highlights.typ"
 #pagebreak()
-#codly-reset()
 
 #include "71-no-highlights-in-local.typ"
 #pagebreak()
-#codly-reset()
 
 #include "81-highlight-inset-with-tags.typ"
 #pagebreak()
-#codly-reset()
 
 #include "85-annotation-labels.typ"
 #pagebreak()
-#codly-reset()
 
 #include "89-nested-highlights.typ"
-#codly-reset()
+#pagebreak()
+
+#include "131-typstv15-baseline.typ"
+#pagebreak()
+
+#include "133-nested-highlights.typ"
+#pagebreak()
+
+#include "67-show-rule-regex.typ"
+#pagebreak()
+
+#include "96-multiline-highlights.typ"
+#pagebreak()
+
+#include "91-end-of-file-newline.typ"
+#pagebreak()
+
+#include "108-dark-theme.typ"

@@ -1,6 +1,6 @@
 root := justfile_directory()
 
-# Set the shell on Windows to using PowerShell.
+# Use PowerShell on Windows.
 set windows-shell := ["powershell.exe", "-c"]
 
 export TYPST_ROOT := root
@@ -9,37 +9,53 @@ export TYPST_ROOT := root
 default:
 	@just --list --unsorted
 
-# generate manual
-doc *args:
-	typst compile docs/docs.typ docs.pdf --root . --font-path ./docs/fonts --ignore-system-fonts {{ args }}
+# Run rendering tests, diagnostics, PDF/UA checks, and package checks.
+test:
+	python3 tests/run.py
 
-# watch the manual
-doc-watch *args:
-	typst watch docs/docs.typ docs.pdf --root . --font-path ./docs/fonts --ignore-system-fonts {{ args }}
+# Run selected rendering and assertion tests.
+test-focused *args:
+	tt run --no-fail-fast --font-path ./fonts {{ args }}
 
-# generate the codly function signature in codly.typ
-signature:
-	python3 ./scripts/gen-signature.py
+# Compile compatible fixtures with the installed Typst CLI.
+test-compat:
+	python3 tests/run.py --compile-only
 
-# run test suite
-test *args:
-	tt run --no-fail-fast --font-path ./docs/fonts {{ args }}
+# Build a temporary package and compile a smoke test against it.
+package-check:
+	python3 tests/tooling.py
 
-# update test cases
+# Render the README gallery.
+examples:
+	python3 scripts/examples.py
+
+# Check that gallery PNGs match their sources.
+examples-check:
+	python3 scripts/examples.py --check
+
+# Update test references.
 update *args:
-	tt update --font-path ./docs/fonts {{ args }}
+	tt update --font-path ./fonts {{ args }}
 
-# package the library into the specified destination folder
+# Format Typst library, test, and example sources.
+fmt:
+	typstyle --inplace --line-width 100 --indent-width 2 --no-reorder-import-items codly.typ src tests examples
+
+# Check Typst formatting.
+fmt-check:
+	typstyle --check --line-width 100 --indent-width 2 --no-reorder-import-items codly.typ src tests examples
+
+# Package the library into the specified folder.
 package target:
   ./scripts/package "{{target}}"
 
-# install the library with the "@local" prefix
+# Install the library with the "@local" prefix.
 install: (package "@local")
 
-# install the library with the "@preview" prefix (for pre-release testing)
+# Install the library with the "@preview" prefix for pre-release testing.
 install-preview: (package "@preview")
 
-# Benchmark codly
+# Legacy benchmarks (requires crityp)
 bench *args:
 	crityp bench/test-codly-12/main.typ --bench-output .
 	crityp bench/test-codly-main/main.typ --root . --bench-output .
@@ -48,11 +64,35 @@ bench *args:
 remove target:
   ./scripts/uninstall "{{target}}"
 
-# uninstalls the library from the "@local" prefix
+# Uninstall the library from the "@local" prefix.
 uninstall: (remove "@local")
 
-# uninstalls the library from the "@preview" prefix (for pre-release testing)
+# Uninstall the library from the "@preview" prefix.
 uninstall-preview: (remove "@preview")
 
-# run ci suite
-ci: test doc
+# Run formatting and test checks.
+ci: fmt-check test
+
+docs-setup:
+	just --justfile docs/justfile setup
+
+docs-build:
+	just --justfile docs/justfile build
+
+docs-check:
+	just --justfile docs/justfile check
+
+docs-dev:
+	just --justfile docs/justfile dev
+
+docs-serve:
+	just --justfile docs/justfile serve
+
+docs-site:
+	just --justfile docs/justfile site
+
+docs-serve-site:
+	just --justfile docs/justfile serve-site
+
+docs-deploy:
+	gh workflow run pages.yml --ref main

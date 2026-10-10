@@ -1,8 +1,8 @@
-#import "../../codly.typ": *
+#import "../../codly.typ" as codly
 
-// Remove these lines to see the difference
-#show: codly-init.with()
-#codly(number-format: none, stroke: none, display-icon: false, display-name: false, inset: 0.205em)
+
+#show: codly.line-set_(stroke: none, inset: 0.205em)
+#show: codly.lang-set_(display-icon: false, display-name: false)
 
 #let code = ```py
 import pandas as pd
@@ -48,9 +48,9 @@ def preprocess_headers(data: pd.DataFrame) -> None:
     data["Class"] = pd.Categorical(data["Class"], ordered=True, categories=["L", "M", "H"])
 ```
 
-#set page("a3")
+#set page(width: 470pt, height: auto, margin: 5pt)
 #columns(2)[
-  #code
+  #codly.new(number-enabled: false, code)
   #colbreak()
-  #no-codly(code)
+  #code
 ]
