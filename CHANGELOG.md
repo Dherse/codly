@@ -63,6 +63,8 @@
 
 ### Fixed
 
+- Infer native listing figure kinds for `codly.new`; preserve listing counters,
+  captions, outlines, references, and explicit kind overrides.
 - Preserve nesting for overlapping and equal-span highlights; split crossing
   spans without duplicating shared wrappers.
 - Preserve highlight alignment and smart indentation across wrapped source;
