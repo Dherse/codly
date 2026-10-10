@@ -30,11 +30,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Probe runner package cache
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: cargo poppler-utils
-          version: 1.0
+      - name: Install PDF text extraction
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
 
       - name: Install Tytanic
         uses: baptiste0928/cargo-install@v3.0.0
