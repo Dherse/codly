@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Codly documentation">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Codly - Codly</title>
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="docs.css">
+  <script src="assets/preferences.js"></script>
+  <script type="module" src="assets/docs.js"></script>
+</head>
+<body data-root="">
+  <a class="skip" href="#content">Skip to content</a>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">&lt;/&gt;</span> codly <span class="brand-sub">/ docs</span></a>
+    <div class="top-actions">
+      <button id="menu-toggle" aria-expanded="false" aria-controls="sidebar">Menu</button>
+      <div class="appearance-controls">
+        <button id="theme" class="theme-switch" type="button" role="switch" aria-checked="true" aria-label="Dark mode" title="Switch to light mode">
+          <span class="fa sun" aria-hidden="true">&#xf185;</span><span class="fa moon" aria-hidden="true">&#xf186;</span>
+        </button>
+        <details class="preferences" id="preferences">
+          <summary aria-label="Make it yours" title="Make it yours"><span class="fa" aria-hidden="true">&#xf013;</span></summary>
+          <div class="preferences-panel">
+            <h2>Make it yours</h2>
+            <label for="docs-version">Documentation version</label>
+            <select id="docs-version" hidden aria-label="Documentation version"></select>
+            <label for="code-font">Code &amp; preview font</label>
+            <select id="code-font" aria-describedby="font-help"><option value="dejavu">Default · DejaVu Sans Mono</option><option value="noto">Noto Sans Mono</option></select>
+            <p id="font-help" class="hint">Applies to code and previews. Examples may override it.</p>
+          </div>
+        </details>
+      </div>
+      <a class="github" href="https://github.com/Dherse/codly" rel="noreferrer">GitHub ↗</a>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="search-box"><label for="search">Search the docs</label><div class="search-field"><input id="search" type="search" autocomplete="off" placeholder="Find an example…" maxlength="120"><kbd>/</kbd></div></div>
+      <div id="search-results" aria-live="polite" hidden></div>
+      <nav aria-label="Documentation"><ol class="chapter"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="index.html">Codly</a></span></li></ol></nav>
+    </aside>
+    <main id="content" tabindex="-1">
+      <article><h1 id="codly"><a class="header" href="#codly">Codly</a></h1>
+</article>
+    </main>
+    <aside class="page-tools" aria-label="Page information">
+      <p class="overline">ON THIS PAGE</p>
+      <nav id="page-toc" aria-label="On this page"></nav>
+    </aside>
+  </div>
+  <noscript><p class="noscript">JavaScript is off. Static previews remain available.</p></noscript>
+</body>
+</html>

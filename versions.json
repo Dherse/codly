@@ -1,0 +1,13 @@
+{
+  "defaultVersion": "v2.0.0",
+  "versions": [
+    {
+      "version": "v2.0.0",
+      "label": "v2.0.0"
+    },
+    {
+      "version": "main",
+      "label": "main (nightly)"
+    }
+  ]
+}
