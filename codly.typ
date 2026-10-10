@@ -1275,12 +1275,6 @@
         default: center + horizon,
       ),
       e.field(
-        "breakable",
-        e.types.option(e.types.union(bool, auto)),
-        doc: "Whether the header may break across pages.",
-        default: auto,
-      ),
-      e.field(
         "inset",
         e.types.option(e.types.union(length, dictionary, auto)),
         doc: "Inset around the header content.",
@@ -1327,12 +1321,6 @@
         e.types.option(alignment),
         doc: "Alignment of the footer content.",
         default: center + horizon,
-      ),
-      e.field(
-        "breakable",
-        e.types.option(e.types.union(bool, auto)),
-        doc: "Whether the footer may break across pages.",
-        default: auto,
       ),
       e.field(
         "inset",
@@ -1778,9 +1766,9 @@
       ),
       e.field(
         "block-label",
-        e.types.option(label),
-        doc: "The label of the containing figure.",
-        default: none,
+        e.types.union(auto, none, label),
+        doc: "The label of the containing figure. auto discovers the nearest enclosing figure's label; none disables block references.",
+        default: auto,
       ),
       e.field(
         "alias",

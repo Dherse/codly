@@ -13,7 +13,6 @@
       block: true,
     ),
     file: "retry.py",
-    block-label: <retry>,
     padding: (y: 5pt),
     highlights: (
       (line: 4, start: 20, end: 30, tag: "success", label: <success>),

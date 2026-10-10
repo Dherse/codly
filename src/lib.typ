@@ -41,6 +41,19 @@
   blocks.first().value
 }
 
+/// Resolve the nearest enclosing figure, never a preceding sibling or a
+/// generated reference target. An unlabeled inner figure stops inheritance.
+#let __codly-enclosing-label() = {
+  let loc = here()
+  if query(selector(loc).within(figure)).len() == 0 { return none }
+  let parent = query(selector(figure).before(loc))
+    .rev()
+    .find(candidate => {
+      query(selector(loc).within(candidate.location())).len() > 0
+    })
+  if parent != none { parent.at("label", default: none) }
+}
+
 #let __codly-inset(inset) = {
   if type(inset) == dictionary {
     let other = inset.at("rest", default: 0.32em)
@@ -55,10 +68,9 @@
   }
 }
 
-#let __codly-cell-args(align, breakable, fill, inset, stroke) = {
+#let __codly-cell-args(align, fill, inset, stroke) = {
   let args = (:)
   if align != auto { args.insert("align", align) }
-  if breakable != auto { args.insert("breakable", breakable) }
   if fill != auto { args.insert("fill", fill) }
   if inset != auto { args.insert("inset", inset) }
   if stroke != auto { args.insert("stroke", stroke) }
@@ -1277,6 +1289,10 @@
     }
   }
 
+  if args.block-label == auto {
+    args.block-label = __codly-enclosing-label()
+  }
+
   let lang = if args.alias == none {
     it.lang
   } else {
@@ -1391,7 +1407,6 @@
     let header-set = get(codly-header) + fields
     let cell-args = __codly-cell-args(
       header-set.align,
-      header-set.breakable,
       if header-set.fill == auto { luma(240) } else { header-set.fill },
       header-set.inset,
       header-set.stroke,
@@ -1432,7 +1447,6 @@
     let footer-set = get(codly-footer) + fields
     let cell-args = __codly-cell-args(
       footer-set.align,
-      footer-set.breakable,
       if footer-set.fill == auto { none } else { footer-set.fill },
       footer-set.inset,
       footer-set.stroke,

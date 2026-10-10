@@ -16,7 +16,7 @@
   range-conflict: (range: (1, 2), ranges: ((2, 3),)),
   annotation-overlap: (annotations: ((start: 1, end: 3), (start: 2, end: 3))),
   annotation-touching: (annotations: ((start: 1, end: 2), (start: 2, end: 3))),
-  annotation-label: (annotations: ((start: 1, label: <annotation>),)),
+  annotation-label: (block-label: none, annotations: ((start: 1, label: <annotation>),)),
   item-without-tag: (block-label: <code>, highlights: ((line: 1, label: <item>),)),
   missing-offset: (offset: <missing>),
   callout-pointer-negative: (callouts: ((line: 1, pointer: -1, body: []),)),
@@ -97,6 +97,10 @@
   codly.new(raw("one", block: true), callouts: ((line: 1, pointer: 1, body: [Bad height]),))
 } else if case == "highlight-label" {
   include "../issues/47-crash-label.typ"
+} else if case == "annotation-auto-outside" {
+  codly.new("one", annotations: ((start: 1, label: <annotation>),))
+} else if case == "annotation-auto-unlabeled" {
+  figure(codly.new("one", annotations: ((start: 1, label: <annotation>),)), caption: [Unlabeled])
 } else if case == "duplicate-info" {
   [
     #codly.new(raw("one", block: true))<duplicate>

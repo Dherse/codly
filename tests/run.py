@@ -43,6 +43,8 @@ LAYOUT_ERRORS = {
     "annotation-overlap": "overlapping annotations",
     "annotation-touching": "overlapping annotations",
     "annotation-label": "require `block-label`",
+    "annotation-auto-outside": "require `block-label`",
+    "annotation-auto-unlabeled": "require `block-label`",
     "highlight-label": "contained within a figure",
     "item-without-tag": "tag is required for item reference",
     "missing-offset": "expected a unique code block label",
