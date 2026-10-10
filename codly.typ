@@ -1670,6 +1670,20 @@
     "codly",
     prefix: __codly-prefix,
     doc: "Codly is a library that enhances the way you write code blocks in Typst.",
+    construct: constructor => (..args) => {
+      let element = constructor(..args)
+      let body = e.fields(element).body
+      // Figure kind inference scans the original content tree, before Elembic's
+      // deferred display. Expose the source without placing it a second time.
+      // The empty raw fallback also covers paths and contextual source content;
+      // file reads and scoped language/theme settings remain deferred.
+      let source = if type(body) == content { (body, raw("", block: true)) } else if (
+        type(body) == str
+      ) { raw(body, block: true) } else if type(body) == path { raw("", block: true) }
+      if source == none { return element }
+      // Keep Elembic's instance tag last, preserving fields/data extraction.
+      (metadata(source), ..element.children).join()
+    },
     display: it => {
       import "src/file.typ" as file-impl
       let body = it.remove("body")

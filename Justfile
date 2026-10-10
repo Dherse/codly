@@ -55,10 +55,6 @@ install: (package "@local")
 # install the library with the "@preview" prefix (for pre-release testing)
 install-preview: (package "@preview")
 
-# Benchmark codly
-bench-release *args:
-	python3 scripts/benchmark.py {{ args }}
-
 # Legacy benchmarks (requires crityp)
 bench *args:
 	crityp bench/test-codly-12/main.typ --bench-output .

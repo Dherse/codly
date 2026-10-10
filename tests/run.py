@@ -95,6 +95,39 @@ def run_accessibility(output):
     return passed
 
 
+def run_listing_accessibility(output):
+    """Check that figure-kind hints never duplicate code in PDF/UA output."""
+    result = subprocess.run(
+        ["typst", "compile", "--root", str(ROOT), "--pdf-standard", "ua-1",
+         "--font-path", str(ROOT / "fonts"),
+         str(ROOT / "tests/figure-kind/test.typ"), str(output)],
+        cwd=ROOT, capture_output=True, text=True,
+    )
+    passed = result.returncode == 0
+    if passed:
+        result = subprocess.run(
+            ["pdftotext", "-layout", str(output), "-"],
+            capture_output=True, text=True,
+        )
+        tokens = (
+            "raw_listing_token", "string_listing_token", "file_listing_token",
+            "wrapped_listing_token", "context_listing_token", "marked_listing_token",
+            "override_listing_token", "custom_listing_token", "automatic_listing_token",
+            "explicit_auto_listing_token", "old_listing_token", "new_listing_token",
+            "styled_listing_token",
+        )
+        passed = result.returncode == 0 and all(
+            result.stdout.count(token) == 1 for token in tokens
+        )
+        passed &= all(caption in result.stdout for caption in (
+            "Listing 1: Raw input", "Listing 10: Caption above", "Figure 3: Second image",
+        ))
+    print(f"{'pass' if passed else 'FAIL'} accessibility/listing-figures", flush=True)
+    if not passed:
+        print(result.stderr or result.stdout)
+    return passed
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--errors-only", action="store_true")
@@ -132,6 +165,7 @@ def main():
             print(f"Compiled {count} fixtures; {skipped} require Tytanic catch()", flush=True)
         if not args.errors_only:
             failed |= not run_accessibility(Path(temporary) / "accessibility.pdf")
+            failed |= not run_listing_accessibility(Path(temporary) / "listing-figures.pdf")
         for case, expected in LAYOUT_ERRORS.items():
             result = subprocess.run(
                 ["typst", "compile", "--root", str(ROOT), "--font-path",
