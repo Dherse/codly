@@ -75,7 +75,7 @@ jobs:
           git checkout -b "${PKG_NAME}-${PKG_VERSION}"
           git add .
           git commit -m "${PKG_NAME}:${PKG_VERSION}"
-          git push --set-upstream origin "${PKG_NAME}-${PKG_VERSION}"
+          git push --force --set-upstream origin "${PKG_NAME}-${PKG_VERSION}"
 
   documentation:
     needs: validate
