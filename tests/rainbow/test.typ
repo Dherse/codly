@@ -1,6 +1,5 @@
 #import "../../codly.typ" as codly
 #import "../../src/rainbow.typ" as r
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 280pt, height: auto, margin: 5pt)
 
@@ -59,7 +58,7 @@
 #check("codly-rainbow-test", "word(%}%)", "0(0)", syntaxes: path("custom.sublime-syntax"))
 
 #let colors = (rgb("#e00000"), rgb("#0000e0"), rgb("#00a000"))
-#let settings = e.fields(codly.rainbow(
+#let settings = codly.e.fields(codly.rainbow(
   palette: colors,
   pairs: ("{}",),
   code-scopes: "source.custom",
@@ -68,7 +67,7 @@
 #assert.eq(settings.pairs, ("{}",))
 #assert.eq(settings.code-scopes, "source.custom")
 #let record-line(it) = {
-  let body = e.fields(it).body
+  let body = codly.e.fields(it).body
   if body.func() != raw.line { return it }
   show text: t => context {
     if t.text == "word" { [#metadata(text.fill)<word-color>] }

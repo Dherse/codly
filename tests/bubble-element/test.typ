@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 #set page(width: 290pt, height: auto, margin: 8pt)
 #let source = "abcdefghijklmnopqrstuvwxyz0123456789"
 #let pink = rgb("ffc4dd")
@@ -21,10 +20,10 @@
 )
 
 // Both the generic Elembic set rule and the convenience wrapper are supported.
-#show: e.set_(codly.bubble, ..defaults)
+#show: codly.e.set_(codly.bubble, ..defaults)
 #let observe(key, body) = {
-  show: codly.bubble-show_(it => [#metadata((key: key, fields: e.fields(it)))<bubble>#it])
-  show: codly.callout-show_(it => [#metadata((key: key, fields: e.fields(it)))<callout>#it])
+  show: codly.bubble-show_(it => [#metadata((key: key, fields: codly.e.fields(it)))<bubble>#it])
+  show: codly.callout-show_(it => [#metadata((key: key, fields: codly.e.fields(it)))<callout>#it])
   show curve: it => [#metadata((key: key, path: it))<path>#it]
   body
 }

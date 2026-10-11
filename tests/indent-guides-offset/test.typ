@@ -1,9 +1,8 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 260pt, height: auto, margin: 5pt)
-#assert.eq(e.fields(codly.indent-guides()).x-offset, 0pt)
-#assert.eq(e.fields(codly.indent-guides(x-offset: -0.5em)).x-offset, -0.5em)
+#assert.eq(codly.e.fields(codly.indent-guides()).x-offset, 0pt)
+#assert.eq(codly.e.fields(codly.indent-guides(x-offset: -0.5em)).x-offset, -0.5em)
 #assert(catch(() => codly.indent-guides(x-offset: "right")) != none)
 #assert(catch(() => codly.indent-guides(x-offset: 10%)) != none)
 
@@ -15,7 +14,7 @@
     context {
       let origin = here()
       for shift in (0pt, 2pt, -2pt, 0.5em, -0.25em) {
-        show: e.set_(codly.number, placement: if outside { "outside" } else { "inside" })
+        show: codly.e.set_(codly.number, placement: if outside { "outside" } else { "inside" })
         show: codly.line-show_(it => [#metadata(shift)<offset-row>#it])
         show line: it => context {
           [#metadata((

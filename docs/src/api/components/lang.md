@@ -97,7 +97,6 @@ If both name and icon are hidden or unavailable, the badge renders no content. S
 
 ````typst preview
 #import "@preview/codly:2.0.0" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #show: codly.lang-set_(languages: (
   py: (name: [Python], color: rgb("#3476a8"), icon: "🐍"),
@@ -105,7 +104,7 @@ If both name and icon are hidden or unavailable, the badge renders no content. S
 
 #show: codly.lang-show_(it => {
   // Get the fields through elembic
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
 
   // Get the language definition
   let lang = fields.languages.at(fields.body, default: none)

@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 320pt, height: auto, margin: 8pt)
 
@@ -29,7 +28,7 @@
 #for case in cases {
   let config = codly.define-theme(base: case.name)
   show: codly.theme(case.name)
-  e.get(get => {
+  codly.e.get(get => {
     assert.eq(get(codly.line).fill, case.fill)
     assert.eq(get(codly.line).stroke, config.stroke)
     assert.eq(get(codly.codly).radius, config.radius)
@@ -82,7 +81,7 @@
 
 #{
   show: codly.theme(derived)
-  e.get(get => {
+  codly.e.get(get => {
     assert.eq(get(codly.line).fill, custom.fill)
     assert.eq(get(codly.highlight).color.first(), orange)
     assert.eq(get(codly.header).inset, 4pt)
@@ -123,7 +122,7 @@
 #{
   show: codly.theme("dark", fill: red, header: (fill: blue))
   show: codly.line-set_(fill: green)
-  e.get(get => {
+  codly.e.get(get => {
     assert.eq(get(codly.line).fill, green)
     assert.eq(get(codly.header).fill, blue)
     []
@@ -176,14 +175,14 @@
   }
   {
     show: codly.theme()
-    e.get(get => {
+    codly.e.get(get => {
       assert.eq(get(codly.line).fill, (luma(240), none))
       assert.eq(get(codly.line).stroke, 1pt + luma(240))
       []
     })
     codly.new(raw("reset", block: true))
   }
-  e.get(get => {
+  codly.e.get(get => {
     assert.eq(get(codly.line).fill, rgb("1e1e1e"))
     []
   })
@@ -193,7 +192,7 @@
   assert.eq(text.fill, black)
   assert.eq(raw.theme, auto)
 }
-#e.get(get => {
+#codly.e.get(get => {
   assert.eq(get(codly.line).fill, (luma(240), none))
   []
 })

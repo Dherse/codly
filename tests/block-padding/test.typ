@@ -1,6 +1,5 @@
 #import "../../codly.typ" as codly
 #import "../../src/padding.typ" as impl
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 420pt, height: auto, margin: 8pt)
 #set text(size: 9pt)
@@ -36,7 +35,7 @@
 // Adding edge space must not change interior line spacing, callbacks, or
 // palette indices. Nor should it alter line references or block information.
 #show: codly.line-show_(it => {
-  [#metadata(e.fields(it).body.text)<padding-line>#it]
+  [#metadata(codly.e.fields(it).body.text)<padding-line>#it]
 })
 #for padding in (0pt, (top: 12pt, bottom: 20pt)) {
   codly.new(raw("A\nB\nC", block: true), padding: padding)

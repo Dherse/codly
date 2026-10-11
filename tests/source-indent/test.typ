@@ -1,14 +1,13 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 380pt, height: auto, margin: 8pt)
 #set text(size: 9pt)
 #show: codly.callout-set_(source-indent: true)
 #show: codly.callout-show_(it => {
   [#metadata((
-      line: e.fields(it).line,
-      indent: e.fields(it).__indent,
-      enabled: e.fields(it).source-indent,
+      line: codly.e.fields(it).line,
+      indent: codly.e.fields(it).__indent,
+      enabled: codly.e.fields(it).source-indent,
     ))<indent-settings>#it]
 })
 #let comment(

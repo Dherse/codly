@@ -1,4 +1,5 @@
 {
   "defaultVersion": "latest",
-  "initialVersion": "v2.0.0"
+  "initialVersion": "v2.0.0",
+  "customDomain": "codly.dherse.dev"
 }

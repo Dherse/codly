@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 = With highlight
 
@@ -18,7 +17,7 @@ public class MyApp {
 ```]
 
 #{
-  show: e.set_(codly.number, placement: "outside", fill: none)
+  show: codly.e.set_(codly.number, placement: "outside", fill: none)
   codly.new(highlights: (
     (line: 1, start: 14, end: 18, fill: blue),
     (line: 3, start: 5, end: 10, fill: green),

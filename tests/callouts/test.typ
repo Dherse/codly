@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 250pt, height: auto, margin: 5pt)
 
@@ -11,7 +10,7 @@
 
 // The public type uses `body`, exposes the cell fields directly, and validates
 // its one-indexed source-line anchor.
-#let fields = e.fields(codly.callout-config(
+#let fields = codly.e.fields(codly.callout-config(
   line: 2,
   body: [Explanation],
   fill: yellow,
@@ -39,7 +38,7 @@
 )
 
 #show: codly.callout-show_(it => {
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
   [#metadata((line: fields.line, body: text-of(fields.body)))<callout-row>#it]
 })
 #show grid.cell: it => {

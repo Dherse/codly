@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 #set page(width: 320pt, height: auto, margin: 8pt)
 #let source = "abcdefghijklmnopqrstuvwxyz0123456789"
 #let gradient-fill = gradient.linear(aqua.lighten(70%), purple.lighten(75%), angle: 90deg)
@@ -17,12 +16,15 @@
     if it.rowspan > 1 { [#metadata((key: key, span: it.rowspan))<brace-span>#it] } else { it }
   }
   show: codly.line-show_(it => {
-    let body = e.fields(it).body
+    let body = codly.e.fields(it).body
     if body.func() == raw.line {
       [#metadata((key: key, number: body.number))<source-row>#it]
     } else { it }
   })
-  show: codly.callout-show_(it => [#metadata((key: key, fields: e.fields(it)))<placed-callout>#it])
+  show: codly.callout-show_(it => [#metadata((
+      key: key,
+      fields: codly.e.fields(it),
+    ))<placed-callout>#it])
   show: codly.callout-set_(bubble-fill: gradient-fill, bubble-gap: 4pt)
   codly.new(
     raw(code, block: true),

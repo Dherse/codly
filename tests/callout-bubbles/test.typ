@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 #set page(width: 290pt, height: auto, margin: 8pt)
 
 #show: codly.callout-set_(bubble-fill: gradient.linear(rgb("dbf0ff"), rgb("fce2ee"), angle: 90deg))
@@ -8,7 +7,7 @@
 // Keep the native path inspectable: one closed outline owns both fill and
 // stroke, with no rectangle/triangle seam.
 #show curve: it => [#metadata(it)<bubble-path>#it]
-#show: codly.callout-show_(it => [#metadata(e.fields(it))<bubble-fields>#it])
+#show: codly.callout-show_(it => [#metadata(codly.e.fields(it))<bubble-fields>#it])
 
 #codly.new(raw(source, lang: "js", block: true), callouts: (
   (line: 1, pointer: 9, body: [This is a callout]),

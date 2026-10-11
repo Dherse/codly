@@ -120,8 +120,9 @@ whole when a boundary falls inside them.
 
 ## Syntax-aware diffs
 
-Set `lang: "diff-py"` (or another language) on a raw block. Codly highlights old
-and new source separately, strips patch markers from the code, and adds old/new
+Set `lang: "diff-py"` or `lang: "diff,py"` (or another language) on a raw block.
+Codly highlights old and new source separately, strips patch markers from the
+code, and adds old/new
 number and change-marker gutters. Unified hunks and simple `-`/`+` fragments are
 supported. Diff colors and gutters are configurable; themes supply matching
 defaults.
@@ -131,7 +132,9 @@ defaults.
 #codly.new(raw("-return 1\n+return 2", lang: "diff-py", block: true))
 ```
 
-Fenced blocks can also use the `diff-py` language tag.
+Fenced blocks can use the `diff-py` language tag, including in Typst 0.15.
+Both prefixes are valid Codly syntax; use `raw(..., lang: "diff,py")` if your
+Typst version does not support commas in fenced language tags.
 
 [![HTTP client diff with timeout and bounded retries](examples/diff.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/diff.typ)
 

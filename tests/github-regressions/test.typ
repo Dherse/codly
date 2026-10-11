@@ -1,10 +1,9 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 240pt, height: auto, margin: 5pt)
 
 #let line-marker(it) = {
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
   let body = fields.body
   let value = if body.func() == raw.line {
     (number: body.number, fill: fields.fill, text: body.text)
@@ -36,9 +35,9 @@
 // text when numbers are disabled.
 #for alignment in (left, top) [#figure[
   #{
-    show: e.set_(codly.number, align: alignment)
+    show: codly.e.set_(codly.number, align: alignment)
     show: codly.line-show_(it => {
-      let body = e.fields(it).body
+      let body = codly.e.fields(it).body
       [#metadata(body.text)<github-figure-line>#it]
     })
     codly.new(raw("Text\nText\nText\nText", block: true), number-enabled: false)

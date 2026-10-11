@@ -157,11 +157,11 @@ test('all preview sources have one safe static SVG',async()=>{
     const html=await read('book/'+chapter.replace(/\.md$/,'.html'));
     assert.equal([...html.matchAll(/<img\b[^>]*class="static-preview"/g)].length,count,`Static preview image count in ${chapter}`);
   }
-  for(const {id,source,body,widgets,chapter} of examples) {
+  for(const {id,source,body,widgets,fixed,chapter} of examples) {
     const html=await read('book/'+chapter.replace(/\.md$/,'.html'));
     const decode = s => s.replace(/&(?:amp|lt|gt|quot|apos|#\d+|#x[\da-f]+);/gi, entity => ({'&amp;':'&','&lt;':'<','&gt;':'>','&quot;':'"','&apos;':"'"}[entity] ?? String.fromCodePoint(entity[2]==='x'?parseInt(entity.slice(3,-1),16):parseInt(entity.slice(2,-1),10))));
     const textareas=[...html.matchAll(/<textarea[^>]*>([\s\S]*?)<\/textarea>/g)].map(m=>decode(m[1]));
-    assert(textareas.includes(body),`Editable source mismatch in ${chapter}`);
+    if (!fixed) assert(textareas.includes(body),`Editable source mismatch in ${chapter}`);
     assert.equal(exampleSource(body, widgets), source, `Default bindings mismatch in ${chapter}`);
     const displayed=[...html.matchAll(/<div class="highlighted">\s*<pre[^>]*>\s*<code>([\s\S]*?)<\/code>/g)].map(m=>decode(m[1].replace(/<[^>]*>/g,'')));
     assert(displayed.includes(body),`Displayed example body mismatch in ${chapter}`);
@@ -186,12 +186,13 @@ test('embedded Codly runtime matches the source checkout', async () => {
 
 test('the live editor loads the same fonts as static previews, including color emoji', async () => {
   const script = (await read('runtime/worker.mjs')).replace("import { createEngine } from './compiler.mjs';", '');
+  const manifest = JSON.parse(await read('book/assets/compiler-assets.json'));
   let options;
   let done;
   const completed = new Promise(resolve => { done = resolve; });
   const self = {
     location: { href: 'https://docs.example/assets/worker.js', origin: 'https://docs.example' },
-    fetch: async () => ({ ok: true, json: async () => ({}) }),
+    fetch: async url => ({ ok: true, json: async () => String(url).endsWith('/compiler-assets.json') ? manifest : {} }),
     postMessage: done,
   };
   runInNewContext(script, {
@@ -203,8 +204,43 @@ test('the live editor loads the same fonts as static previews, including color e
   assert.equal((await completed).svg, '<svg/>');
   assert.deepEqual(Array.from(options.fonts, url => path.basename(url)).sort(), compilerFontFiles.map(file => path.basename(file)).sort());
   assert(options.fonts.some(url => url.endsWith('/fonts/NotoColorEmoji-Regular.ttf')));
+  assert.equal(options.compilerWasm, 'https://docs.example/assets/compiler.wasm');
   assert.deepEqual(await fs.readFile('book/assets/fonts/NotoColorEmoji-Regular.ttf'), await fs.readFile(fontFiles['NotoColorEmoji-Regular.ttf']));
   assert((await read('book/assets/THIRD_PARTY_NOTICES.txt')).includes('===== Noto Color Emoji ====='));
+});
+
+test('the worker resolves shared compiler assets under a project subpath and reuses its engine', async () => {
+  const script = (await read('runtime/worker.mjs')).replace("import { createEngine } from './compiler.mjs';", '');
+  for (const location of ['https://docs.example/codly/main/assets/worker.js', 'https://docs.example/codly/assets/worker.js']) {
+    const prefix = location.includes('/main/') ? '../../' : '../';
+    const manifest = { compilerWasm: `${prefix}_typst/compiler.wasm`, rendererWasm: `${prefix}_typst/renderer.wasm`, fonts: [`${prefix}_typst/font.ttf`] };
+    const requests = [];
+    let engines = 0;
+    let done;
+    const self = {
+      location: { href: location, origin: 'https://docs.example' },
+      fetch: async (url, options) => {
+        requests.push(String(url));
+        assert.equal(options.credentials, 'omit');
+        return { ok: true, json: async () => String(url).endsWith('/compiler-assets.json') ? manifest : {} };
+      },
+      postMessage: result => done(result),
+    };
+    runInNewContext(script, { self, URL, fetch: (...args) => self.fetch(...args), createEngine: async options => {
+      engines++;
+      assert.equal(options.compilerWasm, 'https://docs.example/codly/_typst/compiler.wasm');
+      assert.equal(options.rendererWasm, 'https://docs.example/codly/_typst/renderer.wasm');
+      assert.deepEqual(Array.from(options.fonts), ['https://docs.example/codly/_typst/font.ttf']);
+      return async () => '<svg/>';
+    } });
+    for (const id of [1, 2]) {
+      const completed = new Promise(resolve => { done = resolve; });
+      self.onmessage({ data: { id, source: 'example' } });
+      assert.equal((await completed).svg, '<svg/>');
+    }
+    assert.equal(engines, 1);
+    assert.equal(requests.filter(url => url.endsWith('/compiler-assets.json')).length, 1);
+  }
 });
 
 test('authored docs and gallery examples rely on automatic figure labels', async () => {
@@ -323,13 +359,12 @@ test('actual WASM compiles offline, rejects missing packages, and recovers from 
     await assert.rejects(compile('#import "@preview/cetz:0.3.4": *'),/package|denied|resolve|found/);
     const source='#import "codly.typ" as codly\n#codly.new(raw("café → λ", block:true))';
     const previewSource=`#import "codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 #context {
   assert.eq(page.fill, white)
   assert.eq(text.font, "libertinus serif")
   assert.eq(text.fill, black)
 }
-#e.get(get => { assert.eq(get(codly.line).fill, (luma(240), none)) })
+#codly.e.get(get => { assert.eq(get(codly.line).fill, (luma(240), none)) })
 #codly.file("src/main.typ")`;
     const baseline=await compile(source);
     assert(baseline.includes('<svg'));
@@ -351,11 +386,10 @@ test('actual WASM compiles offline, rejects missing packages, and recovers from 
     }
     await compile(previewSource);
     await compile(`#import "codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 #show: codly.theme("github-light")
 #set text(font: "Libertinus Serif", fill: rgb("123456"))
 #context { assert.eq(text.font, "libertinus serif"); assert.eq(text.fill, rgb("123456")) }
-#e.get(get => { assert.eq(get(codly.line).fill, white) })
+#codly.e.get(get => { assert.eq(get(codly.line).fill, white) })
 #show: codly.line-show_(it => context { assert.eq(text.fill, rgb("1f2328")); it })
 #codly.new("Explicit theme")`,'dark','noto');
     const packageSource=source.replace('import "codly.typ"', 'import "@preview/codly:2.0.0"');

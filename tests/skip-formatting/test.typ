@@ -1,18 +1,17 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 180pt, height: auto, margin: 5pt)
 
 // PR #103: explicit skips consume entries; smart skips use the final value.
 #let check(options, lines, numbers) = {
   show: codly.line-show_(it => {
-    let body = e.fields(it).body
+    let body = codly.e.fields(it).body
     if body == none or body.func() != raw.line {
       [#metadata(body)<skip-body>#it]
     } else { it }
   })
-  show: e.show_(codly.number, it => {
-    let body = e.fields(it).number
+  show: codly.e.show_(codly.number, it => {
+    let body = codly.e.fields(it).number
     if type(body) != int { [#metadata(body)<skip-number>#it] } else { it }
   })
   [#metadata((lines: lines, numbers: numbers))<expected-skips>

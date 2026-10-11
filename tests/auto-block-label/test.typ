@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 320pt, height: auto, margin: 5pt)
 
@@ -73,7 +72,7 @@
   ) {
     let matches = query(target)
     assert.eq(matches.len(), 1, message: repr(target))
-    assert.eq(e.fields((matches.first().numbering)()).block, owner)
+    assert.eq(codly.e.fields((matches.first().numbering)()).block, owner)
   }
   for target in (<outer:1>, <override:1>, <disabled:1>, <scoped:1>, <standalone:1>) {
     assert.eq(query(target).len(), 0, message: repr(target))

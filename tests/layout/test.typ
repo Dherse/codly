@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 240pt, height: auto, margin: 5pt)
 
@@ -33,7 +32,7 @@
 )
 #{
   show: codly.line-set_(fill: (stripe-tiling, line-gradient))
-  show: e.set_(codly.number, placement: "outside", fill: none)
+  show: codly.e.set_(codly.number, placement: "outside", fill: none)
   show rect: it => [#metadata(it.fill)<complex-fill>#it]
   codly.new(raw("gradient\ntiling", block: true))
 }
@@ -43,8 +42,8 @@
 // Explicit insets keep header text within Typst's continuation clipping region.
 #let repeat-case() = {
   set page(height: 180pt, margin: 6pt)
-  show: e.show_(codly.header, it => [#metadata(e.fields(it).repeat)<header-repeat>#it])
-  show: e.show_(codly.footer, it => [#metadata(e.fields(it).repeat)<footer-repeat>#it])
+  show: codly.e.show_(codly.header, it => [#metadata(codly.e.fields(it).repeat)<header-repeat>#it])
+  show: codly.e.show_(codly.footer, it => [#metadata(codly.e.fields(it).repeat)<footer-repeat>#it])
   codly.new(
     raw(range(1, 14).map(str).join("\n"), block: true),
     breakable: true,

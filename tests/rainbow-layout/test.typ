@@ -1,14 +1,13 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 190pt, height: 100pt, margin: 5pt)
-#show: e.set_(codly.number, placement: "outside", fill: none)
+#show: codly.e.set_(codly.number, placement: "outside", fill: none)
 #show: codly.line-set_(stroke: 0.6pt + black)
 
 #let source = ("f({value: [1, 2, 3]});\n" * 8).trim()
 #for enabled in (false, true) {
   if enabled { pagebreak() }
-  show: codly.line-show_(it => [#metadata((enabled, e.fields(it).body.number))<row>#it])
+  show: codly.line-show_(it => [#metadata((enabled, codly.e.fields(it).body.number))<row>#it])
   codly.new(raw(source, lang: "js", block: true), rainbow: enabled, header: [head], radius: 4pt)
 }
 

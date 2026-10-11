@@ -1,10 +1,9 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 300pt, height: auto, margin: 8pt)
 #let source = raw("one\ntwo\nthree\nfour\nfive\nsix", block: true)
 #for value in (0, -3, auto, <parent>) {
-  assert.eq(e.fields(codly.new(source, offset: value)).offset, value)
+  assert.eq(codly.e.fields(codly.new(source, offset: value)).offset, value)
 }
 #context {
   for value in (none, false, "auto", 1.5, 3pt, (1, 2)) {
@@ -14,7 +13,7 @@
 }
 #let check(name, expected, ..options) = {
   let marker = label(name)
-  show: codly.number-show_(it => [#metadata(e.fields(it).number)#marker#it])
+  show: codly.number-show_(it => [#metadata(codly.e.fields(it).number)#marker#it])
   codly.new(source, ..options.named())
   context {
     assert.eq(query(marker).map(it => it.value), expected, message: name)

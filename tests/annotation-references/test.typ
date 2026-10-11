@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #let suffix(body) = {
   if type(body) == str { body } else if body.has("text") { body.text } else if body.has(
@@ -11,7 +10,7 @@
 #set page(width: 315pt, height: auto, margin: 5pt)
 #show: codly.ref-set_(sep: " / ", numbering: n => [L#n])
 #show: codly.annotation-show_(it => {
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
   [#metadata((fields.num, fields.body, suffix((fields.numbering)(fields.num))))<annotation-seen>
     #metadata(fields.height)<annotation-height>#it]
 })
@@ -37,7 +36,7 @@
   for annotation in query(<annotation-height>) { assert(annotation.value > 0pt) }
   for (target, expected) in ((<first-note>, (12, [first])), (<second-note>, (15, [second]))) {
     let target = query(target).first()
-    let reference = e.fields((target.numbering)())
+    let reference = codly.e.fields((target.numbering)())
     assert.eq((reference.line, reference.item), expected)
   }
 }

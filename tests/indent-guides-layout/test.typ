@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 200pt, height: 150pt, margin: 5pt)
 #let source = (
@@ -18,9 +17,12 @@
     let origin = here()
     for enabled in (false, true) {
       pagebreak(weak: true)
-      show: e.set_(codly.number, placement: if outside { "outside" } else { "inside" })
+      show: codly.e.set_(codly.number, placement: if outside { "outside" } else { "inside" })
       show: codly.line-set_(stroke: 0.6pt + black)
-      show: codly.line-show_(it => [#metadata((enabled, e.fields(it).body.number))<guide-row>#it])
+      show: codly.line-show_(it => [#metadata((
+          enabled,
+          codly.e.fields(it).body.number,
+        ))<guide-row>#it])
       codly.new(
         raw(source, lang: "js", block: true),
         indent-guides: enabled,

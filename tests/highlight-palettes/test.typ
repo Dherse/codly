@@ -1,6 +1,5 @@
 #import "../../codly.typ" as codly
 #import "../../src/lib.typ": __codly-highlight-color, __codly-highlight-colors
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 400pt, height: auto, margin: 8pt)
 #let palette = (red, green, blue, orange, purple)
@@ -12,7 +11,10 @@
 
 // Observe the actual rendered component colors, not only a selector helper.
 #show: codly.highlight-show_(it => {
-  [#metadata((tag: e.fields(it).highlight.tag, color: e.fields(it).color))<palette-span>#it]
+  [#metadata((
+      tag: codly.e.fields(it).highlight.tag,
+      color: codly.e.fields(it).color,
+    ))<palette-span>#it]
 })
 #{
   show: codly.highlight-set_(color: palette, fill: color => color, stroke: none)

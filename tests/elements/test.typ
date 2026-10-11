@@ -3,7 +3,6 @@
   line, header, footer, lang, file, highlight, annotation, callout, bubble, number, ref, line-ref,
   highlight-ref, annotation-ref, highlight-config, annotation-config, callout-config,
 )
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 285pt, height: auto, margin: 5pt)
 
@@ -24,11 +23,11 @@
   highlight-ref: highlight-ref,
   annotation-ref: annotation-ref,
 ) {
-  assert.eq(e.data(component).name, "codly-" + name)
+  assert.eq(codly.e.data(component).name, "codly-" + name)
 }
-#assert.eq(e.data(highlight-config).name, "highlight")
-#assert.eq(e.data(annotation-config).name, "annotation")
-#assert.eq(e.data(callout-config).name, "callout")
+#assert.eq(codly.e.data(highlight-config).name, "highlight")
+#assert.eq(codly.e.data(annotation-config).name, "annotation")
+#assert.eq(codly.e.data(callout-config).name, "callout")
 
 #let text-of(body) = {
   if body.has("text") {
@@ -48,7 +47,7 @@
 #{
   show: codly.set_(radius: 7pt)
   show: codly.show_(it => {
-    let fields = e.fields(it)
+    let fields = codly.e.fields(it)
     [#metadata((
         radius: fields.radius,
         body-block: fields.body.fields().at("block", default: false),
@@ -66,7 +65,7 @@
 }
 #{
   show: codly.show_(it => {
-    let fields = e.fields(it)
+    let fields = codly.e.fields(it)
     [#metadata((radius: fields.radius))<codly-override>#it]
   })
   codly.new(raw("enabled", block: true))
@@ -75,7 +74,7 @@
 // selector() matches codly instances in this scope.
 #{
   show codly.selector(): it => {
-    let fields = e.fields(it)
+    let fields = codly.e.fields(it)
     [#metadata(true)<selector-hit>#it]
   }
   codly.new(raw("selected", block: true))
@@ -86,16 +85,16 @@
 #{
   show: codly.lang-set_(languages: languages)
   show: codly.lang-show_(it => {
-    let fields = e.fields(it)
+    let fields = codly.e.fields(it)
     [#metadata((body: fields.body, python: fields.languages.python.name))<language-fields>#it]
   })
   show: codly.show_(it => {
-    let fields = e.fields(it)
+    let fields = codly.e.fields(it)
     let body-fields = if fields.body.func() == raw { fields.body.fields() } else { (:) }
     [#metadata(body-fields.at("lang", default: none))<language-raw>#it]
   })
   show: codly.line-show_(it => {
-    let fields = e.fields(it)
+    let fields = codly.e.fields(it)
     [#metadata(repr(fields.body.body))<language-syntax>#it]
   })
   codly.new(raw("let x = 1", block: true, lang: "python"))
@@ -109,7 +108,7 @@
 #{
   show: codly.lang-set_(languages: languages, display-name: false, display-icon: false)
   show: codly.lang-show_(it => {
-    let fields = e.fields(it)
+    let fields = codly.e.fields(it)
     [#metadata((
         body: fields.body,
         display-name: fields.display-name,
@@ -121,7 +120,7 @@
 #{
   show: codly.lang-set_(languages: languages)
   show: codly.lang-show_(it => {
-    let fields = e.fields(it)
+    let fields = codly.e.fields(it)
     [#metadata((
         body: fields.body,
         defined: fields.languages.at("missing", default: none),
@@ -134,11 +133,11 @@
 // their public fields when codly constructs the block grid.
 #{
   show: codly.header-show_(it => {
-    let fields = e.fields(it)
+    let fields = codly.e.fields(it)
     [#metadata((body: fields.body, fill: fields.fill))<header-hook>#it]
   })
   show: codly.footer-show_(it => {
-    let fields = e.fields(it)
+    let fields = codly.e.fields(it)
     [#metadata((body: fields.body, fill: fields.fill))<footer-hook>#it]
   })
   codly.header([standalone-head], fill: red)
@@ -188,18 +187,18 @@
 // Custom hooks can inspect line, number, highlight, and annotation elements.
 #{
   show: codly.line-show_(it => {
-    let fields = e.fields(it)
+    let fields = codly.e.fields(it)
     [#metadata((number: fields.body.number, smart-indent: fields.smart-indent))<lines-seen>#it]
   })
-  show: e.show_(codly.number, it => {
-    [#metadata(e.fields(it).number)<numbers-seen>#it]
+  show: codly.e.show_(codly.number, it => {
+    [#metadata(codly.e.fields(it).number)<numbers-seen>#it]
   })
   show: codly.highlight-show_(it => {
-    let fields = e.fields(it)
+    let fields = codly.e.fields(it)
     [#metadata((body: fields.body, color: fields.color))<highlights-seen>#it]
   })
   show: codly.annotation-show_(it => {
-    let fields = e.fields(it)
+    let fields = codly.e.fields(it)
     [#metadata((body: fields.body, num: fields.num))<annotations-seen>#it]
   })
   codly.new(
@@ -239,7 +238,7 @@
     display-icon: false,
   ))
   assert.eq(query(<language-fallback>).first().value, (body: "missing", defined: none))
-  let headers = e.query(codly.header)
+  let headers = codly.e.query(codly.header)
   assert.eq(headers.map(it => text-of(it)), (
     "standalone-head",
     "plain-head",
@@ -248,7 +247,7 @@
     "explicit-header",
     "inherited-header",
   ))
-  let footers = e.query(codly.footer)
+  let footers = codly.e.query(codly.footer)
   assert.eq(footers.map(it => text-of(it)), (
     "standalone-foot",
     "plain-foot",

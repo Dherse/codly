@@ -1,12 +1,11 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(height: 400pt)
 
 = Long code
 
 #{
-  show: e.set_(codly.number, placement: "outside", fill: none, align: right)
+  show: codly.e.set_(codly.number, placement: "outside", fill: none, align: right)
   // @typstyle off: preserve tabs in the Scala fixture.
   codly.new(breakable: true)[```scala
   package labs.lab10_streams

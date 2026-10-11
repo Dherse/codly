@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 8cm + 10pt, height: auto, margin: 5pt)
 
@@ -16,14 +15,14 @@ Hello, world!
 ```]
 
 #{
-  show: e.show_(codly.lang, it => [])
+  show: codly.e.show_(codly.lang, it => [])
   codly.new(number-enabled: false)[```typst
   Hello, world!
   ```]
 }
 
 #{
-  show: e.show_(codly.lang, it => [])
+  show: codly.e.show_(codly.lang, it => [])
   codly.new(number-enabled: false, annotations: ((start: 1, content: "Hello, world!"),))[```typst
   Hello, world!
   ```]

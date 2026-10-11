@@ -46,13 +46,18 @@ function boot() {
     return {card,textarea,status,details,controls,staticPreview};
   };
   const first=makeCard('first'), second=makeCard('second');
+  const fixed=new Element({example:'fixed',fixed:'true'});
+  // Fixed previews have no editor or rendering controls. Boot must skip them
+  // before looking up a textarea or attaching interactive handlers.
+  fixed.querySelector=()=>null;
+  fixed.querySelectorAll=()=>[];
   const elements=new Map();
   for (const selector of ['#theme','#code-font','#preferences','#menu-toggle','#sidebar','#page-toc','#search','#search-results','#docs-version']) elements.set(selector,new Element());
   elements.get('#theme').setAttribute('aria-checked','false');
   elements.get('#code-font').value='noto';
   const document={body:{dataset:{root:'./'}},documentElement:{dataset:{theme:'light',font:'noto'}},
     querySelector:selector=>elements.get(selector) ?? new Element(),
-    querySelectorAll:selector=>selector==='.example'?[first.card,second.card]:[],
+    querySelectorAll:selector=>selector==='.example'?[first.card,second.card,fixed]:[],
     addEventListener(){}};
   const context={document,location:{href:'https://example.test/guide.html',pathname:'/guide.html'},URL,URLSearchParams,
     history:{replaceState(){}}, Worker:class { constructor(){workers.push(this);this.messages=[];} postMessage(message){this.messages.push(message);} terminate(){this.terminated=true;} },
@@ -66,12 +71,13 @@ function boot() {
   const flushEdits=()=>{
     for (const [id,timer] of [...timers]) if (timer.delay===450) {timers.delete(id);timer.fn();}
   };
-  return {first,second,workers,timers,elements,document,highlights,flushEdits};
+  return {first,second,fixed,workers,timers,elements,document,highlights,flushEdits};
 }
 
 test('reading and changing UI preferences keep the single static preview unchanged',()=>{
   const app=boot();
   const original=app.first.staticPreview.src;
+  assert.equal(app.fixed.dataset.fixed,'true');
   app.first.details.open=true;
   app.first.details.listeners.toggle?.({target:app.first.details});
   assert.equal(app.workers.length,0);
@@ -80,6 +86,8 @@ test('reading and changing UI preferences keep the single static preview unchang
   app.elements.get('#code-font').listeners.change();
   assert.equal(app.workers.length,0);
   assert.equal(app.first.staticPreview.src,original);
+  assert.equal(app.fixed.listeners.input,undefined);
+  assert.equal(app.fixed.listeners.click,undefined);
 });
 
 test('editing starts compilation, while default Run and reset restore the static preview',()=>{

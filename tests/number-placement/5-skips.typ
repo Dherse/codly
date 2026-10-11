@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 = Code skips
 
@@ -13,7 +12,7 @@ fib(25)
 ```]
 
 #{
-  show: e.set_(codly.number, placement: "outside", fill: none)
+  show: codly.e.set_(codly.number, placement: "outside", fill: none)
   codly.new(skips: ((4, 32),))[```py
   def fib(n):
       if n <= 1:
@@ -25,7 +24,7 @@ fib(25)
 }
 
 #{
-  show: e.set_(codly.number, placement: "outside", fill: none)
+  show: codly.e.set_(codly.number, placement: "outside", fill: none)
   codly.new(
     skips: ((4, 120),),
     skip-number: align(center, emoji.face.shock),

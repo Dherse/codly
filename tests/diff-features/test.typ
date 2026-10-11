@@ -1,14 +1,15 @@
 // Two-view parsing and rendering behavior, independent of visual snapshots.
 #import "../../codly.typ" as codly
 #import "../../src/diff.typ" as impl
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 400pt, height: auto, margin: 6pt)
 
 #assert.eq(impl.language(none), none)
 #assert.eq(impl.language("py"), none)
 #assert.eq(impl.language("diff"), none)
-#assert.eq(impl.language("diff,py"), none)
+#assert.eq(impl.language("diff,py"), "py")
+#assert.eq(impl.language("diff, py"), "py")
+#assert.eq(impl.language("diff,custom-python"), "custom-python")
 #assert.eq(impl.language("diff-py"), "py")
 #assert.eq(impl.language("diff-custom-python"), "custom-python")
 #assert.eq(impl.language("diff- py"), "py")
@@ -57,14 +58,14 @@
 #let new = "int added = 1;\n shared\nint later = 2;\nint stable = 3;"
 #let source = "-/* start\n+int added = 1;\n  shared\n-end */\n+int later = 2;\n int stable = 3;"
 #show: codly.line-show_(it => {
-  let row = e.fields(it)
+  let row = codly.e.fields(it)
   if row.body.func() == raw.line {
     [#metadata((text: row.body.text, body: row.body.body))<visible-line>#it]
   } else { it }
 })
 #codly.new(raw(old, block: true, lang: "c"))
 #codly.new(raw(new, block: true, lang: "c"))
-#codly.new(raw(source, block: true, lang: "diff-c"))
+#codly.new(raw(source, block: true, lang: "diff,c"))
 #context {
   let rows = query(selector(<visible-line>).before(here())).map(it => it.value)
   assert.eq(rows.len(), 14)
@@ -90,14 +91,14 @@
 }
 
 // Configuration casting, suppression, and source-number offsets.
-#let (ok, off) = e.types.cast(false, codly.diff)
+#let (ok, off) = codly.e.types.cast(false, codly.diff)
 #assert(ok)
-#assert.eq(e.fields(off).enabled, false)
+#assert.eq(codly.e.fields(off).enabled, false)
 #assert.eq(
   impl.parse("-old\n+new", old-offset: 9, new-offset: 19).rows.map(row => (row.old, row.new)),
   ((10, none), (none, 20)),
 )
-#let settings = e.fields(codly.diff(added-fill: row => {
+#let settings = codly.e.fields(codly.diff(added-fill: row => {
   assert.eq(row.diff.kind, "added")
   assert.eq(row.diff.new, 2)
   assert.eq(row.text, "new")
@@ -115,7 +116,7 @@
 
 #{
   show: codly.line-show_(it => {
-    [#metadata(e.fields(it).body.text)<disabled-line>#it]
+    [#metadata(codly.e.fields(it).body.text)<disabled-line>#it]
   })
   codly.new(raw("-old\n+new", block: true, lang: "diff-py"), diff: false)
   codly.new(raw("-old\n+new", block: true, lang: "diff-py"), diff: none)
@@ -134,7 +135,7 @@
 // Tab expansion must match an ordinary marker-free raw block exactly.
 #{
   show: codly.line-show_(it => {
-    let row = e.fields(it).body
+    let row = codly.e.fields(it).body
     [#metadata((row.text, row.body))<tab-line>#it]
   })
   codly.new(raw("\treturn 1;", lang: "c", block: true, tab-size: 4))
@@ -248,7 +249,7 @@
 #{
   show: codly.set_(aliases: (custom-c: "c"))
   show: codly.line-show_(it => {
-    let row = e.fields(it).body
+    let row = codly.e.fields(it).body
     [#metadata((row.text, row.body))<diff-sublang>#it]
   })
   codly.new(raw("/* old */", lang: "c", block: true))
@@ -268,7 +269,7 @@
 // Rainbow bracket stacks must also use the separate old/new source views.
 #{
   show: codly.line-show_(it => {
-    let row = e.fields(it).body
+    let row = codly.e.fields(it).body
     [#metadata((row.text, row.body))<diff-rainbow>#it]
   })
   codly.new(raw("f(\n  old([1])\n)", lang: "py", block: true), rainbow: true)
@@ -288,9 +289,9 @@
 // unnumbered setting. Explicit gutters and markers stay in their own scope.
 #{
   show: codly.show_(it => {
-    let fields = e.fields(it)
+    let fields = codly.e.fields(it)
     if fields.__diff != none {
-      [#metadata(fields.gutters.map(column => e.fields(column).values))<diff-gutters>#it]
+      [#metadata(fields.gutters.map(column => codly.e.fields(column).values))<diff-gutters>#it]
     } else { it }
   })
   codly.new(
@@ -310,13 +311,13 @@
 // configurations still override a preset's dark colors.
 #{
   show: codly.theme("dark")
-  e.get(get => {
+  codly.e.get(get => {
     assert.eq(get(codly.codly).__diff-colors.added-fill, rgb("173b25"))
     []
   })
   {
     show: codly.theme("github-light")
-    e.get(get => {
+    codly.e.get(get => {
       assert.eq(get(codly.codly).diff, auto)
       assert.eq(get(codly.codly).__diff-colors, (:))
       []
@@ -329,8 +330,8 @@
 #{
   show: codly.set_(diff: false)
   show: codly.theme("dark")
-  e.get(get => {
-    assert.eq(e.fields(get(codly.codly).diff).enabled, false)
+  codly.e.get(get => {
+    assert.eq(codly.e.fields(get(codly.codly).diff).enabled, false)
     []
   })
   codly.new(raw("-literal", lang: "diff-py", block: true))
@@ -340,7 +341,7 @@
 // pair of syntax views instead of leaking an open comment into later code.
 #{
   show: codly.line-show_(it => {
-    let line = e.fields(it).body
+    let line = codly.e.fields(it).body
     [#metadata((line.text, line.body))<diff-hunk-line>#it]
   })
   codly.new(raw("return 1;", lang: "c", block: true))

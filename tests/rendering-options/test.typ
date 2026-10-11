@@ -1,11 +1,10 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 255pt, height: auto, margin: 5pt)
 
 #let check(expected, body) = {
   show: codly.line-show_(it => {
-    let line = e.fields(it).body
+    let line = codly.e.fields(it).body
     [#metadata(if line.func() == raw.line { line.number } else { "skip" })<seen-line>#it]
   })
   [#metadata(expected)<expected-lines>#body]
@@ -91,7 +90,7 @@
 
 // Outside borders use displayed rows, including headers and footers.
 #{
-  show: e.set_(codly.number, placement: "outside", fill: none)
+  show: codly.e.set_(codly.number, placement: "outside", fill: none)
   show: codly.line-set_(stroke: red + 1pt)
   show block: it => if type(it.stroke) == stroke and it.stroke.thickness == 1pt {
     [#metadata(it.height)<outside-outline>#it]

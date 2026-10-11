@@ -1,16 +1,15 @@
 #import "../../codly.typ" as codly
 #import "../../src/gutter.typ" as impl
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 320pt, height: auto, margin: 6pt)
 
 // Constructors and casts retain data rather than folding arrays together.
 #let column = codly.gutter-column(values: (none, "+", 12, [tag]))
-#assert.eq(e.fields(column).values, (none, "+", 12, [tag]))
+#assert.eq(codly.e.fields(column).values, (none, "+", 12, [tag]))
 #let cast(value) = {
-  let (ok, column) = e.types.cast(value, codly.gutter-column)
+  let (ok, column) = codly.e.types.cast(value, codly.gutter-column)
   assert(ok)
-  e.fields(column)
+  codly.e.fields(column)
 }
 #assert.eq(cast(("a", "b")).values, ("a", "b"))
 #assert.eq(cast((values: (1,), align: left)).align, left)
@@ -18,11 +17,11 @@
 #assert.eq(cast(callback).values, callback)
 #assert.eq(impl.columns(auto, true), (auto,))
 #assert.eq(impl.columns(auto, false), ())
-#assert.eq(impl.columns((auto, column), false), (e.fields(column),))
+#assert.eq(impl.columns((auto, column), false), (codly.e.fields(column),))
 #assert.eq(impl.columns((), true), ())
-#assert.eq(impl.value(e.fields(column), (kind: "code", source-line: 2)), "+")
-#assert.eq(impl.value(e.fields(column), (kind: "code", source-line: 20)), none)
-#assert.eq(impl.value(e.fields(column), (kind: "skip", source-line: none)), none)
+#assert.eq(impl.value(codly.e.fields(column), (kind: "code", source-line: 2)), "+")
+#assert.eq(impl.value(codly.e.fields(column), (kind: "code", source-line: 20)), none)
+#assert.eq(impl.value(codly.e.fields(column), (kind: "skip", source-line: none)), none)
 
 #let callback-column = cast(row => if row.kind == "code" { row.text } else { [skip] })
 #assert.eq(impl.value(callback-column, (kind: "code", text: "hello")), "hello")
@@ -76,7 +75,7 @@
     row.source-line
   }]
 #show: codly.number-show_(it => {
-  [#metadata(e.fields(it).number)<ordinary-number>#it]
+  [#metadata(codly.e.fields(it).number)<ordinary-number>#it]
 })
 #figure(caption: [Mapped gutters])[
   #codly.new(

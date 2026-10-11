@@ -1,6 +1,5 @@
 #import "../../codly.typ" as codly
 #import "../../src/wrap.typ" as wrap
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 230pt, height: auto, margin: 5pt)
 #let marker = [#metadata(none)<painted-wrap>#text(fill: gray)[↪]]
@@ -10,8 +9,8 @@
 #context {
   let origin = here()
   show: codly.line-show_(it => [#metadata((
-      e.fields(it).body.number,
-      e.fields(it).body.text,
+      codly.e.fields(it).body.number,
+      codly.e.fields(it).body.text,
     ))<wrap-source>#it])
   codly.new(
     raw(source, lang: "rs", block: true),
@@ -83,7 +82,7 @@
   context { assert.eq(query(selector(<painted-wrap>).after(origin).before(here())).len(), 0) }
 }
 
-#assert.eq(e.fields(codly.new(none)).at("wrap-marker", default: none), none)
+#assert.eq(codly.e.fields(codly.new(none)).at("wrap-marker", default: none), none)
 #assert(catch(() => codly.new(none, wrap-marker: 42)) != none)
 
 // A highlight wrapping internally reserves marker space too, and markers are

@@ -1,11 +1,10 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 280pt, height: 200pt, margin: 8pt)
 #set text(size: 8pt)
 #show: codly.number-set_(placement: "outside")
 #show: codly.line-show_(it => {
-  let row = e.fields(it).body
+  let row = codly.e.fields(it).body
   [#metadata(row.text)<diff-paged-row>#it]
 })
 #let rows = range(1, 26).map(i => str(i) + ": long wrapped source " + "argument " * 5)

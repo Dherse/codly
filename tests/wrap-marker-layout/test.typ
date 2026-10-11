@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 220pt, height: 150pt, margin: 5pt)
 #let marker = [#metadata(none)<painted-wrap>#text(fill: gray)[↪]]
@@ -36,7 +35,7 @@
 #for outside in (false, true) {
   context {
     let origin = here()
-    show: e.set_(codly.number, placement: if outside { "outside" } else { "inside" })
+    show: codly.e.set_(codly.number, placement: if outside { "outside" } else { "inside" })
     codly.new(
       raw("    call(" + "argument, " * 80 + ");", block: true),
       wrap-marker: marker,

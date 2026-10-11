@@ -1,6 +1,5 @@
 #import "../../codly.typ" as codly
 #import "../../src/lib.typ": __codly-numbering
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 380pt, height: auto, margin: 8pt)
 
@@ -22,7 +21,7 @@
 // A nullable annotation formatter suppresses only the annotation number.
 #{
   show: codly.annotation-show_(it => {
-    let fields = e.fields(it)
+    let fields = codly.e.fields(it)
     assert.eq(fields.numbering, none)
     [#metadata(fields.body)<unnumbered-annotation>#it]
   })
@@ -39,7 +38,7 @@
     assert(not it.text.contains("NOR THIS"))
     if it.text in ("tag", "note") { [#metadata(it.text)<numberless-item>#it] } else { it }
   }
-  renderer(codly.ref, e.fields(it))
+  renderer(codly.ref, codly.e.fields(it))
 }
 #import "../../src/lib.typ": (
   __codly-line-ref-show, __codly-highlight-ref-show, __codly-annotation-ref-show,

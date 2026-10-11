@@ -5,6 +5,8 @@ The current API reference for the Codly package.
 - [Components](components/index.md) render code blocks and their parts.
 - [Types](types/index.md) describe configuration values and their accepted shorthand forms.
 - [Themes and helpers](helpers/index.md) apply reusable styles and inspect block metadata.
+- [⚙️ Queries and show rules](queries-and-show-rules.md) explains how to inspect and customize elements.
+- [⚙️ Internals](internals.md) follows a code block from source to layout and references.
 
 ## Imports
 
@@ -21,7 +23,7 @@ Import the Codly package as a namespace:
 > The `*-show_` helpers accept replacement content or a callback receiving
 > the component, rather than a dictionary of field overrides.
 
-Codly uses Elembic custom elements and types. [`codly.new`](components/new.md) creates a code block. Component helpers such as [`codly.number-set_`](components/number.md#signature) apply defaults within the surrounding Typst scope. They are used with `#show:`, rather than native `#set` syntax. Refer to the [elembic documentation](https://pgbiel.github.io/elembic/) for more information.
+Codly uses Elembic custom elements and types. Access Elembic through `codly.e` to use the same version as Codly, without importing it separately. [`codly.new`](components/new.md) creates a code block. Component helpers such as [`codly.number-set_`](components/number.md#signature) apply defaults within the surrounding Typst scope. They are used with `#show:`, rather than native `#set` syntax. Refer to the [elembic documentation](https://pgbiel.github.io/elembic/) for more information.
 
 ````typst preview
 #import "@preview/codly:2.0.0" as codly

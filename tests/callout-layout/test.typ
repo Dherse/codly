@@ -1,8 +1,7 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 #set page(width: 180pt, height: 130pt, margin: 6pt)
 #show curve: it => [#metadata(it)<path>#it]
-#show: codly.callout-show_(it => [#metadata(e.fields(it))<row>#it])
+#show: codly.callout-show_(it => [#metadata(codly.e.fields(it))<row>#it])
 
 // Consecutive bubbles force page breaks. Their path and body must remain on
 // one page, with a valid source anchor and no duplicate or lost content.

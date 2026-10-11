@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 315pt, height: auto, margin: 5pt)
 #set heading(numbering: "1")
@@ -7,7 +6,7 @@
 // Native forward references; no global ref show rule is needed.
 #show: codly.line-ref-set_(separator: "-")
 #show: codly.line-ref-show_(it => {
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
   [#metadata((
       number: fields.number,
       separator: fields.separator,
@@ -15,11 +14,11 @@
     ))<line-reference>#it]
 })
 #show: codly.highlight-ref-show_(it => {
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
   [#metadata((line: fields.line, item: fields.item, by: fields.by))<highlight-reference>#it]
 })
 #show: codly.annotation-ref-show_(it => {
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
   [#metadata((line: fields.line, item: fields.item, by: fields.by))<annotation-reference>#it]
 })
 

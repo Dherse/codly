@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 300pt, height: 220pt, margin: 8pt)
 #set text(size: 8pt)
@@ -7,7 +6,7 @@
 #show: codly.number-set_(placement: "outside")
 #show: codly.callout-set_(source-indent: true)
 #show: codly.line-show_(it => {
-  [#metadata(e.fields(it).body.text)<paged-source>#it]
+  [#metadata(codly.e.fields(it).body.text)<paged-source>#it]
 })
 #let rows = range(1, 21).map(i => "    line " + str(i) + " wrapped source " * 5)
 #codly.new(

@@ -1,6 +1,6 @@
 # `codly.diff`
 
-Configures automatic parsing, syntax highlighting, gutters, and row fills for raw blocks whose language is `diff,<language>`.
+Configures automatic parsing, syntax highlighting, gutters, and row fills for raw blocks whose language is `diff-<language>` or `diff,<language>`.
 
 ## Signature
 
@@ -41,7 +41,7 @@ The fields can also be supplied as a dictionary. A boolean casts to `enabled`.
 ## Behavior
 
 > [!TIP] Use the patch language prefix
-> Set the raw block language to `diff,<language>`, such as `diff,py`, to enable patch parsing and highlight the changed code as Python.
+> Set the raw block language to `diff-<language>` or `diff,<language>`, such as `diff-py` or `diff,py`, to enable patch parsing and highlight the changed code as Python.
 
 > [!NOTE] Patch line coordinates
 > References and line-based settings use displayed patch-row numbers. Highlight and callout character positions count code after the diff marker is removed.
@@ -49,7 +49,9 @@ The fields can also be supplied as a dictionary. A boolean casts to `enabled`.
 > [!WARNING] Combined merge diffs are unsupported
 > Codly parses unified patches, including multiple files and hunks, but not combined merge diff format.
 
-Codly detects `diff,<language>` when the block-level `diff` setting is `auto` (the default). It removes the `diff,` prefix for syntax highlighting and renders old and new source views separately, so removed code does not affect new-side syntax state. Unified patches may contain multiple files and hunks; each is highlighted independently. Combined merge diffs are unsupported. A non-patch snippet may use ` `, `+`, and `-` prefixes for context, added, and removed rows.
+Codly detects both `diff-<language>` and `diff,<language>` when the block-level `diff` setting is `auto` (the default). It removes the `diff-` or `diff,` prefix for syntax highlighting and renders old and new source views separately, so removed code does not affect new-side syntax state. Unified patches may contain multiple files and hunks; each is highlighted independently. Combined merge diffs are unsupported. A non-patch snippet may use ` `, `+`, and `-` prefixes for context, added, and removed rows.
+
+Both prefixes are valid Codly syntax. For fenced blocks, `diff-py` works in Typst 0.15; use `raw(..., lang: "diff,py")` if your Typst version does not support commas in fenced language tags.
 
 Each fill accepts a paint, `none`, or `auto`; `auto` uses the ordinary row fill. A callback receives the row with a `diff` record containing `kind`, `old`, and `new` line coordinates, as well as the row's usual fields. Explicit highlights take precedence over diff fills. Setting `diff: false` or `diff: none` disables processing; setting it to `true` enables the default configuration. Custom `gutters` replace the automatic old/new/marker columns.
 
@@ -68,7 +70,7 @@ References and line-based settings use displayed patch-row numbers. Character po
 #import "@preview/codly:2.0.0" as codly
 
 #codly.new(
-  ```diff,py
+  ```diff-py
    shared
   -old = 1
   +new = 2

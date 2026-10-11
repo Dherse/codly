@@ -1,6 +1,8 @@
 """Assemble archived documentation builds into a GitHub Pages site."""
 import argparse
+import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import shutil
@@ -25,6 +27,30 @@ def copy_build(book, target, version, site_root):
     }) + "\n")
 
 
+def share_compiler_assets(build, site):
+    """Give identical binaries the same URL across versions and the landing site."""
+    manifest_path = build / "assets/compiler-assets.json"
+    if not manifest_path.is_file():
+        return  # Older archived runtimes still use their original asset URLs.
+    manifest = json.loads(manifest_path.read_text())
+    shared = site / "_typst"
+    shared.mkdir(exist_ok=True)
+
+    def share(name):
+        source = (manifest_path.parent / name).resolve()
+        source.relative_to(site.resolve())
+        content = source.read_bytes()
+        target = shared / (hashlib.sha256(content).hexdigest() + source.suffix)
+        if not target.exists():
+            target.write_bytes(content)
+        return Path(os.path.relpath(target, manifest_path.parent)).as_posix()
+
+    manifest["compilerWasm"] = share(manifest["compilerWasm"])
+    manifest["rendererWasm"] = share(manifest["rendererWasm"])
+    manifest["fonts"] = [share(name) for name in manifest["fonts"]]
+    manifest_path.write_text(json.dumps(manifest) + "\n")
+
+
 def assemble(book, site, version, config, package_version):
     if version != "main":
         version_key(version)
@@ -36,8 +62,10 @@ def assemble(book, site, version, config, package_version):
     version_key(initial)
     site.mkdir(parents=True, exist_ok=True)
     copy_build(book, site / version, version, "../")
+    share_compiler_assets(site / version, site)
     if version == "main" and not (site / initial).exists() and initial == f"v{package_version}":
         copy_build(book, site / initial, initial, "../")
+        share_compiler_assets(site / initial, site)
     if version != "main":
         metadata = site / version / "assets/version.json"
         metadata.write_text(json.dumps({"version": version, "siteRoot": "../", "releaseTag": version}) + "\n")
@@ -52,19 +80,33 @@ def assemble(book, site, version, config, package_version):
     if default not in releases:
         raise ValueError(f"Default release {default} has not been built")
     for entry in site.iterdir():
-        if entry.name in releases or entry.name == "main":
+        if entry.name in releases or entry.name in ("main", "CNAME", "_typst"):
             continue
         if entry.is_dir():
             shutil.rmtree(entry)
         else:
             entry.unlink()
     for entry in (site / default).iterdir():
+        # The hosting domain belongs to the site, not an archived release.
+        if entry.name == "CNAME":
+            continue
         target = site / entry.name
         if entry.is_dir():
             shutil.copytree(entry, target)
         else:
             shutil.copy2(entry, target)
     (site / "assets/version.json").write_text(json.dumps({"version": default, "siteRoot": "./"}) + "\n")
+    # The copied manifest was relative to a version directory; rebase it at root.
+    manifest = site / "assets/compiler-assets.json"
+    if manifest.is_file():
+        data = json.loads(manifest.read_text())
+        def rebase(name):
+            source = (site / default / "assets" / name).resolve()
+            return Path(os.path.relpath(source, manifest.parent)).as_posix()
+        data["compilerWasm"] = rebase(data["compilerWasm"])
+        data["rendererWasm"] = rebase(data["rendererWasm"])
+        data["fonts"] = [rebase(name) for name in data["fonts"]]
+        manifest.write_text(json.dumps(data) + "\n")
     versions = [{"version": item, "label": item} for item in releases]
     if (site / "main/index.html").is_file():
         versions.append({"version": "main", "label": "main (nightly)"})
@@ -72,6 +114,8 @@ def assemble(book, site, version, config, package_version):
         "defaultVersion": default, "versions": versions,
     }, indent=2) + "\n")
     (site / ".nojekyll").touch()
+    if config.get("customDomain"):
+        (site / "CNAME").write_text(config["customDomain"] + "\n")
     return default
 
 

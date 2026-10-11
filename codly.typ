@@ -1,10 +1,11 @@
+#import "@preview/elembic:1.1.1" as e
+
 /// A language definition, see the `languages` field.
 ///
 /// Additional, unknown fields are preserved and override the corresponding
 /// `codly.lang` arguments for that language, e.g. `(py: (radius: 5pt))`
 /// overrides `radius` for the Python language badge.
 #let language = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
 
   e.types.declare(
@@ -43,7 +44,6 @@
 /// Automatic two-view syntax highlighting for `diff-<language>` or `diff,<language>` raw blocks.
 /// The diff prefix is removed from code and shown in a separate gutter.
 #let diff = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
 
   let paint = e.types.option(e.types.union(auto, e.types.paint, function))
@@ -78,7 +78,6 @@
 /// Short arrays and `none` entries leave cells empty. `auto` styling inherits
 /// the grid's number alignment/insets; `fill: auto` follows the body row.
 #let gutter-column = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
 
   e.types.declare(
@@ -163,7 +162,6 @@
 
 /// A syntax-highlighting language applied to an inclusive range of lines.
 #let sublang = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
 
   e.types.declare(
@@ -202,7 +200,6 @@
 
 /// Optional grammar-aware delimiter coloring.
 #let rainbow = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
   import "src/rainbow.typ" as r
 
@@ -274,7 +271,6 @@
 
 /// Optional indentation guides, independent of syntax delimiter nesting.
 #let indent-guides = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
 
   let parser(default-parser, fields: (:), typecheck: true) = {
@@ -365,7 +361,6 @@
 
 /// Configuration for smart skips, see the `smart-skip` field.
 #let smart-skip = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
 
   e.types.declare(
@@ -445,7 +440,6 @@
 }
 
 #let highlight-config = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
 
   e.types.declare(
@@ -579,7 +573,6 @@
 }
 
 #let annotation-config = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
 
   e.types.declare(
@@ -652,7 +645,6 @@
 
 #let callout-config = {
   import "src/callout.typ" as callout-impl
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
 
   e.types.declare(
@@ -766,7 +758,6 @@
 /// Can be constructed as `range(start, end)`, `range(start: .., end: ..)`,
 /// or cast from the array `(start, end)`.
 #let range = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
 
   e.types.declare(
@@ -802,7 +793,6 @@
 /// Can be constructed as `skip(position, length)`, `skip(position: .., length: ..)`,
 /// or cast from the array `(position, length)`.
 #let skip = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
 
   e.types.declare(
@@ -837,7 +827,6 @@
 /// Can be constructed as `highlighted-line(line)`, `highlighted-line(line, color)`,
 /// or cast from an integer or an array of the form `(line, color)`.
 #let highlighted-line = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
 
   e.types.declare(
@@ -882,7 +871,6 @@
 /// Can be constructed as `unnumbered-line(line)`, `unnumbered-line(line, fill)`,
 /// or cast from an integer or an array of the form `(line, fill)`.
 #let unnumbered-line = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
 
   e.types.declare(
@@ -926,7 +914,6 @@
 /// Shared formatting settings read by the line, highlight, and annotation
 /// reference renderers. Generated references currently use figure numbering.
 #let ref = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default
 
   e.element.declare(
@@ -965,7 +952,6 @@
 
 /// A native reference to a displayed line of a codly code block.
 #let line-ref = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __codly-line-ref-show
 
   e.element.declare(
@@ -1002,7 +988,6 @@
 
 /// A native reference to a labelled highlight in a codly code block.
 #let highlight-ref = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __codly-highlight-ref-show
 
   e.element.declare(
@@ -1046,7 +1031,6 @@
 
 /// A native reference to a labelled annotation in a codly code block.
 #let annotation-ref = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-annotation-ref-show, __codly-prefix
 
   e.element.declare(
@@ -1097,7 +1081,6 @@
 
 /// A single highlight within a codly code block.
 #let highlight = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default, __codly-highlight-show
   import "src/themes.typ" as themes-impl
 
@@ -1176,7 +1159,6 @@
 /// A single line of a codly code block. Takes over the line-level styling
 /// arguments of `codly` (`radius`, `inset`, `fill`, `stroke`).
 #let line = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default, __codly-line-show
 
   e.element.declare(
@@ -1251,7 +1233,6 @@
 /// The header of a codly code block. Takes over the `header-` prefixed
 /// arguments of `codly`.
 #let header = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default
 
   e.element.declare(
@@ -1299,7 +1280,6 @@
 /// The footer of a codly code block. Takes over the `footer-` prefixed
 /// arguments of `codly`.
 #let footer = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default
 
   e.element.declare(
@@ -1347,7 +1327,6 @@
 /// The language badge of a codly code block. Takes over the `lang-` prefixed
 /// arguments of `codly`, as well as `display-name` and `display-icon`.
 #let lang = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default, __codly-lang-show
 
   e.element.declare(
@@ -1424,7 +1403,6 @@
 /// A filename badge, independently styleable from the language badge.
 #let file = {
   import "src/file.typ" as file-impl
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
   e.element.declare(
     "codly-file",
@@ -1449,7 +1427,6 @@
 /// A single annotation of a codly code block. Takes over the `annotation-`
 /// prefixed arguments of `codly`.
 #let annotation = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default, __codly-annotation-show
 
   e.element.declare(
@@ -1476,7 +1453,6 @@
 /// The painted bubble inside a callout. Owns independent styling defaults.
 #let bubble = {
   import "src/callout.typ" as callout-impl
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
 
   e.element.declare(
@@ -1514,7 +1490,6 @@
 /// A callout row. Its cell properties can be configured with set rules.
 #let callout = {
   import "src/callout.typ" as callout-impl
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix
 
   e.element.declare(
@@ -1576,7 +1551,6 @@
 /// A line number of a codly code block. Takes over the `number-` prefixed
 /// arguments of `codly`.
 #let number = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default, __codly-numbering
 
   e.element.declare(
@@ -1632,7 +1606,6 @@
 }
 
 #let sublang-block = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __doc, __default
 
   e.element.declare(
@@ -1666,7 +1639,6 @@
 }
 
 #let codly = {
-  import "@preview/elembic:1.1.1" as e
   import "src/lib.typ": __codly-prefix, __default, __doc, __codly-show
 
   let codly-show = __codly-show.with(
@@ -1984,123 +1956,93 @@
 
 #let new = codly
 #let set_(..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.set_(codly, ..args)
 }
 #let show_(it, ..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.show_(codly, it, ..args)
 }
 #let selector(..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.selector(codly, ..args)
 }
 #let lang-set_(..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.set_(lang, ..args)
 }
 #let lang-show_(it, ..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.show_(lang, it, ..args)
 }
 #let file-set_(..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.set_(file, ..args)
 }
 #let file-show_(it, ..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.show_(file, it, ..args)
 }
 #let header-set_(..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.set_(header, ..args)
 }
 #let header-show_(it, ..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.show_(header, it, ..args)
 }
 #let footer-set_(..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.set_(footer, ..args)
 }
 #let footer-show_(it, ..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.show_(footer, it, ..args)
 }
 #let line-set_(..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.set_(line, ..args)
 }
 #let line-show_(it, ..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.show_(line, it, ..args)
 }
 #let highlight-set_(..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.set_(highlight, ..args)
 }
 #let highlight-show_(it, ..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.show_(highlight, it, ..args)
 }
 #let annotation-set_(..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.set_(annotation, ..args)
 }
 #let annotation-show_(it, ..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.show_(annotation, it, ..args)
 }
 #let callout-set_(..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.set_(callout, ..args)
 }
 #let callout-show_(it, ..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.show_(callout, it, ..args)
 }
 #let bubble-set_(..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.set_(bubble, ..args)
 }
 #let bubble-show_(it, ..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.show_(bubble, it, ..args)
 }
 #let ref-set_(..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.set_(ref, ..args)
 }
 #let line-ref-set_(..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.set_(line-ref, ..args)
 }
 #let line-ref-show_(it, ..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.show_(line-ref, it, ..args)
 }
 #let highlight-ref-set_(..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.set_(highlight-ref, ..args)
 }
 #let highlight-ref-show_(it, ..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.show_(highlight-ref, it, ..args)
 }
 #let annotation-ref-set_(..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.set_(annotation-ref, ..args)
 }
 #let annotation-ref-show_(it, ..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.show_(annotation-ref, it, ..args)
 }
 #let number-set_(..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.set_(number, ..args)
 }
 #let number-show_(it, ..args) = {
-  import "@preview/elembic:1.1.1" as e
   e.show_(number, it, ..args)
 }
 

@@ -124,6 +124,7 @@ const menu = document.querySelector('#menu-toggle');
 menu.addEventListener('click', () => { const open = menu.getAttribute('aria-expanded') !== 'true'; menu.setAttribute('aria-expanded', open); document.querySelector('#sidebar').classList.toggle('open', open); if (open) sidebarNavigation.revealCurrent(); });
 
 for (const card of cards) {
+  if (card.dataset.fixed === 'true') continue;
   const textarea = card.querySelector('textarea');
   const widgets = validateWidgets(JSON.parse(card.dataset.widgets || '[]'));
   const source = exampleSource(textarea.value, widgets);
@@ -222,3 +223,5 @@ search.addEventListener('input', async () => {
 document.addEventListener('keydown', e => { if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) { e.preventDefault(); if (matchMedia('(max-width:720px)').matches && menu.getAttribute('aria-expanded') !== 'true') menu.click(); search.focus(); } if (e.key === 'Escape') { search.value = ''; results.hidden = true; if (menu.getAttribute('aria-expanded') === 'true') menu.click(); } });
 updatePreferences();
 const sidebarNavigation = initializeSidebar(document.querySelector('#sidebar'));
+const diagrams = document.querySelectorAll('[data-mermaid]');
+if (diagrams.length) import('./diagrams.mjs').then(({ initializeDiagrams }) => initializeDiagrams(diagrams)).catch(() => {});

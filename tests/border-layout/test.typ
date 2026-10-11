@@ -1,11 +1,10 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 200pt, height: auto, margin: 20pt)
 
 #let example(stroke, outside: false) = {
   show: codly.line-set_(stroke: stroke, fill: white)
-  show: e.set_(codly.number, placement: if outside { "outside" } else { "inside" })
+  show: codly.e.set_(codly.number, placement: if outside { "outside" } else { "inside" })
   codly.new(raw("margin check\nsecond line", block: true), radius: 0pt)
 }
 

@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 285pt, height: auto, margin: 5pt)
 
@@ -36,7 +35,7 @@
 }
 
 #let capture-lang = it => {
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
   [#metadata((
       body: fields.body,
       display-name: fields.display-name,
@@ -101,7 +100,7 @@
     radius,
   ))
 
-  let rendered = e.query(codly.lang).map(text-of)
+  let rendered = codly.e.query(codly.lang).map(text-of)
   assert.eq(rendered, ("PPython", "P", "Python", "", ""))
   assert.eq(query(<badge-radius>).map(it => it.value), (radius, radius, radius))
   let images = query(<badge-image>)

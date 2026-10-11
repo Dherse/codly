@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #let suffix(body) = {
   if type(body) == str { body } else if body.has("text") { body.text } else if body.has(
@@ -8,7 +7,7 @@
 }
 
 #let line-show(it) = {
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
   let body = fields.body
   if type(body) == content and body.func() == raw.line {
     [#metadata((number: body.number, text: body.text))<annotation-line>#it]
@@ -21,7 +20,7 @@
 #show: codly.ref-set_(sep: " / ", numbering: n => [L#n])
 #show: codly.line-show_(line-show)
 #show: codly.annotation-show_(it => {
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
   [#metadata((
       num: fields.num,
       body: fields.body,

@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 480pt, height: auto, margin: 3pt)
 #let text-of(body) = {
@@ -12,7 +11,7 @@
 
 // Check highlighted text with one-based, inclusive positions, counting indentation.
 #show: codly.highlight-show_(it => {
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
   let expected = if fields.highlight.line == 3 { "value * 2" } else if fields.highlight.line == 4 {
     "operation()"
   } else { "raise" }

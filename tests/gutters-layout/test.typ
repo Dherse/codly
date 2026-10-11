@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 330pt, height: auto, margin: 8pt)
 #set text(size: 9pt)
@@ -78,7 +77,7 @@
     source: row.source-line,
   ))<gutter-position>#column]
 #show: codly.line-show_(it => {
-  let line = e.fields(it).body
+  let line = codly.e.fields(it).body
   if line.func() == raw.line {
     [#metadata(line.text)<code-position>#it]
   } else { it }

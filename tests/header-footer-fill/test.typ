@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 240pt, height: auto, margin: 5pt)
 
@@ -20,7 +19,7 @@
     fill: gutter,
   )
   show: codly.header-set_(fill: head)
-  show: e.set_(codly.footer, fill: foot)
+  show: codly.e.set_(codly.footer, fill: foot)
   show: codly.line-set_(fill: if style == "defaults" { gradient.linear(aqua, blue) } else if style
     == "explicit" {
     row => {

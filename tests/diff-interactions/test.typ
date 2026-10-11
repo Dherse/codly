@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 500pt, height: auto, margin: 8pt)
 
@@ -13,7 +12,7 @@
 )
 #show: codly.set_(aliases: (custom-python: "py"), rainbow: (palette: palette))
 #show: codly.line-show_(it => {
-  let row = e.fields(it).body
+  let row = codly.e.fields(it).body
   [#metadata((row.text, row.body))<interaction-line>#it]
 })
 #show text.where(text: "keyword"): it => context [#metadata(text.fill)<interaction-keyword>#it]

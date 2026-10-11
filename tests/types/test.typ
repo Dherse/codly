@@ -1,20 +1,19 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 160pt, height: auto, margin: 5pt)
 
 // Compare public fields, excluding Elembic metadata.
 #let check-constructors(cases) = {
   for case in cases {
-    assert.eq(e.fields(case.at(0)), case.at(1))
+    assert.eq(codly.e.fields(case.at(0)), case.at(1))
   }
 }
 
 #let check-casts(cases) = {
   for case in cases {
-    let result = e.types.cast(case.at(1), case.at(0))
+    let result = codly.e.types.cast(case.at(1), case.at(0))
     assert.eq(result.at(0), true)
-    assert.eq(e.fields(result.at(1)), case.at(2))
+    assert.eq(codly.e.fields(result.at(1)), case.at(2))
   }
 }
 
@@ -185,7 +184,7 @@
 
 // Exercise the same casts through the public block constructor, where these
 // types are consumed in arrays and option fields.
-#let block-fields = e.fields(codly.new(
+#let block-fields = codly.e.fields(codly.new(
   none,
   range: (17, 19),
   smart-skip: true,
@@ -195,11 +194,11 @@
   annotations: ((start: 23, content: [note]),),
 ))
 
-#assert.eq(e.fields(block-fields.range), (start: 17, end: 19))
-#assert.eq(e.fields(block-fields.smart-skip), (first: true, last: true, rest: true))
-#assert.eq(e.fields(block-fields.skips.at(0)), (position: 20, length: 2))
-#assert.eq(e.fields(block-fields.highlighted.at(0)), (line: 21, color: none))
-#assert.eq(e.fields(block-fields.highlights.at(0)), (
+#assert.eq(codly.e.fields(block-fields.range), (start: 17, end: 19))
+#assert.eq(codly.e.fields(block-fields.smart-skip), (first: true, last: true, rest: true))
+#assert.eq(codly.e.fields(block-fields.skips.at(0)), (position: 20, length: 2))
+#assert.eq(codly.e.fields(block-fields.highlighted.at(0)), (line: 21, color: none))
+#assert.eq(codly.e.fields(block-fields.highlights.at(0)), (
   line: 22,
   start: 1,
   end: 2,
@@ -214,7 +213,7 @@
   stroke: none,
   depth: none,
 ))
-#assert.eq(e.fields(block-fields.annotations.at(0)), (
+#assert.eq(codly.e.fields(block-fields.annotations.at(0)), (
   start: 23,
   end: 23,
   content: [note],
@@ -231,5 +230,5 @@
   (codly.highlight-config, false),
   (codly.annotation-config, 0),
 ) {
-  assert.eq(e.types.cast(value, type).at(0), false)
+  assert.eq(codly.e.types.cast(value, type).at(0), false)
 }

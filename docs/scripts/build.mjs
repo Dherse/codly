@@ -23,6 +23,10 @@ const compilerWasm = await fs.readFile('node_modules/@myriaddreamin/typst-ts-web
 const rendererWasm = await fs.readFile('node_modules/@myriaddreamin/typst-ts-renderer/pkg/typst_ts_renderer_bg.wasm');
 await fs.writeFile(`${assets}/compiler.wasm`, compilerWasm);
 await fs.writeFile(`${assets}/renderer.wasm`, rendererWasm);
+await fs.writeFile(`${assets}/compiler-assets.json`, JSON.stringify({
+  compilerWasm: 'compiler.wasm', rendererWasm: 'renderer.wasm',
+  fonts: Object.keys(fontFiles).filter(name => !name.endsWith('.woff2')).map(name => `fonts/${name}`),
+}));
 const files = {};
 async function addTree(directory,virtualRoot) {
   for (const entry of await fs.readdir(directory,{withFileTypes:true})) {

@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 300pt, height: auto, margin: 5pt)
 
@@ -12,7 +11,7 @@
 }
 
 #show: codly.line-show_(it => {
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
   let line = fields.body
   if line != none and line.func() == raw.line {
     [#metadata((
@@ -28,14 +27,14 @@
   }
 })
 #show: codly.highlight-show_(it => {
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
   [#metadata((tag: fields.highlight.tag, body: text-of(fields.body)))<sublang-highlight>#it]
 })
-#show: e.show_(codly.number, it => {
-  [#metadata(e.fields(it).number)<sublang-number>#it]
+#show: codly.e.show_(codly.number, it => {
+  [#metadata(codly.e.fields(it).number)<sublang-number>#it]
 })
 #show: codly.annotation-show_(it => {
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
   [#metadata((num: fields.num, height: fields.height))<sublang-annotation>#it]
 })
 

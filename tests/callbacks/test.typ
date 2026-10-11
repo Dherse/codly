@@ -1,28 +1,27 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 285pt, height: auto, margin: 5pt)
 
 // Hooks record resolved fields for post-layout assertions.
 // Fill and stroke callbacks check their inputs when called.
 #let line-fields(it) = {
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
   [#metadata(fields.fill)<callback-line-fill>#it]
 }
 
 #let highlight-fields(it) = {
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
   [#metadata(fields.color)<callback-highlight-color>#it]
 }
 
 #let lang-fields(it) = {
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
   let definition = fields.languages.at("py")
   [#metadata(definition.color)<callback-lang-color>#it]
 }
 
 #let number-fields(it) = {
-  [#metadata(e.fields(it).number)<callback-number>#it]
+  [#metadata(codly.e.fields(it).number)<callback-number>#it]
 }
 
 #let highlight-fill(color) = {
@@ -107,7 +106,7 @@
   },
 )
 #show: codly.highlight-show_(highlight-fields)
-#show: e.show_(codly.number, number-fields)
+#show: codly.e.show_(codly.number, number-fields)
 #codly.new(raw("one\ntwo", block: true), offset: 5)<offset-source>
 #codly.new(
   raw("three", block: true),

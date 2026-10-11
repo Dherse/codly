@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 220pt, height: 110pt, margin: 6pt, columns: 2)
 #set text(size: 7pt)

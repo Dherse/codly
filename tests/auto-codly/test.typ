@@ -1,9 +1,8 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 480pt, height: auto, margin: 3pt)
 #show: codly.show_(it => {
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
   if fields.__diff-pass == none and fields.__diff == none {
     [#metadata(fields.radius)<converted>#it]
   } else { it }

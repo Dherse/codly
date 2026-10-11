@@ -30,8 +30,9 @@
 - `gutter-column` and `gutters` for multiple independently styled columns.
   Values accept source-aligned arrays or row callbacks; `auto` includes ordinary
   numbering, and `()` hides all gutters. Support outside placement and pagination.
-- Automatic `diff-<language>` highlighting with separate old/new syntax passes,
-  marker-free source, old/new numbering, and change markers. Support unified
+- Automatic `diff-<language>` and `diff,<language>` highlighting with separate
+  old/new syntax passes, marker-free source, old/new numbering, and change markers.
+  Support unified
   hunks, simple fragments, configurable paints, and custom gutters.
 - Plain callout rows attached to source lines, above or below the code.
 - Pointed callout bubbles with character anchors, configurable paint, border,

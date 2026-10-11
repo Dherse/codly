@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 240pt, height: auto, margin: 5pt)
 
@@ -16,7 +15,7 @@
 }
 
 #let line-seen(it) = {
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
   [#metadata((
       number: fields.number,
       separator: fields.separator,
@@ -26,7 +25,7 @@
 }
 
 #let highlight-seen(it) = {
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
   [#metadata((
       line: fields.line,
       item: fields.item,
@@ -39,7 +38,7 @@
 }
 
 #let annotation-seen(it) = {
-  let fields = e.fields(it)
+  let fields = codly.e.fields(it)
   [#metadata((
       line: fields.line,
       item: fields.item,
@@ -97,7 +96,7 @@
 #context {
   for target in (<styled:12>, <styled-highlight>, <styled-note>) {
     let reference = (query(target).first().numbering)()
-    assert.eq(e.fields(reference).body, [])
+    assert.eq(codly.e.fields(reference).body, [])
   }
   assert.eq(query(<line-ref-seen>).map(it => it.value), (
     (number: 12, separator: " line ", body: "L12", suffix: none),

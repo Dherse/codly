@@ -40,3 +40,5 @@
     - [`themes`](api/helpers/themes.md)
     - [`define-theme`](api/helpers/define-theme.md)
     - [`info`](api/helpers/info.md)
+  - [⚙️ Queries and show rules](api/queries-and-show-rules.md)
+  - [⚙️ Internals](api/internals.md)

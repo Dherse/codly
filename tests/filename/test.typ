@@ -1,13 +1,12 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 #set page(width: 300pt, height: auto, margin: 8pt)
 #show: codly.line-set_(fill: white)
 
 #let sample(key, body, ..args) = {
-  show: codly.file-show_(it => [#metadata((key: key, fields: e.fields(it)))<filename>#it])
-  show: codly.lang-show_(it => [#metadata((key: key, fields: e.fields(it)))<language>#it])
+  show: codly.file-show_(it => [#metadata((key: key, fields: codly.e.fields(it)))<filename>#it])
+  show: codly.lang-show_(it => [#metadata((key: key, fields: codly.e.fields(it)))<language>#it])
   show: codly.line-show_(it => {
-    let line = e.fields(it).body
+    let line = codly.e.fields(it).body
     if line.func() == raw.line { [#metadata((key: key, line: line))<source>#it] } else { it }
   })
   codly.new(body, ..args)

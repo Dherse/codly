@@ -1,6 +1,5 @@
 #import "../../codly.typ" as codly
 #import "../../src/indent.typ" as ind
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 260pt, height: auto, margin: 5pt)
 
@@ -60,10 +59,10 @@
 }
 
 #let colors = (red, blue)
-#assert.eq(e.fields(codly.new(none, indent-guides: true)).indent-guides.enabled, true)
-#assert.eq(e.fields(codly.new(none, indent-guides: false)).indent-guides.enabled, false)
-#assert.eq(e.fields(codly.indent-guides(palette: colors)).palette, colors)
-#let style = ind.settings(e.fields(codly.indent-guides()), codly.rainbow(
+#assert.eq(codly.e.fields(codly.new(none, indent-guides: true)).indent-guides.enabled, true)
+#assert.eq(codly.e.fields(codly.new(none, indent-guides: false)).indent-guides.enabled, false)
+#assert.eq(codly.e.fields(codly.indent-guides(palette: colors)).palette, colors)
+#let style = ind.settings(codly.e.fields(codly.indent-guides()), codly.rainbow(
   palette: colors,
   depth-offset: 1,
 ))
@@ -71,12 +70,12 @@
 #assert.eq(style.depth-offset, 1)
 #assert.eq(
   ind
-    .settings(e.fields(codly.indent-guides(rainbow: false, color: green)), codly.rainbow())
+    .settings(codly.e.fields(codly.indent-guides(rainbow: false, color: green)), codly.rainbow())
     .palette,
   (green,),
 )
 #assert.eq(
-  ind.settings(e.fields(codly.indent-guides(rainbow: true, palette: colors)), none).palette,
+  ind.settings(codly.e.fields(codly.indent-guides(rainbow: true, palette: colors)), none).palette,
   colors,
 )
 

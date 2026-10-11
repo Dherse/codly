@@ -39,6 +39,8 @@
 #if case.starts-with("diff-") {
   let sources = (
     diff-language: ("+one", "diff-"),
+    diff-comma-language: ("+one", "diff,"),
+    diff-comma-languages: ("+one", "diff,py,c"),
     diff-languages: ("+one", "diff-py,c"),
     diff-hunk: ("@@ bad @@", "diff-py"),
     diff-incomplete: ("@@ -1,2 +1,2 @@\n one", "diff-py"),

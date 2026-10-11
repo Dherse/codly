@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 400pt, height: auto, margin: 5pt)
 #set document(title: "Codly listing figures")
@@ -22,9 +21,9 @@
   radius: 6pt,
   block-label: <raw-code>,
 )
-#assert.eq(e.data(codly.new).eid, e.data(codly.codly).eid)
-#assert.eq(e.fields(code-block).radius, 6pt)
-#assert.eq(e.data(code-block).name, "codly")
+#assert.eq(codly.e.data(codly.new).eid, codly.e.data(codly.codly).eid)
+#assert.eq(codly.e.fields(code-block).radius, 6pt)
+#assert.eq(codly.e.data(code-block).name, "codly")
 
 @raw-code @raw-code:1 @marked @note
 #figure(code-block, caption: [Raw input])<raw-code>
@@ -122,7 +121,7 @@
   assert.eq(query(<raw-code:1>).first().kind, "codly-line")
   assert.eq(query(<marked>).first().kind, "codly-referencer")
   assert.eq(query(<note>).first().kind, "codly-referencer")
-  assert.eq(e.fields((query(<marked>).first().numbering)()).block, <marked-code>)
-  assert.eq(e.fields((query(<note>).first().numbering)()).block, <marked-code>)
+  assert.eq(codly.e.fields((query(<marked>).first().numbering)()).block, <marked-code>)
+  assert.eq(codly.e.fields((query(<note>).first().numbering)()).block, <marked-code>)
   assert.eq(codly.info(<raw-code>), (last-number: 1, lines: 1))
 }

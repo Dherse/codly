@@ -63,6 +63,7 @@ class ArchiveTests(unittest.TestCase):
 
     def test_publish_updates_remote_restore_returns_full_archive_and_caller_checkout_is_untouched(self):
         site = self.assembled_site("v2.0.0", "release 2.0")
+        (site / "CNAME").write_text("codly.dherse.dev\n")
         (site / "v2.0.0").mkdir()
         (site / "v2.0.0/index.html").write_text("archived 2.0")
         archive_script.publish(site)
@@ -79,6 +80,7 @@ class ArchiveTests(unittest.TestCase):
 
         restored = self.root / "restored"
         archive_script.restore(restored)
+        self.assertEqual((restored / "CNAME").read_text(), "codly.dherse.dev\n")
         self.assertEqual((restored / "index.html").read_text(), "release 2.1")
         self.assertEqual((restored / "v2.0.0/index.html").read_text(), "archived 2.0")
         self.assertEqual((restored / "v2.1.0/index.html").read_text(), "archived 2.1")

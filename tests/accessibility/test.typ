@@ -1,5 +1,4 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 240pt, height: auto, margin: 5pt)
 #set document(title: "Codly accessibility")
@@ -24,7 +23,7 @@
 ]<code>
 
 #{
-  show: e.set_(codly.number, placement: "outside")
+  show: codly.e.set_(codly.number, placement: "outside")
   show: codly.line-set_(stroke: blue + 1pt)
   codly.new(raw("outside\nsecond", block: true), radius: 8pt, annotations: (
     (start: 1, end: 2, content: [Remark]),

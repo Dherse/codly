@@ -1,9 +1,8 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 #set page(width: 290pt, height: auto, margin: 8pt)
 #let source = "abcdefghijklmnopqrstuvwxyz0123456789"
 #show curve: it => [#metadata(it)<outline>#it]
-#show: codly.callout-show_(it => [#metadata(e.fields(it))<fields>#it])
+#show: codly.callout-show_(it => [#metadata(codly.e.fields(it))<fields>#it])
 #show: codly.callout-set_(pointer-size: 4pt, bubble-fill: gradient.linear(
   aqua.lighten(70%),
   purple.lighten(70%),

@@ -17,6 +17,8 @@ LAYOUT_ERRORS = {
     "theme-palette-empty": "highlight color palettes must not be empty",
     "theme-derived-palette-empty": "highlight color palettes must not be empty",
     "diff-language": "diff requires one nonempty language",
+    "diff-comma-language": "diff requires one nonempty language",
+    "diff-comma-languages": "diff requires one nonempty language",
     "diff-languages": "diff requires one nonempty language",
     "diff-hunk": "invalid unified diff hunk header",
     "diff-incomplete": "incomplete unified diff hunk",

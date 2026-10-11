@@ -1,13 +1,17 @@
 #import "../../codly.typ" as codly
-#import "@preview/elembic:1.1.1" as e
 
 #set page(width: 240pt, height: auto, margin: 5pt)
 
 // The public block field is optional, type-checked, and does not change the
 // existing layout unless requested.
-#assert.eq(e.fields(codly.new(none)).at("leading", default: none), none)
-#assert.eq(e.fields(codly.new(none, leading: 0.2em)).leading, 0.2em)
-#let grid-options = e.fields(codly.new(none, gutter: 1pt, column-gutter: 2pt, row-gutter: 3pt))
+#assert.eq(codly.e.fields(codly.new(none)).at("leading", default: none), none)
+#assert.eq(codly.e.fields(codly.new(none, leading: 0.2em)).leading, 0.2em)
+#let grid-options = codly.e.fields(codly.new(
+  none,
+  gutter: 1pt,
+  column-gutter: 2pt,
+  row-gutter: 3pt,
+))
 #assert.eq(grid-options.gutter, 1pt)
 #assert.eq(grid-options.column-gutter, 2pt)
 #assert.eq(grid-options.row-gutter, 3pt)
