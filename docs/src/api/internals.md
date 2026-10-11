@@ -130,9 +130,12 @@ show rules for a badge, line, highlight, or reference; keep the original element
 in your result when you want its existing behavior. Query metadata for document
 inspection after layout.
 
-For implementation work, the declarations live in
-[`codly.typ`](https://github.com/Dherse/codly/blob/main/codly.typ), the row and
-block pipeline in
+For implementation work, field types, defaults, and descriptions live in
+[`src/args.yaml`](https://github.com/Dherse/codly/blob/main/src/args.yaml).
+[`src/declarations.typ`](https://github.com/Dherse/codly/blob/main/src/declarations.typ)
+loads this metadata for the constructors, casts, and renderers in
+[`codly.typ`](https://github.com/Dherse/codly/blob/main/codly.typ).
+The row and block pipeline lives in
 [`src/lib.typ`](https://github.com/Dherse/codly/blob/main/src/lib.typ), and the
 position-based painting in
 [`src/geometry.typ`](https://github.com/Dherse/codly/blob/main/src/geometry.typ).

@@ -1,5 +1,6 @@
 // Pointed callouts: source anchors, native text layout, and one painted outline.
 #import "@preview/elembic:1.1.1" as e
+#import "declarations.typ": __callout-fields
 
 #let bubble-name(name) = if name.starts-with("bubble-") { name.slice(7) } else { name }
 #let style-names = (
@@ -18,109 +19,8 @@
   "bubble-width",
 )
 
-// One schema owns both the bubble's defaults and callout-level overrides.
-#let fields(entry: false, bubble: false) = {
-  let field(name, ty, default, doc) = {
-    let styling = name in style-names
-    if bubble and not styling { return none }
-    let inherit = entry or (not bubble and styling)
-    e.field(
-      if bubble { bubble-name(name) } else { name },
-      if inherit { e.types.union(ty, auto) } else { ty },
-      default: if inherit { auto } else { default },
-      doc: doc,
-      folds: false,
-    )
-  }
-  (
-    field(
-      "source-indent",
-      bool,
-      false,
-      "Align plain callouts to their source indentation, reserving the gutter columns. Pointed bubbles keep their character anchors.",
-    ),
-    field(
-      "placement",
-      e.types.union("above", "below"),
-      "below",
-      "Side of the source line on which to place the callout.",
-    ),
-    field(
-      "bubble-gap",
-      e.types.union(length, dictionary),
-      0.5em,
-      "Minimum separation: a length for both axes, or (x: length, y: length). Omitted axes default to 0.5em.",
-    ),
-    field(
-      "pointer",
-      e.types.option(int),
-      none,
-      "Character in the attached source line (one-based, like highlights; 0 means line start). `none` disables the bubble.",
-    ),
-    field(
-      "pointer-align",
-      e.types.union("start", "center", "end"),
-      "center",
-      "Preferred bubble alignment about the source character, clamped to the available row.",
-    ),
-    field("pointer-size", length, 0.4em, "Height and half-base width of the arrow."),
-    field(
-      "pointer-height",
-      e.types.union(length, auto),
-      auto,
-      "Arrow height; auto uses pointer-size.",
-    ),
-    field(
-      "pointer-width",
-      e.types.union(length, auto),
-      auto,
-      "Full arrow base width; auto uses twice pointer-size.",
-    ),
-    field(
-      "pointer-offset",
-      length,
-      0pt,
-      "Horizontal shift from the source character; positive points right, negative left. Clamped to the bubble.",
-    ),
-    field(
-      "bubble-align",
-      alignment,
-      center,
-      "Alignment of the content inside the bubble, independent of cell alignment.",
-    ),
-    field(
-      "bubble-fill",
-      e.types.option(e.types.paint),
-      luma(245),
-      "Fill of the entire bubble and arrow.",
-    ),
-    field(
-      "bubble-stroke",
-      e.types.option(stroke),
-      0.6pt + luma(80),
-      "Stroke of the single bubble outline.",
-    ),
-    field(
-      "bubble-inset",
-      e.types.union(length, dictionary),
-      (x: 0.5em, y: 0.3em),
-      "Padding inside the bubble.",
-    ),
-    field(
-      "bubble-outset",
-      e.types.union(length, dictionary),
-      0pt,
-      "Extra paint extent around the padded body; reserved in the row.",
-    ),
-    field("bubble-radius", length, 2pt, "Corner radius of the bubble."),
-    field(
-      "bubble-width",
-      e.types.union(length, ratio, auto),
-      auto,
-      "Preferred padded body width; auto fits the content, bounded by the row.",
-    ),
-  ).filter(f => f != none)
-}
+// Shared field metadata and inheritance live in the declaration loader.
+#let fields = __callout-fields
 
 #let resolve(value, defaults, bubble-defaults: none) = {
   let result = (:)

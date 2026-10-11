@@ -1,6 +1,6 @@
 /// Theme data and loading for Codly.
 #import "@preview/elembic:1.1.1" as e
-#import "lib.typ": __default, __codly-prefix
+#import "declarations.typ": __default, __codly-prefix, __declaration
 
 // Typography uses show rules because it is native text styling, not an
 // element field. Resolve those rules from the latest scoped theme so an older
@@ -9,11 +9,7 @@
   "codly-theme-style",
   prefix: __codly-prefix,
   display: _ => [],
-  fields: (
-    e.field("foreground", e.types.paint, default: black),
-    e.field("syntax", e.types.any, default: auto, folds: false),
-    e.field("typography", dictionary, default: (:), folds: false),
-  ),
+  ..__declaration("elements", "theme-style"),
 )
 
 // Small, language-independent TextMate themes made from the editor palettes.
@@ -74,17 +70,17 @@
     thesis: (
       foreground: auto,
       muted: auto,
-      fill: __default("fill"),
-      accent: __default("default-color"),
-      stroke: __default("stroke"),
-      radius: __default("radius"),
-      inset: __default("inset"),
+      fill: __default("line", "fill"),
+      accent: __default("lang", "default-color"),
+      stroke: __default("line", "stroke"),
+      radius: __default("line", "radius"),
+      inset: __default("line", "inset"),
       header-fill: luma(240),
       footer-fill: none,
       bubble-fill: luma(245),
       syntax: auto,
       language-colors: true,
-      highlight-fill: __default("highlight-fill"),
+      highlight-fill: __default("highlight", "fill"),
       file: (stroke: 0.5pt + luma(160), radius: 2pt),
       bubble: (stroke: 0.6pt + luma(80)),
       block: (__diff-colors: (:)),
@@ -265,10 +261,12 @@
     number: (fill: auto),
     lang: (
       default-color: config.accent,
-      fill: if config.at("language-colors") { __default("lang-fill") } else {
+      fill: if config.at("language-colors") { __default("lang", "fill") } else {
         config.at("header-fill")
       },
-      stroke: if config.at("language-colors") { __default("lang-stroke") } else { config.stroke },
+      stroke: if config.at("language-colors") { __default("lang", "stroke") } else {
+        config.stroke
+      },
       radius: config.radius,
       inset: config.inset,
     ),
@@ -278,8 +276,8 @@
     highlight: (
       color: config.at("highlight-colors"),
       fill: config.at("highlight-fill"),
-      stroke: __default("highlight-stroke"),
-      radius: __default("highlight-radius"),
+      stroke: __default("highlight", "stroke"),
+      radius: __default("highlight", "radius"),
     ),
     callout: (fill: auto, stroke: auto),
     bubble: (fill: config.at("bubble-fill"), stroke: config.stroke),

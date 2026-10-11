@@ -179,7 +179,7 @@ test('embedded Codly runtime matches the source checkout', async () => {
   for (const file of [path.join(source, 'codly.typ'), path.join(source, 'typst.toml'), ...await walk(path.join(source, 'src'))]) {
     const name = '/' + path.relative(source, file).split(path.sep).join('/');
     const bytes = await fs.readFile(file);
-    if (/\.(typ|json|toml)$/.test(file)) assert.equal(sources[name], bytes.toString('utf8'), name);
+    if (/\.(typ|json|yaml|toml)$/.test(file)) assert.equal(sources[name], bytes.toString('utf8'), name);
     else if (/\.(png|svg|jpg)$/.test(file)) assert.equal(sources[name]?.base64, bytes.toString('base64'), name);
   }
 });

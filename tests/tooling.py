@@ -44,6 +44,8 @@ def main():
         assert all(path.relative_to(built).parts[0] not in forbidden for path in files)
         assert not (built / "docs.pdf").exists()
         assert (built / "src/typst-small.png").is_file(), "runtime icon must be retained"
+        assert (built / "src/args.yaml").is_file(), "declaration metadata must be retained"
+        assert not (built / "src/args.json").exists(), "legacy argument metadata must be removed"
         assert (built / package["entrypoint"]).is_file()
         assert not re.search(r"\(examples/", (built / "README.md").read_text())
         assert f"/v{package['version']}/examples/" in (built / "README.md").read_text()

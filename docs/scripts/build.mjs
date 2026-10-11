@@ -31,7 +31,7 @@ const files = {};
 async function addTree(directory,virtualRoot) {
   for (const entry of await fs.readdir(directory,{withFileTypes:true})) {
     if (entry.isDirectory()) await addTree(path.join(directory,entry.name),`${virtualRoot}/${entry.name}`);
-    else if (/\.(typ|json|toml|tmTheme)$/.test(entry.name)) files[`${virtualRoot}/${entry.name}`] = await fs.readFile(path.join(directory,entry.name),'utf8');
+    else if (/\.(typ|json|yaml|toml|tmTheme)$/.test(entry.name)) files[`${virtualRoot}/${entry.name}`] = await fs.readFile(path.join(directory,entry.name),'utf8');
     else if (/\.(png|svg|jpg)$/.test(entry.name)) files[`${virtualRoot}/${entry.name}`] = { base64: (await fs.readFile(path.join(directory,entry.name))).toString('base64') };
   }
 }

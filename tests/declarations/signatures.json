@@ -1,0 +1,555 @@
+{
+  "field-columns": ["name", "type", "type-kind", "input", "output", "default", "required", "named", "folds", "fold", "internal", "synthesized", "meta"],
+  "declarations": [
+    {
+      "name": "language",
+      "identity": "language",
+      "id": "t_@preview/codly:v2.0.0_---_language",
+      "labelable": null,
+      "allow-unknown-fields": true,
+      "fields": [
+        ["name", "string or content", "union", "(str, type(none), content, symbol)", "(str, content)", "auto", true, true, false, null, false, false, "(:)"],
+        ["color", "none, color, gradient or tiling", "union", "(type(none), color, gradient, tiling)", "(type(none), color, gradient, tiling)", "none", false, true, true, null, false, false, "(:)"],
+        ["icon", "none, string or content", "union", "(type(none), str, content, symbol)", "(type(none), str, content)", "none", false, true, true, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "diff",
+      "identity": "diff",
+      "id": "t_@preview/codly:v2.0.0_---_diff",
+      "labelable": null,
+      "allow-unknown-fields": false,
+      "fields": [
+        ["enabled", "boolean", "native", "(bool,)", "(bool,)", "true", false, true, true, null, false, false, "(:)"],
+        ["added-fill", "none, auto, color, gradient, tiling or function", "union", "(\n  type(none),\n  type(auto),\n  color,\n  gradient,\n  tiling,\n  type,\n  function,\n)", "(\n  type(none),\n  type(auto),\n  color,\n  gradient,\n  tiling,\n  type,\n  function,\n)", "rgb(\"#dafbe1\")", false, true, true, null, false, false, "(:)"],
+        ["removed-fill", "none, auto, color, gradient, tiling or function", "union", "(\n  type(none),\n  type(auto),\n  color,\n  gradient,\n  tiling,\n  type,\n  function,\n)", "(\n  type(none),\n  type(auto),\n  color,\n  gradient,\n  tiling,\n  type,\n  function,\n)", "rgb(\"#ffebe9\")", false, true, true, null, false, false, "(:)"],
+        ["meta-fill", "none, auto, color, gradient, tiling or function", "union", "(\n  type(none),\n  type(auto),\n  color,\n  gradient,\n  tiling,\n  type,\n  function,\n)", "(\n  type(none),\n  type(auto),\n  color,\n  gradient,\n  tiling,\n  type,\n  function,\n)", "rgb(\"#ddf4ff\")", false, true, true, null, false, false, "(:)"],
+        ["context-fill", "none, auto, color, gradient, tiling or function", "union", "(\n  type(none),\n  type(auto),\n  color,\n  gradient,\n  tiling,\n  type,\n  function,\n)", "(\n  type(none),\n  type(auto),\n  color,\n  gradient,\n  tiling,\n  type,\n  function,\n)", "auto", false, true, true, null, false, false, "(:)"],
+        ["numbers", "boolean", "native", "(bool,)", "(bool,)", "true", false, true, true, null, false, false, "(:)"],
+        ["markers", "boolean", "native", "(bool,)", "(bool,)", "true", false, true, true, null, false, false, "(:)"],
+        ["added-marker", "string or content", "union", "(str, type(none), content, symbol)", "(str, content)", "\"+\"", false, true, true, null, false, false, "(:)"],
+        ["removed-marker", "string or content", "union", "(str, type(none), content, symbol)", "(str, content)", "\"−\"", false, true, true, null, false, false, "(:)"],
+        ["old-offset", "integer", "native", "(int,)", "(int,)", "0", false, true, true, null, false, false, "(:)"],
+        ["new-offset", "integer", "native", "(int,)", "(int,)", "0", false, true, true, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "gutter-column",
+      "identity": "gutter-column",
+      "id": "t_@preview/codly:v2.0.0_---_gutter-column",
+      "labelable": null,
+      "allow-unknown-fields": false,
+      "fields": [
+        ["values", "array of none, string, integer, float or content or function", "union", "(array, type, function)", "(array, type, function)", "auto", true, true, false, null, false, false, "(:)"],
+        ["width", "auto, length, ratio or fraction", "union", "(type(auto), length, ratio, fraction)", "(type(auto), length, ratio, fraction)", "auto", false, true, true, null, false, false, "(:)"],
+        ["align", "auto or alignment", "union", "(type(auto), alignment)", "(type(auto), alignment)", "auto", false, true, true, ["(..) => ..", "auto"], false, false, "(:)"],
+        ["inset", "auto, length or dictionary", "union", "(type(auto), length, dictionary)", "(type(auto), length, dictionary)", "auto", false, true, true, ["func", "auto"], false, false, "(:)"],
+        ["stroke", "none, auto, stroke or dictionary", "union", "(\n  type(none),\n  type(auto),\n  stroke,\n  length,\n  color,\n  gradient,\n  tiling,\n  dictionary,\n)", "(type(none), type(auto), stroke, dictionary)", "auto", false, true, true, ["func", "auto"], false, false, "(:)"],
+        ["fill", "none, auto, color, gradient, tiling, array of none, color, gradient or tiling or function", "union", "(\n  type(none),\n  type(auto),\n  color,\n  gradient,\n  tiling,\n  array,\n  type,\n  function,\n)", "(\n  type(none),\n  type(auto),\n  color,\n  gradient,\n  tiling,\n  array,\n  type,\n  function,\n)", "auto", false, true, false, null, false, false, "(:)"],
+        ["text", "dictionary", "native", "(dictionary,)", "(dictionary,)", "()", false, true, true, ["auto", "()"], false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "sublang",
+      "identity": "sublang",
+      "id": "t_@preview/codly:v2.0.0_---_sublang",
+      "labelable": null,
+      "allow-unknown-fields": false,
+      "fields": [
+        ["start", "integer", "native", "(int,)", "(int,)", "auto", true, true, false, null, false, false, "(:)"],
+        ["end", "integer", "native", "(int,)", "(int,)", "auto", true, true, false, null, false, false, "(:)"],
+        ["lang", "string", "native", "(str,)", "(str,)", "auto", true, true, false, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "rainbow",
+      "identity": "rainbow",
+      "id": "t_@preview/codly:v2.0.0_---_rainbow",
+      "labelable": null,
+      "allow-unknown-fields": false,
+      "fields": [
+        ["enabled", "boolean", "native", "(bool,)", "(bool,)", "true", false, true, true, null, false, false, "(:)"],
+        ["palette", "array of color", "collection", "(array,)", "(array,)", "(rgb(\"#b04080\"), rgb(\"#996300\"), rgb(\"#267a45\"), rgb(\"#007f99\"), rgb(\"#425cc7\"), rgb(\"#8655a8\"))", false, true, false, null, false, false, "(:)"],
+        ["pairs", "array of literal '()', literal '[]' or literal '{}'", "collection", "(array,)", "(array,)", "(\"()\", \"[]\", \"{}\")", false, true, false, null, false, false, "(:)"],
+        ["depth-offset", "integer", "native", "(int,)", "(int,)", "0", false, true, true, null, false, false, "(:)"],
+        ["unmatched", "none or color", "union", "(type(none), color)", "(type(none), color)", "none", false, true, true, null, false, false, "(:)"],
+        ["code-scopes", "string", "native", "(str,)", "(str,)", "\"source - source.r, source.r punctuation.section, meta.interpolation, punctuation.typst, punctuation.math.typst\"", false, true, true, null, false, false, "(:)"],
+        ["ignore-scopes", "string", "native", "(str,)", "(str,)", "\"string, comment, constant.character, markup.raw\"", false, true, true, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "indent-guides",
+      "identity": "indent-guides",
+      "id": "t_@preview/codly:v2.0.0_---_indent-guides",
+      "labelable": null,
+      "allow-unknown-fields": false,
+      "fields": [
+        ["enabled", "boolean", "native", "(bool,)", "(bool,)", "true", false, true, true, null, false, false, "(:)"],
+        ["width", "auto or integer", "union", "(type(auto), int)", "(type(auto), int)", "auto", false, true, true, null, false, false, "(:)"],
+        ["blank-lines", "boolean", "native", "(bool,)", "(bool,)", "true", false, true, true, null, false, false, "(:)"],
+        ["rainbow", "auto or boolean", "union", "(type(auto), bool)", "(type(auto), bool)", "auto", false, true, true, null, false, false, "(:)"],
+        ["palette", "auto or array of color", "union", "(type(auto), array)", "(type(auto), array)", "auto", false, true, false, null, false, false, "(:)"],
+        ["depth-offset", "auto or integer", "union", "(type(auto), int)", "(type(auto), int)", "auto", false, true, true, null, false, false, "(:)"],
+        ["color", "color", "native", "(color,)", "(color,)", "luma(70%)", false, true, true, null, false, false, "(:)"],
+        ["thickness", "length", "native", "(length,)", "(length,)", "0.5pt", false, true, true, null, false, false, "(:)"],
+        ["x-offset", "length", "native", "(length,)", "(length,)", "0pt", false, true, true, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "smart-skip",
+      "identity": "smart-skip",
+      "id": "t_@preview/codly:v2.0.0_---_smart-skip",
+      "labelable": null,
+      "allow-unknown-fields": false,
+      "fields": [
+        ["first", "none or boolean", "union", "(type(none), bool)", "(type(none), bool)", "none", false, true, true, null, false, false, "(:)"],
+        ["last", "none or boolean", "union", "(type(none), bool)", "(type(none), bool)", "none", false, true, true, null, false, false, "(:)"],
+        ["rest", "none or boolean", "union", "(type(none), bool)", "(type(none), bool)", "none", false, true, true, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "highlight-config",
+      "identity": "highlight",
+      "id": "t_@preview/codly:v2.0.0_---_highlight",
+      "labelable": null,
+      "allow-unknown-fields": false,
+      "fields": [
+        ["line", "integer", "native", "(int,)", "(int,)", "auto", true, false, false, null, false, false, "(:)"],
+        ["start", "none or integer", "union", "(type(none), int)", "(type(none), int)", "none", false, true, true, null, false, false, "(:)"],
+        ["end", "none or integer", "union", "(type(none), int)", "(type(none), int)", "none", false, true, true, null, false, false, "(:)"],
+        ["fill", "none, color, gradient, tiling or function", "union", "(\n  type(none),\n  color,\n  gradient,\n  tiling,\n  type,\n  function,\n)", "(\n  type(none),\n  color,\n  gradient,\n  tiling,\n  type,\n  function,\n)", "none", false, true, true, null, false, false, "(:)"],
+        ["tag", "none, string or content", "union", "(type(none), str, content, symbol)", "(type(none), str, content)", "none", false, true, true, null, false, false, "(:)"],
+        ["inset", "none, length or dictionary", "union", "(type(none), length, dictionary)", "(type(none), length, dictionary)", "none", false, true, true, ["func", "none"], false, false, "(:)"],
+        ["baseline", "none, length or auto", "union", "(type(none), length, type(auto))", "(type(none), length, type(auto))", "none", false, true, true, null, false, false, "(:)"],
+        ["clip", "none or boolean", "union", "(type(none), bool)", "(type(none), bool)", "none", false, true, true, null, false, false, "(:)"],
+        ["outset", "none, length or dictionary", "union", "(type(none), length, dictionary)", "(type(none), length, dictionary)", "none", false, true, true, ["func", "none"], false, false, "(:)"],
+        ["radius", "none or length", "union", "(type(none), length)", "(type(none), length)", "none", false, true, true, null, false, false, "(:)"],
+        ["label", "none or label", "union", "(type(none), label)", "(type(none), label)", "none", false, true, true, null, false, false, "(:)"],
+        ["stroke", "none, stroke or function", "union", "(\n  type(none),\n  stroke,\n  length,\n  color,\n  gradient,\n  tiling,\n  dictionary,\n  type,\n  function,\n)", "(type(none), stroke, type, function)", "none", false, true, true, ["func", "none"], false, false, "(:)"],
+        ["depth", "none or integer", "union", "(type(none), int)", "(type(none), int)", "none", false, true, true, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "annotation-config",
+      "identity": "annotation",
+      "id": "t_@preview/codly:v2.0.0_---_annotation",
+      "labelable": null,
+      "allow-unknown-fields": false,
+      "fields": [
+        ["start", "integer", "native", "(int,)", "(int,)", "auto", true, false, false, null, false, false, "(:)"],
+        ["end", "none or integer", "union", "(type(none), int)", "(type(none), int)", "none", false, true, true, null, false, false, "(:)"],
+        ["content", "none or content", "union", "(type(none), content, str, symbol)", "(type(none), content)", "none", false, true, true, null, false, false, "(:)"],
+        ["label", "none or label", "union", "(type(none), label)", "(type(none), label)", "none", false, true, true, null, false, false, "(:)"],
+        ["numbering", "none or function", "union", "(type(none), type, function)", "(type(none), type, function)", "(..) => ..", false, true, true, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "callout-config",
+      "identity": "callout",
+      "id": "t_@preview/codly:v2.0.0_---_callout",
+      "labelable": null,
+      "allow-unknown-fields": false,
+      "fields": [
+        ["line", "integer", "native", "(int,)", "(int,)", "auto", true, true, false, null, false, false, "(:)"],
+        ["body", "content", "native", "(type(none), content, str, symbol)", "(content,)", "auto", true, true, false, null, false, false, "(:)"],
+        ["align", "none, alignment or auto", "union", "(type(none), alignment, type(auto))", "(type(none), alignment, type(auto))", "auto", false, true, true, ["func", "auto"], false, false, "(:)"],
+        ["breakable", "none, boolean or auto", "union", "(type(none), bool, type(auto))", "(type(none), bool, type(auto))", "auto", false, true, true, null, false, false, "(:)"],
+        ["inset", "none, length, dictionary or auto", "union", "(type(none), length, dictionary, type(auto))", "(type(none), length, dictionary, type(auto))", "auto", false, true, true, ["func", "auto"], false, false, "(:)"],
+        ["fill", "none, color, gradient, tiling or auto", "union", "(type(none), color, gradient, tiling, type(auto))", "(type(none), color, gradient, tiling, type(auto))", "auto", false, true, true, null, false, false, "(:)"],
+        ["stroke", "none, stroke or auto", "union", "(\n  type(none),\n  stroke,\n  length,\n  color,\n  gradient,\n  tiling,\n  dictionary,\n  type(auto),\n)", "(type(none), stroke, type(auto))", "auto", false, true, true, ["func", "auto"], false, false, "(:)"],
+        ["source-indent", "boolean or auto", "union", "(bool, type(auto))", "(bool, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["placement", "literal 'above', literal 'below' or auto", "union", "(str, type(auto))", "(str, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["bubble-gap", "length, dictionary or auto", "union", "(length, dictionary, type(auto))", "(length, dictionary, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["pointer", "none, integer or auto", "union", "(type(none), int, type(auto))", "(type(none), int, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["pointer-align", "literal 'start', literal 'center', literal 'end' or auto", "union", "(str, type(auto))", "(str, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["pointer-size", "length or auto", "union", "(length, type(auto))", "(length, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["pointer-height", "length or auto", "union", "(length, type(auto))", "(length, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["pointer-width", "length or auto", "union", "(length, type(auto))", "(length, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["pointer-offset", "length or auto", "union", "(length, type(auto))", "(length, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["bubble-align", "alignment or auto", "union", "(alignment, type(auto))", "(alignment, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["bubble-fill", "none, color, gradient, tiling or auto", "union", "(type(none), color, gradient, tiling, type(auto))", "(type(none), color, gradient, tiling, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["bubble-stroke", "none, stroke or auto", "union", "(\n  type(none),\n  stroke,\n  length,\n  color,\n  gradient,\n  tiling,\n  dictionary,\n  type(auto),\n)", "(type(none), stroke, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["bubble-inset", "length, dictionary or auto", "union", "(length, dictionary, type(auto))", "(length, dictionary, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["bubble-outset", "length, dictionary or auto", "union", "(length, dictionary, type(auto))", "(length, dictionary, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["bubble-radius", "length or auto", "union", "(length, type(auto))", "(length, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["bubble-width", "length, ratio or auto", "union", "(length, ratio, type(auto))", "(length, ratio, type(auto))", "auto", false, true, false, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "range",
+      "identity": "range",
+      "id": "t_@preview/codly:v2.0.0_---_range",
+      "labelable": null,
+      "allow-unknown-fields": false,
+      "fields": [
+        ["start", "integer", "native", "(int,)", "(int,)", "auto", true, false, false, null, false, false, "(:)"],
+        ["end", "none or integer", "union", "(type(none), int)", "(type(none), int)", "none", false, false, true, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "skip",
+      "identity": "skip",
+      "id": "t_@preview/codly:v2.0.0_---_skip",
+      "labelable": null,
+      "allow-unknown-fields": false,
+      "fields": [
+        ["position", "integer", "native", "(int,)", "(int,)", "auto", true, false, false, null, false, false, "(:)"],
+        ["length", "integer", "native", "(int,)", "(int,)", "1", false, false, true, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "highlighted-line",
+      "identity": "highlighted-line",
+      "id": "t_@preview/codly:v2.0.0_---_highlighted-line",
+      "labelable": null,
+      "allow-unknown-fields": false,
+      "fields": [
+        ["line", "integer", "native", "(int,)", "(int,)", "auto", true, false, false, null, false, false, "(:)"],
+        ["color", "none, color, gradient or tiling", "union", "(type(none), color, gradient, tiling)", "(type(none), color, gradient, tiling)", "none", false, false, true, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "unnumbered-line",
+      "identity": "unnumbered-line",
+      "id": "t_@preview/codly:v2.0.0_---_unnumbered-line",
+      "labelable": null,
+      "allow-unknown-fields": false,
+      "fields": [
+        ["line", "integer", "native", "(int,)", "(int,)", "auto", true, false, false, null, false, false, "(:)"],
+        ["fill", "content", "native", "(type(none), content, str, symbol)", "(content,)", "[]", false, false, true, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "ref",
+      "identity": "codly-ref",
+      "id": "e_@preview/codly:v2.0.0_---_codly-ref",
+      "labelable": "auto",
+      "allow-unknown-fields": false,
+      "fields": [
+        ["body", "none or content", "union", "(type(none), content, str, symbol)", "(type(none), content)", "auto", true, false, false, null, false, false, "(:)"],
+        ["by", "none, literal 'line' or literal 'item'", "union", "(type(none), str)", "(type(none), str)", "\"line\"", false, true, true, null, false, false, "(:)"],
+        ["sep", "none, string or content", "union", "(type(none), str, content, symbol)", "(type(none), str, content)", "\"-\"", false, true, true, null, false, false, "(:)"],
+        ["numbering", "none or function", "union", "(type(none), type, function)", "(type(none), type, function)", "(..) => ..", false, true, true, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "line-ref",
+      "identity": "codly-line-ref",
+      "id": "e_@preview/codly:v2.0.0_---_codly-line-ref",
+      "labelable": "false",
+      "allow-unknown-fields": false,
+      "fields": [
+        ["body", "none or content", "union", "(type(none), content, str, symbol)", "(type(none), content)", "auto", true, false, false, null, false, false, "(:)"],
+        ["block", "label", "native", "(label,)", "(label,)", "auto", true, true, false, null, false, false, "(:)"],
+        ["number", "integer", "native", "(int,)", "(int,)", "auto", true, true, false, null, false, false, "(:)"],
+        ["suffix", "none or content", "union", "(type(none), content, str, symbol)", "(type(none), content)", "none", false, true, true, null, false, false, "(:)"],
+        ["separator", "none, auto, string or content", "union", "(type(none), type(auto), str, content, symbol)", "(type(none), type(auto), str, content)", "auto", false, true, true, null, false, false, "(:)"],
+        ["numbering", "none, auto or function", "union", "(type(none), type(auto), type, function)", "(type(none), type(auto), type, function)", "auto", false, true, true, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "highlight-ref",
+      "identity": "codly-highlight-ref",
+      "id": "e_@preview/codly:v2.0.0_---_codly-highlight-ref",
+      "labelable": "false",
+      "allow-unknown-fields": false,
+      "fields": [
+        ["body", "none or content", "union", "(type(none), content, str, symbol)", "(type(none), content)", "auto", true, false, false, null, false, false, "(:)"],
+        ["block", "label", "native", "(label,)", "(label,)", "auto", true, true, false, null, false, false, "(:)"],
+        ["line", "integer", "native", "(int,)", "(int,)", "auto", true, true, false, null, false, false, "(:)"],
+        ["item", "none or content", "union", "(type(none), content, str, symbol)", "(type(none), content)", "none", false, true, true, null, false, false, "(:)"],
+        ["by", "literal 'line' or literal 'item'", "union", "(str,)", "(str,)", "auto", true, true, false, null, false, false, "(:)"],
+        ["separator", "none, auto, string or content", "union", "(type(none), type(auto), str, content, symbol)", "(type(none), type(auto), str, content)", "auto", false, true, true, null, false, false, "(:)"],
+        ["numbering", "none, auto or function", "union", "(type(none), type(auto), type, function)", "(type(none), type(auto), type, function)", "auto", false, true, true, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "annotation-ref",
+      "identity": "codly-annotation-ref",
+      "id": "e_@preview/codly:v2.0.0_---_codly-annotation-ref",
+      "labelable": "false",
+      "allow-unknown-fields": false,
+      "fields": [
+        ["body", "none or content", "union", "(type(none), content, str, symbol)", "(type(none), content)", "auto", true, false, false, null, false, false, "(:)"],
+        ["block", "label", "native", "(label,)", "(label,)", "auto", true, true, false, null, false, false, "(:)"],
+        ["line", "integer", "native", "(int,)", "(int,)", "auto", true, true, false, null, false, false, "(:)"],
+        ["item", "content", "native", "(type(none), content, str, symbol)", "(content,)", "auto", true, true, false, null, false, false, "(:)"],
+        ["suffix", "none or content", "union", "(type(none), content, str, symbol)", "(type(none), content)", "none", false, true, true, null, false, false, "(:)"],
+        ["by", "literal 'line' or literal 'item'", "union", "(str,)", "(str,)", "auto", true, true, false, null, false, false, "(:)"],
+        ["separator", "none, auto, string or content", "union", "(type(none), type(auto), str, content, symbol)", "(type(none), type(auto), str, content)", "auto", false, true, true, null, false, false, "(:)"],
+        ["numbering", "none, auto or function", "union", "(type(none), type(auto), type, function)", "(type(none), type(auto), type, function)", "auto", false, true, true, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "highlight",
+      "identity": "codly-highlight",
+      "id": "e_@preview/codly:v2.0.0_---_codly-highlight",
+      "labelable": "auto",
+      "allow-unknown-fields": false,
+      "fields": [
+        ["body", "none or content", "union", "(type(none), content, str, symbol)", "(type(none), content)", "auto", true, false, false, null, false, false, "(:)"],
+        ["highlight", "none or highlight", "union", "(\n  type(none),\n  (\n    tid: \"t_@preview/codly:v2.0.0_---_highlight\",\n    name: \"highlight\",\n  ),\n  dictionary,\n)", "(\n  type(none),\n  (\n    tid: \"t_@preview/codly:v2.0.0_---_highlight\",\n    name: \"highlight\",\n  ),\n)", "none", false, true, true, ["(..) => ..", "none"], false, false, "(:)"],
+        ["__continuation-indent", "none or length", "union", "(type(none), length)", "(type(none), length)", "none", false, true, true, null, false, false, "(:)"],
+        ["color", "color, gradient, tiling or array of color, gradient or tiling", "union", "(color, gradient, tiling, array)", "(color, gradient, tiling, array)", "(rgb(\"#283593\"), rgb(\"#2e7d32\"), rgb(\"#ef6c00\"), rgb(\"#6a1b9a\"), rgb(\"#00838f\"))", false, true, false, null, false, false, "(:)"],
+        ["radius", "none or length", "union", "(type(none), length)", "(type(none), length)", "0.32em", false, true, true, null, false, false, "(:)"],
+        ["fill", "none or function", "union", "(type(none), type, function)", "(type(none), type, function)", "(..) => ..", false, true, true, null, false, false, "(:)"],
+        ["baseline", "none, length or auto", "union", "(type(none), length, type(auto))", "(type(none), length, type(auto))", "0pt", false, true, true, null, false, false, "(:)"],
+        ["stroke", "none, stroke or function", "union", "(\n  type(none),\n  stroke,\n  length,\n  color,\n  gradient,\n  tiling,\n  dictionary,\n  type,\n  function,\n)", "(type(none), stroke, type, function)", "(..) => ..", false, true, true, ["func", "(..) => .."], false, false, "(:)"],
+        ["inset", "none, length or dictionary", "union", "(type(none), length, dictionary)", "(type(none), length, dictionary)", "0.32em", false, true, true, ["func", "0.32em"], false, false, "(:)"],
+        ["outset", "none, length or dictionary", "union", "(type(none), length, dictionary)", "(type(none), length, dictionary)", "0pt", false, true, true, ["func", "0pt"], false, false, "(:)"],
+        ["clip", "none or boolean", "union", "(type(none), bool)", "(type(none), bool)", "true", false, true, true, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "line",
+      "identity": "codly-line",
+      "id": "e_@preview/codly:v2.0.0_---_codly-line",
+      "labelable": "auto",
+      "allow-unknown-fields": false,
+      "fields": [
+        ["body", "none or content", "union", "(type(none), content, str, symbol)", "(type(none), content)", "auto", true, false, false, null, false, false, "(:)"],
+        ["radius", "none or length", "union", "(type(none), length)", "(type(none), length)", "0.32em", false, true, true, null, false, false, "(:)"],
+        ["inset", "none, length or dictionary", "union", "(type(none), length, dictionary)", "(type(none), length, dictionary)", "0.32em", false, true, true, ["func", "0.32em"], false, false, "(:)"],
+        ["fill", "none, auto, color, gradient, tiling, array of none, color, gradient or tiling or function", "union", "(\n  type(none),\n  type(auto),\n  color,\n  gradient,\n  tiling,\n  array,\n  type,\n  function,\n)", "(\n  type(none),\n  type(auto),\n  color,\n  gradient,\n  tiling,\n  array,\n  type,\n  function,\n)", "(luma(94.12%), none)", false, true, false, null, false, false, "(:)"],
+        ["stroke", "none or stroke", "union", "(\n  type(none),\n  stroke,\n  length,\n  color,\n  gradient,\n  tiling,\n  dictionary,\n)", "(type(none), stroke)", "1pt + luma(94.12%)", false, true, true, ["(..) => ..", "1pt + luma(94.12%)"], false, false, "(:)"],
+        ["highlights", "none or array of highlight", "union", "(type(none), array)", "(type(none), array)", "none", false, true, false, null, false, false, "(:)"],
+        ["smart-indent", "boolean", "native", "(bool,)", "(bool,)", "true", false, true, true, null, false, false, "(:)"],
+        ["__wrap", "none or dictionary", "union", "(type(none), dictionary)", "(type(none), dictionary)", "none", false, true, true, ["(..) => ..", "none"], false, false, "(:)"],
+        ["__callout", "none or dictionary", "union", "(type(none), dictionary)", "(type(none), dictionary)", "none", false, true, true, ["(..) => ..", "none"], false, false, "(:)"],
+        ["__highlight-colors", "none or array of color, gradient or tiling", "union", "(type(none), array)", "(type(none), array)", "none", false, true, false, null, false, false, "(:)"],
+        ["block-label", "none or label", "union", "(type(none), label)", "(type(none), label)", "none", false, true, true, null, false, false, "(:)"],
+        ["reference", "none or dictionary", "union", "(type(none), dictionary)", "(type(none), dictionary)", "none", false, true, true, ["(..) => ..", "none"], false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "header",
+      "identity": "codly-header",
+      "id": "e_@preview/codly:v2.0.0_---_codly-header",
+      "labelable": "auto",
+      "allow-unknown-fields": false,
+      "fields": [
+        ["body", "none or content", "union", "(type(none), content, str, symbol)", "(type(none), content)", "auto", true, false, false, null, false, false, "(:)"],
+        ["repeat", "none or boolean", "union", "(type(none), bool)", "(type(none), bool)", "false", false, true, true, null, false, false, "(:)"],
+        ["align", "none or alignment", "union", "(type(none), alignment)", "(type(none), alignment)", "center + horizon", false, true, true, ["(..) => ..", "center + horizon"], false, false, "(:)"],
+        ["inset", "none, length, dictionary or auto", "union", "(type(none), length, dictionary, type(auto))", "(type(none), length, dictionary, type(auto))", "auto", false, true, true, ["func", "auto"], false, false, "(:)"],
+        ["fill", "none, color, gradient, tiling or auto", "union", "(type(none), color, gradient, tiling, type(auto))", "(type(none), color, gradient, tiling, type(auto))", "luma(94.12%)", false, true, true, null, false, false, "(:)"],
+        ["stroke", "none, stroke or auto", "union", "(\n  type(none),\n  stroke,\n  length,\n  color,\n  gradient,\n  tiling,\n  dictionary,\n  type(auto),\n)", "(type(none), stroke, type(auto))", "auto", false, true, true, ["func", "auto"], false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "footer",
+      "identity": "codly-footer",
+      "id": "e_@preview/codly:v2.0.0_---_codly-footer",
+      "labelable": "auto",
+      "allow-unknown-fields": false,
+      "fields": [
+        ["body", "none or content", "union", "(type(none), content, str, symbol)", "(type(none), content)", "auto", true, false, false, null, false, false, "(:)"],
+        ["repeat", "none or boolean", "union", "(type(none), bool)", "(type(none), bool)", "false", false, true, true, null, false, false, "(:)"],
+        ["align", "none or alignment", "union", "(type(none), alignment)", "(type(none), alignment)", "center + horizon", false, true, true, ["(..) => ..", "center + horizon"], false, false, "(:)"],
+        ["inset", "none, length, dictionary or auto", "union", "(type(none), length, dictionary, type(auto))", "(type(none), length, dictionary, type(auto))", "auto", false, true, true, ["func", "auto"], false, false, "(:)"],
+        ["fill", "none, color, gradient, tiling or auto", "union", "(type(none), color, gradient, tiling, type(auto))", "(type(none), color, gradient, tiling, type(auto))", "none", false, true, true, null, false, false, "(:)"],
+        ["stroke", "none, stroke or auto", "union", "(\n  type(none),\n  stroke,\n  length,\n  color,\n  gradient,\n  tiling,\n  dictionary,\n  type(auto),\n)", "(type(none), stroke, type(auto))", "auto", false, true, true, ["func", "auto"], false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "lang",
+      "identity": "codly-lang",
+      "id": "e_@preview/codly:v2.0.0_---_codly-lang",
+      "labelable": "auto",
+      "allow-unknown-fields": false,
+      "fields": [
+        ["body", "string", "native", "(str,)", "(str,)", "auto", true, false, false, null, false, false, "(:)"],
+        ["languages", "none or dict of language", "union", "(type(none), dictionary)", "(type(none), dictionary)", "()", false, true, true, ["(..) => ..", "()"], false, false, "(:)"],
+        ["default-color", "none, color, gradient or tiling", "union", "(type(none), color, gradient, tiling)", "(type(none), color, gradient, tiling)", "rgb(\"#283593\")", false, true, true, null, false, false, "(:)"],
+        ["inset", "none, length or dictionary", "union", "(type(none), length, dictionary)", "(type(none), length, dictionary)", "0.32em", false, true, true, ["func", "0.32em"], false, false, "(:)"],
+        ["outset", "none or dictionary", "union", "(type(none), dictionary)", "(type(none), dictionary)", "(x: 0.32em, y: 0pt)", false, true, true, ["(..) => ..", "(x: 0.32em, y: 0pt)"], false, false, "(:)"],
+        ["radius", "none, length or dictionary", "union", "(type(none), length, dictionary)", "(type(none), length, dictionary)", "0.32em", false, true, true, ["func", "0.32em"], false, false, "(:)"],
+        ["stroke", "none, stroke or function", "union", "(\n  type(none),\n  stroke,\n  length,\n  color,\n  gradient,\n  tiling,\n  dictionary,\n  type,\n  function,\n)", "(type(none), stroke, type, function)", "(..) => ..", false, true, true, ["func", "(..) => .."], false, false, "(:)"],
+        ["fill", "none, color, gradient, tiling or function", "union", "(\n  type(none),\n  color,\n  gradient,\n  tiling,\n  type,\n  function,\n)", "(\n  type(none),\n  color,\n  gradient,\n  tiling,\n  type,\n  function,\n)", "(..) => ..", false, true, true, null, false, false, "(:)"],
+        ["display-name", "none or boolean", "union", "(type(none), bool)", "(type(none), bool)", "true", false, true, true, null, false, false, "(:)"],
+        ["display-icon", "none or boolean", "union", "(type(none), bool)", "(type(none), bool)", "true", false, true, true, null, false, false, "(:)"],
+        ["align", "none or alignment", "union", "(type(none), alignment)", "(type(none), alignment)", "right + horizon", false, true, true, ["(..) => ..", "right + horizon"], false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "file",
+      "identity": "codly-file",
+      "id": "e_@preview/codly:v2.0.0_---_codly-file",
+      "labelable": "auto",
+      "allow-unknown-fields": false,
+      "fields": [
+        ["body", "string or content", "union", "(str, type(none), content, symbol)", "(str, content)", "auto", true, false, false, null, false, false, "(:)"],
+        ["fill", "none, color, gradient or tiling", "union", "(type(none), color, gradient, tiling)", "(type(none), color, gradient, tiling)", "luma(94.12%)", false, true, true, null, false, false, "(:)"],
+        ["stroke", "none or stroke", "union", "(\n  type(none),\n  stroke,\n  length,\n  color,\n  gradient,\n  tiling,\n  dictionary,\n)", "(type(none), stroke)", "0.5pt + luma(62.75%)", false, true, true, ["(..) => ..", "0.5pt + luma(62.75%)"], false, false, "(:)"],
+        ["inset", "length or dictionary", "union", "(length, dictionary)", "(length, dictionary)", "(x: 0.4em, y: 0.2em)", false, true, true, ["func", "(x: 0.4em, y: 0.2em)"], false, false, "(:)"],
+        ["radius", "length or dictionary", "union", "(length, dictionary)", "(length, dictionary)", "2pt", false, true, true, ["func", "2pt"], false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "annotation",
+      "identity": "codly-annotation",
+      "id": "e_@preview/codly:v2.0.0_---_codly-annotation",
+      "labelable": "false",
+      "allow-unknown-fields": false,
+      "fields": [
+        ["body", "none or content", "union", "(type(none), content, str, symbol)", "(type(none), content)", "auto", true, false, false, null, false, false, "(:)"],
+        ["label", "none or content", "union", "(type(none), content, str, symbol)", "(type(none), content)", "auto", true, false, false, null, false, false, "(:)"],
+        ["height", "none or length", "union", "(type(none), length)", "(type(none), length)", "0pt", false, true, true, null, false, false, "(:)"],
+        ["num", "none or integer", "union", "(type(none), int)", "(type(none), int)", "0", false, true, true, null, false, false, "(:)"],
+        ["numbering", "none or function", "union", "(type(none), type, function)", "(type(none), type, function)", "(..) => ..", false, true, true, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "bubble",
+      "identity": "codly-bubble",
+      "id": "e_@preview/codly:v2.0.0_---_codly-bubble",
+      "labelable": "auto",
+      "allow-unknown-fields": false,
+      "fields": [
+        ["body", "content", "native", "(type(none), content, str, symbol)", "(content,)", "auto", true, false, false, null, false, false, "(:)"],
+        ["gap", "length or dictionary", "union", "(length, dictionary)", "(length, dictionary)", "0.5em", false, true, false, null, false, false, "(:)"],
+        ["pointer-align", "literal 'start', literal 'center' or literal 'end'", "union", "(str,)", "(str,)", "\"center\"", false, true, false, null, false, false, "(:)"],
+        ["pointer-size", "length", "native", "(length,)", "(length,)", "0.4em", false, true, false, null, false, false, "(:)"],
+        ["pointer-height", "length or auto", "union", "(length, type(auto))", "(length, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["pointer-width", "length or auto", "union", "(length, type(auto))", "(length, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["pointer-offset", "length", "native", "(length,)", "(length,)", "0pt", false, true, false, null, false, false, "(:)"],
+        ["align", "alignment", "native", "(alignment,)", "(alignment,)", "center", false, true, false, null, false, false, "(:)"],
+        ["fill", "none, color, gradient or tiling", "union", "(type(none), color, gradient, tiling)", "(type(none), color, gradient, tiling)", "luma(96.08%)", false, true, false, null, false, false, "(:)"],
+        ["stroke", "none or stroke", "union", "(\n  type(none),\n  stroke,\n  length,\n  color,\n  gradient,\n  tiling,\n  dictionary,\n)", "(type(none), stroke)", "0.6pt + luma(31.37%)", false, true, false, null, false, false, "(:)"],
+        ["inset", "length or dictionary", "union", "(length, dictionary)", "(length, dictionary)", "(x: 0.5em, y: 0.3em)", false, true, false, null, false, false, "(:)"],
+        ["outset", "length or dictionary", "union", "(length, dictionary)", "(length, dictionary)", "0pt", false, true, false, null, false, false, "(:)"],
+        ["radius", "length", "native", "(length,)", "(length,)", "2pt", false, true, false, null, false, false, "(:)"],
+        ["width", "length, ratio or auto", "union", "(length, ratio, type(auto))", "(length, ratio, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["line", "integer", "native", "(int,)", "(int,)", "auto", true, true, false, null, false, false, "(:)"],
+        ["pointer", "integer", "native", "(int,)", "(int,)", "auto", true, true, false, null, false, false, "(:)"],
+        ["placement", "literal 'above' or literal 'below'", "union", "(str,)", "(str,)", "\"below\"", false, true, true, null, false, false, "(:)"],
+        ["__layout", "none or dictionary", "union", "(type(none), dictionary)", "(type(none), dictionary)", "none", false, true, true, ["(..) => ..", "none"], false, false, "(:)"],
+        ["__anchor", "none or dictionary", "union", "(type(none), dictionary)", "(type(none), dictionary)", "none", false, true, true, ["(..) => ..", "none"], false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "callout",
+      "identity": "codly-callout",
+      "id": "e_@preview/codly:v2.0.0_---_codly-callout",
+      "labelable": "auto",
+      "allow-unknown-fields": false,
+      "fields": [
+        ["body", "content", "native", "(type(none), content, str, symbol)", "(content,)", "auto", true, false, false, null, false, false, "(:)"],
+        ["line", "integer", "native", "(int,)", "(int,)", "auto", true, true, false, null, false, false, "(:)"],
+        ["align", "none, alignment or auto", "union", "(type(none), alignment, type(auto))", "(type(none), alignment, type(auto))", "auto", false, true, true, ["func", "auto"], false, false, "(:)"],
+        ["breakable", "none, boolean or auto", "union", "(type(none), bool, type(auto))", "(type(none), bool, type(auto))", "auto", false, true, true, null, false, false, "(:)"],
+        ["inset", "none, length, dictionary or auto", "union", "(type(none), length, dictionary, type(auto))", "(type(none), length, dictionary, type(auto))", "auto", false, true, true, ["func", "auto"], false, false, "(:)"],
+        ["fill", "none, color, gradient, tiling or auto", "union", "(type(none), color, gradient, tiling, type(auto))", "(type(none), color, gradient, tiling, type(auto))", "auto", false, true, true, null, false, false, "(:)"],
+        ["stroke", "none, stroke or auto", "union", "(\n  type(none),\n  stroke,\n  length,\n  color,\n  gradient,\n  tiling,\n  dictionary,\n  type(auto),\n)", "(type(none), stroke, type(auto))", "auto", false, true, true, ["func", "auto"], false, false, "(:)"],
+        ["source-indent", "boolean", "native", "(bool,)", "(bool,)", "false", false, true, false, null, false, false, "(:)"],
+        ["placement", "literal 'above' or literal 'below'", "union", "(str,)", "(str,)", "\"below\"", false, true, false, null, false, false, "(:)"],
+        ["bubble-gap", "length, dictionary or auto", "union", "(length, dictionary, type(auto))", "(length, dictionary, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["pointer", "none or integer", "union", "(type(none), int)", "(type(none), int)", "none", false, true, false, null, false, false, "(:)"],
+        ["pointer-align", "literal 'start', literal 'center', literal 'end' or auto", "union", "(str, type(auto))", "(str, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["pointer-size", "length or auto", "union", "(length, type(auto))", "(length, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["pointer-height", "length or auto", "union", "(length, type(auto))", "(length, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["pointer-width", "length or auto", "union", "(length, type(auto))", "(length, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["pointer-offset", "length or auto", "union", "(length, type(auto))", "(length, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["bubble-align", "alignment or auto", "union", "(alignment, type(auto))", "(alignment, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["bubble-fill", "none, color, gradient, tiling or auto", "union", "(type(none), color, gradient, tiling, type(auto))", "(type(none), color, gradient, tiling, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["bubble-stroke", "none, stroke or auto", "union", "(\n  type(none),\n  stroke,\n  length,\n  color,\n  gradient,\n  tiling,\n  dictionary,\n  type(auto),\n)", "(type(none), stroke, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["bubble-inset", "length, dictionary or auto", "union", "(length, dictionary, type(auto))", "(length, dictionary, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["bubble-outset", "length, dictionary or auto", "union", "(length, dictionary, type(auto))", "(length, dictionary, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["bubble-radius", "length or auto", "union", "(length, type(auto))", "(length, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["bubble-width", "length, ratio or auto", "union", "(length, ratio, type(auto))", "(length, ratio, type(auto))", "auto", false, true, false, null, false, false, "(:)"],
+        ["__layout", "none or dictionary", "union", "(type(none), dictionary)", "(type(none), dictionary)", "none", false, true, true, ["(..) => ..", "none"], false, false, "(:)"],
+        ["__anchor", "none or dictionary", "union", "(type(none), dictionary)", "(type(none), dictionary)", "none", false, true, true, ["(..) => ..", "none"], false, false, "(:)"],
+        ["__indent", "length", "native", "(length,)", "(length,)", "0pt", false, true, true, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "number",
+      "identity": "codly-number",
+      "id": "e_@preview/codly:v2.0.0_---_codly-number",
+      "labelable": "auto",
+      "allow-unknown-fields": false,
+      "fields": [
+        ["number", "none, content, integer or array of integer", "union", "(type(none), content, str, symbol, int, array)", "(type(none), content, int, array)", "auto", true, false, false, null, false, false, "(:)"],
+        ["parent", "any", "any", "(\"any\",)", "(\"any\",)", "auto", true, false, false, null, false, false, "(:)"],
+        ["numbering", "string or function", "union", "(str, type, function)", "(str, type, function)", "(..) => ..", false, true, true, null, false, false, "(:)"],
+        ["align", "none or alignment", "union", "(type(none), alignment)", "(type(none), alignment)", "left + horizon", false, true, true, ["(..) => ..", "left + horizon"], false, false, "(:)"],
+        ["placement", "none, literal 'inside' or literal 'outside'", "union", "(type(none), str)", "(type(none), str)", "\"inside\"", false, true, true, null, false, false, "(:)"],
+        ["fill", "none, auto, color, gradient or tiling", "union", "(type(none), type(auto), color, gradient, tiling)", "(type(none), type(auto), color, gradient, tiling)", "auto", false, true, true, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "sublang-block",
+      "identity": "sublang-block",
+      "id": "e_@preview/codly:v2.0.0_---_sublang-block",
+      "labelable": "auto",
+      "allow-unknown-fields": false,
+      "fields": [
+        ["body", "content", "native", "(type(none), content, str, symbol)", "(content,)", "auto", true, false, false, null, false, false, "(:)"],
+        ["idx", "integer", "native", "(int,)", "(int,)", "auto", true, false, false, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "codly",
+      "identity": "codly",
+      "id": "e_@preview/codly:v2.0.0_---_codly",
+      "labelable": "auto",
+      "allow-unknown-fields": false,
+      "fields": [
+        ["body", "none, string, path or content", "union", "(type(none), str, path, content, symbol)", "(type(none), str, path, content)", "auto", true, false, false, null, false, false, "(:)"],
+        ["file", "auto, none, string, path or content", "union", "(type(auto), type(none), str, path, content, symbol)", "(type(auto), type(none), str, path, content)", "auto", false, true, true, null, false, false, "(:)"],
+        ["lang", "auto, none or string", "union", "(type(auto), type(none), str)", "(type(auto), type(none), str)", "auto", false, true, true, null, false, false, "(:)"],
+        ["lang-position", "auto, none or alignment", "union", "(type(auto), type(none), alignment)", "(type(auto), type(none), alignment)", "auto", false, true, false, null, false, false, "(:)"],
+        ["file-position", "none or alignment", "union", "(type(none), alignment)", "(type(none), alignment)", "left + top", false, true, false, null, false, false, "(:)"],
+        ["block-label", "auto, none or label", "union", "(type(auto), type(none), label)", "(type(auto), type(none), label)", "auto", false, true, true, null, false, false, "(:)"],
+        ["alias", "none or string", "union", "(type(none), str)", "(type(none), str)", "none", false, true, true, null, false, false, "(:)"],
+        ["number-enabled", "none or boolean", "union", "(type(none), bool)", "(type(none), bool)", "true", false, true, true, null, false, false, "(:)"],
+        ["diff", "none, auto or diff", "union", "(\n  type(none),\n  type(auto),\n  (\n    tid: \"t_@preview/codly:v2.0.0_---_diff\",\n    name: \"diff\",\n  ),\n  dictionary,\n  bool,\n)", "(\n  type(none),\n  type(auto),\n  (\n    tid: \"t_@preview/codly:v2.0.0_---_diff\",\n    name: \"diff\",\n  ),\n)", "auto", false, true, false, null, false, false, "(:)"],
+        ["__diff", "none or dictionary", "union", "(type(none), dictionary)", "(type(none), dictionary)", "none", false, true, false, null, false, false, "(:)"],
+        ["__diff-pass", "none or dictionary", "union", "(type(none), dictionary)", "(type(none), dictionary)", "none", false, true, false, null, false, false, "(:)"],
+        ["__diff-colors", "dictionary", "native", "(dictionary,)", "(dictionary,)", "()", false, true, false, null, false, false, "(:)"],
+        ["gutters", "auto or array of auto or gutter-column", "union", "(type(auto), array)", "(type(auto), array)", "auto", false, true, false, null, false, false, "(:)"],
+        ["offset", "integer, label or auto", "union", "(int, label, type(auto))", "(int, label, type(auto))", "0", false, true, true, null, false, false, "(:)"],
+        ["range", "none or range", "union", "(\n  type(none),\n  (\n    tid: \"t_@preview/codly:v2.0.0_---_range\",\n    name: \"range\",\n  ),\n  dictionary,\n  array,\n)", "(\n  type(none),\n  (\n    tid: \"t_@preview/codly:v2.0.0_---_range\",\n    name: \"range\",\n  ),\n)", "none", false, true, false, null, false, false, "(:)"],
+        ["ranges", "none or array of range", "union", "(type(none), array)", "(type(none), array)", "none", false, true, false, null, false, false, "(:)"],
+        ["smart-skip", "none or smart-skip", "union", "(\n  type(none),\n  (\n    tid: \"t_@preview/codly:v2.0.0_---_smart-skip\",\n    name: \"smart-skip\",\n  ),\n  dictionary,\n  bool,\n)", "(\n  type(none),\n  (\n    tid: \"t_@preview/codly:v2.0.0_---_smart-skip\",\n    name: \"smart-skip\",\n  ),\n)", "smart-skip(first: false, last: false, rest: false)", false, true, false, null, false, false, "(:)"],
+        ["aliases", "none or dictionary", "union", "(type(none), dictionary)", "(type(none), dictionary)", "()", false, true, true, ["(..) => ..", "()"], false, false, "(:)"],
+        ["smart-indent", "none or boolean", "union", "(type(none), bool)", "(type(none), bool)", "true", false, true, true, null, false, false, "(:)"],
+        ["wrap-marker", "none or content", "union", "(type(none), content, str, symbol)", "(type(none), content)", "none", false, true, true, null, false, false, "(:)"],
+        ["skip-last-empty", "none or boolean", "union", "(type(none), bool)", "(type(none), bool)", "true", false, true, true, null, false, false, "(:)"],
+        ["breakable", "none or boolean", "union", "(type(none), bool)", "(type(none), bool)", "true", false, true, true, null, false, false, "(:)"],
+        ["skips", "none or array of skip", "union", "(type(none), array)", "(type(none), array)", "none", false, true, false, null, false, false, "(:)"],
+        ["skip-line", "none, content or array of none or content", "union", "(type(none), content, str, symbol, array)", "(type(none), content, array)", "align(alignment: center, body: sequence([ ], […], [ ]))", false, true, false, null, false, false, "(:)"],
+        ["skip-number", "none, content or array of none or content", "union", "(type(none), content, str, symbol, array)", "(type(none), content, array)", "sequence([ ], […], [ ])", false, true, false, null, false, false, "(:)"],
+        ["unnumbered", "none or array of unnumbered-line", "union", "(type(none), array)", "(type(none), array)", "()", false, true, false, null, false, false, "(:)"],
+        ["annotations", "none or array of annotation", "union", "(type(none), array)", "(type(none), array)", "none", false, true, false, null, false, false, "(:)"],
+        ["callouts", "none or array of callout", "union", "(type(none), array)", "(type(none), array)", "none", false, true, false, null, false, false, "(:)"],
+        ["highlighted", "none or array of highlighted-line", "union", "(type(none), array)", "(type(none), array)", "()", false, true, false, null, false, false, "(:)"],
+        ["highlights", "none or array of highlight", "union", "(type(none), array)", "(type(none), array)", "none", false, true, false, null, false, false, "(:)"],
+        ["header", "none or content", "union", "(type(none), content, str, symbol)", "(type(none), content)", "none", false, true, true, null, false, false, "(:)"],
+        ["footer", "none or content", "union", "(type(none), content, str, symbol)", "(type(none), content)", "none", false, true, true, null, false, false, "(:)"],
+        ["radius", "none or length", "union", "(type(none), length)", "(type(none), length)", "0.32em", false, true, true, null, false, false, "(:)"],
+        ["padding", "length or dictionary", "union", "(length, dictionary)", "(length, dictionary)", "0pt", false, true, false, null, false, false, "(:)"],
+        ["leading", "none or length", "union", "(type(none), length)", "(type(none), length)", "none", false, true, true, null, false, false, "(:)"],
+        ["gutter", "none or length", "union", "(type(none), length)", "(type(none), length)", "none", false, true, true, null, false, false, "(:)"],
+        ["column-gutter", "none or length", "union", "(type(none), length)", "(type(none), length)", "none", false, true, true, null, false, false, "(:)"],
+        ["row-gutter", "none or length", "union", "(type(none), length)", "(type(none), length)", "none", false, true, true, null, false, false, "(:)"],
+        ["sublangs", "none or array of sublang", "union", "(type(none), array)", "(type(none), array)", "none", false, true, true, ["(..) => ..", "none"], false, false, "(:)"],
+        ["rainbow", "none or rainbow", "union", "(\n  type(none),\n  (\n    tid: \"t_@preview/codly:v2.0.0_---_rainbow\",\n    name: \"rainbow\",\n  ),\n  dictionary,\n  bool,\n)", "(\n  type(none),\n  (\n    tid: \"t_@preview/codly:v2.0.0_---_rainbow\",\n    name: \"rainbow\",\n  ),\n)", "none", false, true, true, ["(..) => ..", "none"], false, false, "(:)"],
+        ["indent-guides", "none or indent-guides", "union", "(\n  type(none),\n  (\n    tid: \"t_@preview/codly:v2.0.0_---_indent-guides\",\n    name: \"indent-guides\",\n  ),\n  dictionary,\n  bool,\n)", "(\n  type(none),\n  (\n    tid: \"t_@preview/codly:v2.0.0_---_indent-guides\",\n    name: \"indent-guides\",\n  ),\n)", "none", false, true, true, ["(..) => ..", "none"], false, false, "(:)"],
+        ["width", "length, ratio or auto", "union", "(length, ratio, type(auto))", "(length, ratio, type(auto))", "100%", false, true, false, null, false, false, "(:)"]
+      ]
+    },
+    {
+      "name": "theme-style",
+      "identity": "codly-theme-style",
+      "id": "e_@preview/codly:v2.0.0_---_codly-theme-style",
+      "labelable": "auto",
+      "allow-unknown-fields": false,
+      "fields": [
+        ["foreground", "color, gradient or tiling", "union", "(color, gradient, tiling)", "(color, gradient, tiling)", "luma(0%)", false, true, true, null, false, false, "(:)"],
+        ["syntax", "any", "any", "(\"any\",)", "(\"any\",)", "auto", false, true, false, null, false, false, "(:)"],
+        ["typography", "dictionary", "native", "(dictionary,)", "(dictionary,)", "()", false, true, false, null, false, false, "(:)"]
+      ]
+    }
+  ]
+}

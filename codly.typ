@@ -1,4 +1,5 @@
 #import "@preview/elembic:1.1.1" as e
+#import "src/declarations.typ": __codly-prefix, __declaration
 
 /// A language definition, see the `languages` field.
 ///
@@ -6,34 +7,10 @@
 /// `codly.lang` arguments for that language, e.g. `(py: (radius: 5pt))`
 /// overrides `radius` for the Python language badge.
 #let language = {
-  import "src/lib.typ": __codly-prefix
-
   e.types.declare(
     "language",
     prefix: __codly-prefix,
-    doc: "A language definition used for language block formatting.",
-    allow-unknown-fields: true,
-    fields: (
-      e.field(
-        "name",
-        e.types.union(str, content),
-        doc: "The displayed name of the language.",
-        required: true,
-        named: true,
-      ),
-      e.field(
-        "color",
-        e.types.option(e.types.paint),
-        doc: "The language color. If omitted, the default color is used.",
-        default: none,
-      ),
-      e.field(
-        "icon",
-        e.types.option(e.types.union(str, content)),
-        doc: "The language icon. If omitted, no icon is shown.",
-        default: none,
-      ),
-    ),
+    ..__declaration("types", "language"),
     casts: (
       (from: dictionary),
       (from: str, with: constructor => value => constructor(name: value)),
@@ -44,25 +21,11 @@
 /// Automatic two-view syntax highlighting for `diff-<language>` or `diff,<language>` raw blocks.
 /// The diff prefix is removed from code and shown in a separate gutter.
 #let diff = {
-  import "src/lib.typ": __codly-prefix
-
   let paint = e.types.option(e.types.union(auto, e.types.paint, function))
   e.types.declare(
     "diff",
     prefix: __codly-prefix,
-    fields: (
-      e.field("enabled", bool, default: true),
-      e.field("added-fill", paint, default: rgb("dafbe1")),
-      e.field("removed-fill", paint, default: rgb("ffebe9")),
-      e.field("meta-fill", paint, default: rgb("ddf4ff")),
-      e.field("context-fill", paint, default: auto),
-      e.field("numbers", bool, default: true, doc: "Show old/new line-number gutters by default."),
-      e.field("markers", bool, default: true),
-      e.field("added-marker", e.types.union(str, content), default: "+"),
-      e.field("removed-marker", e.types.union(str, content), default: "−"),
-      e.field("old-offset", int, default: 0),
-      e.field("new-offset", int, default: 0),
-    ),
+    ..__declaration("types", "diff", scope: (paint: paint)),
     casts: (
       (from: dictionary),
       (from: bool, with: constructor => value => constructor(enabled: value)),
@@ -78,8 +41,6 @@
 /// Short arrays and `none` entries leave cells empty. `auto` styling inherits
 /// the grid's number alignment/insets; `fill: auto` follows the body row.
 #let gutter-column = {
-  import "src/lib.typ": __codly-prefix
-
   e.types.declare(
     "gutter-column",
     prefix: __codly-prefix,
@@ -99,36 +60,7 @@
         result
       }
     },
-    fields: (
-      e.field(
-        "values",
-        e.types.union(
-          e.types.array(e.types.option(e.types.union(str, int, float, content))),
-          function,
-        ),
-        required: true,
-        named: true,
-        folds: false,
-        doc: "Source-row values, or a callback receiving the rendered row dictionary.",
-      ),
-      e.field("width", e.types.union(auto, length, ratio, fraction), default: auto),
-      e.field("align", e.types.union(auto, alignment), default: auto),
-      e.field("inset", e.types.union(auto, length, dictionary), default: auto),
-      e.field("stroke", e.types.option(e.types.union(auto, stroke, dictionary)), default: auto),
-      e.field(
-        "fill",
-        e.types.option(e.types.union(
-          auto,
-          e.types.paint,
-          e.types.array(e.types.option(e.types.paint)),
-          function,
-        )),
-        default: auto,
-        folds: false,
-        doc: "auto follows the body row; otherwise a paint, palette, or row callback.",
-      ),
-      e.field("text", dictionary, default: (:), doc: "Arguments passed to text for this column."),
-    ),
+    ..__declaration("types", "gutter-column"),
     casts: (
       (from: dictionary),
       (from: array, with: constructor => values => constructor(values: values)),
@@ -162,35 +94,10 @@
 
 /// A syntax-highlighting language applied to an inclusive range of lines.
 #let sublang = {
-  import "src/lib.typ": __codly-prefix
-
   e.types.declare(
     "sublang",
     prefix: __codly-prefix,
-    doc: "A syntax-highlighting language applied to a range of lines.",
-    fields: (
-      e.field(
-        "start",
-        int,
-        doc: "The first line of the range (one-indexed).",
-        required: true,
-        named: true,
-      ),
-      e.field(
-        "end",
-        int,
-        doc: "The last line of the range (inclusive).",
-        required: true,
-        named: true,
-      ),
-      e.field(
-        "lang",
-        str,
-        doc: "The syntax-highlighting language key.",
-        required: true,
-        named: true,
-      ),
-    ),
+    ..__declaration("types", "sublang"),
     parse-args: __sublang-parser,
     casts: (
       (from: dictionary),
@@ -200,7 +107,6 @@
 
 /// Optional grammar-aware delimiter coloring.
 #let rainbow = {
-  import "src/lib.typ": __codly-prefix
   import "src/rainbow.typ" as r
 
   let parser(default-parser, fields: (:), typecheck: true) = {
@@ -224,44 +130,8 @@
   e.types.declare(
     "rainbow",
     prefix: __codly-prefix,
-    doc: "Color matching code delimiters by nesting depth, excluding strings and comments.",
     parse-args: parser,
-    fields: (
-      e.field("enabled", bool, default: true, doc: "Whether to color delimiters."),
-      e.field(
-        "palette",
-        e.types.array(color),
-        default: r.palette,
-        folds: false,
-        doc: "Colors repeated at successive nesting depths; must not be empty.",
-      ),
-      e.field(
-        "pairs",
-        e.types.array(e.types.union("()", "[]", "{}")),
-        default: ("()", "[]", "{}"),
-        folds: false,
-        doc: "Delimiter pairs that contribute to nesting.",
-      ),
-      e.field("depth-offset", int, default: 0, doc: "Nonnegative offset into the palette."),
-      e.field(
-        "unmatched",
-        e.types.option(color),
-        default: none,
-        doc: "Color for unmatched delimiters, or none to preserve their syntax style.",
-      ),
-      e.field(
-        "code-scopes",
-        str,
-        default: r.code-scopes,
-        doc: "Syntax scope selectors identifying code in the private classification theme.",
-      ),
-      e.field(
-        "ignore-scopes",
-        str,
-        default: r.ignore-scopes,
-        doc: "Syntax scope selectors excluding literals and comments.",
-      ),
-    ),
+    ..__declaration("types", "rainbow", scope: (r: r)),
     casts: (
       (from: dictionary),
       (from: bool, with: constructor => value => constructor(enabled: value)),
@@ -271,8 +141,6 @@
 
 /// Optional indentation guides, independent of syntax delimiter nesting.
 #let indent-guides = {
-  import "src/lib.typ": __codly-prefix
-
   let parser(default-parser, fields: (:), typecheck: true) = {
     (args, include-required: true) => {
       let result = default-parser(args, include-required: include-required)
@@ -303,55 +171,8 @@
   e.types.declare(
     "indent-guides",
     prefix: __codly-prefix,
-    doc: "Draw optional vertical guides at complete indentation levels.",
     parse-args: parser,
-    fields: (
-      e.field("enabled", bool, default: true, doc: "Whether to draw indentation guides."),
-      e.field(
-        "width",
-        e.types.union(auto, int),
-        default: auto,
-        doc: "Spaces per level; auto votes on observed indentation changes.",
-      ),
-      e.field(
-        "blank-lines",
-        bool,
-        default: true,
-        doc: "Continue shared levels across interior blank lines.",
-      ),
-      e.field(
-        "rainbow",
-        e.types.union(auto, bool),
-        default: auto,
-        doc: "Color guides by level; auto follows delimiter rainbow enablement.",
-      ),
-      e.field(
-        "palette",
-        e.types.union(auto, e.types.array(color)),
-        default: auto,
-        folds: false,
-        doc: "Nonempty guide palette; auto shares the delimiter palette.",
-      ),
-      e.field(
-        "depth-offset",
-        e.types.union(auto, int),
-        default: auto,
-        doc: "Nonnegative palette offset; auto shares the delimiter offset.",
-      ),
-      e.field(
-        "color",
-        color,
-        default: luma(70%),
-        doc: "Guide color when rainbow guides are disabled.",
-      ),
-      e.field("thickness", length, default: 0.5pt, doc: "Positive guide stroke thickness."),
-      e.field(
-        "x-offset",
-        length,
-        default: 0pt,
-        doc: "Horizontal shift of every guide; positive moves right, negative moves left. Supports em lengths.",
-      ),
-    ),
+    ..__declaration("types", "indent-guides"),
     casts: (
       (from: dictionary),
       (from: bool, with: constructor => value => constructor(enabled: value)),
@@ -361,32 +182,10 @@
 
 /// Configuration for smart skips, see the `smart-skip` field.
 #let smart-skip = {
-  import "src/lib.typ": __codly-prefix
-
   e.types.declare(
     "smart-skip",
     prefix: __codly-prefix,
-    doc: "Configuration for automatically inserting skips between displayed ranges.",
-    fields: (
-      e.field(
-        "first",
-        e.types.option(bool),
-        doc: "Whether to include a skip if the start of the block is outside of the ranges.",
-        default: none,
-      ),
-      e.field(
-        "last",
-        e.types.option(bool),
-        doc: "Whether to include a skip if the end of the code block is outside of the ranges.",
-        default: none,
-      ),
-      e.field(
-        "rest",
-        e.types.option(bool),
-        doc: "Whether to include a skip for unspecified values and/or in the middle of the code block.",
-        default: none,
-      ),
-    ),
+    ..__declaration("types", "smart-skip"),
     casts: (
       (
         from: dictionary,
@@ -440,91 +239,10 @@
 }
 
 #let highlight-config = {
-  import "src/lib.typ": __codly-prefix
-
   e.types.declare(
     "highlight",
     prefix: __codly-prefix,
-    doc: "A highlight over part of a line of the code block.",
-    fields: (
-      e.field(
-        "line",
-        int,
-        doc: "The line number to start highlighting (one-indexed).",
-        required: true,
-      ),
-      e.field(
-        "start",
-        e.types.option(int),
-        doc: "The character position to start highlighting, zero if omitted or `none` (zero-indexed).",
-        default: none,
-      ),
-      e.field(
-        "end",
-        e.types.option(int),
-        doc: "The character position to end highlighting, the end of the line if omitted or `none` (zero-indexed).",
-        default: none,
-      ),
-      e.field(
-        "fill",
-        e.types.option(e.types.union(e.types.paint, function)),
-        doc: "An explicit highlight paint, or a callback receiving the next default palette paint. Explicit paints do not consume a palette slot; callbacks do. `none` uses the default palette paint.",
-        default: none,
-      ),
-      e.field(
-        "tag",
-        e.types.option(e.types.union(str, content)),
-        doc: "An optional tag to be displayed alongside the highlight.",
-        default: none,
-      ),
-      e.field(
-        "inset",
-        e.types.option(e.types.union(length, dictionary)),
-        doc: "Overrides `codly.highlight`'s `inset`.",
-        default: none,
-      ),
-      e.field(
-        "baseline",
-        e.types.option(e.types.union(length, auto)),
-        doc: "Overrides the highlight box baseline; `auto` preserves the content's baseline.",
-        default: none,
-      ),
-      e.field(
-        "clip",
-        e.types.option(bool),
-        doc: "Overrides `codly.highlight`'s `clip`.",
-        default: none,
-      ),
-      e.field(
-        "outset",
-        e.types.option(e.types.union(length, dictionary)),
-        doc: "Overrides `codly.highlight`'s `outset`.",
-        default: none,
-      ),
-      e.field(
-        "radius",
-        e.types.option(length),
-        doc: "Overrides `codly.highlight`'s `radius`.",
-        default: none,
-      ),
-      e.field(
-        "label",
-        e.types.option(label),
-        doc: "If and only if the code block is in a `figure`, sets the label by which the highlight can be referenced.",
-        default: none,
-      ),
-      e.field(
-        "stroke",
-        e.types.option(e.types.union(stroke, function)),
-        doc: "Overrides `codly.highlight`'s `stroke`.",
-        default: none,
-      ),
-      e.field(
-        "depth",
-        e.types.option(int),
-        doc: "The depth of the highlight, used to determine which highlight is on top when multiple highlights overlap. Higher depth means on top.",
-      ),
-    ),
+    ..__declaration("types", "highlight-config"),
     parse-args: __highlight-parser,
     casts: (
       (
@@ -573,44 +291,10 @@
 }
 
 #let annotation-config = {
-  import "src/lib.typ": __codly-prefix
-
   e.types.declare(
     "annotation",
     prefix: __codly-prefix,
-    doc: "An annotation displayed on the right side of the code block.",
-    fields: (
-      e.field(
-        "start",
-        int,
-        doc: "The line number to start the annotation (one-indexed).",
-        required: true,
-      ),
-      e.field(
-        "end",
-        e.types.option(int),
-        doc: "The line number to end the annotation, if missing or `none` the annotation will only contain the start line.",
-        default: none,
-      ),
-      e.field(
-        "content",
-        e.types.option(content),
-        doc: "The content of the annotation as a showable value, if missing or `none` the annotation will only contain the number.",
-        default: none,
-      ),
-      e.field(
-        "label",
-        e.types.option(label),
-        doc: "If and only if the code block is in a `figure`, sets the label by which the annotation can be referenced.",
-        default: none,
-      ),
-      e.field(
-        "numbering",
-        e.types.option(function),
-        doc: "The format of the annotation number, defaults to `(1)`; `none` hides the number.",
-        default: numbering.with("(1)"),
-      ),
-    ),
+    ..__declaration("types", "annotation-config"),
     parse-args: __annotation-parser,
     casts: (
       (
@@ -645,59 +329,11 @@
 
 #let callout-config = {
   import "src/callout.typ" as callout-impl
-  import "src/lib.typ": __codly-prefix
 
   e.types.declare(
     "callout",
     prefix: __codly-prefix,
-    doc: "A callout displayed above or below a source line.",
-    fields: (
-      e.field(
-        "line",
-        int,
-        doc: "The source line to which the callout is attached (one-indexed).",
-        required: true,
-        named: true,
-      ),
-      e.field(
-        "body",
-        content,
-        doc: "The content to display in the callout row.",
-        required: true,
-        named: true,
-      ),
-      e.field(
-        "align",
-        e.types.option(e.types.union(alignment, auto)),
-        doc: "The callout cell alignment.",
-        default: auto,
-      ),
-      e.field(
-        "breakable",
-        e.types.option(e.types.union(bool, auto)),
-        doc: "Whether the callout cell may break across pages.",
-        default: auto,
-      ),
-      e.field(
-        "inset",
-        e.types.option(e.types.union(length, dictionary, auto)),
-        doc: "The callout cell inset.",
-        default: auto,
-      ),
-      e.field(
-        "fill",
-        e.types.option(e.types.union(e.types.paint, auto)),
-        doc: "The callout cell fill.",
-        default: auto,
-      ),
-      e.field(
-        "stroke",
-        e.types.option(e.types.union(stroke, auto)),
-        doc: "The callout cell stroke.",
-        default: auto,
-      ),
-      ..callout-impl.fields(entry: true),
-    ),
+    ..__declaration("types", "callout-config"),
     parse-args: __callout-parser,
     casts: (
       (from: dictionary, with: constructor => value => constructor(..value)),
@@ -758,22 +394,10 @@
 /// Can be constructed as `range(start, end)`, `range(start: .., end: ..)`,
 /// or cast from the array `(start, end)`.
 #let range = {
-  import "src/lib.typ": __codly-prefix
-
   e.types.declare(
     "range",
     prefix: __codly-prefix,
-    doc: "A range of line numbers to display (one-indexed, inclusive).",
-    fields: (
-      e.field("start", int, doc: "The first line of the range (one-indexed).", required: true),
-      e.field(
-        "end",
-        e.types.option(int),
-        doc: "The last line of the range (inclusive), `none` for the rest of the block.",
-        default: none,
-        named: false,
-      ),
-    ),
+    ..__declaration("types", "range"),
     parse-args: __pair-parser("start"),
     casts: (
       (
@@ -793,21 +417,10 @@
 /// Can be constructed as `skip(position, length)`, `skip(position: .., length: ..)`,
 /// or cast from the array `(position, length)`.
 #let skip = {
-  import "src/lib.typ": __codly-prefix
-
   e.types.declare(
     "skip",
     prefix: __codly-prefix,
-    doc: "A skip of a number of lines at a position in the code block.",
-    fields: (
-      e.field(
-        "position",
-        int,
-        doc: "The source line before which the skip is inserted (one-indexed).",
-        required: true,
-      ),
-      e.field("length", int, doc: "The number of lines of the skip.", default: 1, named: false),
-    ),
+    ..__declaration("types", "skip"),
     parse-args: __pair-parser("position"),
     casts: (
       (
@@ -827,27 +440,10 @@
 /// Can be constructed as `highlighted-line(line)`, `highlighted-line(line, color)`,
 /// or cast from an integer or an array of the form `(line, color)`.
 #let highlighted-line = {
-  import "src/lib.typ": __codly-prefix
-
   e.types.declare(
     "highlighted-line",
     prefix: __codly-prefix,
-    doc: "A line to be highlighted, with an optional custom highlight color.",
-    fields: (
-      e.field(
-        "line",
-        int,
-        doc: "The line number to highlight (one-indexed, as shown in the document).",
-        required: true,
-      ),
-      e.field(
-        "color",
-        e.types.option(e.types.paint),
-        doc: "The highlight color of the line, defaults to `codly.highlight`'s `fill`.",
-        default: none,
-        named: false,
-      ),
-    ),
+    ..__declaration("types", "highlighted-line"),
     parse-args: __pair-parser("line"),
     casts: (
       (
@@ -871,27 +467,10 @@
 /// Can be constructed as `unnumbered-line(line)`, `unnumbered-line(line, fill)`,
 /// or cast from an integer or an array of the form `(line, fill)`.
 #let unnumbered-line = {
-  import "src/lib.typ": __codly-prefix
-
   e.types.declare(
     "unnumbered-line",
     prefix: __codly-prefix,
-    doc: "A source line excluded from numbering, with optional number-column content.",
-    fields: (
-      e.field(
-        "line",
-        int,
-        doc: "The source line to leave unnumbered (one-indexed).",
-        required: true,
-      ),
-      e.field(
-        "fill",
-        content,
-        doc: "Content to display in place of the line number.",
-        default: [],
-        named: false,
-      ),
-    ),
+    ..__declaration("types", "unnumbered-line"),
     parse-args: __pair-parser("line"),
     casts: (
       (
@@ -914,649 +493,171 @@
 /// Shared formatting settings read by the line, highlight, and annotation
 /// reference renderers. Generated references currently use figure numbering.
 #let ref = {
-  import "src/lib.typ": __codly-prefix, __doc, __default
-
   e.element.declare(
     "codly-ref",
     prefix: __codly-prefix,
-    doc: "A reference to a highlight or annotation of a codly code block.",
     display: it => it.body,
-    fields: (
-      e.field(
-        "body",
-        e.types.option(content),
-        doc: "The content of the reference.",
-        required: true,
-      ),
-      e.field(
-        "by",
-        e.types.option(e.types.union("line", "item")),
-        doc: __doc("reference-by"),
-        default: __default("reference-by"),
-      ),
-      e.field(
-        "sep",
-        e.types.option(e.types.union(str, content)),
-        doc: __doc("reference-sep"),
-        default: __default("reference-sep"),
-      ),
-      e.field(
-        "numbering",
-        e.types.option(function),
-        doc: __doc("reference-number-format"),
-        default: __default("reference-number-format"),
-      ),
-    ),
+    ..__declaration("elements", "ref"),
   )
 }
 
 /// A native reference to a displayed line of a codly code block.
 #let line-ref = {
-  import "src/lib.typ": __codly-prefix, __codly-line-ref-show
+  import "src/lib.typ": __codly-line-ref-show
 
   e.element.declare(
     "codly-line-ref",
     prefix: __codly-prefix,
-    doc: "A native reference to a displayed line of a codly code block.",
     display: __codly-line-ref-show.with(ref),
-    labelable: false,
-    fields: (
-      e.field("body", e.types.option(content), doc: "Internal reference body.", required: true),
-      e.field("block", label, doc: "The containing code block label.", required: true, named: true),
-      e.field("number", int, doc: "The displayed line number.", required: true, named: true),
-      e.field(
-        "suffix",
-        e.types.option(content),
-        doc: "An optional displayed-number suffix.",
-        default: none,
-      ),
-      e.field(
-        "separator",
-        e.types.option(e.types.union(auto, str, content)),
-        doc: "Text between the code block and line number; `auto` uses `codly.ref` settings.",
-        default: auto,
-      ),
-      e.field(
-        "numbering",
-        e.types.option(e.types.union(auto, function)),
-        doc: "Line-number formatter; `auto` uses `codly.ref` settings, `none` shows only the block reference.",
-        default: auto,
-      ),
-    ),
+    ..__declaration("elements", "line-ref"),
   )
 }
 
 /// A native reference to a labelled highlight in a codly code block.
 #let highlight-ref = {
-  import "src/lib.typ": __codly-prefix, __codly-highlight-ref-show
+  import "src/lib.typ": __codly-highlight-ref-show
 
   e.element.declare(
     "codly-highlight-ref",
     prefix: __codly-prefix,
-    doc: "A native reference to a labelled highlight in a codly code block.",
     display: __codly-highlight-ref-show.with(ref),
-    labelable: false,
-    fields: (
-      e.field("body", e.types.option(content), doc: "Internal reference body.", required: true),
-      e.field("block", label, doc: "The containing code block label.", required: true, named: true),
-      e.field("line", int, doc: "The displayed line number.", required: true, named: true),
-      e.field(
-        "item",
-        e.types.option(content),
-        doc: "The highlight tag for item references.",
-        default: none,
-      ),
-      e.field(
-        "by",
-        e.types.union("line", "item"),
-        doc: "Whether the reference shows a line or item.",
-        required: true,
-        named: true,
-      ),
-      e.field(
-        "separator",
-        e.types.option(e.types.union(auto, str, content)),
-        doc: "Text between the code block and reference; `auto` uses `codly.ref` settings.",
-        default: auto,
-      ),
-      e.field(
-        "numbering",
-        e.types.option(e.types.union(auto, function)),
-        doc: "Line-number formatter; `auto` uses `codly.ref` settings, `none` hides the numeric reference part.",
-        default: auto,
-      ),
-    ),
+    ..__declaration("elements", "highlight-ref"),
   )
 }
 
 /// A native reference to a labelled annotation in a codly code block.
 #let annotation-ref = {
-  import "src/lib.typ": __codly-annotation-ref-show, __codly-prefix
+  import "src/lib.typ": __codly-annotation-ref-show
 
   e.element.declare(
     "codly-annotation-ref",
     prefix: __codly-prefix,
-    doc: "A native reference to a labelled annotation in a codly code block.",
     display: __codly-annotation-ref-show.with(ref),
-    labelable: false,
-    fields: (
-      e.field("body", e.types.option(content), doc: "Internal reference body.", required: true),
-      e.field("block", label, doc: "The containing code block label.", required: true, named: true),
-      e.field("line", int, doc: "The displayed line number.", required: true, named: true),
-      e.field(
-        "item",
-        content,
-        doc: "The annotation item for item references.",
-        required: true,
-        named: true,
-      ),
-      e.field(
-        "suffix",
-        e.types.option(content),
-        doc: "An optional displayed-number suffix.",
-        default: none,
-      ),
-      e.field(
-        "by",
-        e.types.union("line", "item"),
-        doc: "Whether the reference shows a line or item.",
-        required: true,
-        named: true,
-      ),
-      e.field(
-        "separator",
-        e.types.option(e.types.union(auto, str, content)),
-        doc: "Text between the code block and reference; `auto` uses `codly.ref` settings.",
-        default: auto,
-      ),
-      e.field(
-        "numbering",
-        e.types.option(e.types.union(auto, function)),
-        doc: "Line-number formatter; `auto` uses `codly.ref` settings, `none` hides the numeric reference part.",
-        default: auto,
-      ),
-    ),
+    ..__declaration("elements", "annotation-ref"),
   )
 }
 
 /// A single highlight within a codly code block.
 #let highlight = {
-  import "src/lib.typ": __codly-prefix, __doc, __default, __codly-highlight-show
+  import "src/lib.typ": __codly-highlight-show
   import "src/themes.typ" as themes-impl
 
   e.element.declare(
     "codly-highlight",
     prefix: __codly-prefix,
-    doc: "A highlight over part of a line of a codly code block.",
     display: __codly-highlight-show.with(ref, highlight-ref),
-    fields: (
-      e.field("body", e.types.option(content), doc: "The highlighted content.", required: true),
-      e.field(
-        "highlight",
-        e.types.option(highlight-config),
-        doc: "The highlight metadata for this content.",
-        default: none,
-      ),
-      e.field(
-        "__continuation-indent",
-        e.types.option(length),
-        default: none,
-        doc: "Internal smart indentation inside a wrapping highlight.",
-      ),
-      e.field(
-        "color",
-        e.types.union(e.types.paint, e.types.array(e.types.paint)),
-        doc: "Default highlight paint or nonempty cycling palette. Whole-row and span highlights have independent, per-block cycles in declaration order; explicit paints do not consume a color.",
-        default: themes-impl.presets.thesis.at("highlight-colors"),
-        folds: false,
-      ),
-      e.field(
-        "radius",
-        e.types.option(length),
-        doc: __doc("highlight-radius"),
-        default: __default("highlight-radius"),
-      ),
-      e.field(
-        "fill",
-        e.types.option(function),
-        doc: __doc("highlight-fill"),
-        default: __default("highlight-fill"),
-      ),
-      e.field(
-        "baseline",
-        e.types.option(e.types.union(length, auto)),
-        doc: "The highlight box baseline shift; `auto` uses Typst's content baseline.",
-        default: 0pt,
-      ),
-      e.field(
-        "stroke",
-        e.types.option(e.types.union(stroke, function)),
-        doc: __doc("highlight-stroke"),
-        default: __default("highlight-stroke"),
-      ),
-      e.field(
-        "inset",
-        e.types.option(e.types.union(length, dictionary)),
-        doc: __doc("highlight-inset"),
-        default: __default("highlight-inset"),
-      ),
-      e.field(
-        "outset",
-        e.types.option(e.types.union(length, dictionary)),
-        doc: __doc("highlight-outset"),
-        default: __default("highlight-outset"),
-      ),
-      e.field(
-        "clip",
-        e.types.option(bool),
-        doc: __doc("highlight-clip"),
-        default: __default("highlight-clip"),
-      ),
-    ),
+    ..__declaration("elements", "highlight", scope: (
+      highlight-config: highlight-config,
+      themes-impl: themes-impl,
+    )),
   )
 }
 
 /// A single line of a codly code block. Takes over the line-level styling
 /// arguments of `codly` (`radius`, `inset`, `fill`, `stroke`).
 #let line = {
-  import "src/lib.typ": __codly-prefix, __doc, __default, __codly-line-show
+  import "src/lib.typ": __codly-line-show
 
   e.element.declare(
     "codly-line",
     prefix: __codly-prefix,
-    doc: "A single line of a codly code block.",
     display: __codly-line-show.with(highlight, ref, line-ref),
-    fields: (
-      e.field("body", e.types.option(content), doc: "The content of the line.", required: true),
-      e.field("radius", e.types.option(length), doc: __doc("radius"), default: __default("radius")),
-      e.field(
-        "inset",
-        e.types.option(e.types.union(length, dictionary)),
-        doc: __doc("inset"),
-        default: __default("inset"),
-      ),
-      e.field(
-        "fill",
-        e.types.option(e.types.union(
-          auto,
-          e.types.paint,
-          e.types.array(e.types.option(e.types.paint)),
-          function,
-        )),
-        doc: __doc("fill"),
-        default: __default("fill"),
-        folds: false,
-      ),
-      e.field("stroke", e.types.option(stroke), doc: __doc("stroke"), default: __default("stroke")),
-      e.field(
-        "highlights",
-        e.types.option(e.types.array(highlight-config)),
-        doc: __doc("highlights"),
-        default: __default("highlights"),
-        folds: false,
-      ),
-      e.field("smart-indent", bool, doc: __doc("smart-indent"), default: __default("smart-indent")),
-      e.field(
-        "__wrap",
-        e.types.option(dictionary),
-        default: none,
-        doc: "Internal block-owned continuation marker settings.",
-      ),
-      e.field(
-        "__callout",
-        e.types.option(dictionary),
-        default: none,
-        doc: "Internal character anchors.",
-      ),
-      e.field(
-        "__highlight-colors",
-        e.types.option(e.types.array(e.types.paint)),
-        default: none,
-        folds: false,
-      ),
-      e.field(
-        "block-label",
-        e.types.option(label),
-        doc: "The label of the containing code block.",
-        default: none,
-      ),
-      e.field(
-        "reference",
-        e.types.option(dictionary),
-        doc: "Internal reference details for an unnumbered source line.",
-        default: none,
-      ),
-    ),
+    ..__declaration("elements", "line", scope: (highlight-config: highlight-config)),
   )
 }
 
 /// The header of a codly code block. Takes over the `header-` prefixed
 /// arguments of `codly`.
 #let header = {
-  import "src/lib.typ": __codly-prefix, __doc, __default
-
   e.element.declare(
     "codly-header",
     prefix: __codly-prefix,
-    doc: "The header of a codly code block.",
     display: it => it.body,
-    fields: (
-      e.field("body", e.types.option(content), doc: __doc("header"), required: true),
-      e.field(
-        "repeat",
-        e.types.option(bool),
-        doc: __doc("header-repeat"),
-        default: __default("header-repeat"),
-      ),
-
-      e.field(
-        "align",
-        e.types.option(alignment),
-        doc: "Alignment of the header content.",
-        default: center + horizon,
-      ),
-      e.field(
-        "inset",
-        e.types.option(e.types.union(length, dictionary, auto)),
-        doc: "Inset around the header content.",
-        default: auto,
-      ),
-      e.field(
-        "fill",
-        e.types.option(e.types.union(e.types.paint, auto)),
-        doc: "The header cell background. `none` leaves it unfilled; `auto` uses the header's default. Independent of line and number fills.",
-        default: luma(240),
-      ),
-      e.field(
-        "stroke",
-        e.types.option(e.types.union(stroke, auto)),
-        doc: "Stroke around the header cell.",
-        default: auto,
-      ),
-    ),
+    ..__declaration("elements", "header"),
   )
 }
 
 /// The footer of a codly code block. Takes over the `footer-` prefixed
 /// arguments of `codly`.
 #let footer = {
-  import "src/lib.typ": __codly-prefix, __doc, __default
-
   e.element.declare(
     "codly-footer",
     prefix: __codly-prefix,
-    doc: "The footer of a codly code block.",
     display: it => it.body,
-    fields: (
-      e.field("body", e.types.option(content), doc: __doc("footer"), required: true),
-      e.field(
-        "repeat",
-        e.types.option(bool),
-        doc: __doc("footer-repeat"),
-        default: __default("footer-repeat"),
-      ),
-
-      e.field(
-        "align",
-        e.types.option(alignment),
-        doc: "Alignment of the footer content.",
-        default: center + horizon,
-      ),
-      e.field(
-        "inset",
-        e.types.option(e.types.union(length, dictionary, auto)),
-        doc: "Inset around the footer content.",
-        default: auto,
-      ),
-      e.field(
-        "fill",
-        e.types.option(e.types.union(e.types.paint, auto)),
-        doc: "The footer cell background. `none` leaves it unfilled; `auto` uses the footer's default. Independent of line and number fills.",
-        default: none,
-      ),
-      e.field(
-        "stroke",
-        e.types.option(e.types.union(stroke, auto)),
-        doc: "Stroke around the footer cell.",
-        default: auto,
-      ),
-    ),
+    ..__declaration("elements", "footer"),
   )
 }
 
 /// The language badge of a codly code block. Takes over the `lang-` prefixed
 /// arguments of `codly`, as well as `display-name` and `display-icon`.
 #let lang = {
-  import "src/lib.typ": __codly-prefix, __doc, __default, __codly-lang-show
+  import "src/lib.typ": __codly-lang-show
 
   e.element.declare(
     "codly-lang",
     prefix: __codly-prefix,
-    doc: "The language badge of a codly code block.",
     display: __codly-lang-show,
-    fields: (
-      e.field("body", str, doc: "The language key, e.g. \"py\".", required: true),
-      e.field(
-        "languages",
-        e.types.option(e.types.dict(language)),
-        doc: __doc("languages"),
-        default: __default("languages"),
-      ),
-      e.field(
-        "default-color",
-        e.types.option(e.types.paint),
-        doc: __doc("default-color"),
-        default: __default("default-color"),
-      ),
-      e.field(
-        "inset",
-        e.types.option(e.types.union(length, dictionary)),
-        doc: __doc("lang-inset"),
-        default: __default("lang-inset"),
-      ),
-      e.field(
-        "outset",
-        e.types.option(dictionary),
-        doc: __doc("lang-outset"),
-        default: __default("lang-outset"),
-      ),
-      e.field(
-        "radius",
-        e.types.option(e.types.union(length, dictionary)),
-        doc: __doc("lang-radius"),
-        default: __default("lang-radius"),
-      ),
-      e.field(
-        "stroke",
-        e.types.option(e.types.union(stroke, function)),
-        doc: __doc("lang-stroke"),
-        default: __default("lang-stroke"),
-      ),
-      e.field(
-        "fill",
-        e.types.option(e.types.union(e.types.paint, function)),
-        doc: __doc("lang-fill"),
-        default: __default("lang-fill"),
-      ),
-      e.field(
-        "display-name",
-        e.types.option(bool),
-        doc: __doc("display-name"),
-        default: __default("display-name"),
-      ),
-      e.field(
-        "display-icon",
-        e.types.option(bool),
-        doc: __doc("display-icon"),
-        default: __default("display-icon"),
-      ),
-      e.field(
-        "align",
-        e.types.option(alignment),
-        doc: "Alignment of the language badge.",
-        default: right + horizon,
-      ),
-    ),
+    ..__declaration("elements", "lang", scope: (language: language)),
   )
 }
 
 /// A filename badge, independently styleable from the language badge.
 #let file = {
   import "src/file.typ" as file-impl
-  import "src/lib.typ": __codly-prefix
+
   e.element.declare(
     "codly-file",
     prefix: __codly-prefix,
-    doc: "The filename badge beside code or in a code block header or footer.",
     display: file-impl.badge,
-    fields: (
-      e.field("body", e.types.union(str, content), required: true, doc: "Displayed filename."),
-      e.field("fill", e.types.option(e.types.paint), default: luma(240), doc: "Badge fill."),
-      e.field("stroke", e.types.option(stroke), default: 0.5pt + luma(160), doc: "Badge stroke."),
-      e.field(
-        "inset",
-        e.types.union(length, dictionary),
-        default: (x: 0.4em, y: 0.2em),
-        doc: "Badge inset.",
-      ),
-      e.field("radius", e.types.union(length, dictionary), default: 2pt, doc: "Badge radius."),
-    ),
+    ..__declaration("elements", "file"),
   )
 }
 
 /// A single annotation of a codly code block. Takes over the `annotation-`
 /// prefixed arguments of `codly`.
 #let annotation = {
-  import "src/lib.typ": __codly-prefix, __doc, __default, __codly-annotation-show
+  import "src/lib.typ": __codly-annotation-show
 
   e.element.declare(
     "codly-annotation",
     prefix: __codly-prefix,
-    doc: "An annotation displayed on the right side of a codly code block.",
     display: __codly-annotation-show,
-    labelable: false,
-    fields: (
-      e.field(
-        "body",
-        e.types.option(content),
-        doc: "The content of the annotation.",
-        required: true,
-      ),
-      e.field("label", e.types.option(content), doc: "todo", default: "todo", required: true),
-      e.field("height", e.types.option(length), doc: "todo", default: 0.0pt),
-      e.field("num", e.types.option(int), doc: "todo", default: 0),
-      e.field("numbering", e.types.option(function), doc: "todo", default: numbering.with("(1)")),
-    ),
+    ..__declaration("elements", "annotation"),
   )
 }
 
 /// The painted bubble inside a callout. Owns independent styling defaults.
 #let bubble = {
   import "src/callout.typ" as callout-impl
-  import "src/lib.typ": __codly-prefix
 
   e.element.declare(
     "codly-bubble",
     prefix: __codly-prefix,
-    doc: "A bubble generated by a pointed callout. Set rules provide its styling defaults.",
     display: callout-impl.bubble-display,
-    fields: (
-      e.field("body", content, doc: "The bubble content.", required: true),
-      ..callout-impl.fields(bubble: true),
-      e.field("line", int, doc: "The attached source line.", required: true, named: true),
-      e.field("pointer", int, doc: "The source character anchor.", required: true, named: true),
-      e.field(
-        "placement",
-        e.types.union("above", "below"),
-        default: "below",
-        doc: "Side of the source line.",
-      ),
-      e.field(
-        "__layout",
-        e.types.option(dictionary),
-        default: none,
-        doc: "Internal packed geometry.",
-      ),
-      e.field(
-        "__anchor",
-        e.types.option(dictionary),
-        default: none,
-        doc: "Internal source anchor.",
-      ),
-    ),
+    ..__declaration("elements", "bubble"),
   )
 }
 
 /// A callout row. Its cell properties can be configured with set rules.
 #let callout = {
   import "src/callout.typ" as callout-impl
-  import "src/lib.typ": __codly-prefix
 
   e.element.declare(
     "codly-callout",
     prefix: __codly-prefix,
-    doc: "A callout displayed above or below a source line.",
     display: callout-impl.display.with(bubble),
-    fields: (
-      e.field("body", content, doc: "The callout content.", required: true),
-      e.field("line", int, doc: "The attached source line.", required: true, named: true),
-      e.field(
-        "align",
-        e.types.option(e.types.union(alignment, auto)),
-        doc: "The callout cell alignment.",
-        default: auto,
-      ),
-      e.field(
-        "breakable",
-        e.types.option(e.types.union(bool, auto)),
-        doc: "Whether the callout cell may break across pages.",
-        default: auto,
-      ),
-      e.field(
-        "inset",
-        e.types.option(e.types.union(length, dictionary, auto)),
-        doc: "The callout cell inset.",
-        default: auto,
-      ),
-      e.field(
-        "fill",
-        e.types.option(e.types.union(e.types.paint, auto)),
-        doc: "The callout cell fill.",
-        default: auto,
-      ),
-      e.field(
-        "stroke",
-        e.types.option(e.types.union(stroke, auto)),
-        doc: "The callout cell stroke.",
-        default: auto,
-      ),
-      ..callout-impl.fields(),
-      e.field(
-        "__layout",
-        e.types.option(dictionary),
-        default: none,
-        doc: "Internal packed bubble geometry.",
-      ),
-      e.field(
-        "__anchor",
-        e.types.option(dictionary),
-        default: none,
-        doc: "Internal source anchor.",
-      ),
-      e.field("__indent", length, default: 0pt, doc: "Internal source indentation width."),
-    ),
+    ..__declaration("elements", "callout"),
   )
 }
 
 /// A line number of a codly code block. Takes over the `number-` prefixed
 /// arguments of `codly`.
 #let number = {
-  import "src/lib.typ": __codly-prefix, __doc, __default, __codly-numbering
+  import "src/lib.typ": __codly-numbering
 
   e.element.declare(
     "codly-number",
     prefix: __codly-prefix,
-    doc: "A line number of a codly code block.",
     display: it => if it.number == none { [] } else if type(it.number) == content {
       it.number
     } else if type(it.number) == array {
@@ -1564,54 +665,14 @@
     } else {
       __codly-numbering(it.numbering, it.number)
     },
-    fields: (
-      e.field(
-        "number",
-        e.types.option(e.types.union(content, int, e.types.array(int))),
-        doc: "The line number.",
-        required: true,
-      ),
-      e.field(
-        "parent",
-        e.types.any,
-        doc: "The parent content of the line.",
-        required: true,
-      ),
-      e.field(
-        "numbering",
-        e.types.union(str, function),
-        doc: "The numbering style of the line.",
-        default: numbering.with("1"),
-      ),
-      e.field(
-        "align",
-        e.types.option(alignment),
-        doc: __doc("number-align"),
-        default: __default("number-align"),
-      ),
-      e.field(
-        "placement",
-        e.types.option(e.types.union("inside", "outside")),
-        doc: __doc("number-placement"),
-        default: __default("number-placement"),
-      ),
-      e.field(
-        "fill",
-        e.types.option(e.types.union(auto, e.types.paint)),
-        doc: "The background fill of the number column. `auto` follows each code row's fill.",
-        default: auto,
-      ),
-    ),
+    ..__declaration("elements", "number"),
   )
 }
 
 #let sublang-block = {
-  import "src/lib.typ": __codly-prefix, __doc, __default
-
   e.element.declare(
     "sublang-block",
     prefix: __codly-prefix,
-    doc: "A sublanguage block within a codly code block.",
     display: it => {
       show raw.where(block: true): raw => {
         let idx = str(it.idx)
@@ -1626,20 +687,12 @@
 
       it.body
     },
-    fields: (
-      e.field("body", content, doc: "The content of the sublanguage block.", required: true),
-      e.field(
-        "idx",
-        int,
-        doc: "The index of the sublanguage block within the code block.",
-        required: true,
-      ),
-    ),
+    ..__declaration("elements", "sublang-block"),
   )
 }
 
 #let codly = {
-  import "src/lib.typ": __codly-prefix, __default, __doc, __codly-show
+  import "src/lib.typ": __codly-show
 
   let codly-show = __codly-show.with(
     line,
@@ -1662,7 +715,6 @@
   e.element.declare(
     "codly",
     prefix: __codly-prefix,
-    doc: "Format Typst code blocks with syntax highlighting and configurable line styling.",
     construct: constructor => (..args) => {
       let element = constructor(..args)
       let body = e.fields(element).body
@@ -1703,253 +755,21 @@
       )
       body
     },
-    fields: (
-      e.field(
-        "body",
-        e.types.option(e.types.union(str, path, content)),
-        doc: "Raw content, literal source text, or a caller-resolved file path.",
-        required: true,
-      ),
-      e.field(
-        "file",
-        e.types.union(auto, none, str, path, content),
-        default: auto,
-        doc: "Filename badge: auto uses the input path basename; none hides it.",
-      ),
-      e.field(
-        "lang",
-        e.types.union(auto, none, str),
-        default: auto,
-        doc: "Language for source/path inputs; auto infers the file extension.",
-      ),
-      e.field(
-        "lang-position",
-        e.types.union(auto, none, alignment),
-        default: auto,
-        doc: "Language badge placement: top/bottom selects header/footer; left/right alone reserves space beside the first code row. auto retains ordinary raw-block placement.",
-        folds: false,
-      ),
-      e.field(
-        "file-position",
-        e.types.option(alignment),
-        default: top + left,
-        doc: "Filename badge placement: top/bottom selects header/footer; left/right alone reserves space beside the first code row; none hides the badge.",
-        folds: false,
-      ),
-      e.field(
-        "block-label",
-        e.types.union(auto, none, label),
-        doc: "The label of the containing figure. auto discovers the nearest enclosing figure's label; none disables block references.",
-        default: auto,
-      ),
-      e.field(
-        "alias",
-        e.types.option(str),
-        doc: "Whether this is an already aliased block",
-        required: false,
-        default: none,
-      ),
-      e.field(
-        "number-enabled",
-        e.types.option(bool),
-        doc: "Whether to show the automatic line-number column.",
-        default: true,
-      ),
-      e.field(
-        "diff",
-        e.types.option(e.types.union(auto, diff)),
-        default: auto,
-        folds: false,
-        doc: "Auto-detect diff-<language> or diff,<language>. false or none disables processing; true or a diff configuration enables it. Colors accept paints, none, auto (ordinary row fill), or callbacks receiving the row with a diff record. Explicit highlights override diff backgrounds. Context uses new-side syntax; hunks/files are highlighted independently. Custom gutters replace the automatic old/new/marker columns. References use displayed patch-row numbers; highlight/callout character positions refer to marker-free code.",
-      ),
-      e.field("__diff", e.types.option(dictionary), default: none, folds: false),
-      e.field("__diff-pass", e.types.option(dictionary), default: none, folds: false),
-      e.field("__diff-colors", dictionary, default: (:), folds: false),
-      e.field(
-        "gutters",
-        e.types.union(auto, e.types.array(e.types.union(auto, gutter-column))),
-        default: auto,
-        folds: false,
-        doc: "Ordered columns before the code. auto keeps the ordinary number column; in an array, auto includes that column if enabled. Arrays and functions cast to gutter-column. An empty array hides all gutters. All columns follow codly.number's placement; custom columns remain when number-enabled is false.",
-      ),
-      e.field(
-        "offset",
-        e.types.union(int, label, auto),
-        doc: __doc("offset"),
-        default: __default("offset"),
-      ),
-      e.field(
-        "range",
-        e.types.option(range),
-        doc: __doc("range"),
-        default: __default("range"),
-        folds: false,
-      ),
-      e.field(
-        "ranges",
-        e.types.option(e.types.array(range)),
-        doc: __doc("ranges"),
-        default: __default("ranges"),
-        folds: false,
-      ),
-      e.field(
-        "smart-skip",
-        e.types.option(smart-skip),
-        doc: __doc("smart-skip"),
-        default: __default("smart-skip"),
-        folds: false,
-      ),
-      e.field(
-        "aliases",
-        e.types.option(dictionary),
-        doc: __doc("aliases"),
-        default: __default("aliases"),
-      ),
-      e.field(
-        "smart-indent",
-        e.types.option(bool),
-        doc: __doc("smart-indent"),
-        default: __default("smart-indent"),
-      ),
-      e.field(
-        "wrap-marker",
-        e.types.option(content),
-        default: none,
-        doc: "Optional symbol at each wrapped continuation when smart-indent is enabled.",
-      ),
-      e.field(
-        "skip-last-empty",
-        e.types.option(bool),
-        doc: __doc("skip-last-empty"),
-        default: __default("skip-last-empty"),
-      ),
-      e.field(
-        "breakable",
-        e.types.option(bool),
-        doc: __doc("breakable"),
-        default: __default("breakable"),
-      ),
-      e.field(
-        "skips",
-        e.types.option(e.types.array(skip)),
-        doc: __doc("skips"),
-        default: __default("skips"),
-        folds: false,
-      ),
-      e.field(
-        "skip-line",
-        e.types.option(e.types.union(content, e.types.array(e.types.option(content)))),
-        doc: __doc("skip-line"),
-        default: __default("skip-line"),
-        folds: false,
-      ),
-      e.field(
-        "skip-number",
-        e.types.option(e.types.union(content, e.types.array(e.types.option(content)))),
-        doc: __doc("skip-number"),
-        default: __default("skip-number"),
-        folds: false,
-      ),
-      e.field(
-        "unnumbered",
-        e.types.option(e.types.array(unnumbered-line)),
-        doc: __doc("unnumbered-lines"),
-        default: __default("unnumbered-lines"),
-        folds: false,
-      ),
-      e.field(
-        "annotations",
-        e.types.option(e.types.array(annotation-config)),
-        doc: __doc("annotations"),
-        default: __default("annotations"),
-        folds: false,
-      ),
-      e.field(
-        "callouts",
-        e.types.option(e.types.array(callout-config)),
-        doc: __doc("callouts"),
-        default: __default("callouts"),
-        folds: false,
-      ),
-      e.field(
-        "highlighted",
-        e.types.option(e.types.array(highlighted-line)),
-        doc: __doc("highlighted-lines"),
-        default: __default("highlighted-lines"),
-        folds: false,
-      ),
-      e.field(
-        "highlights",
-        e.types.option(e.types.array(highlight-config)),
-        doc: __doc("highlights"),
-        default: __default("highlights"),
-        folds: false,
-      ),
-      e.field(
-        "header",
-        e.types.option(content),
-        doc: __doc("header"),
-        default: __default("header"),
-      ),
-      e.field(
-        "footer",
-        e.types.option(content),
-        doc: __doc("footer"),
-        default: __default("footer"),
-      ),
-      e.field("radius", e.types.option(length), doc: __doc("radius"), default: __default("radius")),
-      e.field(
-        "padding",
-        e.types.union(length, dictionary),
-        default: 0pt,
-        folds: false,
-        doc: "Extra inner space at the block edges, separate from row inset and leading. A length or a dictionary with top/right/bottom/left, x/y, and rest. Gutters remain outside the code border when placed outside.",
-      ),
-      e.field(
-        "leading",
-        e.types.option(length),
-        doc: __doc("leading"),
-        default: __default("leading"),
-      ),
-      e.field("gutter", e.types.option(length), doc: __doc("gutter"), default: __default("gutter")),
-      e.field(
-        "column-gutter",
-        e.types.option(length),
-        doc: __doc("column-gutter"),
-        default: __default("column-gutter"),
-      ),
-      e.field(
-        "row-gutter",
-        e.types.option(length),
-        doc: __doc("row-gutter"),
-        default: __default("row-gutter"),
-      ),
-      e.field(
-        "sublangs",
-        e.types.option(e.types.array(sublang)),
-        doc: "Syntax-highlighting languages for inclusive source-line ranges.",
-        default: none,
-      ),
-      e.field(
-        "rainbow",
-        e.types.option(rainbow),
-        doc: "Opt-in syntax-aware delimiter colors; true or a rainbow configuration.",
-        default: none,
-      ),
-      e.field(
-        "indent-guides",
-        e.types.option(indent-guides),
-        doc: "Opt-in indentation guides; true or an indent-guides configuration.",
-        default: none,
-      ),
-      e.field(
-        "width",
-        e.types.union(length, ratio, auto),
-        doc: "Block width. `auto` fits the natural width, up to the available width.",
-        default: 100%,
-        folds: false,
-      ),
-    ),
+    ..__declaration("elements", "new", scope: (
+      diff: diff,
+      gutter-column: gutter-column,
+      sublang: sublang,
+      rainbow: rainbow,
+      indent-guides: indent-guides,
+      smart-skip: smart-skip,
+      highlight-config: highlight-config,
+      annotation-config: annotation-config,
+      callout-config: callout-config,
+      range: range,
+      skip: skip,
+      highlighted-line: highlighted-line,
+      unnumbered-line: unnumbered-line,
+    )),
   )
 }
 

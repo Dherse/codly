@@ -8,29 +8,9 @@
 #import "diff.typ" as diff-impl
 #import "padding.typ" as block-padding
 
-/// The prefix identifying codly's custom elements and types.
-#let __codly-prefix = "@preview/codly:v2.0.0"
+#import "declarations.typ": __codly-prefix, __default
+
 #let __codly-whitespace = regex("\\s")
-
-/// Argument titles and defaults from `src/args.json`.
-#let __codly-args = json("args.json")
-
-/// Look up an argument's documentation title.
-#let __doc(name) = {
-  if name not in __codly-args {
-    panic("codly: missing argument definition for: " + name)
-  }
-  __codly-args.at(name).title
-}
-
-/// Evaluate an argument's default from `src/args.json`.
-#let __default(name) = {
-  if name not in __codly-args {
-    panic("codly: missing argument definition for: " + name)
-  }
-
-  eval(__codly-args.at(name).default, mode: "code")
-}
 
 /// Read the compact block record without querying reference figures.
 #let __codly-block-info(target) = {
@@ -829,11 +809,13 @@
   let formatted-skips = 0
   let line-array = type(skip-line) == array
   let number-array = type(skip-number) == array
-  let fallback-line = if line-array { skip-line.at(-1, default: __default("skip-line")) } else {
+  let fallback-line = if line-array {
+    skip-line.at(-1, default: __default("new", "skip-line"))
+  } else {
     skip-line
   }
   let fallback-number = if number-array {
-    skip-number.at(-1, default: __default("skip-number"))
+    skip-number.at(-1, default: __default("new", "skip-number"))
   } else { skip-number }
   let unnumbered-by-line = (:)
   if unnumbered != none {
@@ -1665,7 +1647,7 @@
   } else { () }
 
   let get-line = get(codly-line)
-  let fill = if get-line.fill == auto { __default("fill") } else { get-line.fill }
+  let fill = if get-line.fill == auto { __default("line", "fill") } else { get-line.fill }
 
   let line-colors = rows.map(row => {
     // Header/footer cells own their fills and never invoke the line callback.

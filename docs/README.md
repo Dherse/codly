@@ -33,6 +33,12 @@ CPUs; override the pool size with `CODLY_DOCS_WORKERS`, for example
 Third-party runtime and font assets are pinned submodules; `just docs-setup`
 initializes them. For a fresh clone, use `git clone --recurse-submodules`.
 
+Elembic declaration metadata lives in [`src/args.yaml`](../src/args.yaml),
+grouped by element and custom type, with shared callout fields. Types and
+defaults are quoted Typst expressions; field traits are YAML booleans, and
+field order determines positional arguments. Descriptions belong there;
+examples belong in the manual. Casts, parsers, and renderers remain in Typst.
+
 Use `typst preview` fences for editable examples. Add `fixed` for a full-width
 example with highlighted code above its pre-rendered SVG:
 
