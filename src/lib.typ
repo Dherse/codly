@@ -1729,9 +1729,8 @@
         + (code-width,)
         + (if has-annotations { (annot-width,) } else { () })
     )
-    let alignment = if args.gutters == auto { (numbers-alignment, left + horizon) } else {
-      (x, _) => if x < gutter-count { numbers-alignment } else { left + horizon }
-    }
+    // Disabling numbers removes their column; column zero then contains code.
+    let alignment = (x, _) => if x < gutter-count { numbers-alignment } else { left + horizon }
     set block(breakable: true)
     if (
       outside-column
