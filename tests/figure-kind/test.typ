@@ -71,7 +71,7 @@
     caption: [Explicit with auto-conversion],
   )<explicit-auto-code>
   #figure(
-    codly.new(raw("-old_listing_token\n+new_listing_token", lang: "diff,py", block: true)),
+    codly.new(raw("-old_listing_token\n+new_listing_token", lang: "diff-py", block: true)),
     caption: [Diff input],
   )<diff-code>
 ]

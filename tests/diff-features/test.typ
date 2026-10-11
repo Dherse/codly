@@ -5,8 +5,18 @@
 
 #set page(width: 400pt, height: auto, margin: 6pt)
 
+#assert.eq(impl.language(none), none)
 #assert.eq(impl.language("py"), none)
-#assert.eq(impl.language("diff, py"), "py")
+#assert.eq(impl.language("diff"), none)
+#assert.eq(impl.language("diff,py"), none)
+#assert.eq(impl.language("diff-py"), "py")
+#assert.eq(impl.language("diff-custom-python"), "custom-python")
+#assert.eq(impl.language("diff- py"), "py")
+#let fenced = ```diff-py
+-old
++new
+```
+#assert.eq(impl.language(fenced.lang), "py")
 #let model = impl.parse(" shared\n-old\n+new\n-\n+\n++literal\n--literal\n  indented")
 #assert.eq(model.rows.map(row => row.kind), (
   "context",
@@ -54,7 +64,7 @@
 })
 #codly.new(raw(old, block: true, lang: "c"))
 #codly.new(raw(new, block: true, lang: "c"))
-#codly.new(raw(source, block: true, lang: "diff,c"))
+#codly.new(raw(source, block: true, lang: "diff-c"))
 #context {
   let rows = query(selector(<visible-line>).before(here())).map(it => it.value)
   assert.eq(rows.len(), 14)
@@ -66,7 +76,7 @@
   assert.eq(passes.at(1).lines.map(line => line.text).join("\n"), new)
 }
 
-#codly.new(raw(patch, lang: "diff,c", block: true))
+#codly.new(raw(patch, lang: "diff-c", block: true))
 
 // Full patches keep headers out of the syntax passes and isolate hunks.
 #context {
@@ -107,9 +117,9 @@
   show: codly.line-show_(it => {
     [#metadata(e.fields(it).body.text)<disabled-line>#it]
   })
-  codly.new(raw("-old\n+new", block: true, lang: "diff,py"), diff: false)
-  codly.new(raw("-old\n+new", block: true, lang: "diff,py"), diff: none)
-  codly.new(raw("-literal", block: true, lang: "diff,"), diff: false)
+  codly.new(raw("-old\n+new", block: true, lang: "diff-py"), diff: false)
+  codly.new(raw("-old\n+new", block: true, lang: "diff-py"), diff: none)
+  codly.new(raw("-literal", block: true, lang: "diff-"), diff: false)
 }
 #context {
   assert.eq(query(<disabled-line>).map(it => it.value), (
@@ -128,7 +138,7 @@
     [#metadata((row.text, row.body))<tab-line>#it]
   })
   codly.new(raw("\treturn 1;", lang: "c", block: true, tab-size: 4))
-  codly.new(raw("+\treturn 1;", lang: "diff,c", block: true, tab-size: 4))
+  codly.new(raw("+\treturn 1;", lang: "diff-c", block: true, tab-size: 4))
 }
 #context {
   let rows = query(<tab-line>).map(it => it.value)
@@ -139,7 +149,7 @@
 // are separate. References and callouts are emitted only by the merged block.
 #figure(caption: [Diff coordinates])[
   #codly.new(
-    raw(" shared\n-old\n+new\n tail", lang: "diff,py", block: true),
+    raw(" shared\n-old\n+new\n tail", lang: "diff-py", block: true),
     block-label: <diff-coordinates>,
     offset: 10,
     range: (2, 4),
@@ -163,7 +173,7 @@
   show: codly.line-set_(fill: (yellow, aqua))
   show grid.cell: it => [#metadata((x: it.x, y: it.y, fill: it.fill))<diff-fill>#it]
   codly.new(
-    raw("-old\n+new\n shared\n+explicit", block: true, lang: "diff,py"),
+    raw("-old\n+new\n shared\n+explicit", block: true, lang: "diff-py"),
     highlighted: ((4, blue),),
     diff: (
       removed-fill: gradient-fill,
@@ -176,7 +186,7 @@
       context-fill: auto,
     ),
   )
-  codly.new(raw("-clear", block: true, lang: "diff,py"), gutters: (), diff: (removed-fill: none))
+  codly.new(raw("-clear", block: true, lang: "diff-py"), gutters: (), diff: (removed-fill: none))
   context {
     let cells = query(<diff-fill>).map(it => it.value)
     assert.eq(cells.len(), 17)
@@ -194,9 +204,9 @@
 // markers, and per-feature toggles can remove every automatic column.
 #{
   show grid.cell: it => [#metadata(it.x)<diff-column>#it]
-  codly.new(raw("+one", lang: "diff,py", block: true), number-enabled: false)
-  codly.new(raw("+two", lang: "diff,py", block: true), diff: (numbers: false, markers: false))
-  codly.new(raw("+three", lang: "diff,py", block: true), gutters: ((values: ("custom",)),))
+  codly.new(raw("+one", lang: "diff-py", block: true), number-enabled: false)
+  codly.new(raw("+two", lang: "diff-py", block: true), diff: (numbers: false, markers: false))
+  codly.new(raw("+three", lang: "diff-py", block: true), gutters: ((values: ("custom",)),))
 }
 #context { assert.eq(query(<diff-column>).map(it => it.value), (0, 1, 0, 0, 1)) }
 
@@ -211,17 +221,17 @@
   show text.where(text: "keyword"): it => context [#metadata(text.fill)<diff-resource-color>#it]
   show raw.line: it => context [#metadata(measure(it.body).height)<diff-resource-height>#it]
   codly.new(raw("keyword", lang: "codly-alias-test", block: true))
-  codly.new(raw("+keyword", lang: "diff,codly-alias-test", block: true))
+  codly.new(raw("+keyword", lang: "diff-codly-alias-test", block: true))
   codly.new(raw(
     "+keyword",
-    lang: "diff,codly-alias-test",
+    lang: "diff-codly-alias-test",
     block: true,
     theme: path("../aliases/99-local-resources.tmTheme"),
     syntaxes: path("../aliases/99-local-resources.sublime-syntax"),
   ))
   codly.new(raw(
     "+keyword",
-    lang: "diff,codly-alias-test",
+    lang: "diff-codly-alias-test",
     block: true,
     theme: read("../aliases/99-local-resources.tmTheme", encoding: none),
     syntaxes: read("../aliases/99-local-resources.sublime-syntax", encoding: none),
@@ -243,8 +253,8 @@
   })
   codly.new(raw("/* old */", lang: "c", block: true))
   codly.new(raw("return 1;", lang: "c", block: true))
-  codly.new(raw("-/* old */\n+return 1;", lang: "diff,custom-c", block: true))
-  codly.new(raw("-/* old */\n+return 1;", lang: "diff,sh", block: true), sublangs: (
+  codly.new(raw("-/* old */\n+return 1;", lang: "diff-custom-c", block: true))
+  codly.new(raw("-/* old */\n+return 1;", lang: "diff-sh", block: true), sublangs: (
     (start: 1, end: 2, lang: "c"),
   ))
 }
@@ -264,7 +274,7 @@
   codly.new(raw("f(\n  old([1])\n)", lang: "py", block: true), rainbow: true)
   codly.new(raw("f(\n  fresh({2: 3})\n)", lang: "py", block: true), rainbow: true)
   codly.new(
-    raw(" f(\n-  old([1])\n+  fresh({2: 3})\n )", lang: "diff,py", block: true),
+    raw(" f(\n-  old([1])\n+  fresh({2: 3})\n )", lang: "diff-py", block: true),
     rainbow: true,
   )
 }
@@ -284,7 +294,7 @@
     } else { it }
   })
   codly.new(
-    raw(" shared\n-old\n+new", lang: "diff,py", block: true),
+    raw(" shared\n-old\n+new", lang: "diff-py", block: true),
     offset: 50,
     unnumbered: ((2, [u]),),
     diff: (old-offset: 9, new-offset: 19, added-marker: [A], removed-marker: [R]),
@@ -311,9 +321,9 @@
       assert.eq(get(codly.codly).__diff-colors, (:))
       []
     })
-    codly.new(raw("+light", lang: "diff,py", block: true))
+    codly.new(raw("+light", lang: "diff-py", block: true))
   }
-  codly.new(raw("+custom", lang: "diff,py", block: true), diff: (added-fill: yellow))
+  codly.new(raw("+custom", lang: "diff-py", block: true), diff: (added-fill: yellow))
 }
 
 #{
@@ -323,7 +333,7 @@
     assert.eq(e.fields(get(codly.codly).diff).enabled, false)
     []
   })
-  codly.new(raw("-literal", lang: "diff,py", block: true))
+  codly.new(raw("-literal", lang: "diff-py", block: true))
 }
 
 // Missing context cannot supply syntax state; each hunk and file starts a new
@@ -336,7 +346,7 @@
   codly.new(raw("return 1;", lang: "c", block: true))
   codly.new(raw(
     "diff --git a/a.c b/a.c\n--- a/a.c\n+++ b/a.c\n@@ -1 +1 @@\n-/* old\n+/* new\n@@ -10 +10 @@\n return 1;\ndiff --git a/b.c b/b.c\n--- a/b.c\n+++ b/b.c\n@@ -1,0 +1 @@\n+return 1;",
-    lang: "diff,c",
+    lang: "diff-c",
     block: true,
   ))
 }

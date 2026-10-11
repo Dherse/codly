@@ -11,5 +11,5 @@
   callouts: ((line: 2, body: [Packaged callout]),),
   annotations: ((start: 1, numbering: none, content: [Packaged annotation]),),
 )
-#codly.new(raw("-return 1\n+return 2", lang: "diff,py", block: true))
+#codly.new(raw("-return 1\n+return 2", lang: "diff-py", block: true))
 #codly.new(raw("#let x = 1", lang: "typ", block: true))

@@ -1,9 +1,9 @@
 #let language(lang) = {
-  if lang == none or not lang.starts-with("diff,") { return none }
+  if lang == none or not lang.starts-with("diff-") { return none }
   let language = lang.slice(5).trim()
   assert(
     language != "" and not language.contains(","),
-    message: "codly: diff requires one nonempty language after `diff,`",
+    message: "codly: diff requires one nonempty language after `diff-`",
   )
   language
 }

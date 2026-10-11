@@ -25,7 +25,7 @@
     raw("scoped", block: true)
   }
 
-  #raw("-return 1\n+return 2", lang: "diff,py", block: true)
+  #raw("-return 1\n+return 2", lang: "diff-py", block: true)
 ]
 
 // Blocks outside the scope stay native; inline raw was never selected.

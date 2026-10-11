@@ -12,7 +12,7 @@
 #codly.new(
   raw(
     rows.enumerate().map(((i, row)) => (if calc.odd(i) { "+" } else { "-" }) + row).join("\n"),
-    lang: "diff,py",
+    lang: "diff-py",
     block: true,
   ),
   header: codly.header([Repeated diff header], repeat: true),

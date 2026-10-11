@@ -24,7 +24,7 @@
   #codly.new("call()", rainbow: true)
 ]<rainbow>
 #figure(caption: [Diff])[
-  #codly.new(raw("-old\n+new", lang: "diff,py", block: true))
+  #codly.new(raw("-old\n+new", lang: "diff-py", block: true))
 ]<patch>
 #[
   #show raw.where(block: true): codly.new

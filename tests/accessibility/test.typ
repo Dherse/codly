@@ -79,7 +79,7 @@
   set text(size: 8pt)
   codly.new(raw(
     "-deleted_diff_token\n+added_diff_token\n context_diff_token",
-    lang: "diff,py",
+    lang: "diff-py",
     block: true,
   ))
 }

@@ -32,7 +32,7 @@
 #let example() = {
   set text(size: 9pt)
   codly.new(
-    raw(patch, lang: "diff,py", block: true),
+    raw(patch, lang: "diff-py", block: true),
     file: "client.py",
     header: [Bounded HTTP retries],
     indent-guides: (width: 4),

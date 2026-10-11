@@ -54,7 +54,7 @@
 #codly.new(raw("    no numbers", block: true), number-enabled: false, callouts: (
   (line: 1, body: [Note]),
 ))
-#codly.new(raw("+    added", lang: "diff,py", block: true), callouts: (
+#codly.new(raw("+    added", lang: "diff-py", block: true), callouts: (
   (line: 1, body: [Diff note]),
 ))
 #codly.new(

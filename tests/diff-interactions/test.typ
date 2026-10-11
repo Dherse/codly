@@ -40,7 +40,7 @@
     + "diff --git a/second.py b/second.py\n--- a/second.py\n+++ b/second.py\n"
     + "@@ -1 +1 @@\n-keyword(9)\n+keyword([8])"
 )
-#codly.new(raw(patch, lang: "diff,custom-python", block: true), sublangs: (
+#codly.new(raw(patch, lang: "diff-custom-python", block: true), sublangs: (
   (start: 6, end: 7, lang: "codly-alias-test"),
   (start: 13, end: 14, lang: "codly-alias-test"),
 ))

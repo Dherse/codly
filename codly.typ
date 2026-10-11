@@ -40,7 +40,7 @@
   )
 }
 
-/// Automatic two-view syntax highlighting for `diff,<language>` raw blocks.
+/// Automatic two-view syntax highlighting for `diff-<language>` raw blocks.
 /// The diff prefix is removed from code and shown in a separate gutter.
 #let diff = {
   import "@preview/elembic:1.1.1" as e
@@ -1788,7 +1788,7 @@
         e.types.option(e.types.union(auto, diff)),
         default: auto,
         folds: false,
-        doc: "Auto-detect diff,<language>. false or none disables processing; true or a diff configuration enables it. Colors accept paints, none, auto (ordinary row fill), or callbacks receiving the row with a diff record. Explicit highlights override diff backgrounds. Context uses new-side syntax; hunks/files are highlighted independently. Custom gutters replace the automatic old/new/marker columns. References use displayed patch-row numbers; highlight/callout character positions refer to marker-free code.",
+        doc: "Auto-detect diff-<language>. false or none disables processing; true or a diff configuration enables it. Colors accept paints, none, auto (ordinary row fill), or callbacks receiving the row with a diff record. Explicit highlights override diff backgrounds. Context uses new-side syntax; hunks/files are highlighted independently. Custom gutters replace the automatic old/new/marker columns. References use displayed patch-row numbers; highlight/callout character positions refer to marker-free code.",
       ),
       e.field("__diff", e.types.option(dictionary), default: none, folds: false),
       e.field("__diff-pass", e.types.option(dictionary), default: none, folds: false),
