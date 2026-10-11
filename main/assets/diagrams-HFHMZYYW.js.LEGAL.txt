@@ -1,0 +1,7 @@
+Bundled license information:
+
+mermaid/dist/mermaid.core.mjs:
+  /*! Check if previously processed */
+  /*!
+   * Wait for document loaded before starting the execution
+   */
