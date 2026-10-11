@@ -2,12 +2,12 @@
 
 <p align="center">
   <a href="https://codly.dherse.dev">
-    <img alt="Documentation" src="https://img.shields.io/website?down_message=offline&label=manual&up_color=007aff&up_message=online&url=https%3A%2F%2Fcodly.dherse.dev" />
+    <img alt="Codly documentation site status" src="https://img.shields.io/website?down_message=offline&label=manual&up_color=007aff&up_message=online&url=https%3A%2F%2Fcodly.dherse.dev" />
   </a>
   <a href="https://github.com/Dherse/codly/blob/main/LICENSE">
-    <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-brightgreen">
+    <img alt="Codly MIT license" src="https://img.shields.io/badge/license-MIT-brightgreen">
   </a>
-  <img src="https://github.com/Dherse/codly/actions/workflows/test.yml/badge.svg" />
+  <img alt="Codly test workflow status" src="https://github.com/Dherse/codly/actions/workflows/test.yml/badge.svg" />
 </p>
 
 Code blocks for Typst with line numbers, references, annotations, themes, custom
@@ -30,7 +30,7 @@ pub fn greeting(name: &str) -> String {
 ```
 ````
 
-[![Automatic code-block conversion](examples/quickstart.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/quickstart.typ)
+[![Rust greeting function with line numbers and a filename badge; inline code below uses native formatting.](examples/quickstart.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/quickstart.typ)
 
 [Rendered example source](examples/quickstart.typ). The screenshot also applies
 the `github-light` theme and a filename badge.
@@ -122,7 +122,7 @@ palette; later component rules override theme settings.
 #codly.new(raw("return value * 2", lang: "py", block: true))
 ```
 
-[![The six built-in themes](examples/themes.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/themes.typ)
+[![Python function with a highlighted return expression, shown in all six built-in Codly themes.](examples/themes.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/themes.typ)
 
 [Theme example](examples/themes.typ) · [Theme definitions](src/themes.typ)
 
@@ -138,7 +138,7 @@ indentation. On `            return operation()`, `operation()` is positions
 20–30. Omitted bounds select the corresponding line edge; whitespace runs stay
 whole when a boundary falls inside them.
 
-[![Annotated retry loop with exact token highlights](examples/annotations.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/annotations.typ)
+[![Python retry loop with success and failure highlights, a brace annotation, two callouts, and a listing reference.](examples/annotations.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/annotations.typ)
 
 [Annotation and reference example](examples/annotations.typ)
 
@@ -158,7 +158,7 @@ and themes supply matching defaults.
 Fenced blocks accept the `diff-py` tag in Typst 0.15; on versions without comma
 support in language tags, use `raw(..., lang: "diff,py")`.
 
-[![HTTP client diff with timeout and bounded retries](examples/diff.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/diff.typ)
+[![Python HTTP client patch with added and removed lines, old and new line numbers, and bounded retries.](examples/diff.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/diff.typ)
 
 [Diff example](examples/diff.typ)
 
@@ -169,7 +169,7 @@ and typography. Array entries refer to original source lines, even in excerpts.
 Include `auto` in `gutters` to retain the ordinary number column; `gutters: ()`
 hides all gutters.
 
-[![Coverage and review gutters](examples/gutters.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/gutters.typ)
+[![Python validation function with coverage marks, line numbers, review labels, and a highlighted age check.](examples/gutters.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/gutters.typ)
 
 [Gutter example](examples/gutters.typ)
 
@@ -181,7 +181,7 @@ function receiving a row dictionary with `index`, `kind`, `source-line`, and
 fills are independent. `padding` controls block-edge space separately from row
 insets and leading.
 
-[![Palette fills, callback fills, and independent bands](examples/presentation.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/presentation.typ)
+[![JavaScript blocks with cycling row colors, a gradient row fill, and separate header and footer backgrounds.](examples/presentation.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/presentation.typ)
 
 [Fill and layout example](examples/presentation.typ)
 
@@ -191,7 +191,7 @@ Smart indentation is enabled by default. Indentation guides, rainbow delimiters,
 and continuation markers are opt-in through `indent-guides`, `rainbow`, and
 `wrap-marker`. Wrapped rows retain their original source number.
 
-[![Wrapped Rust with guides and rainbow delimiters](examples/wrapping.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/wrapping.typ)
+[![Wrapped Rust code with indentation guides, colored delimiters, and arrows marking continuation lines.](examples/wrapping.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/wrapping.typ)
 
 [Wrapping example](examples/wrapping.typ)
 
@@ -202,7 +202,7 @@ accepts a number, `auto` to start the excerpt at one, or a block/figure label to
 continue its last displayed number. Disjoint excerpts preserve their gaps.
 `codly.info(label)` exposes `lines` and `last-number` in context.
 
-[![Source excerpts and continued numbering](examples/excerpts.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/excerpts.typ)
+[![Three Python blocks showing omitted source lines, an excerpt renumbered from one, and continued numbering in the final block.](examples/excerpts.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/excerpts.typ)
 
 [Excerpt example](examples/excerpts.typ)
 
