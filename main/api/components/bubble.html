@@ -78,7 +78,7 @@
 <tr>
 <th>Field</th>
 <th>Type</th>
-<th>Default</th>
+<th>Default / required</th>
 <th>Meaning</th>
 </tr>
 
@@ -88,7 +88,7 @@
 <tr>
 <td><code>body</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/content/" target="_blank" rel="noopener noreferrer" aria-label="content (Typst reference, opens in a new tab)" title="content (Typst reference, opens in a new tab)">content<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
-<td>required, positional</td>
+<td>Required, positional</td>
 <td>Content displayed inside the bubble.</td>
 </tr>
 
@@ -96,112 +96,112 @@
 <td><code>gap</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/length/" target="_blank" rel="noopener noreferrer" aria-label="length (Typst reference, opens in a new tab)" title="length (Typst reference, opens in a new tab)">length<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/dictionary/" target="_blank" rel="noopener noreferrer" aria-label="dictionary (Typst reference, opens in a new tab)" title="dictionary (Typst reference, opens in a new tab)">dictionary<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
 <td><code>0.5em</code></td>
-<td>Minimum separation from neighboring bubbles; a length applies on both axes, or use <code>(x: ..., y: ...)</code>.</td>
+<td>Minimum horizontal and vertical separation between bubbles. A length sets both axes; omitted dictionary axes use 0.5em.</td>
 </tr>
 
 <tr>
 <td><code>pointer-align</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"start"</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"center"</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"end"</span></code></td>
 <td><code>"center"</code></td>
-<td>Preferred alignment of the bubble around its source character; placement clamps it to the row.</td>
+<td>Preferred alignment of the bubble around its source character, clamped to the available row.</td>
 </tr>
 
 <tr>
 <td><code>pointer-size</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/length/" target="_blank" rel="noopener noreferrer" aria-label="length (Typst reference, opens in a new tab)" title="length (Typst reference, opens in a new tab)">length<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
 <td><code>0.4em</code></td>
-<td>Default pointer height and half its base width.</td>
+<td>Default arrow height and half-base width.</td>
 </tr>
 
 <tr>
 <td><code>pointer-height</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/length/" target="_blank" rel="noopener noreferrer" aria-label="length (Typst reference, opens in a new tab)" title="length (Typst reference, opens in a new tab)">length<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/auto/" target="_blank" rel="noopener noreferrer" aria-label="auto (Typst reference, opens in a new tab)" title="auto (Typst reference, opens in a new tab)">auto<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
 <td><code>auto</code></td>
-<td>Pointer height; <code>auto</code> uses <code>pointer-size</code>.</td>
+<td>Arrow height; auto uses pointer-size.</td>
 </tr>
 
 <tr>
 <td><code>pointer-width</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/length/" target="_blank" rel="noopener noreferrer" aria-label="length (Typst reference, opens in a new tab)" title="length (Typst reference, opens in a new tab)">length<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/auto/" target="_blank" rel="noopener noreferrer" aria-label="auto (Typst reference, opens in a new tab)" title="auto (Typst reference, opens in a new tab)">auto<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
 <td><code>auto</code></td>
-<td>Full pointer base width; <code>auto</code> uses twice <code>pointer-size</code>.</td>
+<td>Full arrow base width; auto uses twice pointer-size.</td>
 </tr>
 
 <tr>
 <td><code>pointer-offset</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/length/" target="_blank" rel="noopener noreferrer" aria-label="length (Typst reference, opens in a new tab)" title="length (Typst reference, opens in a new tab)">length<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
 <td><code>0pt</code></td>
-<td>Horizontal shift of the pointer tip from its source character; positive is right, negative is left, and the tip is clamped to the bubble.</td>
+<td>Horizontal tip shift from the source character; positive moves right, negative moves left. Clamped to the bubble without moving its body.</td>
 </tr>
 
 <tr>
 <td><code>align</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/alignment/" target="_blank" rel="noopener noreferrer" aria-label="alignment (Typst reference, opens in a new tab)" title="alignment (Typst reference, opens in a new tab)">alignment<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
 <td><code>center</code></td>
-<td>Alignment of the bubble content.</td>
+<td>Alignment of content inside the bubble, independent of grid cell alignment.</td>
 </tr>
 
 <tr>
 <td><code>fill</code></td>
-<td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/visualize/" target="_blank" rel="noopener noreferrer" aria-label="paint (Typst reference, opens in a new tab)" title="paint (Typst reference, opens in a new tab)">paint<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/visualize/" target="_blank" rel="noopener noreferrer" aria-label="paint (Typst reference, opens in a new tab)" title="paint (Typst reference, opens in a new tab)">paint<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
 <td><code>luma(245)</code></td>
-<td>Fill shared by the bubble and pointer.</td>
+<td>Fill shared by the bubble body and pointer.</td>
 </tr>
 
 <tr>
 <td><code>stroke</code></td>
-<td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/visualize/stroke/" target="_blank" rel="noopener noreferrer" aria-label="stroke (Typst reference, opens in a new tab)" title="stroke (Typst reference, opens in a new tab)">stroke<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/visualize/stroke/" target="_blank" rel="noopener noreferrer" aria-label="stroke (Typst reference, opens in a new tab)" title="stroke (Typst reference, opens in a new tab)">stroke<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
 <td><code>0.6pt + luma(80)</code></td>
-<td>The bubble's single outline, including its pointer.</td>
+<td>Stroke around the single bubble and pointer outline.</td>
 </tr>
 
 <tr>
 <td><code>inset</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/length/" target="_blank" rel="noopener noreferrer" aria-label="length (Typst reference, opens in a new tab)" title="length (Typst reference, opens in a new tab)">length<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/dictionary/" target="_blank" rel="noopener noreferrer" aria-label="dictionary (Typst reference, opens in a new tab)" title="dictionary (Typst reference, opens in a new tab)">dictionary<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
 <td><code>(x: 0.5em, y: 0.3em)</code></td>
-<td>Padding inside the bubble.</td>
+<td>Padding inside the bubble body.</td>
 </tr>
 
 <tr>
 <td><code>outset</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/length/" target="_blank" rel="noopener noreferrer" aria-label="length (Typst reference, opens in a new tab)" title="length (Typst reference, opens in a new tab)">length<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/dictionary/" target="_blank" rel="noopener noreferrer" aria-label="dictionary (Typst reference, opens in a new tab)" title="dictionary (Typst reference, opens in a new tab)">dictionary<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
 <td><code>0pt</code></td>
-<td>Extra paint extent around the body; reserved in the row.</td>
+<td>Additional painted extent around the padded body, reserved in the row.</td>
 </tr>
 
 <tr>
 <td><code>radius</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/length/" target="_blank" rel="noopener noreferrer" aria-label="length (Typst reference, opens in a new tab)" title="length (Typst reference, opens in a new tab)">length<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
 <td><code>2pt</code></td>
-<td>Bubble corner radius.</td>
+<td>Corner radius of the bubble body.</td>
 </tr>
 
 <tr>
 <td><code>width</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/length/" target="_blank" rel="noopener noreferrer" aria-label="length (Typst reference, opens in a new tab)" title="length (Typst reference, opens in a new tab)">length<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/ratio/" target="_blank" rel="noopener noreferrer" aria-label="ratio (Typst reference, opens in a new tab)" title="ratio (Typst reference, opens in a new tab)">ratio<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/auto/" target="_blank" rel="noopener noreferrer" aria-label="auto (Typst reference, opens in a new tab)" title="auto (Typst reference, opens in a new tab)">auto<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
 <td><code>auto</code></td>
-<td>Preferred padded body width; <code>auto</code> fits content, bounded by the available row.</td>
+<td>Preferred padded body width; auto fits the content within the available row.</td>
 </tr>
 
 <tr>
 <td><code>line</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/int/" target="_blank" rel="noopener noreferrer" aria-label="int (Typst reference, opens in a new tab)" title="int (Typst reference, opens in a new tab)">int<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
-<td>required, named</td>
-<td>One-indexed source line attached to the bubble.</td>
+<td>Required, named</td>
+<td>One-based source line to which the bubble is attached.</td>
 </tr>
 
 <tr>
 <td><code>pointer</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/int/" target="_blank" rel="noopener noreferrer" aria-label="int (Typst reference, opens in a new tab)" title="int (Typst reference, opens in a new tab)">int<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
-<td>required, named</td>
-<td>Source character anchor, one-indexed, with <code>0</code> at the start of the line.</td>
+<td>Required, named</td>
+<td>One-based source character anchor; zero selects the line start.</td>
 </tr>
 
 <tr>
 <td><code>placement</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"above"</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"below"</span></code></td>
 <td><code>"below"</code></td>
-<td>Side of the source line on which to place the bubble.</td>
+<td>Whether the bubble appears above or below its source line.</td>
 </tr>
 
 </tbody>
@@ -221,8 +221,8 @@
 <section class="example" data-example="dd43f13157cf5003" data-widgets="[{&quot;type&quot;:&quot;slider&quot;,&quot;name&quot;:&quot;pointer&quot;,&quot;label&quot;:&quot;Pointer position&quot;,&quot;default&quot;:&quot;17&quot;,&quot;min&quot;:0,&quot;max&quot;:26,&quot;step&quot;:1,&quot;unit&quot;:&quot;&quot;}]" aria-label="Typst example"><fieldset class="example-controls" disabled=""><legend>Try the controls</legend>
 <div class="controls-grid">
 <div class="example-control">
-<div class="control-label"><label for="dd43f13157cf5003-178-widget-0">Pointer position</label><output for="dd43f13157cf5003-178-widget-0">17</output></div>
-<input id="dd43f13157cf5003-178-widget-0" data-widget="pointer" type="range" min="0" max="26" step="1" value="17" aria-valuetext="17"></div>
+<div class="control-label"><label for="dd43f13157cf5003-180-widget-0">Pointer position</label><output for="dd43f13157cf5003-180-widget-0">17</output></div>
+<input id="dd43f13157cf5003-180-widget-0" data-widget="pointer" type="range" min="0" max="26" step="1" value="17" aria-valuetext="17"></div>
 </div>
 <div class="controls-footer">
 <p class="hint">Adjust a value to update the source and preview. Changes stay in this tab.</p>
@@ -248,7 +248,7 @@
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ),),</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span></code></pre>
 </div>
-<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-dd43f13157cf5003-178">Editable Typst source</label><textarea id="edit-dd43f13157cf5003-178" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-dd43f13157cf5003-180">Editable Typst source</label><textarea id="edit-dd43f13157cf5003-180" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
 
 #show: codly.bubble-set_(fill: aqua.lighten(75%), radius: 6pt, width: 125pt)
 #codly.new(
@@ -294,7 +294,7 @@
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ),),</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span></code></pre>
 </div>
-<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-7de03523122daa91-195">Editable Typst source</label><textarea id="edit-7de03523122daa91-195" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-7de03523122daa91-197">Editable Typst source</label><textarea id="edit-7de03523122daa91-197" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
 
 #show: codly.bubble-show_(it =&gt; {
   box(stroke: red, it)

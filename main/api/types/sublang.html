@@ -63,7 +63,7 @@
 <tr>
 <th>Field</th>
 <th>Type</th>
-<th>Default</th>
+<th>Default / required</th>
 <th>Meaning</th>
 </tr>
 
@@ -73,22 +73,22 @@
 <tr>
 <td><code>start</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/int/" target="_blank" rel="noopener noreferrer" aria-label="int (Typst reference, opens in a new tab)" title="int (Typst reference, opens in a new tab)">int<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
-<td>Required</td>
-<td>First source line in the range, counting from 1.</td>
+<td>Required, named</td>
+<td>First source line of the range, one-based and positive.</td>
 </tr>
 
 <tr>
 <td><code>end</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/int/" target="_blank" rel="noopener noreferrer" aria-label="int (Typst reference, opens in a new tab)" title="int (Typst reference, opens in a new tab)">int<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
-<td>Required</td>
-<td>Last source line in the range, inclusive.</td>
+<td>Required, named</td>
+<td>Last source line of the range, inclusive and at least start.</td>
 </tr>
 
 <tr>
 <td><code>lang</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/str/" target="_blank" rel="noopener noreferrer" aria-label="str (Typst reference, opens in a new tab)" title="str (Typst reference, opens in a new tab)">str<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
-<td>Required</td>
-<td>Syntax-highlighting language key used for these lines.</td>
+<td>Required, named</td>
+<td>Syntax-highlighting language key.</td>
 </tr>
 
 </tbody>
@@ -133,7 +133,7 @@ their text and positions in the outer code block.</p>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ),</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span></code></pre>
 </div>
-<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-2628bb42a3801cdd-76">Editable Typst source</label><textarea id="edit-2628bb42a3801cdd-76" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-2628bb42a3801cdd-78">Editable Typst source</label><textarea id="edit-2628bb42a3801cdd-78" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
 
 #codly.new(
   ```sh

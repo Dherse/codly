@@ -69,15 +69,15 @@
 <tr>
 <td><code>position</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/int/" target="_blank" rel="noopener noreferrer" aria-label="int (Typst reference, opens in a new tab)" title="int (Typst reference, opens in a new tab)">int<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
-<td>Required</td>
-<td>One-indexed source line before which the skip row is inserted.</td>
+<td>Required, positional</td>
+<td>One-based source line before which the omission row is inserted.</td>
 </tr>
 
 <tr>
 <td><code>length</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/int/" target="_blank" rel="noopener noreferrer" aria-label="int (Typst reference, opens in a new tab)" title="int (Typst reference, opens in a new tab)">int<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
-<td><code>1</code></td>
-<td>Number of omitted lines represented by the skip; added to subsequent displayed line numbers.</td>
+<td><code>1</code>, positional</td>
+<td>Number of omitted lines added to subsequent displayed line numbers.</td>
 </tr>
 
 </tbody>
@@ -119,7 +119,7 @@ change which lines appear. Position <code>2</code> inserts the gap before source
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  skips: (codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">skip</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">2</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">4</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">),),</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span></code></pre>
 </div>
-<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-b45351508d979606-68">Editable Typst source</label><textarea id="edit-b45351508d979606-68" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-b45351508d979606-70">Editable Typst source</label><textarea id="edit-b45351508d979606-70" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
 
 #codly.new(
   ```text

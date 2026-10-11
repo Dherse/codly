@@ -69,15 +69,15 @@
 <tr>
 <td><code>line</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/int/" target="_blank" rel="noopener noreferrer" aria-label="int (Typst reference, opens in a new tab)" title="int (Typst reference, opens in a new tab)">int<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
-<td>Required</td>
-<td>One-indexed displayed line number to highlight.</td>
+<td>Required, positional</td>
+<td>Displayed line number to highlight, including offsets and skips.</td>
 </tr>
 
 <tr>
 <td><code>color</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/visualize/" target="_blank" rel="noopener noreferrer" aria-label="paint (Typst reference, opens in a new tab)" title="paint (Typst reference, opens in a new tab)">paint<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
-<td><code>none</code></td>
-<td>Optional paint for this line; <code>none</code> uses the next color from <a href="../components/highlight.html"><code>codly.highlight</code></a>.</td>
+<td><code>none</code>, positional</td>
+<td>Explicit background paint; none uses the next default highlight color transformed by codly.highlight.fill.</td>
 </tr>
 
 </tbody>
@@ -115,7 +115,7 @@
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  highlighted: (codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">highlighted-line</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">2</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">yellow</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">lighten</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">75%</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)),),</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span></code></pre>
 </div>
-<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-702c535ccf4103c9-64">Editable Typst source</label><textarea id="edit-702c535ccf4103c9-64" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-702c535ccf4103c9-66">Editable Typst source</label><textarea id="edit-702c535ccf4103c9-66" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
 
 #codly.new(
   ```text

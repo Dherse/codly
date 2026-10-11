@@ -57,7 +57,7 @@
 <table>
 <thead>
 <tr>
-<th>Parameter</th>
+<th>Field</th>
 <th>Type</th>
 <th>Default / required</th>
 <th>Meaning</th>
@@ -69,15 +69,15 @@
 <tr>
 <td><code>line</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/int/" target="_blank" rel="noopener noreferrer" aria-label="int (Typst reference, opens in a new tab)" title="int (Typst reference, opens in a new tab)">int<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
-<td>Required</td>
-<td>One-indexed source line to display without a line number.</td>
+<td>Required, positional</td>
+<td>One-based source line to leave unnumbered.</td>
 </tr>
 
 <tr>
 <td><code>fill</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/content/" target="_blank" rel="noopener noreferrer" aria-label="content (Typst reference, opens in a new tab)" title="content (Typst reference, opens in a new tab)">content<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
-<td><code>[]</code></td>
-<td>Content to display in the number cell instead.</td>
+<td><code>[]</code>, positional</td>
+<td>Content displayed instead of the automatic line number.</td>
 </tr>
 
 </tbody>
@@ -121,7 +121,7 @@ displayed position or number.</p>
 <span class="line"></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">The unnumbered lines are </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">@block:l1p1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> and </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">@block:l2p1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">.</span></span></code></pre>
 </div>
-<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-3c053832ce34c192-59">Editable Typst source</label><textarea id="edit-3c053832ce34c192-59" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-3c053832ce34c192-61">Editable Typst source</label><textarea id="edit-3c053832ce34c192-61" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
 
 #figure(caption: [Unnumbered source lines])[
   #codly.new(

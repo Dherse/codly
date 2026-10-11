@@ -64,7 +64,7 @@
 <tr>
 <th>Field</th>
 <th>Type</th>
-<th>Default</th>
+<th>Default / required</th>
 <th>Meaning</th>
 </tr>
 
@@ -75,14 +75,14 @@
 <td><code>body</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/content/" target="_blank" rel="noopener noreferrer" aria-label="content (Typst reference, opens in a new tab)" title="content (Typst reference, opens in a new tab)">content<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
 <td>Required, positional</td>
-<td>Raw block content highlighted with the range's language.</td>
+<td>Raw block used to resolve syntax styling for the sublanguage range.</td>
 </tr>
 
 <tr>
 <td><code>idx</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/int/" target="_blank" rel="noopener noreferrer" aria-label="int (Typst reference, opens in a new tab)" title="int (Typst reference, opens in a new tab)">int<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
 <td>Required, positional</td>
-<td>Zero-based index of this range in the block's <code>sublangs</code> array.</td>
+<td>Zero-based index of the sublanguage configuration within the block.</td>
 </tr>
 
 </tbody>
@@ -119,7 +119,7 @@ identify a source line or language key.</p>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  sublangs: ((start: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">2</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, end: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">4</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, lang: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"rs"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">),),</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span></code></pre>
 </div>
-<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-05b34b180abb4112-65">Editable Typst source</label><textarea id="edit-05b34b180abb4112-65" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-05b34b180abb4112-67">Editable Typst source</label><textarea id="edit-05b34b180abb4112-67" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
 
 #codly.new(
   ```sh
