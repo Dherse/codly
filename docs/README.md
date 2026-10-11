@@ -112,19 +112,18 @@ line; markers inside code fences stay literal.
 ## Deployment
 
 The source workflow publishes generated files to the `gh-pages` branch of
-[Dherse/codly.github.io](https://github.com/Dherse/codly.github.io).
+[Dherse/codly](https://github.com/Dherse/codly).
 
-1. Create a fine-grained personal access token restricted to `Dherse/codly.github.io`,
+1. Create a fine-grained personal access token restricted to `Dherse/codly`,
    with **Contents: Read and write**.
 2. In `Dherse/codly`, add it as the Actions secret `DOCS_DEPLOY_TOKEN`.
 3. Merge the workflow into `main`. Its push publishes the first build; use
    `just docs-deploy` to run it manually.
-4. After `gh-pages` exists, in `Dherse/codly.github.io` select
+4. After `gh-pages` exists, in `Dherse/codly` select
    **Settings → Pages → Source → Deploy from a branch → gh-pages → /(root)**.
 
-The default Pages URL is `https://dherse.github.io/codly.github.io/` (a project
-site, since the repository owner is `Dherse`). All site links are relative, so a
-later custom domain needs no URL rewrite.
+The default Pages URL is `https://dherse.github.io/codly/`. All site links are
+relative, so a later custom domain needs no URL rewrite.
 
 `site.json` configures `customDomain` as `codly.dherse.dev`. Site assembly writes
 the root `CNAME` on every deployment, restoring it if a previous build deleted it.
@@ -132,18 +131,29 @@ Without `customDomain`, assembly preserves the hosting branch's existing `CNAME`
 Archived releases cannot overwrite the hosting domain. Set the same domain in
 the hosting repository's **Settings → Pages → Custom domain**.
 
-Main pushes update `/main/`; the release workflow builds `/vX.Y.Z/` after
-validation and backfills missing release tags from `initialVersion` onward.
-The hosting branch retains published versions across deployments.
+Main pushes update `/main/`. Pushing a `vX.Y.Z` tag triggers the release workflow,
+which validates the tagged commit and builds `/vX.Y.Z/` from that tag.
+Documentation deployments also backfill missing release tags from
+`initialVersion` onward. The hosting branch retains published versions across
+deployments.
 
 `site.json` sets the default version. `"latest"` opens the highest published stable
 release; replace it with a tag such as `"v2.0.0"` to pin the landing site.
-`initialVersion` seeds the first release from main only when its package version
-matches and no archive exists; the actual release tag then rebuilds that snapshot.
+`initialVersion` seeds the initial version directory from main only when its
+package version matches and no archive exists; the actual release tag then
+rebuilds that snapshot. A seeded `/v2.0.0/` directory can exist before the tag
+and does not mean the package has been released.
 
-To backfill an existing tag, run **Deploy documentation** with `release_ref` set
-to that tag. Tags without the site scaffold get the current scaffold with their
-own Codly source; later tags use their own documentation and runtime.
+To backfill an existing tag or retry its documentation build, run **Deploy
+documentation** with `release_ref` set to that tag:
+
+```sh
+gh workflow run pages.yml --ref main -f release_ref=v2.0.0
+```
+
+This runs only the documentation workflow. Tags without the site scaffold get
+the current scaffold with their own Codly source; later tags use their own
+documentation and runtime.
 
 ## Notes, tips, and warnings
 

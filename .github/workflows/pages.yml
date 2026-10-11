@@ -39,7 +39,7 @@ jobs:
           DOCS_DEPLOY_TOKEN: ${{ secrets.DOCS_DEPLOY_TOKEN }}
         run: |
           if [[ -z "$DOCS_DEPLOY_TOKEN" ]]; then
-            echo "Set DOCS_DEPLOY_TOKEN with Contents write access to Dherse/codly.github.io." >&2
+            echo "Set DOCS_DEPLOY_TOKEN with Contents write access to Dherse/codly." >&2
             exit 1
           fi
       - name: Validate release input

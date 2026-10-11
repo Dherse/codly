@@ -81,7 +81,7 @@ source coordinates; its highlight uses the displayed number.
   ```,
   offset: 100,
   gutters: (auto, ("", "→")),
-  highlights: ((line: 102, start: 0, end: 5),),
+  highlights: ((line: 102, start: 1, end: 5),),
   callouts: ((line: 2, body: [The second source line.]),),
 )
 ````

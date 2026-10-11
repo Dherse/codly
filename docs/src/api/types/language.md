@@ -30,7 +30,7 @@ Use language definitions as values in the `languages` dictionary passed to [`cod
 #import "@preview/codly:2.0.0" as codly
 
 #show: codly.lang-set_(languages: (
-  rs: (name: [Rust], color: rgb("b7502a"), icon: "R"),
+  rs: (name: [Rust], color: rgb("b7502a"), icon: "⚙️"),
 ))
 #show raw.where(block: true): codly.new
 

@@ -76,7 +76,8 @@ The bubble and arrow use one outline and fill. Content wraps at the available wi
 #import "@preview/codly:2.0.0" as codly
 
 #show: codly.bubble-show_(it => {
-  box(stroke: red, it)
+  let fields = codly.e.fields(it)
+  box(stroke: red, inset: 2pt, fields.body)
 })
 
 #codly.new(

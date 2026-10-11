@@ -13,9 +13,7 @@
 Code blocks for Typst with line numbers, references, annotations, themes, custom
 gutters, and syntax-aware diffs.
 
-This branch prepares **v2.0.0** and requires **Typst 0.15.0 or newer**. Until v2 is
-published, import `"codly.typ"` from this checkout, or run `just install` and use
-`"@local/codly:2.0.0"`. The `@preview` imports below are for the upcoming release.
+Requires **Typst 0.15.0 or newer**.
 
 ## Quickstart
 
@@ -51,7 +49,7 @@ language names and icons:
 ## Explicit blocks and scoped defaults
 
 Use `codly.new` for per-block settings, literal source strings, or caller-resolved
-file paths. No initialization rule is required for explicit blocks.
+file paths; explicit blocks need no initialization rule.
 
 ```typ
 #import "@preview/codly:2.0.0" as codly
@@ -85,6 +83,32 @@ To leave selected blocks unstyled, replace the conversion rule with a conditiona
 #raw("native formatting", lang: "plain", block: true)
 #raw("print(42)", lang: "py", block: true)
 ```
+
+## Listing figures
+
+Put a code block in a `figure` to get a native listing caption, counter, and
+references. Codly discovers the enclosing figure's label automatically.
+Use `figure.where(kind: raw)` to style listing captions or build a list of
+listings:
+
+````typ
+#import "@preview/codly:2.0.0" as codly
+#show figure.where(kind: raw): set figure.caption(position: top)
+
+#figure(caption: [Normalize a name])[
+  #codly.new(
+    ```py
+    def normalize(name):
+        return name.strip()
+    ```,
+    file: "normalize.py",
+  )
+]<normalizer>
+
+See @normalizer for the listing and @normalizer:2 for the return statement.
+
+#outline(target: figure.where(kind: raw), title: [List of listings])
+````
 
 ## Themes
 
@@ -152,10 +176,10 @@ hides all gutters.
 ## Fills and layout
 
 `codly.line-set_(fill: ...)` accepts a paint, a cycling array of paints, or a
-function receiving the row. A row includes `index`, `kind`, `source-line`,
-`number`, and `text`. Generated rows may have no source line or text; guard those
-fields in callbacks. Header and footer styles are independent. `padding`
-controls block-edge space separately from row insets and leading.
+function receiving a row dictionary with `index`, `kind`, `source-line`, and
+`number`. The last two can be `none`; guard them in callbacks. Header and footer
+fills are independent. `padding` controls block-edge space separately from row
+insets and leading.
 
 [![Palette fills, callback fills, and independent bands](examples/presentation.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/presentation.typ)
 
@@ -195,11 +219,11 @@ continue its last displayed number. Disjoint excerpts preserve their gaps.
   `codly.highlight-set_(...)` for highlight styling.
 - Replace zebra-specific settings with a `fill` palette or callback.
 - Replace `offset-from` and offset helper calls with the single `offset` field.
-- Source ranges are one-based and inclusive. Character highlights use
-  zero-based bounds with an exclusive end; their line coordinate is the
-  displayed number, including offsets and explicit skips.
+- Source ranges and character highlight bounds are one-based and inclusive.
+  Highlight character positions count leading indentation; their line
+  coordinate is the displayed number, including offsets and explicit skips.
 
 See [CHANGELOG.md](CHANGELOG.md) for release history and contributor credits.
-The [1.3.0 / 1.3.1 migration guide](docs/src/migration-1.3.md) walks through
-each concept with before/after examples and editable controls; it is also in
-the [online manual](https://codly.dherse.dev/) together with the full v2 API.
+The [manual](https://codly.dherse.dev/v2.0.0/) contains the full API and a
+[1.3.0 / 1.3.1 migration guide](https://codly.dherse.dev/v2.0.0/migration-1.3.html)
+with before/after examples and editable controls.

@@ -54,7 +54,7 @@ Codly emits one annotation element for a configured line range. Range endpoints 
   annotations: ((
     start: 2,
     end: 4,
-    content: [Computes and displays the result],
+    content: [Computes and displays\ the result],
     numbering: if show-annotation-number { n => [(#n)] } else { none },
   ),),
 )

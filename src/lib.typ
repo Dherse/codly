@@ -1138,11 +1138,32 @@
   let body = text(
     font: "New Computer Modern Math",
     weight: 450,
-  )[#pdf.artifact[$lr(}, size: #it.height)$]
-    #__codly-numbering(it.numbering, it.num)
+  )[#__codly-numbering(it.numbering, it.num)
     #it.body
     #it.label]
-  box(width: measure(body).width, body)
+  let body-size = measure(body)
+  // Keep the existing baseline for single lines and explicitly authored blocks.
+  // Multiline inline content needs its own box to keep every line beside the brace.
+  if (
+    (type(it.body) == content and it.body.func() == block)
+      or body-size.height <= measure(text(font: "New Computer Modern Math", weight: 450)[M]).height
+  ) {
+    let annotation = text(font: "New Computer Modern Math", weight: 450)[
+      #pdf.artifact[$lr(}, size: #it.height)$] #body
+    ]
+    return box(width: measure(annotation).width, annotation)
+  }
+  let annotation = text(font: "New Computer Modern Math", weight: 450)[
+    #pdf.artifact[$lr(}, size: #it.height)$]
+    #box(
+      width: body-size.width,
+      height: body-size.height,
+      // Center on the equation's math axis rather than the final text line.
+      baseline: -body-size.height / 2 + 0.25em,
+      body,
+    )
+  ]
+  box(width: measure(annotation).width, annotation)
 }
 
 // Share static captures across blocks while keeping the style lookup deferred.

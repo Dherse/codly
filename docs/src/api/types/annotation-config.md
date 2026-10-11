@@ -44,7 +44,7 @@ Annotations are passed in the code block's `annotations` array.
     codly.annotation-config(
       2,
       end: 3,
-      content: [These lines compute and display the result.],
+      content: [These lines compute\ and display the result.],
     ),
   ),
 )

@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased — 2.0.0
+## 2.0.0 — Unreleased
 
 ### Breaking changes
 
@@ -22,18 +22,20 @@
 ### Added
 
 - `theme`, `define-theme`, and six presets: `thesis`, `dark`, `clean`,
-  `github-light`, `solarized-light`, and `one-light`.
-- Five-color highlight palettes per theme. Whole-row and span highlights cycle
-  independently; explicitly colored highlights do not consume palette entries.
+  `github-light`, `solarized-light`, and `one-light`. Each preset includes a
+  five-color highlight palette.
+- Whole-row and span highlight palettes cycle independently; explicitly colored
+  highlights do not consume palette entries.
 - Row fills accepting a paint, cycling array, or row callback. Number-column
   `fill: auto` follows the code row; header/footer fills remain independent.
 - `gutter-column` and `gutters` for multiple independently styled columns.
-  Values accept source-aligned arrays or row callbacks; `auto` includes ordinary
-  numbering, and `()` hides all gutters. Support outside placement and pagination.
+  Values accept source-aligned arrays or row callbacks; `auto` includes the
+  ordinary number column and `()` hides all gutters. Support outside placement
+  and pagination.
 - Automatic `diff-<language>` and `diff,<language>` highlighting with separate
-  old/new syntax passes, marker-free source, old/new numbering, and change markers.
-  Support unified
-  hunks, simple fragments, configurable paints, and custom gutters.
+  old/new syntax passes, marker-free source, old/new numbering, and change
+  markers. Support unified hunks, simple fragments, configurable paints, and
+  custom gutters.
 - Plain callout rows attached to source lines, above or below the code.
 - Pointed callout bubbles with character anchors, configurable paint, border,
   width, alignment, and pointer geometry. Pack noncolliding bubbles into lanes.
@@ -55,7 +57,10 @@
 - `unnumbered` for hiding selected line numbers or replacing them with content.
 - Native line, highlight, and annotation references with independent formatting,
   separators, numbering, and link targets.
+- Automatic figure-label discovery for line, highlight, and annotation
+  references (`block-label: auto`).
 - `codly.info(label)` returning source-line count and last displayed number.
+- Re-export Elembic as `codly.e` for queries and custom show rules.
 - `offset: auto` anchoring excerpts at one; label offsets continue another
   block's last displayed number. Disjoint excerpts retain numbering gaps.
 - Array-based `skip-line` and `skip-number` formatting.
@@ -76,15 +81,26 @@
 - Clip rounded code fills correctly with outside number columns.
 - Keep row and custom-gutter highlights when ordinary numbers are disabled.
 - Accept numbering strings and `none`; handle empty blocks and large offsets.
+- Keep code left-aligned when line numbers are disabled, regardless of
+  number-column alignment.
 - Fit filename/language badges without unintended wrapping or overlap.
 - Keep inherited body palettes out of header/footer paints and respect explicit
   component fill overrides.
 - Preserve caller-relative syntax/theme resources when re-highlighting aliases
   and diffs; reject unsafe copied string paths.
-- Apply theme scalar paints and highlight palettes correctly; reject empty
-  palettes and unknown theme settings.
+- Apply theme paints and highlight palettes correctly; reject empty palettes
+  and unknown theme settings.
 - Preserve PDF/UA structure and extractable source text through annotations,
   callouts, gutters, and diffs; avoid duplicate text from old/new syntax passes.
+
+### Documentation
+
+- Add an online manual with an API reference, a 1.3 migration guide, and editable
+  and fixed examples.
+- Add examples for listing figures, scoped styling, source excerpts, and
+  continued numbering.
+- Correct highlight coordinate descriptions and examples to use one-based,
+  inclusive character positions.
 
 ### Tooling
 
@@ -94,6 +110,9 @@
   imports. Validate the tagged commit before registry publication.
 - Add Typst formatting checks; remove the legacy signature generator and
   bundled v1 manual.
+- Generate component declarations and API argument tables from `src/args.yaml`.
+- Build documentation for main and release tags; preserve the custom domain
+  and share compiler and font downloads across versions.
 
 ### Contributors
 
@@ -109,7 +128,7 @@
 Discussion and review: [@JTrenerry](https://github.com/JTrenerry) and
 [@PuddingisPOG](https://github.com/PuddingisPOG).
 
-## 1.3.1 — 2025-08-06 - Never properly released
+## 1.3.1 — 2025-08-06 (not published on Universe)
 
 - Add per-highlight style overrides and improve nested highlights.
 - Fix tagged highlight insets, annotation handling, and row fills when line
@@ -141,8 +160,7 @@ Discussion and review: [@JTrenerry](https://github.com/JTrenerry) and
 ## 1.1.1 — 2024-12-04
 
 - Add `skip-last-empty`, update the minimum compiler, and fix reference and
-  documentation issues.
-- Correct font licensing and documentation imports.
+  documentation issues, licensing, and documentation imports.
 - Contributors: [@Dherse](https://github.com/Dherse) and [@Aaron-Rumpler](https://github.com/Aaron-Rumpler).
 
 ## 1.1.0 — 2024-12-01

@@ -20,10 +20,10 @@ References follow **displayed numbering**: change the offset and the highlight r
       value: '(green, aqua)'
 - type: slider
   name: highlight-start
-  label: First character (zero-based)
-  default: 9
-  min: 0
-  max: 12
+  label: First character (one-based)
+  default: 10
+  min: 1
+  max: 13
   step: 1
 - type: slider
   name: highlight-length
@@ -96,9 +96,9 @@ References follow **displayed numbering**: change the offset and the highlight r
     offset: line-offset,
     highlights: (
       (line: 2 + line-offset, start: highlight-start,
-       end: highlight-start + highlight-length,
+       end: highlight-start + highlight-length - 1,
        tag: highlight-tag, label: <selected-span>),
-      (line: 4 + line-offset, start: 7, end: 13),
+      (line: 4 + line-offset, start: 8, end: 13),
     ),
     annotations: if annotation-enabled {
       ((start: 2, end: annotation-end,
@@ -112,7 +112,7 @@ The selected span is @selected-span.
 The computation starts at #ref(label("analysis-code:" + str(2 + line-offset))).
 ````
 
-Highlight `line` values use **displayed line numbers**; their `start` and exclusive `end` count characters from zero. Annotation ranges use **source line numbers**, starting at one with an inclusive end. The labelled enclosing figure supplies the reference target automatically. Item references use a highlight's `tag` or an annotation's `content`.
+Highlight `line` values use **displayed line numbers**; their `start` and `end` count characters from one and include both endpoints. The default spans select `compute` on line 2 (characters 10–16) and `result` on line 4 (characters 8–13). Annotation ranges use **source line numbers**, starting at one with an inclusive end. The labelled enclosing figure supplies the reference target automatically. Item references use a highlight's `tag` or an annotation's `content`.
 
 See [highlight bounds](../api/types/highlight-config.md), [annotation ranges](../api/types/annotation-config.md), and [reference formatting](../api/components/ref.md).
 

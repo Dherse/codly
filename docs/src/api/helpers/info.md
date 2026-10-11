@@ -33,25 +33,40 @@ Call [`codly.info`](#signature) inside `context`, since it queries document cont
 
 Unnumbered rows do not replace `last-number`. Passing the label as another block's `offset` adds this number to that block's numbering, so numbering can continue across blocks.
 
-## Example: Basic Usage
+## Example: Continue a Listing
+
+Give the first block a figure label, then use that label as the second block's `offset`. The first listing ends at line 2, so the following fragment starts at line 3. The metadata remains available through the same figure label.
+
+> [!NOTE] Continuing a selected excerpt
+> A label offset adds the preceding block's last displayed number to the new
+> block's source line numbers. If the new excerpt starts at source line 4, use
+> `offset: codly.info(<first-part>).last-number - 3` inside `context` to make
+> its first displayed number follow the previous block.
 
 ````typst preview
 #import "@preview/codly:2.0.0" as codly
 
-#codly.new(
-  ```
-  first
-  second
-  ```,
-)<first-block>
-#codly.new(
-  ```
-  third
-  ```,
-  offset: <first-block>,
-)<continued-block>
+#figure(
+  codly.new(
+    ```py
+    prepare()
+    load()
+    ```,
+  ),
+  caption: [Load the input.],
+)<first-part>
 
-#context[
-  First block: #repr(codly.info(<first-block>))
-]
+#codly.new(
+  ```py
+  validate()
+  process()
+  finish()
+  ```,
+  offset: <first-part>,
+)
+
+#context {
+  let info = codly.info(<first-part>)
+  [The first listing has #info.lines source lines and ends at line #info.last-number.]
+}
 ````

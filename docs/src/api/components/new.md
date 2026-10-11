@@ -63,6 +63,7 @@ Ranges select source lines before display. Diff references count displayed patch
 ````
 
 ## Example: Automatic Code Blocks
+
 ````typst preview
 #import "@preview/codly:2.0.0" as codly
 
@@ -72,4 +73,92 @@ Ranges select source lines before display. Diff references count displayed patch
 def greet(name):
     print(f'Hello, {name}!')
 ```
+````
+
+## Example: Listing Figures
+
+Wrap a block in a native `figure` to give it a caption and listing number. Codly's raw, string, and path inputs infer `kind: raw`, so the same selector styles captions and builds a listings outline.
+
+> [!TIP] One label for the listing and its lines.
+> Label the figure and reference it with `@load-config`. Codly discovers that
+> label automatically and creates line references such as `@load-config:2`.
+
+````typst preview fixed
+#import "@preview/codly:2.0.0" as codly
+
+#show figure.where(kind: raw): set figure.caption(position: top)
+
+#figure(
+  codly.new(
+    ```py
+    def load_config(path):
+        with open(path) as source:
+            return source.read()
+    ```,
+  ),
+  caption: [Read the configuration file.],
+)<load-config>
+
+@load-config opens the file on @load-config:2.
+
+#outline(target: figure.where(kind: raw), title: [Listings])
+````
+
+## Example: Scoped Styling
+
+Use a content block to apply a style to a group of examples. The block setter changes shared block defaults; the line setter changes row appearance. After the closing `]`, subsequent code blocks use the outer defaults again.
+
+````typst preview fixed
+#import "@preview/codly:2.0.0" as codly
+
+#[
+  #show: codly.set_(radius: 8pt)
+  #show: codly.line-set_(
+    fill: rgb("#eef5ff"),
+    stroke: 0.6pt + rgb("#bdd5ef"),
+  )
+
+  #codly.new(
+    ```py
+    timeout = 30
+    retries = 3
+    ```,
+    file: "settings.py",
+  )
+]
+
+#codly.new(
+  ```py
+  connect(timeout=timeout)
+  ```,
+  file: "client.py",
+)
+````
+
+## Example: Source Excerpts
+
+Select an inclusive range of source lines without rewriting the code. This example displays source lines 2 through 4, with a filename badge and numbering starting at 1.
+
+> [!NOTE] Selection and displayed numbering are separate.
+> [`range`](../types/range.md) always uses the original source line numbers.
+> `offset: auto` starts the excerpt at 1; omit it to display 2, 3, and 4 instead.
+> Use a label as the offset to [continue another block](../helpers/info.md#example-continue-a-listing).
+
+````typst preview
+#import "@preview/codly:2.0.0" as codly
+
+#let source = ```py
+import json
+def read_settings(path):
+    with open(path) as file:
+        return json.load(file)
+print(read_settings('settings.json'))
+```
+
+#codly.new(
+  source,
+  file: "settings.py",
+  range: (2, 4),
+  offset: auto,
+)
 ````

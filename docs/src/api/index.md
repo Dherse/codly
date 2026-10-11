@@ -39,8 +39,8 @@ Each component page documents its constructor and its `*-set_` and `*-show_` hel
 ## Coordinates and defaults
 
 > [!NOTE] Source coordinates
-> Source-line ranges are one-indexed and inclusive. Character highlights
-> use zero-indexed offsets with an exclusive `end`. Displayed line numbers
+> Source-line ranges and character highlight bounds are one-indexed and
+> inclusive. Highlight `line` values use displayed line numbers, which
 > can change with offsets and skipped lines.
 
 Callout pointers and explicit skip positions have their own conventions, documented on their type pages. Check a field's definition before using displayed numbers as configuration coordinates.

@@ -197,7 +197,7 @@ elements:
         type: 'e.types.option(e.types.array(highlight-config))'
         doc: >-
           Character highlight configurations keyed by displayed line numbers. Character bounds are
-          zero-based with an exclusive end; omitted bounds select the complete line.
+          one-based and inclusive; omitted bounds select the complete line.
         default: 'none'
         folds: false
       header:
@@ -304,7 +304,7 @@ elements:
         type: 'e.types.option(e.types.array(highlight-config))'
         doc: >-
           Character highlight configurations for displayed line numbers. Character bounds are
-          zero-based with an exclusive end.
+          one-based and inclusive.
         default: 'none'
         folds: false
       smart-indent:
@@ -1242,7 +1242,7 @@ types:
         named: false
   highlight-config:
     doc: >-
-      A styled character span identified by its displayed line number and zero-based bounds.
+      A styled character span identified by its displayed line number and inclusive one-based bounds.
     fields:
       line:
         type: 'int'
@@ -1252,12 +1252,12 @@ types:
       start:
         type: 'e.types.option(int)'
         doc: >-
-          Inclusive zero-based character boundary; none selects the line start.
+          First character to include, one-based; none or 0 selects the line start.
         default: 'none'
       end:
         type: 'e.types.option(int)'
         doc: >-
-          Exclusive zero-based character boundary; none selects the line end.
+          Last character to include, one-based and inclusive; none selects the line end.
         default: 'none'
       fill:
         type: 'e.types.option(e.types.union(e.types.paint, function))'

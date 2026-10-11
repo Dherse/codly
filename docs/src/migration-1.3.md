@@ -1290,7 +1290,7 @@ See [highlighted-line](api/types/highlighted-line.md) and [highlight](api/compon
 
 ::: collapse Port character highlights, including 1.3.1 local overrides {#migration-span-highlights}
 
-**Keep `highlights` and its dictionaries; move shared styling onto `codly.highlight`.** Character coordinates still start at zero, and `end` remains exclusive. Omitted or `none` `start` means the beginning of the line; omitted or `none` `end` means its end. The `line` coordinate uses displayed numbering, including offsets and explicit skips, in both versions.
+**Keep `highlights` and its dictionaries; move shared styling onto `codly.highlight`.** Character coordinates start at one, and `end` is inclusive in both versions. Existing bounds that correctly select their intended text can stay; older descriptions of zero-based, exclusive bounds did not match the renderer. Omitted or `none` `start` means the beginning of the line; omitted or `none` `end` means its end. `start: 0` also selects the line's beginning. The `line` coordinate uses displayed numbering, including offsets and explicit skips, in both versions.
 
 ```typst code
 // 1.3.0 / 1.3.1:
@@ -1298,7 +1298,7 @@ See [highlighted-line](api/types/highlighted-line.md) and [highlight](api/compon
   highlight-radius: 3pt,
   highlight-inset: 1pt,
   highlight-fill: color => color.lighten(80%),
-  highlights: ((line: 2, start: 11, end: 14, fill: orange),),
+  highlights: ((line: 2, start: 12, end: 14, fill: orange),),
 )
 ```
 
@@ -1310,14 +1310,14 @@ See [highlighted-line](api/types/highlighted-line.md) and [highlight](api/compon
   fill: color => color.lighten(80%),
 )
 // Inside codly.new(...):
-highlights: (codly.highlight-config(2, start: 11, end: 14, fill: orange),)
+highlights: (codly.highlight-config(2, start: 12, end: 14, fill: orange),)
 ```
 
 `highlight-stroke`, `highlight-outset`, and `highlight-clip` move the same way: drop the prefix and pass them to `highlight-set_`. Note the two roles of `fill`: a span entry's `fill` picks its base paint, while the component's `fill` callback transforms that paint into the box background.
 
 **1.3.1's local overrides carry over.** Per-highlight `inset`, `baseline`, `outset`, `clip`, and `radius` — and the nested-highlight fixes — still override component defaults in 2.0, which additionally allows per-span `stroke` and a `depth` field to control stacking order. On 1.3.0 these local overrides did not work; port the shared settings first, then add exceptions.
 
-One default changed: `baseline` used to derive from the bottom highlight inset; it now defaults to `0pt` (`auto` follows the content baseline). Set it explicitly if you relied on the old positioning. Bounds must stay nonnegative and `end` must follow `start`.
+One default changed: `baseline` used to derive from the bottom highlight inset; it now defaults to `0pt` (`auto` follows the content baseline). Set it explicitly if you relied on the old positioning. Explicit bounds must stay nonnegative. Equal positive bounds select one character; choose `end` at least `start` for a visible span.
 
 ```yaml widgets
 - type: slider
@@ -1357,11 +1357,11 @@ One default changed: `baseline` used to derive from the bottom highlight inset; 
   offset: migration-span-offset,
   highlights: (
     ..if migration-span-nested {
-      ((line: 2 + migration-span-offset, start: 4, fill: blue),)
+      ((line: 2 + migration-span-offset, start: 5, fill: blue),)
     } else { () },
     (
       line: 2 + migration-span-offset,
-      start: 11,
+      start: 12,
       end: 14,
       fill: orange,
       radius: if migration-span-local { migration-span-radius } else { none },
@@ -1546,7 +1546,7 @@ Each reference kind is now its own generated element — `codly.line-ref`, `codl
     ```,
     highlights: ((
       line: 2,
-      start: 4,
+      start: 5,
       end: 10,
       tag: [value],
       label: <migration-value>,

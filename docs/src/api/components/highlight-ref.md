@@ -50,7 +50,7 @@ The marked line is @marked.
     ```
     answer = 42
     ```,
-    highlights: ((line: 1, start: 0, end: 6, label: <marked>),),
+    highlights: ((line: 1, start: 1, end: 6, label: <marked>),),
   )
 ]<listing>
 ````
