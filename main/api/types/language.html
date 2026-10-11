@@ -99,7 +99,7 @@
 <h2 id="behavior"><a class="header" href="#behavior">Behavior</a></h2>
 <p>Use language definitions as values in the <code>languages</code> dictionary passed to <a href="../components/lang.html#signature"><code>codly.lang-set_</code></a>. The dictionary key must match the raw block’s language tag. The settings apply within the show rule’s scope. A definition’s <code>name</code>, <code>icon</code>, and <code>color</code> customize the badge; an omitted definition falls back to the raw language tag. A definition’s matching <a href="../components/lang.html"><code>codly.lang</code></a> style fields override the corresponding settings supplied to <a href="../components/lang.html#signature"><code>codly.lang-set_</code></a>.</p>
 <h2 id="example-basic-usage"><a class="header" href="#example-basic-usage">Example: Basic Usage</a></h2>
-<section class="example" data-example="8af9f36718b16d69" data-widgets="[]" aria-label="Typst example">
+<section class="example" data-example="ca5d59df29976e3c" data-widgets="[]" aria-label="Typst example">
 <div class="example-body">
 <div class="example-source">
 <div class="example-toolbar"><strong><span aria-hidden="true">&lt;/&gt;</span> Typst source</strong>
@@ -109,7 +109,7 @@
 <pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#import</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> "@preview/codly:2.0.0"</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> as</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> codly</span></span>
 <span class="line"></span>
 <span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#show</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">lang-set_</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(languages: (</span></span>
-<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  rs: (name: [Rust], color: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">rgb</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"b7502a"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">), icon: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"R"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">),</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  rs: (name: [Rust], color: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">rgb</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"b7502a"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">), icon: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"⚙️"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">),</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">))</span></span>
 <span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#show</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> raw</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">where</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(block: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">): codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">new</span></span>
 <span class="line"></span>
@@ -119,10 +119,10 @@
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">```</span></span></code></pre>
 </div>
-<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-8af9f36718b16d69-62">Editable Typst source</label><textarea id="edit-8af9f36718b16d69-62" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-ca5d59df29976e3c-62">Editable Typst source</label><textarea id="edit-ca5d59df29976e3c-62" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
 
 #show: codly.lang-set_(languages: (
-  rs: (name: [Rust], color: rgb("b7502a"), icon: "R"),
+  rs: (name: [Rust], color: rgb("b7502a"), icon: "⚙️"),
 ))
 #show raw.where(block: true): codly.new
 
@@ -135,7 +135,7 @@ fn main() {
 <button data-run="">Run</button> <button data-reset="">Reset example</button></details></div>
 <div class="example-output">
 <div class="preview-toolbar"><span class="preview-label">OUTPUT</span><span class="example-status" role="status">Pre-rendered default</span></div>
-<div class="preview"><img class="static-preview" src="../../assets/previews/8af9f36718b16d69.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
+<div class="preview"><img class="static-preview" src="../../assets/previews/ca5d59df29976e3c.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
 </div>
 </div>
 </section>

@@ -142,7 +142,7 @@
 <p>Typst emits this element when a native reference targets a label on a highlight. It retains the reference to the containing figure or code block, so native figure numbering and links work. With <code>by: "line"</code>, the formatter receives the displayed line number. With <code>by: "item"</code>, the tag is shown and <code>item</code> must be present. A <code>none</code> formatter suppresses the numeric part of line references; item references still show their tag. The default separator and formatter come from <a href="ref.html"><code>codly.ref</code></a>.</p>
 <p><a href="#signature"><code>codly.highlight-ref-set_(..args)</code></a> sets fields for matching references; <a href="#signature"><code>codly.highlight-ref-show_(it, ..args)</code></a> installs replacement content or a callback receiving the reference element.</p>
 <h2 id="example"><a class="header" href="#example">Example</a></h2>
-<section class="example" data-example="9dbe34e2276dd989" data-widgets="[]" aria-label="Typst example">
+<section class="example" data-example="1dc915e09bff8d67" data-widgets="[]" aria-label="Typst example">
 <div class="example-body">
 <div class="example-source">
 <div class="example-toolbar"><strong><span aria-hidden="true">&lt;/&gt;</span> Typst source</strong>
@@ -160,11 +160,11 @@
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    ```</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    answer = 42</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    ```,</span></span>
-<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    highlights: ((line: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, start: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">0</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, end: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">6</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, label: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">&lt;marked&gt;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">),),</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    highlights: ((line: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, start: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, end: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">6</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, label: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">&lt;marked&gt;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">),),</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  )</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">]</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">&lt;listing&gt;</span></span></code></pre>
 </div>
-<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-9dbe34e2276dd989-103">Editable Typst source</label><textarea id="edit-9dbe34e2276dd989-103" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-1dc915e09bff8d67-103">Editable Typst source</label><textarea id="edit-1dc915e09bff8d67-103" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
 
 #show: codly.highlight-ref-set_(numbering: numbering.with("H1"))
 
@@ -175,14 +175,14 @@ The marked line is @marked.
     ```
     answer = 42
     ```,
-    highlights: ((line: 1, start: 0, end: 6, label: &lt;marked&gt;),),
+    highlights: ((line: 1, start: 1, end: 6, label: &lt;marked&gt;),),
   )
 ]&lt;listing&gt;</textarea>
 <p class="hint">The highlighted source and output update after you stop typing. Copy code includes your edits.</p>
 <button data-run="">Run</button> <button data-reset="">Reset example</button></details></div>
 <div class="example-output">
 <div class="preview-toolbar"><span class="preview-label">OUTPUT</span><span class="example-status" role="status">Pre-rendered default</span></div>
-<div class="preview"><img class="static-preview" src="../../assets/previews/9dbe34e2276dd989.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
+<div class="preview"><img class="static-preview" src="../../assets/previews/1dc915e09bff8d67.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
 </div>
 </div>
 </section>

@@ -117,8 +117,17 @@
 </aside>
 <p>Call <a href="#signature"><code>codly.info</code></a> inside <code>context</code>, since it queries document content. The helper reads the first Codly block record after the label’s location.</p>
 <p>Unnumbered rows do not replace <code>last-number</code>. Passing the label as another block’s <code>offset</code> adds this number to that block’s numbering, so numbering can continue across blocks.</p>
-<h2 id="example-basic-usage"><a class="header" href="#example-basic-usage">Example: Basic Usage</a></h2>
-<section class="example" data-example="f3cd5fd13ba15995" data-widgets="[]" aria-label="Typst example">
+<h2 id="example-continue-a-listing"><a class="header" href="#example-continue-a-listing">Example: Continue a Listing</a></h2>
+<p>Give the first block a figure label, then use that label as the second block’s <code>offset</code>. The first listing ends at line 2, so the following fragment starts at line 3. The metadata remains available through the same figure label.</p>
+<aside class="admonition admonition-note" role="note" aria-label="Continuing a selected excerpt">
+<p class="admonition-title"><svg class="admonition-icon" viewbox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" /><path d="M12 11v6m0-10v1" /></svg>Continuing a selected excerpt</p>
+
+<p>A label offset adds the preceding block’s last displayed number to the new
+block’s source line numbers. If the new excerpt starts at source line 4, use
+<code>offset: codly.info(&lt;first-part&gt;).last-number - 3</code> inside <code>context</code> to make
+its first displayed number follow the previous block.</p>
+</aside>
+<section class="example" data-example="65a140e71d3109da" data-widgets="[]" aria-label="Typst example">
 <div class="example-body">
 <div class="example-source">
 <div class="example-toolbar"><strong><span aria-hidden="true">&lt;/&gt;</span> Typst source</strong>
@@ -127,46 +136,60 @@
 <div class="highlighted">
 <pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#import</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> "@preview/codly:2.0.0"</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> as</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> codly</span></span>
 <span class="line"></span>
-<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">#codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">new</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
-<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```</span></span>
-<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  first</span></span>
-<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  second</span></span>
-<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```,</span></span>
-<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">&lt;first-block&gt;</span></span>
-<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">#codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">new</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
-<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```</span></span>
-<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  third</span></span>
-<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```,</span></span>
-<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  offset: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">&lt;first-block&gt;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
-<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">&lt;continued-block&gt;</span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">#figure</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">new</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    ```py</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    prepare()</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    load()</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    ```,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ),</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  caption: [Load the input.],</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">&lt;first-part&gt;</span></span>
 <span class="line"></span>
-<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#context</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[</span></span>
-<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  First block: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">#repr</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">info</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">&lt;first-block&gt;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">))</span></span>
-<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">]</span></span></code></pre>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">#codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">new</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```py</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  validate()</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  process()</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  finish()</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  offset: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">&lt;first-part&gt;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#context</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  let</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> info </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">= </span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">info</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">&lt;first-part&gt;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  [The first listing has #info</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">lines source lines and ends at line #info</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">last-number.]</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span></code></pre>
 </div>
-<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-f3cd5fd13ba15995-85">Editable Typst source</label><textarea id="edit-f3cd5fd13ba15995-85" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-65a140e71d3109da-98">Editable Typst source</label><textarea id="edit-65a140e71d3109da-98" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+
+#figure(
+  codly.new(
+    ```py
+    prepare()
+    load()
+    ```,
+  ),
+  caption: [Load the input.],
+)&lt;first-part&gt;
 
 #codly.new(
-  ```
-  first
-  second
+  ```py
+  validate()
+  process()
+  finish()
   ```,
-)&lt;first-block&gt;
-#codly.new(
-  ```
-  third
-  ```,
-  offset: &lt;first-block&gt;,
-)&lt;continued-block&gt;
+  offset: &lt;first-part&gt;,
+)
 
-#context[
-  First block: #repr(codly.info(&lt;first-block&gt;))
-]</textarea>
+#context {
+  let info = codly.info(&lt;first-part&gt;)
+  [The first listing has #info.lines source lines and ends at line #info.last-number.]
+}</textarea>
 <p class="hint">The highlighted source and output update after you stop typing. Copy code includes your edits.</p>
 <button data-run="">Run</button> <button data-reset="">Reset example</button></details></div>
 <div class="example-output">
 <div class="preview-toolbar"><span class="preview-label">OUTPUT</span><span class="example-status" role="status">Pre-rendered default</span></div>
-<div class="preview"><img class="static-preview" src="../../assets/previews/f3cd5fd13ba15995.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
+<div class="preview"><img class="static-preview" src="../../assets/previews/65a140e71d3109da.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
 </div>
 </div>
 </section>

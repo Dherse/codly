@@ -77,14 +77,14 @@
 <td><code>start</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/int/" target="_blank" rel="noopener noreferrer" aria-label="int (Typst reference, opens in a new tab)" title="int (Typst reference, opens in a new tab)">int<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
 <td><code>none</code></td>
-<td>Inclusive zero-based character boundary; none selects the line start.</td>
+<td>First character to include, one-based; none or 0 selects the line start.</td>
 </tr>
 
 <tr>
 <td><code>end</code></td>
 <td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/int/" target="_blank" rel="noopener noreferrer" aria-label="int (Typst reference, opens in a new tab)" title="int (Typst reference, opens in a new tab)">int<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
 <td><code>none</code></td>
-<td>Exclusive zero-based character boundary; none selects the line end.</td>
+<td>Last character to include, one-based and inclusive; none selects the line end.</td>
 </tr>
 
 <tr>
@@ -166,16 +166,17 @@
 <p class="admonition-title"><svg class="admonition-icon" viewbox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" /><path d="M12 11v6m0-10v1" /></svg>Source coordinates</p>
 
 <p><code>line</code> is a one-indexed displayed line number, including any offset.
-<code>start</code> and <code>end</code> are zero-indexed character positions, and <code>end</code> is exclusive.</p>
+<code>start</code> and <code>end</code> are one-indexed character positions, and <code>end</code> is inclusive.</p>
 </aside>
 <aside class="admonition admonition-warning" role="note" aria-label="References need a labelled figure">
 <p class="admonition-title"><svg class="admonition-icon" viewbox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 3 10 18H2zM12 9v5m0 2v1" /></svg>References need a labelled figure</p>
 
 <p>To reference a highlight, give it a <code>label</code> and place its code block inside a labelled figure.</p>
 </aside>
-<p>The constructor and dictionary cast normalize omitted or <code>none</code> bounds to <code>start: 0</code> and an end bound covering the rest of the line. Explicit bounds must be nonnegative; <code>line</code> must be positive. Character positions are zero-indexed and the end is exclusive, unlike the inclusive, one-indexed source-line ranges. A <code>fill</code> paint is used directly and does not consume a palette entry; a callback receives the next palette paint. Highlights using <code>none</code> also consume the next palette entry. An empty configured palette is invalid. Local style fields override the corresponding <a href="../components/highlight.html"><code>codly.highlight</code></a> settings when provided.</p>
+<p>The constructor and dictionary cast normalize omitted or <code>none</code> bounds to <code>start: 0</code> and an end bound covering the rest of the line. Explicit bounds must be nonnegative; <code>line</code> must be positive. Character positions start at one and include both endpoints; <code>start: 0</code> is accepted as a line-start alias. Equal positive bounds select one character. Bounds count the source text after Typst removes the raw block’s common indentation and, for diffs, after the row’s diff marker is removed. Grapheme clusters and whitespace runs remain whole when a boundary falls inside them.</p>
+<p>A <code>fill</code> paint is used directly and does not consume a palette entry; a callback receives the next palette paint. Highlights using <code>none</code> also consume the next palette entry. An empty configured palette is invalid. Local style fields override the corresponding <a href="../components/highlight.html"><code>codly.highlight</code></a> settings when provided.</p>
 <h2 id="example-basic-usage"><a class="header" href="#example-basic-usage">Example: Basic Usage</a></h2>
-<section class="example" data-example="adec737aadaf51d2" data-widgets="[]" aria-label="Typst example">
+<section class="example" data-example="178ddafeff9a2154" data-widgets="[]" aria-label="Typst example">
 <div class="example-body">
 <div class="example-source">
 <div class="example-toolbar"><strong><span aria-hidden="true">&lt;/&gt;</span> Typst source</strong>
@@ -185,25 +186,25 @@
 <pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#import</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> "@preview/codly:2.0.0"</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> as</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> codly</span></span>
 <span class="line"></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">#codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">new</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
-<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```py</span></span>
-<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  let answer </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> 42</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```js</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  let</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> answer </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> 42</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```,</span></span>
-<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  highlights: (codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">highlight-config</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, start: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">4</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, end: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">10</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, fill: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">yellow</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">lighten</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">65%</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">), tag: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"value"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">),),</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  highlights: (codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">highlight-config</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, start: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">5</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, end: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">10</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, fill: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">yellow</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">lighten</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">65%</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">), tag: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"value"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">),),</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span></code></pre>
 </div>
-<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-adec737aadaf51d2-133">Editable Typst source</label><textarea id="edit-adec737aadaf51d2-133" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-178ddafeff9a2154-135">Editable Typst source</label><textarea id="edit-178ddafeff9a2154-135" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
 
 #codly.new(
-  ```py
+  ```js
   let answer = 42
   ```,
-  highlights: (codly.highlight-config(1, start: 4, end: 10, fill: yellow.lighten(65%), tag: "value"),),
+  highlights: (codly.highlight-config(1, start: 5, end: 10, fill: yellow.lighten(65%), tag: "value"),),
 )</textarea>
 <p class="hint">The highlighted source and output update after you stop typing. Copy code includes your edits.</p>
 <button data-run="">Run</button> <button data-reset="">Reset example</button></details></div>
 <div class="example-output">
 <div class="preview-toolbar"><span class="preview-label">OUTPUT</span><span class="example-status" role="status">Pre-rendered default</span></div>
-<div class="preview"><img class="static-preview" src="../../assets/previews/adec737aadaf51d2.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
+<div class="preview"><img class="static-preview" src="../../assets/previews/178ddafeff9a2154.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
 </div>
 </div>
 </section>

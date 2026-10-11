@@ -124,7 +124,7 @@ inclusive, the next annotation must start after the previous one’s end.</p>
 <p>The positional <code>start</code> argument is required. The constructor also accepts a dictionary with a <code>start</code> key. Dictionary and constructor inputs are type-checked, then normalized: a missing or <code>none</code> <code>end</code> becomes <code>start</code>, and missing <code>content</code> becomes <code>none</code>. <code>start</code> and a supplied <code>end</code> must be positive, and <code>end</code> must not precede <code>start</code>.</p>
 <p>Annotations are passed in the code block’s <code>annotations</code> array.</p>
 <h2 id="example-basic-usage"><a class="header" href="#example-basic-usage">Example: Basic Usage</a></h2>
-<section class="example" data-example="dd2716c9687fc78f" data-widgets="[]" aria-label="Typst example">
+<section class="example" data-example="e022d34f72a248f2" data-widgets="[]" aria-label="Typst example">
 <div class="example-body">
 <div class="example-source">
 <div class="example-toolbar"><strong><span aria-hidden="true">&lt;/&gt;</span> Typst source</strong>
@@ -144,12 +144,12 @@ inclusive, the next annotation must start after the previous one’s end.</p>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">annotation-config</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
 <span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">      2</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">      end: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">3</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
-<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">      content: [These lines compute and display the result.],</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">      content: [These lines compute</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">\ </span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">and display the result.],</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    ),</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ),</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span></code></pre>
 </div>
-<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-dd2716c9687fc78f-93">Editable Typst source</label><textarea id="edit-dd2716c9687fc78f-93" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-e022d34f72a248f2-93">Editable Typst source</label><textarea id="edit-e022d34f72a248f2-93" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
 
 #codly.new(
   ```py
@@ -162,7 +162,7 @@ inclusive, the next annotation must start after the previous one’s end.</p>
     codly.annotation-config(
       2,
       end: 3,
-      content: [These lines compute and display the result.],
+      content: [These lines compute\ and display the result.],
     ),
   ),
 )</textarea>
@@ -170,7 +170,7 @@ inclusive, the next annotation must start after the previous one’s end.</p>
 <button data-run="">Run</button> <button data-reset="">Reset example</button></details></div>
 <div class="example-output">
 <div class="preview-toolbar"><span class="preview-label">OUTPUT</span><span class="example-status" role="status">Pre-rendered default</span></div>
-<div class="preview"><img class="static-preview" src="../../assets/previews/dd2716c9687fc78f.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
+<div class="preview"><img class="static-preview" src="../../assets/previews/e022d34f72a248f2.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
 </div>
 </div>
 </section>
