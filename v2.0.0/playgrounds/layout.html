@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Codly documentation">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Layout and excerpts - Codly</title>
+  <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../docs.css">
+  <script src="../assets/preferences.js"></script>
+  <script type="module" src="../assets/docs.js"></script>
+</head>
+<body data-root="../">
+  <a class="skip" href="#content">Skip to content</a>
+  <header class="topbar">
+    <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">&lt;/&gt;</span> codly <span class="brand-sub">/ docs</span></a>
+    <div class="top-actions">
+      <button id="menu-toggle" aria-expanded="false" aria-controls="sidebar">Menu</button>
+      <div class="appearance-controls">
+        <button id="theme" class="theme-switch" type="button" role="switch" aria-checked="true" aria-label="Dark mode" title="Switch to light mode">
+          <span class="fa sun" aria-hidden="true">&#xf185;</span><span class="fa moon" aria-hidden="true">&#xf186;</span>
+        </button>
+        <details class="preferences" id="preferences">
+          <summary aria-label="Make it yours" title="Make it yours"><span class="fa" aria-hidden="true">&#xf013;</span></summary>
+          <div class="preferences-panel">
+            <h2>Make it yours</h2>
+            <label for="docs-version">Documentation version</label>
+            <select id="docs-version" hidden aria-label="Documentation version"></select>
+            <label for="code-font">Code font</label>
+            <select id="code-font" aria-describedby="font-help"><option value="dejavu">Default · DejaVu Sans Mono</option><option value="noto">Noto Sans Mono</option></select>
+            <p id="font-help" class="hint">Applies to code displayed in the documentation.</p>
+          </div>
+        </details>
+      </div>
+      <a class="github" href="https://github.com/Dherse/codly" rel="noreferrer noopener" target="_blank" title="Opens in a new tab">GitHub<svg class="external-link-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3"/></svg></a>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="search-box"><label for="search">Search the docs</label><div class="search-field"><input id="search" type="search" autocomplete="off" placeholder="Find an example…" maxlength="120"><kbd>/</kbd></div></div>
+      <div id="search-results" aria-live="polite" hidden></div>
+      <nav aria-label="Documentation"><ol class="chapter"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../index.html">Codly</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../playgrounds/index.html">Playgrounds</a></span><ol class="section"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../playgrounds/layout.html">Layout and excerpts</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../playgrounds/annotations.html">Annotations and references</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../playgrounds/diffs-and-syntax.html">Diffs and mixed languages</a></span></li></ol><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../migration-1.3.html">Migrating from 1.3.0 / 1.3.1</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/index.html">API reference</a></span><ol class="section"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/index.html">Components</a></span><ol class="section"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/new.html">new</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/lang.html">lang</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/file.html">file</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/header.html">header</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/footer.html">footer</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/line.html">line</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/number.html">number</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/highlight.html">highlight</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/annotation.html">annotation</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/bubble.html">bubble</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/callout.html">callout</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/ref.html">ref</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/line-ref.html">line-ref</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/highlight-ref.html">highlight-ref</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/annotation-ref.html">annotation-ref</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/sublang-block.html">sublang-block</a></span></li></ol><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/index.html">Types</a></span><ol class="section"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/language.html">language</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/range.html">range</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/skip.html">skip</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/highlighted-line.html">highlighted-line</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/unnumbered-line.html">unnumbered-line</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/smart-skip.html">smart-skip</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/highlight-config.html">highlight-config</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/annotation-config.html">annotation-config</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/callout-config.html">callout-config</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/gutter-column.html">gutter-column</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/diff.html">diff</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/sublang.html">sublang</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/rainbow.html">rainbow</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/indent-guides.html">indent-guides</a></span></li></ol><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/helpers/index.html">Themes and helpers</a></span><ol class="section"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/helpers/theme.html">theme</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/helpers/themes.html">themes</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/helpers/define-theme.html">define-theme</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/helpers/info.html">info</a></span></li></ol><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/queries-and-show-rules.html">⚙️ Queries and show rules</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/internals.html">⚙️ Internals</a></span></li></ol></li></ol></nav>
+    </aside>
+    <main id="content" tabindex="-1">
+      <article><h1 id="layout-and-excerpts"><a class="header" href="#layout-and-excerpts">Layout and excerpts</a></h1>
+<p>Tune a code block for the space around it, then select parts of a larger file without losing their source coordinates.</p>
+<h2 id="fit-long-lines"><a class="header" href="#fit-long-lines">Fit long lines</a></h2>
+<p>Reduce the width to compare ordinary wrapping with smart indentation; the wrap marker appears on continuation lines when smart indentation is enabled.</p>
+<p>Row inset adds space around each line; block padding adds space around the whole block. Moving numbers outside places them beside the code border.</p>
+<section class="example" data-example="5c4e6afea26fcf75" data-widgets="[{&quot;type&quot;:&quot;select&quot;,&quot;name&quot;:&quot;layout-theme&quot;,&quot;label&quot;:&quot;Theme&quot;,&quot;default&quot;:&quot;&#92;&quot;github-light&#92;&quot;&quot;,&quot;options&quot;:[{&quot;label&quot;:&quot;GitHub Light&quot;,&quot;value&quot;:&quot;&#92;&quot;github-light&#92;&quot;&quot;},{&quot;label&quot;:&quot;Dark&quot;,&quot;value&quot;:&quot;&#92;&quot;dark&#92;&quot;&quot;},{&quot;label&quot;:&quot;Clean&quot;,&quot;value&quot;:&quot;&#92;&quot;clean&#92;&quot;&quot;}]},{&quot;type&quot;:&quot;slider&quot;,&quot;name&quot;:&quot;layout-width&quot;,&quot;label&quot;:&quot;Block width&quot;,&quot;default&quot;:&quot;100%&quot;,&quot;min&quot;:55,&quot;max&quot;:100,&quot;step&quot;:5,&quot;unit&quot;:&quot;%&quot;},{&quot;type&quot;:&quot;slider&quot;,&quot;name&quot;:&quot;layout-size&quot;,&quot;label&quot;:&quot;Code size&quot;,&quot;default&quot;:&quot;9pt&quot;,&quot;min&quot;:7,&quot;max&quot;:12,&quot;step&quot;:1,&quot;unit&quot;:&quot;pt&quot;},{&quot;type&quot;:&quot;slider&quot;,&quot;name&quot;:&quot;layout-radius&quot;,&quot;label&quot;:&quot;Corner radius&quot;,&quot;default&quot;:&quot;4pt&quot;,&quot;min&quot;:0,&quot;max&quot;:12,&quot;step&quot;:1,&quot;unit&quot;:&quot;pt&quot;},{&quot;type&quot;:&quot;slider&quot;,&quot;name&quot;:&quot;layout-inset&quot;,&quot;label&quot;:&quot;Row inset&quot;,&quot;default&quot;:&quot;3pt&quot;,&quot;min&quot;:2,&quot;max&quot;:8,&quot;step&quot;:1,&quot;unit&quot;:&quot;pt&quot;},{&quot;type&quot;:&quot;slider&quot;,&quot;name&quot;:&quot;layout-padding&quot;,&quot;label&quot;:&quot;Block padding&quot;,&quot;default&quot;:&quot;0pt&quot;,&quot;min&quot;:0,&quot;max&quot;:12,&quot;step&quot;:1,&quot;unit&quot;:&quot;pt&quot;},{&quot;type&quot;:&quot;switch&quot;,&quot;name&quot;:&quot;layout-numbers&quot;,&quot;label&quot;:&quot;Show line numbers&quot;,&quot;default&quot;:&quot;true&quot;},{&quot;type&quot;:&quot;switch&quot;,&quot;name&quot;:&quot;layout-outside&quot;,&quot;label&quot;:&quot;Numbers outside the block&quot;,&quot;default&quot;:&quot;false&quot;},{&quot;type&quot;:&quot;switch&quot;,&quot;name&quot;:&quot;layout-smart-indent&quot;,&quot;label&quot;:&quot;Smart indentation&quot;,&quot;default&quot;:&quot;true&quot;},{&quot;type&quot;:&quot;switch&quot;,&quot;name&quot;:&quot;layout-wrap-marker&quot;,&quot;label&quot;:&quot;Show wrap marker&quot;,&quot;default&quot;:&quot;true&quot;}]" aria-label="Typst example"><fieldset class="example-controls" disabled=""><legend>Try the controls</legend>
+<div class="controls-grid">
+<div class="example-control">
+<div class="control-label"><label for="5c4e6afea26fcf75-80-widget-0">Theme</label><output for="5c4e6afea26fcf75-80-widget-0">"github-light"</output></div>
+<select id="5c4e6afea26fcf75-80-widget-0" data-widget="layout-theme"><option value="&quot;github-light&quot;" selected="">GitHub Light</option><option value="&quot;dark&quot;">Dark</option><option value="&quot;clean&quot;">Clean</option></select></div>
+<div class="example-control">
+<div class="control-label"><label for="5c4e6afea26fcf75-80-widget-1">Block width</label><output for="5c4e6afea26fcf75-80-widget-1">100%</output></div>
+<input id="5c4e6afea26fcf75-80-widget-1" data-widget="layout-width" type="range" min="55" max="100" step="5" value="100" aria-valuetext="100%"></div>
+<div class="example-control">
+<div class="control-label"><label for="5c4e6afea26fcf75-80-widget-2">Code size</label><output for="5c4e6afea26fcf75-80-widget-2">9pt</output></div>
+<input id="5c4e6afea26fcf75-80-widget-2" data-widget="layout-size" type="range" min="7" max="12" step="1" value="9" aria-valuetext="9pt"></div>
+<div class="example-control">
+<div class="control-label"><label for="5c4e6afea26fcf75-80-widget-3">Corner radius</label><output for="5c4e6afea26fcf75-80-widget-3">4pt</output></div>
+<input id="5c4e6afea26fcf75-80-widget-3" data-widget="layout-radius" type="range" min="0" max="12" step="1" value="4" aria-valuetext="4pt"></div>
+<div class="example-control">
+<div class="control-label"><label for="5c4e6afea26fcf75-80-widget-4">Row inset</label><output for="5c4e6afea26fcf75-80-widget-4">3pt</output></div>
+<input id="5c4e6afea26fcf75-80-widget-4" data-widget="layout-inset" type="range" min="2" max="8" step="1" value="3" aria-valuetext="3pt"></div>
+<div class="example-control">
+<div class="control-label"><label for="5c4e6afea26fcf75-80-widget-5">Block padding</label><output for="5c4e6afea26fcf75-80-widget-5">0pt</output></div>
+<input id="5c4e6afea26fcf75-80-widget-5" data-widget="layout-padding" type="range" min="0" max="12" step="1" value="0" aria-valuetext="0pt"></div>
+<div class="example-control">
+<div class="control-label"><label for="5c4e6afea26fcf75-80-widget-6">Show line numbers</label><output for="5c4e6afea26fcf75-80-widget-6">true</output></div>
+<input id="5c4e6afea26fcf75-80-widget-6" data-widget="layout-numbers" type="checkbox" role="switch" checked=""></div>
+<div class="example-control">
+<div class="control-label"><label for="5c4e6afea26fcf75-80-widget-7">Numbers outside the block</label><output for="5c4e6afea26fcf75-80-widget-7">false</output></div>
+<input id="5c4e6afea26fcf75-80-widget-7" data-widget="layout-outside" type="checkbox" role="switch"></div>
+<div class="example-control">
+<div class="control-label"><label for="5c4e6afea26fcf75-80-widget-8">Smart indentation</label><output for="5c4e6afea26fcf75-80-widget-8">true</output></div>
+<input id="5c4e6afea26fcf75-80-widget-8" data-widget="layout-smart-indent" type="checkbox" role="switch" checked=""></div>
+<div class="example-control">
+<div class="control-label"><label for="5c4e6afea26fcf75-80-widget-9">Show wrap marker</label><output for="5c4e6afea26fcf75-80-widget-9">true</output></div>
+<input id="5c4e6afea26fcf75-80-widget-9" data-widget="layout-wrap-marker" type="checkbox" role="switch" checked=""></div>
+</div>
+<div class="controls-footer">
+<p class="hint">Adjust a value to update the source and preview. Changes stay in this tab.</p>
+<button type="button" data-reset-widgets="">Reset controls</button></div>
+</fieldset>
+<div class="example-body">
+<div class="example-source">
+<div class="example-toolbar"><strong><span aria-hidden="true">&lt;/&gt;</span> Typst source</strong>
+<div class="toolbar-buttons"><button data-copy="" hidden="">Copy code</button></div>
+</div>
+<div class="highlighted">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#import</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> "@preview/codly:2.0.0"</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> as</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> codly</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#show</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">theme</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(layout-theme, block: (text: (size: layout-size)))</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#show</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">line-set_</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(inset: layout-inset)</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#show</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">number-set_</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  placement: </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> layout-outside { </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"outside"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> } </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">else</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> { </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"inside"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> },</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">#codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">new</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```py</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  def</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> send_digest</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(address, updates):</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">      if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> updates:</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">          subject </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> "Your weekly project updates are ready to read"</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">          send_email(address, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">subject</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">subject, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">body</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">format_updates(updates))</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">      return</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> {</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"recipient"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: address, </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"delivered"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">bool</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(updates)}</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  file: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"digest.py"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  width: layout-width,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  radius: layout-radius,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  padding: layout-padding,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  number-enabled: layout-numbers,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  smart-indent: layout-smart-indent,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  wrap-marker: </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> layout-wrap-marker { [↪] } </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">else</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> { </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">none</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> },</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span></code></pre>
+</div>
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-5c4e6afea26fcf75-80">Editable Typst source</label><textarea id="edit-5c4e6afea26fcf75-80" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+
+#show: codly.theme(layout-theme, block: (text: (size: layout-size)))
+#show: codly.line-set_(inset: layout-inset)
+#show: codly.number-set_(
+  placement: if layout-outside { "outside" } else { "inside" },
+)
+
+#codly.new(
+  ```py
+  def send_digest(address, updates):
+      if updates:
+          subject = "Your weekly project updates are ready to read"
+          send_email(address, subject=subject, body=format_updates(updates))
+      return {"recipient": address, "delivered": bool(updates)}
+  ```,
+  file: "digest.py",
+  width: layout-width,
+  radius: layout-radius,
+  padding: layout-padding,
+  number-enabled: layout-numbers,
+  smart-indent: layout-smart-indent,
+  wrap-marker: if layout-wrap-marker { [↪] } else { none },
+)</textarea>
+<p class="hint">The controls supply the example variables. Their definitions are hidden here; Copy code includes the current values and your edits.</p>
+<button data-run="">Run</button> <button data-reset="">Reset example</button></details></div>
+<div class="example-output">
+<div class="preview-toolbar"><span class="preview-label">OUTPUT</span><span class="example-status" role="status">Pre-rendered default</span></div>
+<div class="preview"><img class="static-preview" src="../assets/previews/5c4e6afea26fcf75.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
+</div>
+</div>
+</section>
+<p>See <a href="../api/components/new.html"><code>codly.new</code></a> for block fields and <a href="../api/helpers/theme.html"><code>codly.theme</code></a> for styling individual components.</p>
+<h2 id="show-an-excerpt-with-a-review-gutter"><a class="header" href="#show-an-excerpt-with-a-review-gutter">Show an excerpt with a review gutter</a></h2>
+<p>The review marks belong to source lines 2, 4, and 7; they stay attached when the excerpt or numbering offset changes.</p>
+<section class="example" data-example="3c45e20c965e6492" data-widgets="[{&quot;type&quot;:&quot;select&quot;,&quot;name&quot;:&quot;excerpt-ranges&quot;,&quot;label&quot;:&quot;Source selection&quot;,&quot;default&quot;:&quot;none&quot;,&quot;options&quot;:[{&quot;label&quot;:&quot;Whole file&quot;,&quot;value&quot;:&quot;none&quot;},{&quot;label&quot;:&quot;Function body (2–7)&quot;,&quot;value&quot;:&quot;((2, 7),)&quot;},{&quot;label&quot;:&quot;Two excerpts (2–4 and 7–8)&quot;,&quot;value&quot;:&quot;((2, 4), (7, 8))&quot;}]},{&quot;type&quot;:&quot;slider&quot;,&quot;name&quot;:&quot;excerpt-offset&quot;,&quot;label&quot;:&quot;Numbering offset&quot;,&quot;default&quot;:&quot;0&quot;,&quot;min&quot;:0,&quot;max&quot;:100,&quot;step&quot;:10,&quot;unit&quot;:&quot;&quot;},{&quot;type&quot;:&quot;switch&quot;,&quot;name&quot;:&quot;excerpt-numbers&quot;,&quot;label&quot;:&quot;Show line numbers&quot;,&quot;default&quot;:&quot;true&quot;},{&quot;type&quot;:&quot;switch&quot;,&quot;name&quot;:&quot;excerpt-review&quot;,&quot;label&quot;:&quot;Show review gutter&quot;,&quot;default&quot;:&quot;true&quot;},{&quot;type&quot;:&quot;slider&quot;,&quot;name&quot;:&quot;excerpt-gutter-width&quot;,&quot;label&quot;:&quot;Review gutter width&quot;,&quot;default&quot;:&quot;18pt&quot;,&quot;min&quot;:12,&quot;max&quot;:30,&quot;step&quot;:2,&quot;unit&quot;:&quot;pt&quot;},{&quot;type&quot;:&quot;switch&quot;,&quot;name&quot;:&quot;excerpt-smart-skip&quot;,&quot;label&quot;:&quot;Show omitted-line markers&quot;,&quot;default&quot;:&quot;true&quot;},{&quot;type&quot;:&quot;select&quot;,&quot;name&quot;:&quot;excerpt-fills&quot;,&quot;label&quot;:&quot;Row backgrounds&quot;,&quot;default&quot;:&quot;(rgb(&#92;&quot;f6f8fa&#92;&quot;), white)&quot;,&quot;options&quot;:[{&quot;label&quot;:&quot;Alternating&quot;,&quot;value&quot;:&quot;(rgb(&#92;&quot;f6f8fa&#92;&quot;), white)&quot;},{&quot;label&quot;:&quot;Solid&quot;,&quot;value&quot;:&quot;rgb(&#92;&quot;f6f8fa&#92;&quot;)&quot;},{&quot;label&quot;:&quot;No fill&quot;,&quot;value&quot;:&quot;none&quot;}]},{&quot;type&quot;:&quot;switch&quot;,&quot;name&quot;:&quot;excerpt-guides&quot;,&quot;label&quot;:&quot;Show indentation guides&quot;,&quot;default&quot;:&quot;true&quot;},{&quot;type&quot;:&quot;select&quot;,&quot;name&quot;:&quot;excerpt-guide-width&quot;,&quot;label&quot;:&quot;Spaces per guide level&quot;,&quot;default&quot;:&quot;4&quot;,&quot;options&quot;:[{&quot;label&quot;:&quot;Infer from source&quot;,&quot;value&quot;:&quot;auto&quot;},{&quot;label&quot;:&quot;Two spaces&quot;,&quot;value&quot;:&quot;2&quot;},{&quot;label&quot;:&quot;Four spaces&quot;,&quot;value&quot;:&quot;4&quot;}]}]" aria-label="Typst example"><fieldset class="example-controls" disabled=""><legend>Try the controls</legend>
+<div class="controls-grid">
+<div class="example-control">
+<div class="control-label"><label for="3c45e20c965e6492-180-widget-0">Source selection</label><output for="3c45e20c965e6492-180-widget-0">none</output></div>
+<select id="3c45e20c965e6492-180-widget-0" data-widget="excerpt-ranges"><option value="none" selected="">Whole file</option><option value="((2, 7),)">Function body (2–7)</option><option value="((2, 4), (7, 8))">Two excerpts (2–4 and 7–8)</option></select></div>
+<div class="example-control">
+<div class="control-label"><label for="3c45e20c965e6492-180-widget-1">Numbering offset</label><output for="3c45e20c965e6492-180-widget-1">0</output></div>
+<input id="3c45e20c965e6492-180-widget-1" data-widget="excerpt-offset" type="range" min="0" max="100" step="10" value="0" aria-valuetext="0"></div>
+<div class="example-control">
+<div class="control-label"><label for="3c45e20c965e6492-180-widget-2">Show line numbers</label><output for="3c45e20c965e6492-180-widget-2">true</output></div>
+<input id="3c45e20c965e6492-180-widget-2" data-widget="excerpt-numbers" type="checkbox" role="switch" checked=""></div>
+<div class="example-control">
+<div class="control-label"><label for="3c45e20c965e6492-180-widget-3">Show review gutter</label><output for="3c45e20c965e6492-180-widget-3">true</output></div>
+<input id="3c45e20c965e6492-180-widget-3" data-widget="excerpt-review" type="checkbox" role="switch" checked=""></div>
+<div class="example-control">
+<div class="control-label"><label for="3c45e20c965e6492-180-widget-4">Review gutter width</label><output for="3c45e20c965e6492-180-widget-4">18pt</output></div>
+<input id="3c45e20c965e6492-180-widget-4" data-widget="excerpt-gutter-width" type="range" min="12" max="30" step="2" value="18" aria-valuetext="18pt"></div>
+<div class="example-control">
+<div class="control-label"><label for="3c45e20c965e6492-180-widget-5">Show omitted-line markers</label><output for="3c45e20c965e6492-180-widget-5">true</output></div>
+<input id="3c45e20c965e6492-180-widget-5" data-widget="excerpt-smart-skip" type="checkbox" role="switch" checked=""></div>
+<div class="example-control">
+<div class="control-label"><label for="3c45e20c965e6492-180-widget-6">Row backgrounds</label><output for="3c45e20c965e6492-180-widget-6">(rgb("f6f8fa"), white)</output></div>
+<select id="3c45e20c965e6492-180-widget-6" data-widget="excerpt-fills"><option value="(rgb(&quot;f6f8fa&quot;), white)" selected="">Alternating</option><option value="rgb(&quot;f6f8fa&quot;)">Solid</option><option value="none">No fill</option></select></div>
+<div class="example-control">
+<div class="control-label"><label for="3c45e20c965e6492-180-widget-7">Show indentation guides</label><output for="3c45e20c965e6492-180-widget-7">true</output></div>
+<input id="3c45e20c965e6492-180-widget-7" data-widget="excerpt-guides" type="checkbox" role="switch" checked=""></div>
+<div class="example-control">
+<div class="control-label"><label for="3c45e20c965e6492-180-widget-8">Spaces per guide level</label><output for="3c45e20c965e6492-180-widget-8">4</output></div>
+<select id="3c45e20c965e6492-180-widget-8" data-widget="excerpt-guide-width"><option value="auto">Infer from source</option><option value="2">Two spaces</option><option value="4" selected="">Four spaces</option></select></div>
+</div>
+<div class="controls-footer">
+<p class="hint">Adjust a value to update the source and preview. Changes stay in this tab.</p>
+<button type="button" data-reset-widgets="">Reset controls</button></div>
+</fieldset>
+<div class="example-body">
+<div class="example-source">
+<div class="example-toolbar"><strong><span aria-hidden="true">&lt;/&gt;</span> Typst source</strong>
+<div class="toolbar-buttons"><button data-copy="" hidden="">Copy code</button></div>
+</div>
+<div class="highlighted">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#import</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> "@preview/codly:2.0.0"</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> as</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> codly</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#show</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">theme</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"github-light"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, block: (text: (size: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">9pt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)))</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#show</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">line-set_</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(fill: excerpt-fills)</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">#codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">new</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```py</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  def</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> visible_names</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(records):</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">      names </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> []</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">      for</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> record </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">in</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> records:</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">          if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> record[</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"active"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">              name </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> record[</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"name"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">].strip()</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">              names.append(name)</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">      return</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> sorted</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(names)</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">  print</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(visible_names(records))</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  file: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"names.py"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ranges: excerpt-ranges,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  offset: excerpt-offset,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  number-enabled: excerpt-numbers,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  smart-skip: excerpt-smart-skip,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  indent-guides: </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> excerpt-guides {</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    (width: excerpt-guide-width)</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  } </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">else</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> { </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> },</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  gutters: </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> excerpt-review {</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    (</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">auto</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">gutter-column</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">      values: (</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">none</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"?"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">none</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"!"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">none</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">none</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"✓"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">none</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">),</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">      width: excerpt-gutter-width,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">      align: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">center</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">      text: (fill: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">rgb</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"8250df"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)),</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    ))</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  } </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">else</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> { </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">auto</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> },</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span></code></pre>
+</div>
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-3c45e20c965e6492-180">Editable Typst source</label><textarea id="edit-3c45e20c965e6492-180" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+
+#show: codly.theme("github-light", block: (text: (size: 9pt)))
+#show: codly.line-set_(fill: excerpt-fills)
+
+#codly.new(
+  ```py
+  def visible_names(records):
+      names = []
+      for record in records:
+          if record["active"]:
+              name = record["name"].strip()
+              names.append(name)
+      return sorted(names)
+  print(visible_names(records))
+  ```,
+  file: "names.py",
+  ranges: excerpt-ranges,
+  offset: excerpt-offset,
+  number-enabled: excerpt-numbers,
+  smart-skip: excerpt-smart-skip,
+  indent-guides: if excerpt-guides {
+    (width: excerpt-guide-width)
+  } else { false },
+  gutters: if excerpt-review {
+    (auto, codly.gutter-column(
+      values: (none, "?", none, "!", none, none, "✓", none),
+      width: excerpt-gutter-width,
+      align: center,
+      text: (fill: rgb("8250df")),
+    ))
+  } else { auto },
+)</textarea>
+<p class="hint">The controls supply the example variables. Their definitions are hidden here; Copy code includes the current values and your edits.</p>
+<button data-run="">Run</button> <button data-reset="">Reset example</button></details></div>
+<div class="example-output">
+<div class="preview-toolbar"><span class="preview-label">OUTPUT</span><span class="example-status" role="status">Pre-rendered default</span></div>
+<div class="preview"><img class="static-preview" src="../assets/previews/3c45e20c965e6492.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
+</div>
+</div>
+</section>
+<aside class="admonition admonition-note" role="note" aria-label="Source lines and displayed numbers differ.">
+<p class="admonition-title"><svg class="admonition-icon" viewbox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" /><path d="M12 11v6m0-10v1" /></svg>Source lines and displayed numbers differ.</p>
+
+<p><code>ranges</code> and gutter arrays use original source lines. <code>offset</code> changes displayed numbers; it does not move the selected lines or review marks.</p>
+</aside>
+<p>See <a href="../api/types/range.html"><code>codly.range</code></a>, <a href="../api/types/smart-skip.html"><code>codly.smart-skip</code></a>, and <a href="../api/types/gutter-column.html"><code>codly.gutter-column</code></a> for the selection and gutter rules. Continue with <a href="annotations.html">annotations and references</a> to attach explanations to those lines.</p>
+</article>
+    </main>
+    <aside class="page-tools" aria-label="Page information">
+      <p class="overline">ON THIS PAGE</p>
+      <nav id="page-toc" aria-label="On this page"></nav>
+    </aside>
+  </div>
+  <noscript><p class="noscript">JavaScript is off. Static previews remain available.</p></noscript>
+</body>
+</html>

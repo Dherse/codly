@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Codly documentation">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>highlight - Codly</title>
+  <link rel="icon" href="../../assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../docs.css">
+  <script src="../../assets/preferences.js"></script>
+  <script type="module" src="../../assets/docs.js"></script>
+</head>
+<body data-root="../../">
+  <a class="skip" href="#content">Skip to content</a>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="brand-mark" aria-hidden="true">&lt;/&gt;</span> codly <span class="brand-sub">/ docs</span></a>
+    <div class="top-actions">
+      <button id="menu-toggle" aria-expanded="false" aria-controls="sidebar">Menu</button>
+      <div class="appearance-controls">
+        <button id="theme" class="theme-switch" type="button" role="switch" aria-checked="true" aria-label="Dark mode" title="Switch to light mode">
+          <span class="fa sun" aria-hidden="true">&#xf185;</span><span class="fa moon" aria-hidden="true">&#xf186;</span>
+        </button>
+        <details class="preferences" id="preferences">
+          <summary aria-label="Make it yours" title="Make it yours"><span class="fa" aria-hidden="true">&#xf013;</span></summary>
+          <div class="preferences-panel">
+            <h2>Make it yours</h2>
+            <label for="docs-version">Documentation version</label>
+            <select id="docs-version" hidden aria-label="Documentation version"></select>
+            <label for="code-font">Code font</label>
+            <select id="code-font" aria-describedby="font-help"><option value="dejavu">Default · DejaVu Sans Mono</option><option value="noto">Noto Sans Mono</option></select>
+            <p id="font-help" class="hint">Applies to code displayed in the documentation.</p>
+          </div>
+        </details>
+      </div>
+      <a class="github" href="https://github.com/Dherse/codly" rel="noreferrer noopener" target="_blank" title="Opens in a new tab">GitHub<svg class="external-link-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3"/></svg></a>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="search-box"><label for="search">Search the docs</label><div class="search-field"><input id="search" type="search" autocomplete="off" placeholder="Find an example…" maxlength="120"><kbd>/</kbd></div></div>
+      <div id="search-results" aria-live="polite" hidden></div>
+      <nav aria-label="Documentation"><ol class="chapter"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../index.html">Codly</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../playgrounds/index.html">Playgrounds</a></span><ol class="section"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../playgrounds/layout.html">Layout and excerpts</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../playgrounds/annotations.html">Annotations and references</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../playgrounds/diffs-and-syntax.html">Diffs and mixed languages</a></span></li></ol><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../migration-1.3.html">Migrating from 1.3.0 / 1.3.1</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/index.html">API reference</a></span><ol class="section"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/index.html">Components</a></span><ol class="section"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/new.html">new</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/lang.html">lang</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/file.html">file</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/header.html">header</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/footer.html">footer</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/line.html">line</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/number.html">number</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/highlight.html">highlight</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/annotation.html">annotation</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/bubble.html">bubble</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/callout.html">callout</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/ref.html">ref</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/line-ref.html">line-ref</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/highlight-ref.html">highlight-ref</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/annotation-ref.html">annotation-ref</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/sublang-block.html">sublang-block</a></span></li></ol><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/index.html">Types</a></span><ol class="section"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/language.html">language</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/range.html">range</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/skip.html">skip</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/highlighted-line.html">highlighted-line</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/unnumbered-line.html">unnumbered-line</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/smart-skip.html">smart-skip</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/highlight-config.html">highlight-config</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/annotation-config.html">annotation-config</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/callout-config.html">callout-config</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/gutter-column.html">gutter-column</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/diff.html">diff</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/sublang.html">sublang</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/rainbow.html">rainbow</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/indent-guides.html">indent-guides</a></span></li></ol><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/helpers/index.html">Themes and helpers</a></span><ol class="section"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/helpers/theme.html">theme</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/helpers/themes.html">themes</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/helpers/define-theme.html">define-theme</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/helpers/info.html">info</a></span></li></ol><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/queries-and-show-rules.html">⚙️ Queries and show rules</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/internals.html">⚙️ Internals</a></span></li></ol></li></ol></nav>
+    </aside>
+    <main id="content" tabindex="-1">
+      <article><h1 id="codlyhighlight"><a class="header" href="#codlyhighlight"><code>codly.highlight</code></a></h1>
+<p><a href="#signature"><code>codly.highlight</code></a> renders a styled span over part of a source line in a Codly code block.</p>
+<h2 id="signature"><a class="header" href="#signature">Signature</a></h2>
+<div class="code-card">
+<div class="code-toolbar"><span>typst code</span><button data-copy="" hidden="">Copy code</button></div>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">highlight</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(body, highlight: highlight-config | </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">none</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> =</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> none</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">highlight-set_</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">..</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">args)</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">highlight-show_</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(it, </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">..</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">args)</span></span></code></pre>
+</div>
+
+<h2 id="fields"><a class="header" href="#fields">Fields</a></h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default / required</th>
+<th>Meaning</th>
+</tr>
+
+</thead>
+
+<tbody>
+<tr>
+<td><code>body</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/content/" target="_blank" rel="noopener noreferrer" aria-label="content (Typst reference, opens in a new tab)" title="content (Typst reference, opens in a new tab)">content<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td>Required, positional</td>
+<td>The highlighted content.</td>
+</tr>
+
+<tr>
+<td><code>highlight</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="../types/highlight-config.html" title="highlight-config type definition">highlight-config</a></span></code></td>
+<td><code>none</code></td>
+<td>Configuration record for the span, including its line, bounds, tag, and label.</td>
+</tr>
+
+<tr>
+<td><code>color</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/visualize/" target="_blank" rel="noopener noreferrer" aria-label="paint (Typst reference, opens in a new tab)" title="paint (Typst reference, opens in a new tab)">paint<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/array/" target="_blank" rel="noopener noreferrer" aria-label="array (Typst reference, opens in a new tab)" title="array (Typst reference, opens in a new tab)">array<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&lt;</span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/visualize/" target="_blank" rel="noopener noreferrer" aria-label="paint (Typst reference, opens in a new tab)" title="paint (Typst reference, opens in a new tab)">paint<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&gt;</span></code></td>
+<td>Built-in palette</td>
+<td>Default paint or nonempty cycling palette. Whole-row and span highlights have independent per-block cycles; explicit paints do not consume a color.</td>
+</tr>
+
+<tr>
+<td><code>radius</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/length/" target="_blank" rel="noopener noreferrer" aria-label="length (Typst reference, opens in a new tab)" title="length (Typst reference, opens in a new tab)">length<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>0.32em</code></td>
+<td>Corner radius of the highlight box.</td>
+</tr>
+
+<tr>
+<td><code>fill</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/function/" target="_blank" rel="noopener noreferrer" aria-label="function (Typst reference, opens in a new tab)" title="function (Typst reference, opens in a new tab)">function<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>(color) =&gt; color.lighten(80%)</code></td>
+<td>Function mapping the selected highlight color to a fill; none leaves the box unfilled.</td>
+</tr>
+
+<tr>
+<td><code>baseline</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/length/" target="_blank" rel="noopener noreferrer" aria-label="length (Typst reference, opens in a new tab)" title="length (Typst reference, opens in a new tab)">length<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/auto/" target="_blank" rel="noopener noreferrer" aria-label="auto (Typst reference, opens in a new tab)" title="auto (Typst reference, opens in a new tab)">auto<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>0pt</code></td>
+<td>Highlight box baseline shift; auto preserves the content's baseline.</td>
+</tr>
+
+<tr>
+<td><code>stroke</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/visualize/stroke/" target="_blank" rel="noopener noreferrer" aria-label="stroke (Typst reference, opens in a new tab)" title="stroke (Typst reference, opens in a new tab)">stroke<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/function/" target="_blank" rel="noopener noreferrer" aria-label="function (Typst reference, opens in a new tab)" title="function (Typst reference, opens in a new tab)">function<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>(color) =&gt; 0.5pt + color</code></td>
+<td>Border stroke, or a function mapping the selected highlight color to a stroke.</td>
+</tr>
+
+<tr>
+<td><code>inset</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/length/" target="_blank" rel="noopener noreferrer" aria-label="length (Typst reference, opens in a new tab)" title="length (Typst reference, opens in a new tab)">length<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/dictionary/" target="_blank" rel="noopener noreferrer" aria-label="dictionary (Typst reference, opens in a new tab)" title="dictionary (Typst reference, opens in a new tab)">dictionary<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>0.32em</code></td>
+<td>Padding inside the highlight box, as a length or a Typst inset dictionary.</td>
+</tr>
+
+<tr>
+<td><code>outset</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/length/" target="_blank" rel="noopener noreferrer" aria-label="length (Typst reference, opens in a new tab)" title="length (Typst reference, opens in a new tab)">length<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/dictionary/" target="_blank" rel="noopener noreferrer" aria-label="dictionary (Typst reference, opens in a new tab)" title="dictionary (Typst reference, opens in a new tab)">dictionary<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>0em</code></td>
+<td>Paint extent outside the highlight box, as a length or a Typst outset dictionary.</td>
+</tr>
+
+<tr>
+<td><code>clip</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/bool/" target="_blank" rel="noopener noreferrer" aria-label="bool (Typst reference, opens in a new tab)" title="bool (Typst reference, opens in a new tab)">bool<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>true</code></td>
+<td>Whether to clip highlighted content to the box boundary.</td>
+</tr>
+
+</tbody>
+
+</table>
+
+<h2 id="behavior"><a class="header" href="#behavior">Behavior</a></h2>
+<aside class="admonition admonition-tip" role="note" aria-label="References need a labelled figure.">
+<p class="admonition-title"><svg class="admonition-icon" viewbox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 18h6m-5 3h4m-5-6a6 6 0 1 1 6 0v3H9z" /></svg>References need a labelled figure.</p>
+
+<p>A highlight <code>label</code> resolves only when the code block sits inside a labelled figure; Codly discovers the figure label automatically.</p>
+</aside>
+<aside class="admonition admonition-note" role="note" aria-label="Source coordinates">
+<p class="admonition-title"><svg class="admonition-icon" viewbox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" /><path d="M12 11v6m0-10v1" /></svg>Source coordinates</p>
+
+<p>Highlight <code>line</code> values use displayed line numbers. Character bounds are
+one-indexed, and <code>end</code> is inclusive.</p>
+</aside>
+<aside class="admonition admonition-warning" role="note" aria-label="Warning">
+<p class="admonition-title"><svg class="admonition-icon" viewbox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 3 10 18H2zM12 9v5m0 2v1" /></svg>Warning</p>
+
+<p>A highlight palette must contain at least one color. An empty array causes
+a compilation error.</p>
+</aside>
+<p>Codly emits this element for spans declared in a code block’s <code>highlights</code> field. Character positions start at one and include both endpoints. Explicit bounds must be nonnegative; <code>start: 0</code> is also accepted for the beginning of the line. Omitted or <code>none</code> bounds start at the beginning or extend through the end of the line. See <a href="../types/highlight-config.html"><code>codly.highlight-config</code></a> for span metadata fields.</p>
+<p>Each code block has an independent highlight-paint cycle, separate from whole-line highlighting. A scalar <code>color</code> repeats for every span; an array cycles in declaration order. An explicit paint in the span metadata uses that paint without advancing the cycle, while its callback receives the next palette paint. The element’s <code>fill</code> and <code>stroke</code> callbacks receive that resolved span paint. Per-span <code>radius</code>, <code>clip</code>, <code>inset</code>, <code>outset</code>, <code>baseline</code>, and <code>stroke</code> settings override the corresponding element fields when present.</p>
+<p><a href="#signature"><code>codly.highlight-set_(..args)</code></a> sets fields for matching highlight elements in scope; <a href="#signature"><code>codly.highlight-show_(it, ..args)</code></a> installs replacement content or a callback receiving the highlight element.</p>
+<h2 id="example"><a class="header" href="#example">Example</a></h2>
+<section class="example" data-example="e93b78c02682d8d8" data-widgets="[{&quot;type&quot;:&quot;slider&quot;,&quot;name&quot;:&quot;example-radius&quot;,&quot;label&quot;:&quot;Corner radius&quot;,&quot;default&quot;:&quot;4pt&quot;,&quot;unit&quot;:&quot;pt&quot;,&quot;min&quot;:0,&quot;max&quot;:12,&quot;step&quot;:1}]" aria-label="Typst example"><fieldset class="example-controls" disabled=""><legend>Try the controls</legend>
+<div class="controls-grid">
+<div class="example-control">
+<div class="control-label"><label for="e93b78c02682d8d8-138-widget-0">Corner radius</label><output for="e93b78c02682d8d8-138-widget-0">4pt</output></div>
+<input id="e93b78c02682d8d8-138-widget-0" data-widget="example-radius" type="range" min="0" max="12" step="1" value="4" aria-valuetext="4pt"></div>
+</div>
+<div class="controls-footer">
+<p class="hint">Adjust a value to update the source and preview. Changes stay in this tab.</p>
+<button type="button" data-reset-widgets="">Reset controls</button></div>
+</fieldset>
+<div class="example-body">
+<div class="example-source">
+<div class="example-toolbar"><strong><span aria-hidden="true">&lt;/&gt;</span> Typst source</strong>
+<div class="toolbar-buttons"><button data-copy="" hidden="">Copy code</button></div>
+</div>
+<div class="highlighted">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#import</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> "@preview/codly:2.0.0"</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> as</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> codly</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#show</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">highlight-set_</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(radius: example-radius)</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">#codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">new</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```js</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  let</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> answer </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> 42</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  highlights: ((line: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, start: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">5</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, end: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">10</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">),),</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span></code></pre>
+</div>
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-e93b78c02682d8d8-138">Editable Typst source</label><textarea id="edit-e93b78c02682d8d8-138" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+
+#show: codly.highlight-set_(radius: example-radius)
+
+#codly.new(
+  ```js
+  let answer = 42
+  ```,
+  highlights: ((line: 1, start: 5, end: 10),),
+)</textarea>
+<p class="hint">The controls supply the example variables. Their definitions are hidden here; Copy code includes the current values and your edits.</p>
+<button data-run="">Run</button> <button data-reset="">Reset example</button></details></div>
+<div class="example-output">
+<div class="preview-toolbar"><span class="preview-label">OUTPUT</span><span class="example-status" role="status">Pre-rendered default</span></div>
+<div class="preview"><img class="static-preview" src="../../assets/previews/e93b78c02682d8d8.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
+</div>
+</div>
+</section>
+</article>
+    </main>
+    <aside class="page-tools" aria-label="Page information">
+      <p class="overline">ON THIS PAGE</p>
+      <nav id="page-toc" aria-label="On this page"></nav>
+    </aside>
+  </div>
+  <noscript><p class="noscript">JavaScript is off. Static previews remain available.</p></noscript>
+</body>
+</html>

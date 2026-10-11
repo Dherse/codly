@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Codly documentation">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>new - Codly</title>
+  <link rel="icon" href="../../assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../docs.css">
+  <script src="../../assets/preferences.js"></script>
+  <script type="module" src="../../assets/docs.js"></script>
+</head>
+<body data-root="../../">
+  <a class="skip" href="#content">Skip to content</a>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="brand-mark" aria-hidden="true">&lt;/&gt;</span> codly <span class="brand-sub">/ docs</span></a>
+    <div class="top-actions">
+      <button id="menu-toggle" aria-expanded="false" aria-controls="sidebar">Menu</button>
+      <div class="appearance-controls">
+        <button id="theme" class="theme-switch" type="button" role="switch" aria-checked="true" aria-label="Dark mode" title="Switch to light mode">
+          <span class="fa sun" aria-hidden="true">&#xf185;</span><span class="fa moon" aria-hidden="true">&#xf186;</span>
+        </button>
+        <details class="preferences" id="preferences">
+          <summary aria-label="Make it yours" title="Make it yours"><span class="fa" aria-hidden="true">&#xf013;</span></summary>
+          <div class="preferences-panel">
+            <h2>Make it yours</h2>
+            <label for="docs-version">Documentation version</label>
+            <select id="docs-version" hidden aria-label="Documentation version"></select>
+            <label for="code-font">Code font</label>
+            <select id="code-font" aria-describedby="font-help"><option value="dejavu">Default · DejaVu Sans Mono</option><option value="noto">Noto Sans Mono</option></select>
+            <p id="font-help" class="hint">Applies to code displayed in the documentation.</p>
+          </div>
+        </details>
+      </div>
+      <a class="github" href="https://github.com/Dherse/codly" rel="noreferrer noopener" target="_blank" title="Opens in a new tab">GitHub<svg class="external-link-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3"/></svg></a>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="search-box"><label for="search">Search the docs</label><div class="search-field"><input id="search" type="search" autocomplete="off" placeholder="Find an example…" maxlength="120"><kbd>/</kbd></div></div>
+      <div id="search-results" aria-live="polite" hidden></div>
+      <nav aria-label="Documentation"><ol class="chapter"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../index.html">Codly</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../playgrounds/index.html">Playgrounds</a></span><ol class="section"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../playgrounds/layout.html">Layout and excerpts</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../playgrounds/annotations.html">Annotations and references</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../playgrounds/diffs-and-syntax.html">Diffs and mixed languages</a></span></li></ol><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../migration-1.3.html">Migrating from 1.3.0 / 1.3.1</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/index.html">API reference</a></span><ol class="section"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/index.html">Components</a></span><ol class="section"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/new.html">new</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/lang.html">lang</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/file.html">file</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/header.html">header</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/footer.html">footer</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/line.html">line</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/number.html">number</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/highlight.html">highlight</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/annotation.html">annotation</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/bubble.html">bubble</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/callout.html">callout</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/ref.html">ref</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/line-ref.html">line-ref</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/highlight-ref.html">highlight-ref</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/annotation-ref.html">annotation-ref</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/components/sublang-block.html">sublang-block</a></span></li></ol><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/index.html">Types</a></span><ol class="section"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/language.html">language</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/range.html">range</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/skip.html">skip</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/highlighted-line.html">highlighted-line</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/unnumbered-line.html">unnumbered-line</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/smart-skip.html">smart-skip</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/highlight-config.html">highlight-config</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/annotation-config.html">annotation-config</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/callout-config.html">callout-config</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/gutter-column.html">gutter-column</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/diff.html">diff</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/sublang.html">sublang</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/rainbow.html">rainbow</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/types/indent-guides.html">indent-guides</a></span></li></ol><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/helpers/index.html">Themes and helpers</a></span><ol class="section"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/helpers/theme.html">theme</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/helpers/themes.html">themes</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/helpers/define-theme.html">define-theme</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/helpers/info.html">info</a></span></li></ol><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/queries-and-show-rules.html">⚙️ Queries and show rules</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../../api/internals.html">⚙️ Internals</a></span></li></ol></li></ol></nav>
+    </aside>
+    <main id="content" tabindex="-1">
+      <article><h1 id="codlynew"><a class="header" href="#codlynew"><code>codly.new</code></a></h1>
+<p>Creates a formatted code block. <a href="#signature"><code>codly.new</code></a> is an alias of <a href="#signature"><code>codly.codly</code></a>; <a href="#behavior"><code>codly.set_</code></a>, <a href="#behavior"><code>codly.show_</code></a>, and <a href="#behavior"><code>codly.selector</code></a> target the same element.</p>
+<h2 id="signature"><a class="header" href="#signature">Signature</a></h2>
+<div class="code-card">
+<div class="code-toolbar"><span>typst code</span><button data-copy="" hidden="">Copy code</button></div>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">new</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(body, </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">..</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">fields)</span></span></code></pre>
+</div>
+
+<p><code>body</code> is positional and required. It accepts source text, a path, or content containing raw blocks. Other fields are named. The setters accept named field values; <code>show_</code> installs a scoped replacement callback, and <code>selector</code> creates a Typst selector for block instances.</p>
+<h2 id="fields"><a class="header" href="#fields">Fields</a></h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default / required</th>
+<th>Meaning</th>
+</tr>
+
+</thead>
+
+<tbody>
+<tr>
+<td><code>body</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/str/" target="_blank" rel="noopener noreferrer" aria-label="str (Typst reference, opens in a new tab)" title="str (Typst reference, opens in a new tab)">str<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/path/" target="_blank" rel="noopener noreferrer" aria-label="path (Typst reference, opens in a new tab)" title="path (Typst reference, opens in a new tab)">path<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/content/" target="_blank" rel="noopener noreferrer" aria-label="content (Typst reference, opens in a new tab)" title="content (Typst reference, opens in a new tab)">content<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td>Required, positional</td>
+<td>Raw content, literal source text, or a caller-resolved file path.</td>
+</tr>
+
+<tr>
+<td><code>file</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/auto/" target="_blank" rel="noopener noreferrer" aria-label="auto (Typst reference, opens in a new tab)" title="auto (Typst reference, opens in a new tab)">auto<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/str/" target="_blank" rel="noopener noreferrer" aria-label="str (Typst reference, opens in a new tab)" title="str (Typst reference, opens in a new tab)">str<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/path/" target="_blank" rel="noopener noreferrer" aria-label="path (Typst reference, opens in a new tab)" title="path (Typst reference, opens in a new tab)">path<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/content/" target="_blank" rel="noopener noreferrer" aria-label="content (Typst reference, opens in a new tab)" title="content (Typst reference, opens in a new tab)">content<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>auto</code></td>
+<td>Filename badge content; auto uses an input path basename, and none hides the badge.</td>
+</tr>
+
+<tr>
+<td><code>lang</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/auto/" target="_blank" rel="noopener noreferrer" aria-label="auto (Typst reference, opens in a new tab)" title="auto (Typst reference, opens in a new tab)">auto<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/str/" target="_blank" rel="noopener noreferrer" aria-label="str (Typst reference, opens in a new tab)" title="str (Typst reference, opens in a new tab)">str<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>auto</code></td>
+<td>Language for source text or path inputs; auto infers the file extension.</td>
+</tr>
+
+<tr>
+<td><code>lang-position</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/auto/" target="_blank" rel="noopener noreferrer" aria-label="auto (Typst reference, opens in a new tab)" title="auto (Typst reference, opens in a new tab)">auto<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/alignment/" target="_blank" rel="noopener noreferrer" aria-label="alignment (Typst reference, opens in a new tab)" title="alignment (Typst reference, opens in a new tab)">alignment<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>auto</code></td>
+<td>Language badge placement. Top or bottom places it in a header or footer; left or right alone reserves space beside the first code row. auto uses ordinary placement; none hides the badge.</td>
+</tr>
+
+<tr>
+<td><code>file-position</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/alignment/" target="_blank" rel="noopener noreferrer" aria-label="alignment (Typst reference, opens in a new tab)" title="alignment (Typst reference, opens in a new tab)">alignment<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>top + left</code></td>
+<td>Filename badge placement. Top or bottom places it in a header or footer; left or right alone reserves space beside the first code row. none hides it.</td>
+</tr>
+
+<tr>
+<td><code>block-label</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/auto/" target="_blank" rel="noopener noreferrer" aria-label="auto (Typst reference, opens in a new tab)" title="auto (Typst reference, opens in a new tab)">auto<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/label/" target="_blank" rel="noopener noreferrer" aria-label="label (Typst reference, opens in a new tab)" title="label (Typst reference, opens in a new tab)">label<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>auto</code></td>
+<td>Label used for block and item references. auto discovers the nearest enclosing figure's label; none disables generated references.</td>
+</tr>
+
+<tr>
+<td><code>alias</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/str/" target="_blank" rel="noopener noreferrer" aria-label="str (Typst reference, opens in a new tab)" title="str (Typst reference, opens in a new tab)">str<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>none</code></td>
+<td>Internal original language key identifying a block whose syntax alias has already been resolved.</td>
+</tr>
+
+<tr>
+<td><code>number-enabled</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/bool/" target="_blank" rel="noopener noreferrer" aria-label="bool (Typst reference, opens in a new tab)" title="bool (Typst reference, opens in a new tab)">bool<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>true</code></td>
+<td>Whether to include the automatic line-number column.</td>
+</tr>
+
+<tr>
+<td><code>diff</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/auto/" target="_blank" rel="noopener noreferrer" aria-label="auto (Typst reference, opens in a new tab)" title="auto (Typst reference, opens in a new tab)">auto<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="../types/diff.html" title="diff type definition">diff</a></span></code></td>
+<td><code>auto</code></td>
+<td>Diff configuration or enablement flag. auto detects diff-&lt;language&gt; and diff,&lt;language&gt;; false or none disables processing. Diff code is highlighted independently for old and new sides.</td>
+</tr>
+
+<tr>
+<td><code>gutters</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/auto/" target="_blank" rel="noopener noreferrer" aria-label="auto (Typst reference, opens in a new tab)" title="auto (Typst reference, opens in a new tab)">auto<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/array/" target="_blank" rel="noopener noreferrer" aria-label="array (Typst reference, opens in a new tab)" title="array (Typst reference, opens in a new tab)">array<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&lt;<a class="type-link" href="https://typst.app/docs/reference/foundations/auto/" target="_blank" rel="noopener noreferrer" aria-label="auto (Typst reference, opens in a new tab)" title="auto (Typst reference, opens in a new tab)">auto<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="../types/gutter-column.html" title="gutter-column type definition">gutter-column</a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&gt;</span></code></td>
+<td><code>auto</code></td>
+<td>Ordered gutter columns. auto includes the automatic number column when enabled; an empty array hides all gutters. Custom columns remain when number-enabled is false.</td>
+</tr>
+
+<tr>
+<td><code>offset</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/int/" target="_blank" rel="noopener noreferrer" aria-label="int (Typst reference, opens in a new tab)" title="int (Typst reference, opens in a new tab)">int<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/label/" target="_blank" rel="noopener noreferrer" aria-label="label (Typst reference, opens in a new tab)" title="label (Typst reference, opens in a new tab)">label<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/auto/" target="_blank" rel="noopener noreferrer" aria-label="auto (Typst reference, opens in a new tab)" title="auto (Typst reference, opens in a new tab)">auto<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>0</code></td>
+<td>Displayed-number offset. An integer is added to source numbers; auto starts the first selected source line at one. A block or figure label continues after its last displayed number.</td>
+</tr>
+
+<tr>
+<td><code>range</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="../types/range.html" title="range type definition">range</a></span></code></td>
+<td><code>none</code></td>
+<td>Inclusive one-based source-line range to display; none selects all lines.</td>
+</tr>
+
+<tr>
+<td><code>ranges</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/array/" target="_blank" rel="noopener noreferrer" aria-label="array (Typst reference, opens in a new tab)" title="array (Typst reference, opens in a new tab)">array<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&lt;</span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="../types/range.html" title="range type definition">range</a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&gt;</span></code></td>
+<td><code>none</code></td>
+<td>Inclusive one-based source-line ranges to display. Cannot be combined with range.</td>
+</tr>
+
+<tr>
+<td><code>smart-skip</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="../types/smart-skip.html" title="smart-skip type definition">smart-skip</a></span></code></td>
+<td><code>false</code></td>
+<td>Whether to generate omission rows around selected ranges, or a configuration controlling leading, interior, and trailing omissions separately.</td>
+</tr>
+
+<tr>
+<td><code>aliases</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/dictionary/" target="_blank" rel="noopener noreferrer" aria-label="dictionary (Typst reference, opens in a new tab)" title="dictionary (Typst reference, opens in a new tab)">dictionary<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>(:)</code></td>
+<td>Dictionary mapping displayed language keys to syntax-highlighting language keys.</td>
+</tr>
+
+<tr>
+<td><code>smart-indent</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/bool/" target="_blank" rel="noopener noreferrer" aria-label="bool (Typst reference, opens in a new tab)" title="bool (Typst reference, opens in a new tab)">bool<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>true</code></td>
+<td>Whether wrapped continuations retain indentation from the normalized source text.</td>
+</tr>
+
+<tr>
+<td><code>wrap-marker</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/content/" target="_blank" rel="noopener noreferrer" aria-label="content (Typst reference, opens in a new tab)" title="content (Typst reference, opens in a new tab)">content<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>none</code></td>
+<td>Content displayed at each wrapped continuation when smart-indent is enabled.</td>
+</tr>
+
+<tr>
+<td><code>skip-last-empty</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/bool/" target="_blank" rel="noopener noreferrer" aria-label="bool (Typst reference, opens in a new tab)" title="bool (Typst reference, opens in a new tab)">bool<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>true</code></td>
+<td>Whether to omit the final source line when it contains only whitespace.</td>
+</tr>
+
+<tr>
+<td><code>breakable</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/bool/" target="_blank" rel="noopener noreferrer" aria-label="bool (Typst reference, opens in a new tab)" title="bool (Typst reference, opens in a new tab)">bool<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>true</code></td>
+<td>Whether the code block can span pages and columns.</td>
+</tr>
+
+<tr>
+<td><code>skips</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/array/" target="_blank" rel="noopener noreferrer" aria-label="array (Typst reference, opens in a new tab)" title="array (Typst reference, opens in a new tab)">array<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&lt;</span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="../types/skip.html" title="skip type definition">skip</a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&gt;</span></code></td>
+<td><code>none</code></td>
+<td>Explicit omission rows inserted before one-based source lines. Their lengths increase subsequent displayed numbers without removing supplied source lines.</td>
+</tr>
+
+<tr>
+<td><code>skip-line</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/content/" target="_blank" rel="noopener noreferrer" aria-label="content (Typst reference, opens in a new tab)" title="content (Typst reference, opens in a new tab)">content<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/array/" target="_blank" rel="noopener noreferrer" aria-label="array (Typst reference, opens in a new tab)" title="array (Typst reference, opens in a new tab)">array<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&lt;<a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/content/" target="_blank" rel="noopener noreferrer" aria-label="content (Typst reference, opens in a new tab)" title="content (Typst reference, opens in a new tab)">content<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&gt;</span></code></td>
+<td><code>align(center)[ ... ]</code></td>
+<td>Omission-row content, or values indexed by explicit skip order. Further and smart skips reuse the final value; an empty array uses the default.</td>
+</tr>
+
+<tr>
+<td><code>skip-number</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/content/" target="_blank" rel="noopener noreferrer" aria-label="content (Typst reference, opens in a new tab)" title="content (Typst reference, opens in a new tab)">content<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/array/" target="_blank" rel="noopener noreferrer" aria-label="array (Typst reference, opens in a new tab)" title="array (Typst reference, opens in a new tab)">array<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&lt;<a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/content/" target="_blank" rel="noopener noreferrer" aria-label="content (Typst reference, opens in a new tab)" title="content (Typst reference, opens in a new tab)">content<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&gt;</span></code></td>
+<td><code>[ ... ]</code></td>
+<td>Omission number-cell content, or values indexed by explicit skip order. Further and smart skips reuse the final value; an empty array uses the default.</td>
+</tr>
+
+<tr>
+<td><code>unnumbered</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/array/" target="_blank" rel="noopener noreferrer" aria-label="array (Typst reference, opens in a new tab)" title="array (Typst reference, opens in a new tab)">array<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&lt;</span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="../types/unnumbered-line.html" title="unnumbered-line type definition">unnumbered-line</a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&gt;</span></code></td>
+<td><code>()</code></td>
+<td>One-based source lines excluded from numbering, with optional number-cell content. Their references use the preceding displayed number and an ordinal suffix.</td>
+</tr>
+
+<tr>
+<td><code>annotations</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/array/" target="_blank" rel="noopener noreferrer" aria-label="array (Typst reference, opens in a new tab)" title="array (Typst reference, opens in a new tab)">array<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&lt;</span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="../types/annotation-config.html" title="annotation-config type definition">annotation-config</a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&gt;</span></code></td>
+<td><code>none</code></td>
+<td>Brace annotation configurations covering inclusive one-based source-line ranges in the rightmost grid column.</td>
+</tr>
+
+<tr>
+<td><code>callouts</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/array/" target="_blank" rel="noopener noreferrer" aria-label="array (Typst reference, opens in a new tab)" title="array (Typst reference, opens in a new tab)">array<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&lt;</span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="../types/callout-config.html" title="callout-config type definition">callout-config</a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&gt;</span></code></td>
+<td><code>none</code></td>
+<td>Content attached above or below one-based source lines. A pointer selects a source character and enables a bubble. Entry styling overrides codly.callout settings, which override codly.bubble defaults.</td>
+</tr>
+
+<tr>
+<td><code>highlighted</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/array/" target="_blank" rel="noopener noreferrer" aria-label="array (Typst reference, opens in a new tab)" title="array (Typst reference, opens in a new tab)">array<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&lt;</span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="../types/highlighted-line.html" title="highlighted-line type definition">highlighted-line</a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&gt;</span></code></td>
+<td><code>()</code></td>
+<td>Whole-row highlight configurations keyed by displayed line numbers, including offsets and skips. Explicit paints override the default highlight palette.</td>
+</tr>
+
+<tr>
+<td><code>highlights</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/array/" target="_blank" rel="noopener noreferrer" aria-label="array (Typst reference, opens in a new tab)" title="array (Typst reference, opens in a new tab)">array<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&lt;</span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="../types/highlight-config.html" title="highlight-config type definition">highlight-config</a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&gt;</span></code></td>
+<td><code>none</code></td>
+<td>Character highlight configurations keyed by displayed line numbers. Character bounds are one-based and inclusive; omitted bounds select the complete line.</td>
+</tr>
+
+<tr>
+<td><code>header</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/content/" target="_blank" rel="noopener noreferrer" aria-label="content (Typst reference, opens in a new tab)" title="content (Typst reference, opens in a new tab)">content<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>none</code></td>
+<td>Content displayed in a header row; codly.header content preserves its explicit cell settings.</td>
+</tr>
+
+<tr>
+<td><code>footer</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/content/" target="_blank" rel="noopener noreferrer" aria-label="content (Typst reference, opens in a new tab)" title="content (Typst reference, opens in a new tab)">content<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>none</code></td>
+<td>Content displayed in a footer row; codly.footer content preserves its explicit cell settings.</td>
+</tr>
+
+<tr>
+<td><code>radius</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/length/" target="_blank" rel="noopener noreferrer" aria-label="length (Typst reference, opens in a new tab)" title="length (Typst reference, opens in a new tab)">length<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>0.32em</code></td>
+<td>Corner radius of the containing code grid.</td>
+</tr>
+
+<tr>
+<td><code>padding</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/length/" target="_blank" rel="noopener noreferrer" aria-label="length (Typst reference, opens in a new tab)" title="length (Typst reference, opens in a new tab)">length<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/dictionary/" target="_blank" rel="noopener noreferrer" aria-label="dictionary (Typst reference, opens in a new tab)" title="dictionary (Typst reference, opens in a new tab)">dictionary<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>0pt</code></td>
+<td>Additional padding at block edges, separate from row inset and leading. Accepts a length or a Typst inset dictionary.</td>
+</tr>
+
+<tr>
+<td><code>leading</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/length/" target="_blank" rel="noopener noreferrer" aria-label="length (Typst reference, opens in a new tab)" title="length (Typst reference, opens in a new tab)">length<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>none</code></td>
+<td>Vertical padding of each code row, overriding the vertical line inset while retaining its horizontal component.</td>
+</tr>
+
+<tr>
+<td><code>gutter</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/length/" target="_blank" rel="noopener noreferrer" aria-label="length (Typst reference, opens in a new tab)" title="length (Typst reference, opens in a new tab)">length<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>none</code></td>
+<td>Default spacing between grid rows and columns.</td>
+</tr>
+
+<tr>
+<td><code>column-gutter</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/length/" target="_blank" rel="noopener noreferrer" aria-label="length (Typst reference, opens in a new tab)" title="length (Typst reference, opens in a new tab)">length<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>none</code></td>
+<td>Spacing between grid columns, overriding gutter horizontally.</td>
+</tr>
+
+<tr>
+<td><code>row-gutter</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/length/" target="_blank" rel="noopener noreferrer" aria-label="length (Typst reference, opens in a new tab)" title="length (Typst reference, opens in a new tab)">length<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>none</code></td>
+<td>Spacing between grid rows, overriding gutter vertically.</td>
+</tr>
+
+<tr>
+<td><code>sublangs</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/foundations/array/" target="_blank" rel="noopener noreferrer" aria-label="array (Typst reference, opens in a new tab)" title="array (Typst reference, opens in a new tab)">array<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&lt;</span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="../types/sublang.html" title="sublang type definition">sublang</a></span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">&gt;</span></code></td>
+<td><code>none</code></td>
+<td>Syntax-highlighting languages assigned to inclusive one-based source-line ranges.</td>
+</tr>
+
+<tr>
+<td><code>rainbow</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="../types/rainbow.html" title="rainbow type definition">rainbow</a></span></code></td>
+<td><code>none</code></td>
+<td>Optional syntax-aware delimiter coloring; true enables the default configuration.</td>
+</tr>
+
+<tr>
+<td><code>indent-guides</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/none/" target="_blank" rel="noopener noreferrer" aria-label="none (Typst reference, opens in a new tab)" title="none (Typst reference, opens in a new tab)">none<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="../types/indent-guides.html" title="indent-guides type definition">indent-guides</a></span></code></td>
+<td><code>none</code></td>
+<td>Optional indentation guides; true enables the default configuration.</td>
+</tr>
+
+<tr>
+<td><code>width</code></td>
+<td><code class="typst-type"><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/length/" target="_blank" rel="noopener noreferrer" aria-label="length (Typst reference, opens in a new tab)" title="length (Typst reference, opens in a new tab)">length<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"><a class="type-link" href="https://typst.app/docs/reference/layout/ratio/" target="_blank" rel="noopener noreferrer" aria-label="ratio (Typst reference, opens in a new tab)" title="ratio (Typst reference, opens in a new tab)">ratio<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span class="shiki" style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> </span><span class="shiki" style="--shiki-light:#D73A49;--shiki-dark:#F97583"><a class="type-link" href="https://typst.app/docs/reference/foundations/auto/" target="_blank" rel="noopener noreferrer" aria-label="auto (Typst reference, opens in a new tab)" title="auto (Typst reference, opens in a new tab)">auto<svg class="external-link-icon" viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" /></svg></a></span></code></td>
+<td><code>100%</code></td>
+<td>Block width; auto fits the natural width up to the available width.</td>
+</tr>
+
+</tbody>
+
+</table>
+
+<h2 id="behavior"><a class="header" href="#behavior">Behavior</a></h2>
+<aside class="admonition admonition-tip" role="note" aria-label="Figure labels are discovered automatically.">
+<p class="admonition-title"><svg class="admonition-icon" viewbox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 18h6m-5 3h4m-5-6a6 6 0 1 1 6 0v3H9z" /></svg>Figure labels are discovered automatically.</p>
+
+<p>Label the enclosing figure once. Codly discovers that label automatically,
+so omit the <code>block-label</code> argument from <code>codly.new</code>.</p>
+</aside>
+<aside class="admonition admonition-warning" role="note" aria-label="Unlabeled inner figures stop discovery.">
+<p class="admonition-title"><svg class="admonition-icon" viewbox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 3 10 18H2zM12 9v5m0 2v1" /></svg>Unlabeled inner figures stop discovery.</p>
+
+<p>A code block inside an unlabeled nested figure does not inherit an outer
+figure’s label. Label the inner figure to enable references to its code.</p>
+</aside>
+<aside class="admonition admonition-warning" role="note" aria-label="Sublanguages cost performance.">
+<p class="admonition-title"><svg class="admonition-icon" viewbox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 3 10 18H2zM12 9v5m0 2v1" /></svg>Sublanguages cost performance.</p>
+
+<p>Each sublang block requires re-parsing and introspection; heavy use slows compilation.</p>
+</aside>
+<p>Fields are validated and cast by their declared types. Gutter arrays and functions cast to <code>gutter-column</code>; <code>gutters: auto</code> includes the ordinary number column when enabled, and custom columns remain when <code>number-enabled</code> is false. Custom gutters replace diff’s automatic old/new/marker columns. Diff colors may be paints, <code>none</code>, <code>auto</code> (the ordinary row fill), or callbacks receiving a row with diff information. Explicit highlights take precedence over diff backgrounds.</p>
+<p>Ranges select source lines before display. Diff references count displayed patch rows; highlight and callout character positions count code characters without diff markers. Diff context uses new-side syntax, and each hunk or file is highlighted independently.</p>
+<p><code>#show: codly.set_(..fields)</code> sets named field defaults in scope. <code>#show: codly.show_(it =&gt; content)</code> replaces matching blocks with the callback result; return <code>it</code> inside the result to retain the block. <code>#show codly.selector(): it =&gt; content</code> uses a native Typst selector. <code>selector</code> accepts <code>outline</code>, <code>outer</code>, and <code>meta</code> boolean options, all defaulting to <code>false</code>; these select Elembic representation layers rather than filtering fields.</p>
+<h2 id="example"><a class="header" href="#example">Example</a></h2>
+<section class="example" data-example="ee64b93de0ef4ad7" data-widgets="[{&quot;type&quot;:&quot;select&quot;,&quot;name&quot;:&quot;example-language&quot;,&quot;label&quot;:&quot;Language&quot;,&quot;default&quot;:&quot;&#92;&quot;python&#92;&quot;&quot;,&quot;options&quot;:[{&quot;label&quot;:&quot;Python&quot;,&quot;value&quot;:&quot;&#92;&quot;python&#92;&quot;&quot;},{&quot;label&quot;:&quot;Rust&quot;,&quot;value&quot;:&quot;&#92;&quot;rust&#92;&quot;&quot;}]}]" aria-label="Typst example"><fieldset class="example-controls" disabled=""><legend>Try the controls</legend>
+<div class="controls-grid">
+<div class="example-control">
+<div class="control-label"><label for="ee64b93de0ef4ad7-314-widget-0">Language</label><output for="ee64b93de0ef4ad7-314-widget-0">"python"</output></div>
+<select id="ee64b93de0ef4ad7-314-widget-0" data-widget="example-language"><option value="&quot;python&quot;" selected="">Python</option><option value="&quot;rust&quot;">Rust</option></select></div>
+</div>
+<div class="controls-footer">
+<p class="hint">Adjust a value to update the source and preview. Changes stay in this tab.</p>
+<button type="button" data-reset-widgets="">Reset controls</button></div>
+</fieldset>
+<div class="example-body">
+<div class="example-source">
+<div class="example-toolbar"><strong><span aria-hidden="true">&lt;/&gt;</span> Typst source</strong>
+<div class="toolbar-buttons"><button data-copy="" hidden="">Copy code</button></div>
+</div>
+<div class="highlighted">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#import</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> "@preview/codly:2.0.0"</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> as</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> codly</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#set</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> raw</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(lang: example-language)</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">#codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">new</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  def greet(name):</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">      print(f'Hello, {name}!')</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  file: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"greeting.py"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  offset: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">10</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span></code></pre>
+</div>
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-ee64b93de0ef4ad7-314">Editable Typst source</label><textarea id="edit-ee64b93de0ef4ad7-314" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+
+#set raw(lang: example-language)
+
+#codly.new(
+  ```
+  def greet(name):
+      print(f'Hello, {name}!')
+  ```,
+  file: "greeting.py",
+  offset: 10,
+)</textarea>
+<p class="hint">The controls supply the example variables. Their definitions are hidden here; Copy code includes the current values and your edits.</p>
+<button data-run="">Run</button> <button data-reset="">Reset example</button></details></div>
+<div class="example-output">
+<div class="preview-toolbar"><span class="preview-label">OUTPUT</span><span class="example-status" role="status">Pre-rendered default</span></div>
+<div class="preview"><img class="static-preview" src="../../assets/previews/ee64b93de0ef4ad7.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
+</div>
+</div>
+</section>
+<h2 id="example-automatic-code-blocks"><a class="header" href="#example-automatic-code-blocks">Example: Automatic Code Blocks</a></h2>
+<section class="example" data-example="a7ff9eca57eebcda" data-widgets="[]" aria-label="Typst example">
+<div class="example-body">
+<div class="example-source">
+<div class="example-toolbar"><strong><span aria-hidden="true">&lt;/&gt;</span> Typst source</strong>
+<div class="toolbar-buttons"><button data-copy="" hidden="">Copy code</button></div>
+</div>
+<div class="highlighted">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#import</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> "@preview/codly:2.0.0"</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> as</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> codly</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#show</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> raw</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">where</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(block: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">): codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">new</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">```py</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">def</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> greet</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(name):</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">    print</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">f</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">'Hello, </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">{</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">name</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">}</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">!'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">```</span></span></code></pre>
+</div>
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-a7ff9eca57eebcda-331">Editable Typst source</label><textarea id="edit-a7ff9eca57eebcda-331" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+
+#show raw.where(block: true): codly.new
+
+```py
+def greet(name):
+    print(f'Hello, {name}!')
+```</textarea>
+<p class="hint">The highlighted source and output update after you stop typing. Copy code includes your edits.</p>
+<button data-run="">Run</button> <button data-reset="">Reset example</button></details></div>
+<div class="example-output">
+<div class="preview-toolbar"><span class="preview-label">OUTPUT</span><span class="example-status" role="status">Pre-rendered default</span></div>
+<div class="preview"><img class="static-preview" src="../../assets/previews/a7ff9eca57eebcda.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
+</div>
+</div>
+</section>
+<h2 id="example-listing-figures"><a class="header" href="#example-listing-figures">Example: Listing Figures</a></h2>
+<p>Wrap a block in a native <code>figure</code> to give it a caption and listing number. Codly’s raw, string, and path inputs infer <code>kind: raw</code>, so the same selector styles captions and builds a listings outline.</p>
+<aside class="admonition admonition-tip" role="note" aria-label="One label for the listing and its lines.">
+<p class="admonition-title"><svg class="admonition-icon" viewbox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 18h6m-5 3h4m-5-6a6 6 0 1 1 6 0v3H9z" /></svg>One label for the listing and its lines.</p>
+
+<p>Label the figure and reference it with <code>@load-config</code>. Codly discovers that
+label automatically and creates line references such as <code>@load-config:2</code>.</p>
+</aside>
+<section class="example example-fixed" data-example="3dfee75b552acba4" data-fixed="true" aria-label="Typst example">
+<div class="example-body">
+<div class="example-source">
+<div class="example-toolbar"><strong><span aria-hidden="true">&lt;/&gt;</span> Typst source</strong>
+<div class="toolbar-buttons"><button data-copy="" hidden="">Copy code</button></div>
+</div>
+<div class="highlighted">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#import</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> "@preview/codly:2.0.0"</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> as</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> codly</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#show</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> figure</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">where</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(kind: raw): </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">set</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> figure</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">caption</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(position: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">top</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">#figure</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">new</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    ```py</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">    def</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> load_config</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(path):</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">        with</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> open</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(path) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">as</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> source:</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">            return</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> source.read()</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    ```,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ),</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  caption: [Read the configuration file.],</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">&lt;load-config&gt;</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">@load-config</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> opens the file on </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">@load-config:2</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">.</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">#outline</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(target: figure</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">where</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(kind: raw), title: [Listings])</span></span></code></pre>
+</div>
+</div>
+<div class="example-output">
+<div class="preview-toolbar"><span class="preview-label">OUTPUT</span></div>
+<div class="preview"><img class="static-preview" src="../../assets/previews/3dfee75b552acba4.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
+</div>
+</div>
+</section>
+<h2 id="example-scoped-styling"><a class="header" href="#example-scoped-styling">Example: Scoped Styling</a></h2>
+<p>Use a content block to apply a style to a group of examples. The block setter changes shared block defaults; the line setter changes row appearance. After the closing <code>]</code>, subsequent code blocks use the outer defaults again.</p>
+<section class="example example-fixed" data-example="c88d96296e644ce4" data-fixed="true" aria-label="Typst example">
+<div class="example-body">
+<div class="example-source">
+<div class="example-toolbar"><strong><span aria-hidden="true">&lt;/&gt;</span> Typst source</strong>
+<div class="toolbar-buttons"><button data-copy="" hidden="">Copy code</button></div>
+</div>
+<div class="highlighted">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#import</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> "@preview/codly:2.0.0"</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> as</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> codly</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  #show</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">set_</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(radius: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">8pt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  #show</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">line-set_</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    fill: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">rgb</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"#eef5ff"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">),</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    stroke: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">0.6pt</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> +</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> rgb</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"#bdd5ef"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">),</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  )</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  #codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">new</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    ```py</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    timeout </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> 30</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    retries </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> 3</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    ```,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    file: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"settings.py"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  )</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">]</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">#codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">new</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```py</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  connect(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">timeout</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">timeout)</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  file: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"client.py"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span></code></pre>
+</div>
+</div>
+<div class="example-output">
+<div class="preview-toolbar"><span class="preview-label">OUTPUT</span></div>
+<div class="preview"><img class="static-preview" src="../../assets/previews/c88d96296e644ce4.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
+</div>
+</div>
+</section>
+<h2 id="example-source-excerpts"><a class="header" href="#example-source-excerpts">Example: Source Excerpts</a></h2>
+<p>Select an inclusive range of source lines without rewriting the code. This example displays source lines 2 through 4, with a filename badge and numbering starting at 1.</p>
+<aside class="admonition admonition-note" role="note" aria-label="Selection and displayed numbering are separate.">
+<p class="admonition-title"><svg class="admonition-icon" viewbox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" /><path d="M12 11v6m0-10v1" /></svg>Selection and displayed numbering are separate.</p>
+
+<p><a href="../types/range.html"><code>range</code></a> always uses the original source line numbers.
+<code>offset: auto</code> starts the excerpt at 1; omit it to display 2, 3, and 4 instead.
+Use a label as the offset to <a href="../helpers/info.html#example-continue-a-listing">continue another block</a>.</p>
+</aside>
+<section class="example" data-example="9147a9f5819e0f6f" data-widgets="[]" aria-label="Typst example">
+<div class="example-body">
+<div class="example-source">
+<div class="example-toolbar"><strong><span aria-hidden="true">&lt;/&gt;</span> Typst source</strong>
+<div class="toolbar-buttons"><button data-copy="" hidden="">Copy code</button></div>
+</div>
+<div class="highlighted">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#import</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> "@preview/codly:2.0.0"</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> as</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> codly</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#let</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> source </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">= </span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">```py</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> json</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">def</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> read_settings</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(path):</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">    with</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> open</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(path) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">as</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70"> file</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">:</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">        return</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> json.load(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">file</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">print</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(read_settings(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">'settings.json'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">))</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">```</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">#codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">new</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  source,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  file: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"settings.py"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  range: (</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">2</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">4</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">),</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  offset: </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">auto</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span></code></pre>
+</div>
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-9147a9f5819e0f6f-421">Editable Typst source</label><textarea id="edit-9147a9f5819e0f6f-421" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+
+#let source = ```py
+import json
+def read_settings(path):
+    with open(path) as file:
+        return json.load(file)
+print(read_settings('settings.json'))
+```
+
+#codly.new(
+  source,
+  file: "settings.py",
+  range: (2, 4),
+  offset: auto,
+)</textarea>
+<p class="hint">The highlighted source and output update after you stop typing. Copy code includes your edits.</p>
+<button data-run="">Run</button> <button data-reset="">Reset example</button></details></div>
+<div class="example-output">
+<div class="preview-toolbar"><span class="preview-label">OUTPUT</span><span class="example-status" role="status">Pre-rendered default</span></div>
+<div class="preview"><img class="static-preview" src="../../assets/previews/9147a9f5819e0f6f.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
+</div>
+</div>
+</section>
+</article>
+    </main>
+    <aside class="page-tools" aria-label="Page information">
+      <p class="overline">ON THIS PAGE</p>
+      <nav id="page-toc" aria-label="On this page"></nav>
+    </aside>
+  </div>
+  <noscript><p class="noscript">JavaScript is off. Static previews remain available.</p></noscript>
+</body>
+</html>

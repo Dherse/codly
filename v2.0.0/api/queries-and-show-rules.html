@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Codly documentation">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>⚙️ Queries and show rules - Codly</title>
+  <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../docs.css">
+  <script src="../assets/preferences.js"></script>
+  <script type="module" src="../assets/docs.js"></script>
+</head>
+<body data-root="../">
+  <a class="skip" href="#content">Skip to content</a>
+  <header class="topbar">
+    <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">&lt;/&gt;</span> codly <span class="brand-sub">/ docs</span></a>
+    <div class="top-actions">
+      <button id="menu-toggle" aria-expanded="false" aria-controls="sidebar">Menu</button>
+      <div class="appearance-controls">
+        <button id="theme" class="theme-switch" type="button" role="switch" aria-checked="true" aria-label="Dark mode" title="Switch to light mode">
+          <span class="fa sun" aria-hidden="true">&#xf185;</span><span class="fa moon" aria-hidden="true">&#xf186;</span>
+        </button>
+        <details class="preferences" id="preferences">
+          <summary aria-label="Make it yours" title="Make it yours"><span class="fa" aria-hidden="true">&#xf013;</span></summary>
+          <div class="preferences-panel">
+            <h2>Make it yours</h2>
+            <label for="docs-version">Documentation version</label>
+            <select id="docs-version" hidden aria-label="Documentation version"></select>
+            <label for="code-font">Code font</label>
+            <select id="code-font" aria-describedby="font-help"><option value="dejavu">Default · DejaVu Sans Mono</option><option value="noto">Noto Sans Mono</option></select>
+            <p id="font-help" class="hint">Applies to code displayed in the documentation.</p>
+          </div>
+        </details>
+      </div>
+      <a class="github" href="https://github.com/Dherse/codly" rel="noreferrer noopener" target="_blank" title="Opens in a new tab">GitHub<svg class="external-link-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3"/></svg></a>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="search-box"><label for="search">Search the docs</label><div class="search-field"><input id="search" type="search" autocomplete="off" placeholder="Find an example…" maxlength="120"><kbd>/</kbd></div></div>
+      <div id="search-results" aria-live="polite" hidden></div>
+      <nav aria-label="Documentation"><ol class="chapter"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../index.html">Codly</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../playgrounds/index.html">Playgrounds</a></span><ol class="section"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../playgrounds/layout.html">Layout and excerpts</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../playgrounds/annotations.html">Annotations and references</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../playgrounds/diffs-and-syntax.html">Diffs and mixed languages</a></span></li></ol><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../migration-1.3.html">Migrating from 1.3.0 / 1.3.1</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/index.html">API reference</a></span><ol class="section"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/index.html">Components</a></span><ol class="section"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/new.html">new</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/lang.html">lang</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/file.html">file</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/header.html">header</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/footer.html">footer</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/line.html">line</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/number.html">number</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/highlight.html">highlight</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/annotation.html">annotation</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/bubble.html">bubble</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/callout.html">callout</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/ref.html">ref</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/line-ref.html">line-ref</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/highlight-ref.html">highlight-ref</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/annotation-ref.html">annotation-ref</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/components/sublang-block.html">sublang-block</a></span></li></ol><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/index.html">Types</a></span><ol class="section"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/language.html">language</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/range.html">range</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/skip.html">skip</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/highlighted-line.html">highlighted-line</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/unnumbered-line.html">unnumbered-line</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/smart-skip.html">smart-skip</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/highlight-config.html">highlight-config</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/annotation-config.html">annotation-config</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/callout-config.html">callout-config</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/gutter-column.html">gutter-column</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/diff.html">diff</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/sublang.html">sublang</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/rainbow.html">rainbow</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/types/indent-guides.html">indent-guides</a></span></li></ol><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/helpers/index.html">Themes and helpers</a></span><ol class="section"><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/helpers/theme.html">theme</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/helpers/themes.html">themes</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/helpers/define-theme.html">define-theme</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/helpers/info.html">info</a></span></li></ol><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/queries-and-show-rules.html">⚙️ Queries and show rules</a></span></li><li class="chapter-item expanded "><span class="chapter-link-wrapper"><a href="../api/internals.html">⚙️ Internals</a></span></li></ol></li></ol></nav>
+    </aside>
+    <main id="content" tabindex="-1">
+      <article><h1 id="queries-and-show-rules"><a class="header" href="#queries-and-show-rules">Queries and show rules</a></h1>
+<p>Use queries to inspect document elements, and show rules to customize how they render. This guide assumes you are comfortable with the <a href="components/index.html">component fields</a>.</p>
+<h2 id="choose-the-right-tool"><a class="header" href="#choose-the-right-tool">Choose the right tool</a></h2>
+<p>Codly’s components are Elembic custom elements. Use the exported <code>codly.e</code> namespace to inspect fields, filter elements, or read scoped defaults. It provides the same Elembic version Codly uses, without a separate package import.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Task</th><th>Tool</th></tr>
+</thead>
+<tbody>
+<tr><td>Set component defaults</td><td><code>#show: codly.number-set_(...)</code> and other <code>*-set_</code> helpers</td></tr>
+<tr><td>Wrap or replace a component</td><td><code>#show: codly.number-show_(it =&gt; ...)</code> and other <code>*-show_</code> helpers</td></tr>
+<tr><td>Read an element’s resolved fields</td><td><code>codly.e.fields(it)</code></td></tr>
+<tr><td>Find custom elements in the document</td><td><code>codly.e.query(codly.new)</code> inside <code>context</code></td></tr>
+<tr><td>Read defaults in the current scope</td><td><code>codly.e.get(get =&gt; ...)</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>The Codly helpers delegate to <code>codly.e.set_</code> and <code>codly.e.show_</code>. For example, <code>codly.number-show_(callback)</code> is shorthand for <code>codly.e.show_(codly.number, callback)</code>. Native <code>#set codly.number(...)</code> does not configure an Elembic element.</p>
+<h2 id="query-elements-and-inspect-their-fields"><a class="header" href="#query-elements-and-inspect-their-fields">Query elements and inspect their fields</a></h2>
+<p><code>codly.e.query</code> returns matching custom elements; <code>codly.e.fields</code> returns their field dictionaries. A <code>.with(...)</code> filter compares resolved field values. Use <code>before: here()</code> or <code>after: here()</code> to restrict the query by document location. <a href="https://pgbiel.github.io/elembic/elements/scripting/query.html" target="_blank" rel="noopener noreferrer" title="Opens in a new tab">Elembic’s query guide<svg class="external-link-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3"/></svg></a> documents these filters and location bounds.</p>
+<section class="example" data-example="948c466d9ef2f9d0" data-widgets="[]" aria-label="Typst example">
+<div class="example-body">
+<div class="example-source">
+<div class="example-toolbar"><strong><span aria-hidden="true">&lt;/&gt;</span> Typst source</strong>
+<div class="toolbar-buttons"><button data-copy="" hidden="">Copy code</button></div>
+</div>
+<div class="highlighted">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#import</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> "@preview/codly:2.0.0"</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> as</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> codly</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">#codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">new</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```py</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">  print</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"hello"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  radius: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">8pt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#context</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  let</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> blocks </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">= </span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">e</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">query</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">new</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">with</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(radius: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">8pt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">), before: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">here</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">())</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  [Matching blocks: #blocks</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">len</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">()</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  Language: #codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">e</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">fields</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(blocks</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">first</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">())</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">body</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">lang</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">]</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span></code></pre>
+</div>
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-948c466d9ef2f9d0-22">Editable Typst source</label><textarea id="edit-948c466d9ef2f9d0-22" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+
+#codly.new(
+  ```py
+  print("hello")
+  ```,
+  radius: 8pt,
+)
+
+#context {
+  let blocks = codly.e.query(codly.new.with(radius: 8pt), before: here())
+  [Matching blocks: #blocks.len().
+  Language: #codly.e.fields(blocks.first()).body.lang.]
+}</textarea>
+<p class="hint">The highlighted source and output update after you stop typing. Copy code includes your edits.</p>
+<button data-run="">Run</button> <button data-reset="">Reset example</button></details></div>
+<div class="example-output">
+<div class="preview-toolbar"><span class="preview-label">OUTPUT</span><span class="example-status" role="status">Pre-rendered default</span></div>
+<div class="preview"><img class="static-preview" src="../assets/previews/948c466d9ef2f9d0.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
+</div>
+</div>
+</section>
+<p>Use native <code>query(&lt;label&gt;)</code> for labeled content and <code>query(figure)</code> for Typst figures. For custom elements, prefer <code>codly.e.query</code>: <code>codly.selector()</code> and <code>codly.e.selector(codly.number)</code> are native selectors intended for show rules. Their default selectors can match intermediate renderings; they are not reliable instance counters. Elembic’s <code>meta: true</code> selector exists for lower-level metadata queries.</p>
+<aside class="admonition admonition-note" role="note" aria-label="Queries inspect the laid-out document">
+<p class="admonition-title"><svg class="admonition-icon" viewbox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" /><path d="M12 11v6m0-10v1" /></svg>Queries inspect the laid-out document</p>
+
+<p>They need context and can see content later in the document. Avoid making an element’s existence depend on a query that counts that same element: Typst may not converge. For a labeled block’s line count, use <a href="helpers/info.html"><code>codly.info</code></a>.</p>
+</aside>
+<h2 id="set-defaults-then-customize-rendering"><a class="header" href="#set-defaults-then-customize-rendering">Set defaults, then customize rendering</a></h2>
+<p>Use <code>*-set_</code> for fields such as <code>fill</code>, <code>inset</code>, or <code>numbering</code>. A <code>*-show_</code> callback receives the element, with scoped defaults resolved, and must return content. Use <code>codly.e.fields(it)</code> to read its custom fields; native <code>it.fields()</code> describes Elembic’s underlying Typst representation.</p>
+<section class="example" data-example="ab821f981631c4a7" data-widgets="[]" aria-label="Typst example">
+<div class="example-body">
+<div class="example-source">
+<div class="example-toolbar"><strong><span aria-hidden="true">&lt;/&gt;</span> Typst source</strong>
+<div class="toolbar-buttons"><button data-copy="" hidden="">Copy code</button></div>
+</div>
+<div class="highlighted">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#import</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> "@preview/codly:2.0.0"</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> as</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> codly</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  show</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">number-set_</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(numbering: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"1."</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  show</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">e</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">show_</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">with</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(number: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">2</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">), it </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=&gt;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">    text</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">red</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, weight: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"bold"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, it)</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  })</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">new</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    ```py</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    first </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> 1</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    second </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> 2</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    ```,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  )</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D">// The rules above end with their enclosing scope.</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">#codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">new</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```py</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ordinary </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> 3</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  ```,</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span></code></pre>
+</div>
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-ab821f981631c4a7-53">Editable Typst source</label><textarea id="edit-ab821f981631c4a7-53" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+
+#{
+  show: codly.number-set_(numbering: "1.")
+  show: codly.e.show_(codly.number.with(number: 2), it =&gt; {
+    text(red, weight: "bold", it)
+  })
+  codly.new(
+    ```py
+    first = 1
+    second = 2
+    ```,
+  )
+}
+
+// The rules above end with their enclosing scope.
+#codly.new(
+  ```py
+  ordinary = 3
+  ```,
+)</textarea>
+<p class="hint">The highlighted source and output update after you stop typing. Copy code includes your edits.</p>
+<button data-run="">Run</button> <button data-reset="">Reset example</button></details></div>
+<div class="example-output">
+<div class="preview-toolbar"><span class="preview-label">OUTPUT</span><span class="example-status" role="status">Pre-rendered default</span></div>
+<div class="preview"><img class="static-preview" src="../assets/previews/ab821f981631c4a7.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
+</div>
+</div>
+</section>
+<p>Returning <code>it</code>, or wrapping it as above, preserves the component’s existing renderer. Returning fresh content replaces that renderer. For example, <code>codly.lang-show_(it =&gt; strong(codly.e.fields(it).body))</code> displays only the language name and bypasses its usual badge rendering. Constructing a new matching component inside its own show rule can trigger the rule again.</p>
+<p>When you need a native show-set rule, use an Elembic selector:</p>
+<div class="code-card">
+<div class="code-toolbar"><span>typst</span><button data-copy="" hidden="">Copy code</button></div>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#import</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> "@preview/codly:2.0.0"</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> as</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> codly</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#show</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">e</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">selector</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">header): </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">set</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> text</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(style: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"italic"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span></code></pre>
+</div>
+
+<h2 id="read-scoped-defaults"><a class="header" href="#read-scoped-defaults">Read scoped defaults</a></h2>
+<p><code>codly.e.get</code> reads settings at its position, even without a component instance. <code>codly.e.fields(it)</code> reads the fields of a particular instance, including explicit constructor arguments.</p>
+<p>Read resolved fields in show callbacks or query results. A newly constructed instance can still have incomplete fields until Elembic displays it; <code>codly.e.fields(codly.new(...))</code> is not a way to read all current defaults.</p>
+<section class="example" data-example="c023c731750c5697" data-widgets="[]" aria-label="Typst example">
+<div class="example-body">
+<div class="example-source">
+<div class="example-toolbar"><strong><span aria-hidden="true">&lt;/&gt;</span> Typst source</strong>
+<div class="toolbar-buttons"><button data-copy="" hidden="">Copy code</button></div>
+</div>
+<div class="highlighted">
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#import</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> "@preview/codly:2.0.0"</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> as</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> codly</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">#show</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">set_</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(radius: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">8pt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">#codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">e</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">get</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(get </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=&gt;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> [Current default radius: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">#get</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(codly</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">new)</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">radius</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">])</span></span></code></pre>
+</div>
+<details class="editor"><summary>Edit &amp; run on your device</summary><label for="edit-c023c731750c5697-93">Editable Typst source</label><textarea id="edit-c023c731750c5697-93" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="30000">#import "@preview/codly:2.0.0" as codly
+
+#show: codly.set_(radius: 8pt)
+#codly.e.get(get =&gt; [Current default radius: #get(codly.new).radius.])</textarea>
+<p class="hint">The highlighted source and output update after you stop typing. Copy code includes your edits.</p>
+<button data-run="">Run</button> <button data-reset="">Reset example</button></details></div>
+<div class="example-output">
+<div class="preview-toolbar"><span class="preview-label">OUTPUT</span><span class="example-status" role="status">Pre-rendered default</span></div>
+<div class="preview"><img class="static-preview" src="../assets/previews/c023c731750c5697.svg" alt="Rendered output of the Typst example" loading="lazy"></div>
+</div>
+</div>
+</section>
+<h2 id="keep-custom-rules-predictable"><a class="header" href="#keep-custom-rules-predictable">Keep custom rules predictable</a></h2>
+<ul>
+<li>Put rules before the content they style, and group related rules in a local <code>{ ... }</code> scope or template.</li>
+<li>Target the smallest useful component: a number rule for number formatting, a line rule for rows, a block rule for the whole listing. Prefer existing fields before replacing rendering.</li>
+<li>Keep callbacks free of document-wide queries when fields already contain the needed information. Codly can create many row and number elements.</li>
+<li>Preserve <code>it</code> when adding decoration. Replacing rows or whole blocks can remove the syntax, layout, anchors, and metadata produced by their default renderers.</li>
+<li>Test wrapping, page breaks, and references when a rule changes geometry. Optional diff and syntax features also create internal passes, so an unrestricted query may include supporting elements.</li>
+</ul>
+<p>For more detail, see <a href="https://pgbiel.github.io/elembic/elements/styling/show-rules.html" target="_blank" rel="noopener noreferrer" title="Opens in a new tab">Elembic show rules<svg class="external-link-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3"/></svg></a>, <a href="https://typst.app/docs/reference/introspection/query/" target="_blank" rel="noopener noreferrer" title="Opens in a new tab">Typst queries<svg class="external-link-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3"/></svg></a>, and <a href="internals.html">Codly internals</a>.</p>
+</article>
+    </main>
+    <aside class="page-tools" aria-label="Page information">
+      <p class="overline">ON THIS PAGE</p>
+      <nav id="page-toc" aria-label="On this page"></nav>
+    </aside>
+  </div>
+  <noscript><p class="noscript">JavaScript is off. Static previews remain available.</p></noscript>
+</body>
+</html>
