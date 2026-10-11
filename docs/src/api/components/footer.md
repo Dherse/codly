@@ -26,14 +26,7 @@ codly.footer-show_(it => ...)
 
 ## Fields
 
-| Field | Type | Default | Meaning |
-| --- | --- | --- | --- |
-| `body` | `content \| none` | required | Footer content. |
-| `repeat` | `bool \| none` | `false` | Repeat the footer on each page when the code block spans pages. |
-| `align` | `alignment \| none` | `center + horizon` | Alignment of the footer content in its cell. |
-| `inset` | `length \| dictionary \| auto \| none` | `auto` | Inset around the footer content. |
-| `fill` | `paint \| auto \| none` | `none` | Footer cell background. `none` leaves it unfilled; `auto` uses the footer's default. This fill is independent of line and number fills. |
-| `stroke` | `stroke \| auto \| none` | `auto` | Stroke around the footer cell. |
+{{#arg-table elements.footer}}
 
 ## Behavior
 

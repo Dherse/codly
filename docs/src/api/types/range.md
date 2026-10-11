@@ -12,10 +12,7 @@ codly.range(start, end: none)
 
 ## Parameters
 
-| Parameter | Type | Default / required | Meaning |
-| --- | --- | --- | --- |
-| `start` | `int` | Required | First source line to display, counting from 1. |
-| `end` | `int \| none` | `none` | Last source line to display, inclusive. `none` selects through the end of the block. |
+{{#arg-table types.range}}
 
 ## Behavior
 

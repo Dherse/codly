@@ -12,10 +12,7 @@ Both arguments are positional: `line` is required and `fill` is optional.
 
 ## Parameters
 
-| Parameter | Type | Default / required | Meaning |
-| --- | --- | --- | --- |
-| `line` | `int` | Required | One-indexed source line to display without a line number. |
-| `fill` | `content` | `[]` | Content to display in the number cell instead. |
+{{#arg-table types.unnumbered-line}}
 
 ## Behavior
 

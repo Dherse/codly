@@ -22,17 +22,7 @@ The fields can also be supplied as a dictionary. A boolean casts to `enabled`.
 
 ## Fields
 
-| Field | Type | Default | Meaning |
-| --- | --- | --- | --- |
-| `enabled` | `bool` | `true` | Draws indentation guides when enabled. |
-| `width` | `auto` \| `int` | `auto` | Spaces per indentation level. `auto` votes on observed indentation changes. |
-| `blank-lines` | `bool` | `true` | Continues shared guide levels across interior blank lines. |
-| `rainbow` | `auto` \| `bool` | `auto` | Colors guides by level; `auto` follows whether delimiter rainbow coloring is enabled. |
-| `palette` | `auto` \| `array<color>` | `auto` | Nonempty colors for rainbow guides; `auto` shares the delimiter palette. |
-| `depth-offset` | `auto` \| `int` | `auto` | Nonnegative palette offset; `auto` shares the delimiter offset. |
-| `color` | `color` | `luma(70%)` | Guide color when rainbow coloring is disabled. |
-| `thickness` | `length` | `0.5pt` | Positive stroke thickness. |
-| `x-offset` | `length` | `0pt` | Horizontal guide shift; positive moves right and negative moves left. Supports `em` lengths. |
+{{#arg-table types.indent-guides}}
 
 ## Behavior
 

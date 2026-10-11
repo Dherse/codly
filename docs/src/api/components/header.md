@@ -26,14 +26,7 @@ codly.header-show_(it => ...)
 
 ## Fields
 
-| Field | Type | Default / required | Meaning |
-| --- | --- | --- | --- |
-| `body` | `content` \| `none` | Required, positional | Content displayed in the header. |
-| `repeat` | `bool` \| `none` | `false` | Repeat the header on later pages when the block breaks across pages. |
-| `align` | `alignment` \| `none` | `center + horizon` | Alignment of the header content in its cell. |
-| `inset` | `length` \| `dictionary` \| `auto` \| `none` | `auto` | Space around the header content; `auto` leaves the grid-cell default in effect. |
-| `fill` | `paint` \| `auto` \| `none` | `luma(240)` | Header cell background. `none` leaves it unfilled; `auto` uses the default header fill. |
-| `stroke` | `stroke` \| `auto` \| `none` | `auto` | Stroke around the header cell; `auto` leaves the grid-cell default in effect. |
+{{#arg-table elements.header}}
 
 ## Behavior
 

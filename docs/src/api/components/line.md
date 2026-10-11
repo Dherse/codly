@@ -12,17 +12,7 @@ codly.line(body, ..fields)
 
 ## Fields
 
-| Field | Type | Default / required | Meaning |
-| --- | --- | --- | --- |
-| `body` | `content` \| `none` | Required | Content displayed in the row. |
-| `radius` | `length` \| `none` | `0.32em` | Corner radius for the row styling. |
-| `inset` | `length \| dictionary` \| `none` | `0.32em` | Row padding; a dictionary accepts directional inset values. |
-| `fill` | `auto \| paint \| array<paint \| none> \| function` \| `none` | `(luma(240), none)` | Row background. A paint or `none` applies to every body row; an array cycles by displayed-row index; a function receives the row dictionary described below. `auto` restores the default palette. |
-| `stroke` | `stroke \| none` | `1pt + luma(240)` | Border around the row. |
-| `highlights` | `array<codly.highlight-config> \| none` | `none` | Character-level highlights for this row; see [`codly.highlight-config`](../types/highlight-config.md). |
-| `smart-indent` | `bool` | `true` | Continue wrapped rows at their original indentation. |
-| `block-label` | `label \| none` | `none` | Label of the containing code block. |
-| `reference` | `dictionary \| none` | `none` | Internal reference details for an unnumbered source line. |
+{{#arg-table elements.line}}
 
 ## Behavior
 

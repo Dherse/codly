@@ -16,11 +16,7 @@ All fields are named and optional.
 
 ## Fields
 
-| Field | Type | Default | Meaning |
-| --- | --- | --- | --- |
-| `first` | `bool \| none` | `none` | Include a skip when source lines before the first selected range are omitted. |
-| `last` | `bool \| none` | `none` | Include a skip when source lines after the last selected range are omitted. |
-| `rest` | `bool \| none` | `none` | Include skips for omitted lines between selected ranges or otherwise in the middle of the block. |
+{{#arg-table types.smart-skip}}
 
 ## Behavior
 

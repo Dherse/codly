@@ -24,19 +24,7 @@ The fields can also be supplied as a dictionary. A boolean casts to `enabled`.
 
 ## Fields
 
-| Field | Type | Default | Meaning |
-| --- | --- | --- | --- |
-| `enabled` | `bool` | `true` | Enables diff processing. |
-| `added-fill` | `auto` \| `paint` \| `function` \| `none` | `rgb("dafbe1")` | Fill for added rows. |
-| `removed-fill` | `auto` \| `paint` \| `function` \| `none` | `rgb("ffebe9")` | Fill for removed rows. |
-| `meta-fill` | `auto` \| `paint` \| `function` \| `none` | `rgb("ddf4ff")` | Fill for patch metadata rows. |
-| `context-fill` | `auto` \| `paint` \| `function` \| `none` | `auto` | Fill for unchanged rows; `auto` follows the ordinary row fill. |
-| `numbers` | `bool` | `true` | Shows automatic old-side and new-side line-number gutters. |
-| `markers` | `bool` | `true` | Shows the automatic added/removed marker gutter. |
-| `added-marker` | `str` \| `content` | `"+"` | Marker shown for added rows. |
-| `removed-marker` | `str` \| `content` | `"−"` | Marker shown for removed rows. |
-| `old-offset` | `int` | `0` | Added to old-side source line numbers. |
-| `new-offset` | `int` | `0` | Added to new-side source line numbers. |
+{{#arg-table types.diff}}
 
 ## Behavior
 

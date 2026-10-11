@@ -41,31 +41,7 @@ codly.callout(
 
 ## Fields
 
-| Field | Type | Default / required | Meaning |
-| --- | --- | --- | --- |
-| `body` | `content` | required, positional | Content displayed in the row or bubble. |
-| `line` | `int` | required, named | One-indexed source line to attach to. |
-| `align` | `alignment \| auto \| none` | `auto` | Alignment of the callout cell; `auto` inherits the code block's cell alignment. |
-| `breakable` | `bool \| auto \| none` | `auto` | Whether the callout cell may break across pages; pointed bubble groups stay together. |
-| `inset` | `length \| dictionary \| auto \| none` | `auto` | Inset of the callout cell. |
-| `fill` | `paint \| auto \| none` | `auto` | Fill of the callout cell. |
-| `stroke` | `stroke \| auto \| none` | `auto` | Stroke of the callout cell. |
-| `source-indent` | `bool` | `false` | Aligns a plain callout with source indentation while reserving gutter columns; pointed bubbles remain character-anchored. |
-| `placement` | `"above" \| "below"` | `"below"` | Side of the attached source line. |
-| `bubble-gap` | `length \| dictionary \| auto` | `auto` | Minimum separation between bubbles; use a length for both axes or `(x: ..., y: ...)`. |
-| `pointer-offset` | `length \| auto` | `auto` | Horizontal shift of the tip from the source character; positive is right, negative is left, and the tip is clamped to the bubble. |
-| `bubble-align` | `alignment \| auto` | `auto` | Bubble content alignment, independent of the cell alignment. |
-| `bubble-fill` | `paint \| none \| auto` | `auto` | Fill shared by the bubble and arrow. |
-| `bubble-stroke` | `stroke \| none \| auto` | `auto` | Single outline shared by the bubble and arrow. |
-| `bubble-inset` | `length \| dictionary \| auto` | `auto` | Padding inside the bubble. |
-| `bubble-outset` | `length \| dictionary \| auto` | `auto` | Extra paint extent around the bubble body, reserved in the row. |
-| `bubble-radius` | `length \| auto` | `auto` | Bubble corner radius. |
-| `bubble-width` | `length \| ratio \| auto` | `auto` | Preferred padded body width; `auto` fits content within the available row. |
-| `pointer` | `int \| none` | `none` | Character anchor in the source line: one-based, with `0` at line start. Set to `none` for a plain row. |
-| `pointer-align` | `"start" \| "center" \| "end" \| auto` | `auto` | Preferred bubble alignment around the anchor; placement clamps it to the available row. |
-| `pointer-size` | `length \| auto` | `auto` | Arrow height and half of its base width. |
-| `pointer-height` | `length \| auto` | `auto` | Arrow height; `auto` uses `pointer-size`. |
-| `pointer-width` | `length \| auto` | `auto` | Full arrow base width; `auto` uses twice `pointer-size`. |
+{{#arg-table elements.callout}}
 
 ## Behavior
 

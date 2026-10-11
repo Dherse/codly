@@ -16,11 +16,7 @@ All fields are required and named. The value can also be supplied as a dictionar
 
 ## Fields
 
-| Field | Type | Default | Meaning |
-| --- | --- | --- | --- |
-| `start` | `int` | Required | First source line in the range, counting from 1. |
-| `end` | `int` | Required | Last source line in the range, inclusive. |
-| `lang` | `str` | Required | Syntax-highlighting language key used for these lines. |
+{{#arg-table types.sublang}}
 
 ## Behavior
 

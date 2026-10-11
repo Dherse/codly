@@ -31,25 +31,7 @@ codly.bubble(
 
 ## Fields
 
-| Field | Type | Default | Meaning |
-| --- | --- | --- | --- |
-| `body` | `content` | required, positional | Content displayed inside the bubble. |
-| `gap` | `length \| dictionary` | `0.5em` | Minimum separation from neighboring bubbles; a length applies on both axes, or use `(x: ..., y: ...)`. |
-| `pointer-align` | `"start" \| "center" \| "end"` | `"center"` | Preferred alignment of the bubble around its source character; placement clamps it to the row. |
-| `pointer-size` | `length` | `0.4em` | Default pointer height and half its base width. |
-| `pointer-height` | `length \| auto` | `auto` | Pointer height; `auto` uses `pointer-size`. |
-| `pointer-width` | `length \| auto` | `auto` | Full pointer base width; `auto` uses twice `pointer-size`. |
-| `pointer-offset` | `length` | `0pt` | Horizontal shift of the pointer tip from its source character; positive is right, negative is left, and the tip is clamped to the bubble. |
-| `align` | `alignment` | `center` | Alignment of the bubble content. |
-| `fill` | `paint \| none` | `luma(245)` | Fill shared by the bubble and pointer. |
-| `stroke` | `stroke \| none` | `0.6pt + luma(80)` | The bubble's single outline, including its pointer. |
-| `inset` | `length \| dictionary` | `(x: 0.5em, y: 0.3em)` | Padding inside the bubble. |
-| `outset` | `length \| dictionary` | `0pt` | Extra paint extent around the body; reserved in the row. |
-| `radius` | `length` | `2pt` | Bubble corner radius. |
-| `width` | `length \| ratio \| auto` | `auto` | Preferred padded body width; `auto` fits content, bounded by the available row. |
-| `line` | `int` | required, named | One-indexed source line attached to the bubble. |
-| `pointer` | `int` | required, named | Source character anchor, one-indexed, with `0` at the start of the line. |
-| `placement` | `"above" \| "below"` | `"below"` | Side of the source line on which to place the bubble. |
+{{#arg-table elements.bubble}}
 
 ## Behavior
 

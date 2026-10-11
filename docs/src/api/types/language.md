@@ -16,11 +16,7 @@ codly.language(
 
 ## Fields
 
-| Field | Type | Default | Meaning |
-| --- | --- | --- | --- |
-| `name` | `str \| content` | Required | Displayed language name. |
-| `color` | `paint \| none` | `none` | Language color; `none` uses the badge's default color. |
-| `icon` | `str \| content \| none` | `none` | Optional icon shown beside the name. |
+{{#arg-table types.language}}
 
 The declaration preserves additional, unknown fields. They can provide language-specific overrides to [`codly.lang`](../components/lang.md) fields, such as `radius` or `fill`.
 

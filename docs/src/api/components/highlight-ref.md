@@ -28,15 +28,7 @@ codly.highlight-ref-show_(it, ..args)
 
 ## Fields
 
-| Field | Type | Default | Meaning |
-| --- | --- | --- | --- |
-| `body` | `content` \| `none` | Required, positional | Reference body supplied by Typst. |
-| `block` | `label` | Required, named | Label of the containing code block. |
-| `line` | `int` | Required, named | Displayed line number containing the highlight. |
-| `item` | `content` \| `none` | `none` | Highlight tag used when `by` is `"item"`. |
-| `by` | `"line"` \| `"item"` | Required, named | Whether to show the line number or highlight tag. |
-| `separator` | `auto` \| `str` \| `content` \| `none` | `auto` | Text between the block reference and this reference; `auto` uses [`codly.ref`](ref.md) settings. |
-| `numbering` | `auto` \| `function` \| `none` | `auto` | Formatter for line references; `auto` uses [`codly.ref`](ref.md) settings. |
+{{#arg-table elements.highlight-ref}}
 
 ## Behavior
 

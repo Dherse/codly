@@ -20,15 +20,7 @@ codly.gutter-column(
 
 ## Parameters
 
-| Field | Type | Default | Meaning |
-| --- | --- | --- | --- |
-| `values` | `array<none \| str \| int \| float \| content>` or `function` | Required | Values to display, or a callback that returns a value for a rendered row. |
-| `width` | `auto`, `length`, `ratio`, or `fraction` | `auto` | Column width. |
-| `align` | `auto` or `alignment` | `auto` | Cell alignment. |
-| `inset` | `auto`, `length`, or `dictionary` | `auto` | Cell inset. |
-| `stroke` | `auto`, `stroke`, `dictionary`, or `none` | `auto` | Cell stroke. |
-| `fill` | `auto`, `paint`, `array<paint \| none>`, `function`, or `none` | `auto` | Cell fill, a row-indexed fill palette, or a row callback. |
-| `text` | `dictionary` | `(:)` | Arguments passed to `text` when displaying a value. |
+{{#arg-table types.gutter-column}}
 
 ## Behavior
 

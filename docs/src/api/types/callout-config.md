@@ -12,31 +12,7 @@ All fields are named. A dictionary with `line` and `body` keys can also be used 
 
 ## Fields
 
-| Field | Type | Default / required | Meaning |
-| --- | --- | --- | --- |
-| `line` | `int` | Required | One-indexed source line to attach the callout to; must be greater than zero. |
-| `body` | `content` | Required | Content displayed in the callout row. |
-| `align` | `alignment \| auto \| none` | `auto` | Alignment of the callout cell; `auto` inherits the element setting. |
-| `breakable` | `bool \| auto \| none` | `auto` | Whether the cell may break across pages; `auto` inherits the element setting. |
-| `inset` | `length \| dictionary \| auto \| none` | `auto` | Callout cell inset; `auto` inherits the element setting. |
-| `fill` | `paint \| auto \| none` | `auto` | Callout cell fill; `auto` inherits the element setting. |
-| `stroke` | `stroke \| auto \| none` | `auto` | Callout cell stroke; `auto` inherits the element setting. |
-| `source-indent` | `bool \| auto` | `auto` | Aligns a plain callout with its source indentation while reserving gutter columns. Pointed bubbles remain anchored to their character. |
-| `placement` | `"above" \| "below" \| auto` | `auto` | Side of the source line for the row or bubble. |
-| `bubble-gap` | `length \| dictionary \| auto` | `auto` | Minimum distance between neighboring bubbles; use a length for both axes or `(x: length, y: length)`. |
-| `pointer` | `int \| none \| auto` | `auto` | Character anchor in the source line: one-indexed, with `0` at line start. `none` disables the bubble. |
-| `pointer-align` | `"start" \| "center" \| "end" \| auto` | `auto` | Preferred bubble alignment around its source character; placement clamps it to the row. |
-| `pointer-size` | `length \| auto` | `auto` | Arrow height and half of its base width. |
-| `pointer-height` | `length \| auto` | `auto` | Arrow height; `auto` uses `pointer-size`. |
-| `pointer-width` | `length \| auto` | `auto` | Full arrow base width; `auto` uses twice `pointer-size`. |
-| `pointer-offset` | `length \| auto` | `auto` | Horizontal shift of the arrow tip from the character anchor; positive is right, negative is left, and the tip is clamped to the bubble. |
-| `bubble-align` | `alignment \| auto` | `auto` | Alignment of bubble content, independent of callout cell alignment. |
-| `bubble-fill` | `paint \| none \| auto` | `auto` | Fill shared by the bubble and arrow. |
-| `bubble-stroke` | `stroke \| none \| auto` | `auto` | The bubble's single outline. |
-| `bubble-inset` | `length \| dictionary \| auto` | `auto` | Padding inside the bubble. |
-| `bubble-outset` | `length \| dictionary \| auto` | `auto` | Extra paint extent around the padded body, reserved in the row. |
-| `bubble-radius` | `length \| auto` | `auto` | Bubble corner radius. |
-| `bubble-width` | `length \| ratio \| auto` | `auto` | Preferred padded body width; `auto` fits content, bounded by the available row. |
+{{#arg-table types.callout-config}}
 
 ## Behavior
 

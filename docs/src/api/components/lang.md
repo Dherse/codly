@@ -31,19 +31,7 @@ codly.lang-show_(it, ..args)
 
 ## Fields
 
-| Field | Type | Default | Meaning |
-| --- | --- | --- | --- |
-| `body` | `str` | Required, positional | Language key matched against `languages`. |
-| `languages` | `dictionary \| none` | `(:)` | Map from language keys to definitions; see [`codly.language`](../types/language.md). |
-| `default-color` | `paint \| none` | `rgb("#283593")` | Color used when the matching definition has no color. |
-| `inset` | `length \| dictionary \| none` | `0.32em` | Inner padding around the badge contents. |
-| `outset` | `dictionary \| none` | `(x: 0.32em, y: 0em)` | Placement offset used with the badge. |
-| `radius` | `length \| dictionary \| none` | `0.32em` | Corner radius of the badge. |
-| `stroke` | `stroke \| function \| none` | `(lang) => lang.color + 0.5pt` | Badge border; a function receives `(name: ..., icon: ..., color: ...)`. |
-| `fill` | `paint \| function \| none` | `(lang) => lang.color.lighten(80%)` | Badge background; a function receives `(name: ..., icon: ..., color: ...)`. |
-| `display-name` | `bool \| none` | `true` | Whether to show the configured name, or the raw key when no definition exists. |
-| `display-icon` | `bool \| none` | `true` | Whether to show the configured icon. |
-| `align` | `alignment \| none` | `right + horizon` | Alignment used when Codly places the badge. |
+{{#arg-table elements.lang}}
 
 ## Behavior
 

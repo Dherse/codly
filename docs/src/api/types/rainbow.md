@@ -20,15 +20,7 @@ The value can also be a dictionary with these fields, or a boolean that sets `en
 
 ## Fields
 
-| Field | Type | Default | Meaning |
-| --- | --- | --- | --- |
-| `enabled` | `bool` | `true` | Enables delimiter coloring. |
-| `palette` | `array<color>` | Built-in palette | Colors cycled by nesting depth; must not be empty. |
-| `pairs` | array of `"()"` \| `"[]"` \| `"{}"` | `("()", "[]", "{}")` | Delimiter pairs recognized for nesting. |
-| `depth-offset` | `int` | `0` | Adds an offset to the nesting depth before choosing a palette color; must be nonnegative. |
-| `unmatched` | `color` \| `none` | `none` | Color for unmatched delimiters; `none` leaves their syntax color unchanged. |
-| `code-scopes` | `str` | Built-in selectors | Syntax scope selectors classified as code by the rainbow pass. |
-| `ignore-scopes` | `str` | Built-in selectors | Syntax scope selectors excluded from delimiter coloring, such as strings and comments. |
+{{#arg-table types.rainbow}}
 
 ## Behavior
 

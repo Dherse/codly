@@ -12,10 +12,7 @@ codly.highlighted-line(line, color: none)
 
 ## Fields
 
-| Field | Type | Default / required | Meaning |
-| --- | --- | --- | --- |
-| `line` | `int` | Required | One-indexed displayed line number to highlight. |
-| `color` | `none \| paint` | `none` | Optional paint for this line; `none` uses the next color from [`codly.highlight`](../components/highlight.md). |
+{{#arg-table types.highlighted-line}}
 
 ## Behavior
 

@@ -968,25 +968,25 @@ types:
           Whether to process diff-prefixed code.
         default: 'true'
       added-fill:
-        type: 'paint'
+        type: 'e.types.option(e.types.union(auto, e.types.paint, function))'
         doc: >-
           Added-row background. auto follows the ordinary row fill; none leaves it unfilled. A
           callback receives the row and its diff record.
         default: 'rgb("dafbe1")'
       removed-fill:
-        type: 'paint'
+        type: 'e.types.option(e.types.union(auto, e.types.paint, function))'
         doc: >-
           Removed-row background. auto follows the ordinary row fill; none leaves it unfilled. A
           callback receives the row and its diff record.
         default: 'rgb("ffebe9")'
       meta-fill:
-        type: 'paint'
+        type: 'e.types.option(e.types.union(auto, e.types.paint, function))'
         doc: >-
           Patch metadata background. auto follows the ordinary row fill; none leaves it unfilled. A
           callback receives the row and its diff record.
         default: 'rgb("ddf4ff")'
       context-fill:
-        type: 'paint'
+        type: 'e.types.option(e.types.union(auto, e.types.paint, function))'
         doc: >-
           Unchanged-row background. auto follows the ordinary row fill; none leaves it unfilled. A
           callback receives the row and its diff record.

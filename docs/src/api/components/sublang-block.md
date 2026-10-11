@@ -15,10 +15,7 @@ Codly creates this element while rendering [`codly.new`](new.md). In normal use,
 
 ## Fields
 
-| Field | Type | Default | Meaning |
-| --- | --- | --- | --- |
-| `body` | `content` | Required, positional | Raw block content highlighted with the range's language. |
-| `idx` | `int` | Required, positional | Zero-based index of this range in the block's `sublangs` array. |
+{{#arg-table elements.sublang-block}}
 
 ## Behavior
 

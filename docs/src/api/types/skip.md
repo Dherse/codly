@@ -12,10 +12,7 @@ codly.skip(position, length: 1)
 
 ## Fields
 
-| Field | Type | Default / required | Meaning |
-| --- | --- | --- | --- |
-| `position` | `int` | Required | One-indexed source line before which the skip row is inserted. |
-| `length` | `int` | `1` | Number of omitted lines represented by the skip; added to subsequent displayed line numbers. |
+{{#arg-table types.skip}}
 
 ## Behavior
 

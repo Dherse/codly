@@ -12,18 +12,7 @@ codly.highlight-show_(it, ..args)
 
 ## Fields
 
-| Field | Type | Default | Meaning |
-| --- | --- | --- | --- |
-| `body` | `content` \| `none` | Required, positional | Highlighted span content. |
-| `highlight` | `highlight-config` \| `none` | `none` | Span metadata supplied by Codly, including source positions and local overrides; see [`codly.highlight-config`](../types/highlight-config.md). |
-| `color` | `paint` \| `array<paint>` | Thesis theme's five-color highlight palette | Base paint or cycling palette for highlights. The palette must not be empty. |
-| `radius` | `length` \| `none` | `0.32em` | Corner radius of the highlight box. |
-| `fill` | `function` \| `none` | `color => color.lighten(80%)` | Transforms the selected highlight paint into the box fill. |
-| `baseline` | `length` \| `auto` \| `none` | `0pt` | Baseline shift for the highlight box; `auto` follows the content baseline. |
-| `stroke` | `stroke` \| `function` \| `none` | `color => 0.5pt + color` | Box stroke, or a callback that derives it from the selected paint. |
-| `inset` | `length` \| `dictionary` \| `none` | `0.32em` | Space between the highlighted content and box edges. A dictionary uses Typst inset sides. |
-| `outset` | `length` \| `dictionary` \| `none` | `0em` | Space the highlight box extends outside its layout bounds. |
-| `clip` | `bool` \| `none` | `true` | Whether the highlight box clips its content. |
+{{#arg-table elements.highlight}}
 
 ## Behavior
 

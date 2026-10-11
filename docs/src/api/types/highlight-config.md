@@ -12,21 +12,7 @@ codly.highlight-config(line, start: none, end: none, fill: none, tag: none, inse
 
 ## Fields
 
-| Field | Type | Default / required | Meaning |
-| --- | --- | --- | --- |
-| `line` | `int` | Required | One-indexed displayed line number to highlight; must be greater than zero. |
-| `start` | `none \| int` | `none` | Zero-indexed character position where the highlight starts; `none` becomes `0`. |
-| `end` | `none \| int` | `none` | Exclusive zero-indexed end bound; `none` extends to the end of the line. |
-| `fill` | `none \| paint \| function` | `none` | Explicit paint, or a callback receiving the next palette paint; `none` uses the configured palette. |
-| `tag` | `none \| str \| content` | `none` | Optional tag displayed with the highlight. |
-| `inset` | `none \| length \| dictionary` | `none` | Overrides [`codly.highlight`](../components/highlight.md)'s `inset`. |
-| `baseline` | `none \| length \| auto` | `none` | Overrides the highlight box baseline; `auto` preserves the content baseline. |
-| `clip` | `none \| bool` | `none` | Overrides [`codly.highlight`](../components/highlight.md)'s `clip`. |
-| `outset` | `none \| length \| dictionary` | `none` | Overrides [`codly.highlight`](../components/highlight.md)'s `outset`. |
-| `radius` | `none \| length` | `none` | Overrides [`codly.highlight`](../components/highlight.md)'s `radius`. |
-| `label` | `none \| label` | `none` | Label for referencing this highlight; labels apply only when the code block is inside a figure. |
-| `stroke` | `none \| stroke \| function` | `none` | Overrides [`codly.highlight`](../components/highlight.md)'s `stroke`. |
-| `depth` | `none \| int` | `none` | Controls stacking when highlights overlap; larger values appear on top. |
+{{#arg-table types.highlight-config}}
 
 ## Behavior
 

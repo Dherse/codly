@@ -27,20 +27,14 @@ codly.file-show_(it => ...)
 
 ## Fields
 
-| Field | Type | Default | Meaning |
-| --- | --- | --- | --- |
-| `body` | `str \| content` | Required, positional | Displayed filename. |
-| `fill` | `paint \| none` | `luma(240)` | Badge background; `none` removes the fill. |
-| `stroke` | `stroke \| none` | `0.5pt + luma(160)` | Badge border; `none` removes the border. |
-| `inset` | `length \| dictionary` | `(x: 0.4em, y: 0.2em)` | Inner padding around the filename. A length applies uniformly; a dictionary can set axes independently. |
-| `radius` | `length \| dictionary` | `2pt` | Corner radius. A length applies uniformly; a dictionary can set corners individually. |
+{{#arg-table elements.file}}
 
 ## Behavior
 
 > [!TIP] Pass a path to `codly.new`
 > When the code input is a path, [`codly.new`](new.md) reads the file, derives the badge text from its basename, and uses its extension as the language when `lang` is omitted. Set `file` or `lang` explicitly to override those defaults.
 
-The badge is a box using `fill`, `stroke`, `inset`, and `radius` around `body`; `inset` and `radius` accept either one length or a dictionary.
+The badge is a box using `fill`, `stroke`, `inset`, and `radius` around `body`. A length applies uniformly; an `inset` dictionary sets padding by side or axis, and a `radius` dictionary sets individual corners.
 
 ## Example
 

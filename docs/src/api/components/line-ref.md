@@ -19,14 +19,7 @@ codly.line-ref-show_(it, ..args)
 
 ## Fields
 
-| Field | Type | Default | Meaning |
-| --- | --- | --- | --- |
-| `body` | `content` \| `none` | required | Internal reference body supplied by Typst. |
-| `block` | `label` | required, named | Label of the containing code block. |
-| `number` | `int` | required, named | Displayed line number. |
-| `suffix` | `content` \| `none` | `none` | Optional suffix attached to the displayed line number. |
-| `separator` | `auto` \| `str` \| `content` \| `none` | `auto` | Content between the native block reference and line number; `auto` uses [`codly.ref`](ref.md) settings. |
-| `numbering` | `auto` \| `function` \| `none` | `auto` | Formats the displayed line number; `auto` uses [`codly.ref`](ref.md) settings, while `none` leaves only the native block reference. |
+{{#arg-table elements.line-ref}}
 
 ## Behavior
 

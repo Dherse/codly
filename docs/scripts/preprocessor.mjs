@@ -1,11 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import MarkdownIt from 'markdown-it';
 import { createHighlighter } from 'shiki';
 import { exampleSource } from '../runtime/widgets.mjs';
 import { parseWidgets, renderWidgets } from './widgets.mjs';
 import { highlightTypeTables, typeLanguage } from './type-tables.mjs';
+import { expandArgumentTables, parseArgumentSchema } from './argument-tables.mjs';
 import { typstCodeLanguage } from './typst-code.mjs';
 import { admonitions } from './admonitions.mjs';
 import { collapsibles } from './collapsibles.mjs';
@@ -14,13 +16,36 @@ if (process.argv[2] === 'supports') process.exit(process.argv[3] === 'html' ? 0 
 const [context, book] = JSON.parse(fs.readFileSync(0, 'utf8'));
 const highlighter = await createHighlighter({ themes: ['github-dark','github-light'], langs: ['typst',typstCodeLanguage,typeLanguage,'rust','python','yaml','bash','toml','json','markdown'] });
 const md = new MarkdownIt();
+const docsRoot = fileURLToPath(new URL('../', import.meta.url));
+const codlySource = path.resolve(docsRoot, process.env.CODLY_SOURCE || '..');
+let argumentSchema;
+function getArgumentSchema() {
+  return argumentSchema ||= parseArgumentSchema(fs.readFileSync(path.join(codlySource, 'src/args.yaml'), 'utf8'));
+}
 const escape = s => s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const index = [], examples = [];
+function searchText(source) {
+  const inlineText = tokens => tokens.map(token => {
+    if (token.children) return inlineText(token.children);
+    if (token.type === 'text' || token.type === 'code_inline') return token.content;
+    return token.type === 'softbreak' || token.type === 'hardbreak' ? ' ' : '';
+  }).join('');
+  return md.parse(source, {}).map(token => {
+    if (token.type === 'inline') return inlineText(token.children || []);
+    return token.type === 'fence' || token.type === 'code_block' ? token.content : '';
+  }).join(' ').replace(/\s+/g, ' ').slice(0, 50000);
+}
 function visit(items) {
   for (const item of items) if (item.Chapter) {
     const chapter = item.Chapter;
-    const source = chapter.content;
-    index.push({ title: chapter.name, path: chapter.path.replace(/\.md$/,'.html'), text: source.replace(/<[^>]*>/g,' ').replace(/[#`*]/g,'').slice(0,50000) });
+    let source = chapter.content;
+    if (source.includes('{{#arg-table')) {
+      let schema;
+      try { schema = getArgumentSchema(); }
+      catch (error) { throw new Error(`${chapter.path}: ${error.message}`); }
+      source = expandArgumentTables(source, schema, md, chapter.path);
+    }
+    index.push({ title: chapter.name, path: chapter.path.replace(/\.md$/,'.html'), text: searchText(source) });
     let expanded;
     try { expanded = collapsibles(source); }
     catch (error) { throw new Error(`${chapter.path}: ${error.message}`); }

@@ -12,14 +12,7 @@ codly.number(number, parent, ..fields)
 
 ## Fields
 
-| Field | Type | Default / required | Meaning |
-| --- | --- | --- | --- |
-| `number` | `none \| content \| int \| array<int>` | Required | Value to display; `none` suppresses it. |
-| `parent` | `any` | Required | Parent content of the line. |
-| `numbering` | `str \| function` | `numbering.with("1")` | Numbering pattern or callback used for integer values. |
-| `align` | `alignment \| none` | `left + horizon` | Alignment of the number in its cell. |
-| `placement` | `"inside" \| "outside" \| none` | `"inside"` | Whether the number column sits inside or outside the code block. |
-| `fill` | `auto \| paint \| none` | `auto` | Number-cell background; `auto` follows the corresponding code row's fill. |
+{{#arg-table elements.number}}
 
 ## Behavior
 

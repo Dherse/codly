@@ -5,18 +5,12 @@ Describes an annotation attached to one or more one-indexed source lines in a co
 ## Signature
 
 ```typst code
-codly.annotation-config(start, end: none, content: none, label: none, numbering: n => [#n])
+codly.annotation-config(start, end: none, content: none, label: none, numbering: numbering.with("(1)"))
 ```
 
 ## Parameters
 
-| Field | Type | Default | Meaning |
-| --- | --- | --- | --- |
-| `start` | `int` | required | First source line covered by the annotation; must be greater than zero. |
-| `end` | `int \| none` | `none` | Last covered line. `none` is normalized to `start`; otherwise it must be positive and at least `start`. |
-| `content` | `content \| none` | `none` | Showable content displayed beside the annotation; `none` leaves only its number. |
-| `label` | `label \| none` | `none` | Label for referencing this annotation when its code block is inside a figure. |
-| `numbering` | `function \| none` | `n => [#n]` | Function formatting the annotation number. Set to `none` to hide the number. |
+{{#arg-table types.annotation-config}}
 
 ## Behavior
 

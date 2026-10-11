@@ -21,11 +21,10 @@
 /// Automatic two-view syntax highlighting for `diff-<language>` or `diff,<language>` raw blocks.
 /// The diff prefix is removed from code and shown in a separate gutter.
 #let diff = {
-  let paint = e.types.option(e.types.union(auto, e.types.paint, function))
   e.types.declare(
     "diff",
     prefix: __codly-prefix,
-    ..__declaration("types", "diff", scope: (paint: paint)),
+    ..__declaration("types", "diff"),
     casts: (
       (from: dictionary),
       (from: bool, with: constructor => value => constructor(enabled: value)),

@@ -39,6 +39,21 @@ defaults are quoted Typst expressions; field traits are YAML booleans, and
 field order determines positional arguments. Descriptions belong there;
 examples belong in the manual. Casts, parsers, and renderers remain in Typst.
 
+Generate an argument table from that metadata with a standalone directive:
+
+```markdown
+{{#arg-table elements.new}}
+{{#arg-table types.highlight-config}}
+```
+
+Each directive produces field names, linked types, defaults, required and
+positional markers, and descriptions. Shared callout fields expand with the
+same inheritance rules as their Elembic declarations; private `__` fields are
+omitted. Field order follows the YAML. Unknown declarations or unsupported
+metadata fail the build with the chapter path. Keep behavior guides and
+editable examples in Markdown, without copying the argument table by hand.
+`CODLY_SOURCE` selects the source checkout for both tables and previews.
+
 Use `typst preview` fences for editable examples. Add `fixed` for a full-width
 example with highlighted code above its pre-rendered SVG:
 

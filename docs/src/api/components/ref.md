@@ -16,12 +16,7 @@ codly.ref-set_(..fields)
 
 ## Fields
 
-| Field | Type | Default | Meaning |
-| --- | --- | --- | --- |
-| `body` | `content` \| `none` | required | Content of the reference element. |
-| `by` | `"line"` \| `"item"` \| `none` | `"line"` | Choose a displayed line number or an item label/content for highlight and annotation references. |
-| `sep` | `str` \| `content` \| `none` | `"-"` | Content between the native reference to the code block and the line number or item. |
-| `numbering` | `function` \| `none` | `numbering.with("1")` | Formats line numbers when `by` is `"line"`; `none` leaves the native block reference without a line suffix. |
+{{#arg-table elements.ref}}
 
 ## Behavior
 

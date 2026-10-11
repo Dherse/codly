@@ -19,13 +19,7 @@ Codly creates this element while rendering [`codly.new`](new.md) and supplies it
 
 ## Fields
 
-| Field | Type | Default / required | Meaning |
-| --- | --- | --- | --- |
-| `body` | `content` \| `none` | Required, positional | Content attached to the annotation; `none` leaves only its number. |
-| `label` | `content` \| `none` | Required; declared default: `"todo"` | Hidden reference-anchor content associated with a labelled annotation. Codly supplies this field. |
-| `height` | `length` \| `none` | `0pt` | Height of the brace spanning the rendered rows. |
-| `num` | `int` \| `none` | `0` | Automatically assigned annotation number. |
-| `numbering` | `function` \| `none` | `numbering.with("(1)")` | Formats `num`; use `none` to hide the number. |
+{{#arg-table elements.annotation}}
 
 ## Behavior
 
