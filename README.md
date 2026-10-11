@@ -208,22 +208,6 @@ continue its last displayed number. Disjoint excerpts preserve their gaps.
 
 ## Migrating from v1
 
-- Replace `codly-init` and configuration calls with `codly.new` and scoped
-  `#show: codly.set_(...)` or component rules.
-- Exported component names are unprefixed: `codly.line`, `codly.highlight`,
-  `codly.header`, and so on. Their internal selector identities still use
-  `codly-...`. Component helpers consistently end in `_`, including
-  `header-set_`, `header-show_`, `footer-set_`, and `footer-show_`.
-- Use `codly.lang-set_(languages: ...)` for language definitions,
-  `codly.number-set_(numbering: ...)` for numbers, and
-  `codly.highlight-set_(...)` for highlight styling.
-- Replace zebra-specific settings with a `fill` palette or callback.
-- Replace `offset-from` and offset helper calls with the single `offset` field.
-- Source ranges and character highlight bounds are one-based and inclusive.
-  Highlight character positions count leading indentation; their line
-  coordinate is the displayed number, including offsets and explicit skips.
-
-See [CHANGELOG.md](CHANGELOG.md) for release history and contributor credits.
 The [manual](https://codly.dherse.dev/v2.0.0/) contains the full API and a
 [1.3.0 / 1.3.1 migration guide](https://codly.dherse.dev/v2.0.0/migration-1.3.html)
-with before/after examples and editable controls.
+with before/after examples.
