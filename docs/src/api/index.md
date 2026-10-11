@@ -1,7 +1,5 @@
 # API reference
 
-The current API reference for the Codly package.
-
 - [Components](components/index.md) render code blocks and their parts.
 - [Types](types/index.md) describe configuration values and their accepted shorthand forms.
 - [Themes and helpers](helpers/index.md) apply reusable styles and inspect block metadata.
@@ -23,7 +21,7 @@ Import the Codly package as a namespace:
 > The `*-show_` helpers accept replacement content or a callback receiving
 > the component, rather than a dictionary of field overrides.
 
-Codly uses Elembic custom elements and types. Access Elembic through `codly.e` to use the same version as Codly, without importing it separately. [`codly.new`](components/new.md) creates a code block. Component helpers such as [`codly.number-set_`](components/number.md#signature) apply defaults within the surrounding Typst scope. They are used with `#show:`, rather than native `#set` syntax. Refer to the [elembic documentation](https://pgbiel.github.io/elembic/) for more information.
+Codly uses Elembic custom elements and types; the exported `codly.e` gives you the same Elembic version without a separate import. [`codly.new`](components/new.md) creates a code block, and component helpers such as [`codly.number-set_`](components/number.md#signature) apply scoped defaults with `#show:` rather than native `#set` syntax. See the [Elembic documentation](https://pgbiel.github.io/elembic/) for details.
 
 ````typst preview
 #import "@preview/codly:2.0.0" as codly
@@ -36,7 +34,7 @@ print(43)
 ```
 ````
 
-Each component page documents its constructor and available `*-set_` and `*-show_` helpers. Many configuration types do not render content directly, instead being meant to be called internally by Codly. Most values can be built from dictionaries or arrays instead of needing manual type invocation. Whether the elements/types can be shown and their constructors are detailed on their respective pages.
+Each component page documents its constructor and its `*-set_` and `*-show_` helpers. Configuration types do not render directly — Codly instantiates them internally — and most accept dictionaries or arrays in place of an explicit constructor call; each type page lists its accepted forms.
 
 ## Coordinates and defaults
 
@@ -45,11 +43,11 @@ Each component page documents its constructor and available `*-set_` and `*-show
 > use zero-indexed offsets with an exclusive `end`. Displayed line numbers
 > can change with offsets and skipped lines.
 
-Source-line ranges are one-based and include both endpoints. Character highlights use zero-based bounds with an exclusive end; callout pointers and explicit skip positions have their own conventions documented on their type pages. Displayed line numbers can differ from source positions after applying an offset. Check the field's definition before using displayed numbers as configuration coordinates.
+Callout pointers and explicit skip positions have their own conventions, documented on their type pages. Check a field's definition before using displayed numbers as configuration coordinates.
 
 `auto` and `none` have field-specific meanings. A default value does not always describe the final appearance: themes, scoped styling rules, and surrounding Typst text or raw settings can affect rendering.
 
-`paint` means a color, gradient, or tiling. `array<T>` means an array of values of type `T`. The type notation in signature blocks describes accepted values; it is not runnable Typst syntax. The preview examples are runnable and editable.
+`paint` means a color, gradient, or tiling; `array<T>` an array of `T` values.
 
 > [!WARNING] Signatures describe types.
 > Signature blocks show the accepted argument types; they are not runnable

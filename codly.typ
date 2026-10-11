@@ -803,7 +803,7 @@
       e.field(
         "position",
         int,
-        doc: "The line where the skip is inserted (zero-indexed).",
+        doc: "The source line before which the skip is inserted (one-indexed).",
         required: true,
       ),
       e.field("length", int, doc: "The number of lines of the skip.", default: 1, named: false),

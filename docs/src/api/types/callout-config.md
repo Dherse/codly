@@ -48,7 +48,7 @@ All fields are named. A dictionary with `line` and `body` keys can also be used 
 
 An entry's `auto` style values inherit from [`codly.callout`](../components/callout.md); bubble styles can then inherit from [`codly.bubble`](../components/bubble.md). Explicit entry values take precedence. Cell `fill` and `stroke` accept `none` to disable painting. A pointed bubble uses one shared outline and paint for its body and arrow, and wraps its content at the available width.
 
-The callout attaches using source-line coordinates, unaffected by displayed line-number offsets or diff markers. Pointer positions count characters in the source line after a diff marker is removed; unlike highlight bounds, they are one-indexed, except that zero denotes the start. The pointer follows the rendered character when source text wraps. Bubble groups stay together on a page. Consecutive bubbles on the same side with matching cell styles share a row when their outlines fit; overlaps use another lane in declaration order.
+Pointer positions count characters in the source line after a diff marker is removed; unlike highlight bounds, they are one-indexed, with zero denoting the start. The pointer follows the rendered character when source text wraps. Consecutive bubbles on the same side with matching cell styles share a row when their outlines fit; overlaps use another lane in declaration order.
 
 Negative pointer positions, dimensions, insets, outsets, and gaps are invalid. `bubble-gap` dictionaries accept only `x` and `y`, whose omitted values default to `0.5em`.
 

@@ -14,20 +14,22 @@ codly.skip(position, length: 1)
 
 | Field | Type | Default / required | Meaning |
 | --- | --- | --- | --- |
-| `position` | `int` | Required | Zero-indexed source position where the skip row is inserted. |
+| `position` | `int` | Required | One-indexed source line before which the skip row is inserted. |
 | `length` | `int` | `1` | Number of omitted lines represented by the skip; added to subsequent displayed line numbers. |
 
 ## Behavior
 
 > [!NOTE] Source coordinates
-> `position` is a zero-indexed source position, even when ranges or offsets
-> change which lines appear.
+> `position` is a one-indexed source line, even when ranges or offsets
+> change which lines appear. Position `2` inserts the gap before source line 2.
 
 > [!TIP] Duplicate positions make one skip row.
 > If multiple skips have the same position, Codly uses the first entry's
 > `length` to adjust subsequent displayed line numbers.
 
-The constructor accepts [`codly.skip(position, length)`](#signature) or named fields. A dictionary casts using `position` and optional `length`; an array of one or two values casts positionally. Other array lengths and unrelated values fail to cast. The `skips` field sorts entries by position; duplicate records at one position produce one skip row, and only the first record's length affects the numbering offset. Positions refer to source lines even when ranges or offsets affect what is displayed.
+The constructor accepts [`codly.skip(position, length)`](#signature) or named fields. A dictionary casts using `position` and optional `length`; an array of one or two values casts positionally. The `skips` field sorts entries by position.
+
+Explicit skips represent lines already omitted from the supplied source. They add a gap row and increase subsequent displayed numbers; they do not remove source lines. Use `range` or `ranges` with `smart-skip` to omit lines that are still present.
 
 ## Example: Basic Usage
 

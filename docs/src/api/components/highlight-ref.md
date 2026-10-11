@@ -1,7 +1,7 @@
 # `codly.highlight-ref`
 
 > [!WARNING] References need a labelled figure.
-> To use references to highlight, you must ensure that the Codly code block is contained within a labelled figure. 
+> A highlight label resolves only when the code block sits inside a labelled figure.
 
 [`codly.highlight-ref`](#signature) declares the native reference element emitted for a labelled highlight.
 
@@ -42,7 +42,7 @@ codly.highlight-ref-show_(it, ..args)
 
 Typst emits this element when a native reference targets a label on a highlight. It retains the reference to the containing figure or code block, so native figure numbering and links work. With `by: "line"`, the formatter receives the displayed line number. With `by: "item"`, the tag is shown and `item` must be present. A `none` formatter suppresses the numeric part of line references; item references still show their tag. The default separator and formatter come from [`codly.ref`](ref.md).
 
-[`codly.highlight-ref-set_(..args)`](#signature) sets fields for matching references. [`codly.highlight-ref-show_(it, ..args)`](#signature) installs a replacement callback or content for the matching element; a callback receives the reference element. These wrappers follow the same scoped show-rule model as other Codly elements.
+[`codly.highlight-ref-set_(..args)`](#signature) sets fields for matching references; [`codly.highlight-ref-show_(it, ..args)`](#signature) installs replacement content or a callback receiving the reference element.
 
 ## Example
 

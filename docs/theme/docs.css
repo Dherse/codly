@@ -1,5 +1,9 @@
-@font-face{font-family:DocMono;src:url(assets/fonts/NotoSansMono-Regular.ttf) format('truetype');font-display:swap}
-@font-face{font-family:DocDejaVu;src:url(assets/fonts/DejaVuSansMono.ttf) format('truetype');font-display:swap}
+@font-face{font-family:DocMono;src:url(assets/fonts/NotoSansMono-Regular.ttf) format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:DocMono;src:url(assets/fonts/NotoSansMono-Bold.ttf) format('truetype');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:DocDejaVu;src:url(assets/fonts/DejaVuSansMono.ttf) format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:DocDejaVu;src:url(assets/fonts/DejaVuSansMono-Bold.ttf) format('truetype');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:DocDejaVu;src:url(assets/fonts/DejaVuSansMono-Oblique.ttf) format('truetype');font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:DocDejaVu;src:url(assets/fonts/DejaVuSansMono-BoldOblique.ttf) format('truetype');font-weight:700;font-style:italic;font-display:swap}
 :root{color-scheme:dark;--bg:#0b1018;--panel:#111925;--panel-2:#151f2d;--line:#2c3746;--text:#e5edf7;--muted:#a0afc1;--mint:#78edb1;--mint-ink:#0b2a1a;--soft:#152e28;--code-font:DocDejaVu,monospace;--shadow:0 24px 70px #0003;font:15px/1.7 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-synthesis:none}
 :root[data-theme=light]{color-scheme:light;--bg:#f6f8fa;--panel:#fff;--panel-2:#edf2f5;--line:#d6dee5;--text:#202c3c;--muted:#546478;--mint:#187348;--mint-ink:#fff;--soft:#e5f5eb;--shadow:0 16px 45px #172b4510}
 :root[data-font=noto]{--code-font:DocMono,monospace}
@@ -99,3 +103,18 @@
 .mermaid-diagram[data-rendered] .mermaid-source{border-top:1px solid var(--line)}
 .mermaid-source pre{font-size:12px}
 @media(max-width:500px){.mermaid-output{padding:12px}}
+
+.collapsible{margin:24px 0;border:1px solid var(--line);border-radius:12px;background:var(--panel);min-width:0;scroll-margin-top:100px}
+.collapsible>summary{display:flex;align-items:baseline;gap:12px;padding:17px 20px;border-radius:11px;color:var(--text);font-size:17px;font-weight:600;line-height:1.5;cursor:pointer;list-style:none;overflow-wrap:anywhere}
+.collapsible>summary::-webkit-details-marker{display:none}
+.collapsible>summary::before{content:'';display:block;flex:none;width:8px;height:8px;border-right:2px solid var(--mint);border-bottom:2px solid var(--mint);transform:rotate(-45deg);align-self:center}
+.collapsible>summary:hover{background:var(--soft)}
+.collapsible[open]>summary{border-bottom:1px solid var(--line);border-radius:11px 11px 0 0}
+.collapsible[open]>summary::before{transform:rotate(45deg)}
+.collapsible-content{padding:4px 20px 22px;min-width:0}
+.collapsible-content>:last-child{margin-bottom:0}
+.collapsible-content .example,.collapsible-content .code-card{box-shadow:none}
+.collapsible-content h3{margin-top:25px}
+.page-tools{max-height:calc(100dvh - 78px);overflow:auto;overscroll-behavior:contain}
+@media(max-width:500px){.collapsible>summary{padding:15px 14px;font-size:16px}.collapsible-content{padding:2px 14px 18px}}
+@media print{.collapsible{background:white;color:black;break-inside:auto}.collapsible>summary{color:black}.collapsible::details-content{content-visibility:visible}.collapsible-content{display:block!important}}

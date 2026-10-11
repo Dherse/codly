@@ -327,7 +327,7 @@
     },
     "skips": {
         "title": "Skips",
-        "description": "Insert a skip at the specified line numbers, setting its offset to the length of the skip. The skip is formatted using the #link(<arg-skip-number>)[`skip-number`] argument. Each skip is an array with two values: the line where the skip is inserted (zero indexed) and the number of lines of the skip. The same behavior can be achieved using the #link(<codly-skip>)[`codly-skip`] function.",
+        "description": "Insert a gap before a one-indexed source line to represent code already omitted from the supplied source. Each skip gives the source line before which it is inserted and the omitted line count, which is added to subsequent displayed numbers. Existing pairs such as `(2, 8)` still work, or use `codly.skip(2, 8)`. Explicit skips do not remove source lines; use `range` or `ranges` with `smart-skip` for that. `skip-line` and `skip-number` format the gap cells.",
         "default": "none",
         "ty": [ "array", "type(none)" ],
         "function": true,

@@ -30,7 +30,7 @@ codly.line-ref-show_(it, ..args)
 
 ## Behavior
 
-The constructor is exported, but references are normally generated from native reference syntax. The element has no custom casts and cannot itself carry a label. Its fields are checked against the declared types; `block` and `number` are named required fields on the generated element. Codly generates line targets for labeled blocks, and `@block:line` references the block figure followed by the line formatter. The number is the displayed line number, including the block's numbering behavior, rather than a character position in the source.
+The constructor is exported, but references are normally generated from native `@block:line` syntax; the element has no custom casts and cannot itself carry a label. The reference shows the block figure followed by the formatted line number — the displayed number, not a source position.
 
 `separator: auto` and `numbering: auto` inherit [`codly.ref`](ref.md)'s `sep` and `numbering` settings. Explicit fields set through `line-ref-set_` override those shared defaults for line references in scope. A numbering function receives the displayed line number. `line-ref-show_` lets a show rule replace or wrap the generated reference; its callback receives the element.
 
@@ -38,7 +38,7 @@ See [`codly.ref`](ref.md) for shared reference defaults.
 
 ## Example
 
-This self-contained example labels a code block and refers to its second displayed line. The local set rule changes the separator and line-number format:
+Labels a code block and refers to its second displayed line; the local set rule changes the separator and number format:
 
 ````typst preview
 #import "@preview/codly:2.0.0" as codly

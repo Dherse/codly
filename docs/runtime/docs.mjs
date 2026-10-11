@@ -1,6 +1,7 @@
 import { validateWidgets, widgetDefaults, exampleSource } from './widgets.mjs';
 import { initializeVersionSelector } from './versions.mjs';
 import { initializeSidebar } from './sidebar.mjs';
+import { initializeCollapsibles } from './collapsibles.mjs';
 const root = new URL(document.body.dataset.root || './', location.href);
 const themeSwitch = document.querySelector('#theme');
 const fontSelect = document.querySelector('#code-font');
@@ -197,8 +198,9 @@ for (const button of document.querySelectorAll('[data-copy]')) {
     setTimeout(() => { button.textContent = 'Copy code'; }, 2200);
   });
 }
-for (const heading of document.querySelectorAll('article h2')) {
-  const a = document.createElement('a'); a.href = `#${heading.id}`; a.textContent = heading.textContent;
+for (const heading of document.querySelectorAll('article h2, article details.collapsible > summary')) {
+  const id = heading.id || heading.parentElement.id;
+  const a = document.createElement('a'); a.href = `#${id}`; a.textContent = heading.textContent;
   document.querySelector('#page-toc').append(a);
 }
 
@@ -223,5 +225,6 @@ search.addEventListener('input', async () => {
 document.addEventListener('keydown', e => { if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) { e.preventDefault(); if (matchMedia('(max-width:720px)').matches && menu.getAttribute('aria-expanded') !== 'true') menu.click(); search.focus(); } if (e.key === 'Escape') { search.value = ''; results.hidden = true; if (menu.getAttribute('aria-expanded') === 'true') menu.click(); } });
 updatePreferences();
 const sidebarNavigation = initializeSidebar(document.querySelector('#sidebar'));
+initializeCollapsibles();
 const diagrams = document.querySelectorAll('[data-mermaid]');
 if (diagrams.length) import('./diagrams.mjs').then(({ initializeDiagrams }) => initializeDiagrams(diagrams)).catch(() => {});

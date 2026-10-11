@@ -61,7 +61,7 @@ file paths. No initialization rule is required for explicit blocks.
 ```
 
 Defaults use scoped show rules. Put the conversion rule in a content block to
-limit it to that block:
+limit it to that scope:
 
 ````typ
 #import "@preview/codly:2.0.0" as codly
@@ -88,9 +88,9 @@ To leave selected blocks unstyled, replace the conversion rule with a conditiona
 
 ## Themes
 
-Choose `thesis` (the defaults), `dark`, `clean`, `github-light`,
+Choose `thesis` (the default), `dark`, `clean`, `github-light`,
 `solarized-light`, or `one-light`. Each preset includes a five-color highlight
-palette. Override theme settings with later component rules.
+palette; later component rules override theme settings.
 
 ```typ
 #import "@preview/codly:2.0.0" as codly
@@ -120,21 +120,19 @@ whole when a boundary falls inside them.
 
 ## Syntax-aware diffs
 
-Set `lang: "diff-py"` or `lang: "diff,py"` (or another language) on a raw block.
-Codly highlights old and new source separately, strips patch markers from the
-code, and adds old/new
-number and change-marker gutters. Unified hunks and simple `-`/`+` fragments are
-supported. Diff colors and gutters are configurable; themes supply matching
-defaults.
+Set the raw block language to `diff-py` or `diff,py`, with any language after
+the prefix. Codly highlights old and new source separately, strips the patch
+markers, and adds old/new number and change-marker gutters. Unified hunks and
+simple `-`/`+` fragments are supported; colors and gutters are configurable,
+and themes supply matching defaults.
 
 ```typ
 #import "@preview/codly:2.0.0" as codly
 #codly.new(raw("-return 1\n+return 2", lang: "diff-py", block: true))
 ```
 
-Fenced blocks can use the `diff-py` language tag, including in Typst 0.15.
-Both prefixes are valid Codly syntax; use `raw(..., lang: "diff,py")` if your
-Typst version does not support commas in fenced language tags.
+Fenced blocks accept the `diff-py` tag in Typst 0.15; on versions without comma
+support in language tags, use `raw(..., lang: "diff,py")`.
 
 [![HTTP client diff with timeout and bounded retries](examples/diff.png)](https://github.com/Dherse/codly/blob/v2.0.0/examples/diff.typ)
 
@@ -197,7 +195,11 @@ continue its last displayed number. Disjoint excerpts preserve their gaps.
   `codly.highlight-set_(...)` for highlight styling.
 - Replace zebra-specific settings with a `fill` palette or callback.
 - Replace `offset-from` and offset helper calls with the single `offset` field.
-- Ranges and span positions are one-based; highlight ends are inclusive.
+- Source ranges are one-based and inclusive. Character highlights use
+  zero-based bounds with an exclusive end; their line coordinate is the
+  displayed number, including offsets and explicit skips.
 
 See [CHANGELOG.md](CHANGELOG.md) for release history and contributor credits.
-The [online manual](https://codly.dherse.dev/) includes the v2 API and migration guide.
+The [1.3.0 / 1.3.1 migration guide](docs/src/migration-1.3.md) walks through
+each concept with before/after examples and editable controls; it is also in
+the [online manual](https://codly.dherse.dev/) together with the full v2 API.

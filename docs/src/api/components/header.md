@@ -40,9 +40,9 @@ codly.header-show_(it => ...)
 > [!TIP] Put the filename badge in the header
 > `codly.new` places its file badge in the header by default. Supplying a custom header body keeps the badge alongside that body; style the badge separately with [`codly.file-set_(...)`](file.md).
 
-The required body is positional, and the remaining fields are named. When used by [`codly.new`](new.md), the header cell spans the code block's columns. `repeat` controls the underlying grid header's repetition. Setting `fill` to `auto` resolves to `luma(240)`; the header fill is independent of line and number fills. The block's outer corner radius is configured on [`codly.new`](new.md), not on the header element.
+When used by [`codly.new`](new.md), the header cell spans the code block's columns. `repeat` controls the underlying grid header's repetition. Setting `fill` to `auto` resolves to `luma(240)`; the header fill is independent of line and number fills. The block's outer corner radius is configured on [`codly.new`](new.md), not on the header element.
 
-[`codly.header-set_(..fields)`](#signature) sets defaults for matching headers in scope. [`codly.header-show_(replacement)`](#signature) installs a scoped replacement callback or content replacement for matching headers. A callback receives the header element as `it`, not a dictionary of field overrides.
+[`codly.header-set_(..fields)`](#signature) sets defaults for headers in scope; [`codly.header-show_(replacement)`](#signature) installs a scoped replacement, whose callback receives the header element as `it`.
 
 ## Example
 

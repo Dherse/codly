@@ -25,7 +25,7 @@ codly.highlighted-line(line, color: none)
 > [!TIP] Explicit colors leave the palette cycle untouched
 > A supplied `color` is used directly. Entries with `color: none` take and advance the next [`codly.highlight`](../components/highlight.md) palette color.
 
-The constructor also accepts named fields. The value casts from an integer, a dictionary with `line` and optional `color`, or an array of one or two values in field order. Other values and arrays of other lengths fail to cast. The line number refers to the displayed numbering, including offsets and numbering changes caused by skips; a line with no displayed number cannot be highlighted this way. An explicit color is used directly and does not advance the [`codly.highlight`](../components/highlight.md) palette; entries with `color: none` use and advance that palette in declaration order.
+The constructor also accepts named fields. The value casts from an integer, a dictionary with `line` and optional `color`, or an array of one or two values in field order; other values and array lengths fail to cast.
 
 ## Example: Basic Usage
 

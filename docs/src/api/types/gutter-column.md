@@ -40,9 +40,9 @@ codly.gutter-column(
 > Only code and skip rows have gutter cells. A callback receives both
 > `source-line` and `kind`, so it can handle skip rows separately from code.
 
-Array values are indexed by one-based source line, even when a code block uses ranges, offsets, or generated skip rows. Missing entries and `none` leave a cell empty. A callback receives the rendered row dictionary with `index`, `kind`, `source-line`, `number`, and `text`. `index` counts displayed rows, including headers and callouts; `source-line` is one-based for source rows and `none` for generated rows. Callbacks may return content, strings, numbers, or `none`.
+A callback receives the rendered row dictionary with `index`, `kind`, `source-line`, `number`, and `text`. `index` counts displayed rows, including headers and callouts; `source-line` is one-based for source rows and `none` for generated rows. Callbacks may return content, strings, numbers, or `none`.
 
-Only code and skip rows have gutter cells. Values are validated when resolved, and `width` must be non-negative. `auto` alignment and insets inherit the number column's settings; `fill: auto` follows the body row. A fill callback also receives the row dictionary, with `text` populated from the source line where available.
+Values are validated when resolved, and `width` must be non-negative. `auto` alignment and insets inherit the number column's settings; `fill: auto` follows the body row. A fill callback also receives the row dictionary, with `text` populated from the source line where available.
 
 ## Example: Basic Usage
 

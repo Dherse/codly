@@ -76,7 +76,7 @@ Callout lines are source-line coordinates, unaffected by displayed line-number o
 
 Unspecified or `auto` bubble styling inherits from [`codly.bubble`](bubble.md), after explicit [`codly.callout`](#signature) styling. Entry values in `callouts` take precedence over the element's set-rule values. Explicit `none` disables bubble fill or stroke; `pointer: none` keeps a callout plain.
 
-[`codly.callout-set_(..args)`](#signature) sets defaults for callout cells and bubbles. [`codly.callout-show_(it, ..args)`](#signature) installs a show rule; its first argument is replacement content or a callback, such as `it => [#it]`, not a dictionary of field overrides. Bubble-specific defaults and show rules are documented on [`codly.bubble`](bubble.md).
+[`codly.callout-set_(..args)`](#signature) sets defaults for callout cells and bubbles; [`codly.callout-show_(it, ..args)`](#signature) installs a show rule taking replacement content or a callback such as `it => [#it]`. Bubble-specific defaults and show rules are documented on [`codly.bubble`](bubble.md).
 
 ## Example
 

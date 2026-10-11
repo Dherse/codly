@@ -28,13 +28,11 @@ codly.number(number, parent, ..fields)
 > `numbering`. Use an integer when you want the configured numbering style to
 > apply.
 
-An integer is formatted with `numbering`; an integer array is passed as multiple numbering values. A `content` value is displayed directly, and `number: none` displays nothing. Numbering functions receive the integer value, or the array's values as separate arguments. `number-set_(..fields)` sets scoped fields with `#show:`. `number-show_(it => ...)` receives the number element as `it` and replaces it; it does not receive a dictionary of field overrides.
+An integer is formatted with `numbering`; an array passes its values to the numbering function as separate arguments. A `content` value renders as-is, and `number: none` displays nothing. `number-set_(..fields)` sets scoped fields with `#show:`; `number-show_(it => ...)` replaces the generated number element with the callback's result.
 
 The placement setting applies to the number column for code blocks in scope. Outside placement also positions any configured gutters outside the code.
 
 ## Example
-
-The switch moves the rendered line-number column outside the code block.
 
 ```yaml widgets
 - type: switch

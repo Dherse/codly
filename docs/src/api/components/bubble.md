@@ -60,9 +60,7 @@ The bubble and arrow use one outline and fill. Content wraps at the available wi
 
 ## Rules
 
-[`codly.bubble-set_(..args)`](#signature) sets styling defaults for generated bubbles. Use it for the style fields above.
-
-[`codly.bubble-show_(it, ..args)`](#signature) installs a show rule for generated bubbles. Its first argument is a replacement callback or content, not a dictionary of field overrides.
+[`codly.bubble-set_(..args)`](#signature) sets styling defaults for generated bubbles. [`codly.bubble-show_(it, ..args)`](#signature) installs a show rule for generated bubbles; its first argument is replacement content or a callback.
 
 ## Example: Basic Usage
 

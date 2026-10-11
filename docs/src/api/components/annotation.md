@@ -15,7 +15,7 @@ codly.annotation-set_(..args)
 codly.annotation-show_(it, ..args)
 ```
 
-Codly creates this element while rendering [`codly.new`](new.md); its fields describe the rendered brace and are usually supplied by Codly. `body` is the required positional content field. The remaining fields are named.
+Codly creates this element while rendering [`codly.new`](new.md) and supplies its fields. `body` is the required positional content field; the remaining fields are named.
 
 ## Fields
 
@@ -30,14 +30,14 @@ Codly creates this element while rendering [`codly.new`](new.md); its fields des
 ## Behavior
 
 > [!TIP] References need a labelled figure.
-> To use references to annotations, by using `label` to identify them, you must ensure that the Codly code block is contained within a labelled figure. 
+> An annotation `label` resolves only when the code block sits inside a labelled figure; Codly discovers the figure label automatically.
 
 > [!NOTE] Source coordinates
-> Annotation line numbers are one-indexed. And end line is inclusive.
+> Annotation ranges count one-indexed source lines, and `end` is inclusive.
 
 Codly emits one annotation element for a configured line range. Range endpoints are one-indexed source-line positions, independent of displayed line-number offsets; annotation ranges cannot overlap. Use [`codly.annotation-config`](../types/annotation-config.md) to configure a range.
 
-[`codly.annotation-set_(..args)`](#signature) sets fields on generated annotation elements in the current scope. [`codly.annotation-show_(it, ..args)`](#signature) installs replacement content or a callback receiving the generated element. The callback can inspect its fields, including `body`, `height`, `num`, and `numbering`; it does not receive a dictionary of field overrides.
+[`codly.annotation-set_(..args)`](#signature) sets fields on generated annotations in scope; [`codly.annotation-show_(it, ..args)`](#signature) installs replacement content or a callback receiving the generated element.
 
 ## Example: Basic Usage
 

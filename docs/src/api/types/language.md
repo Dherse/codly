@@ -26,10 +26,6 @@ The declaration preserves additional, unknown fields. They can provide language-
 
 ## Behavior
 
-> [!TIP] Keep badge styling with each language.
-> Additional fields are preserved, so a language entry can set badge fields
-> such as `radius` or `fill` just for that language.
-
 Use language definitions as values in the `languages` dictionary passed to [`codly.lang-set_`](../components/lang.md#signature). The dictionary key must match the raw block's language tag. The settings apply within the show rule's scope. A definition's `name`, `icon`, and `color` customize the badge; an omitted definition falls back to the raw language tag. A definition's matching [`codly.lang`](../components/lang.md) style fields override the corresponding settings supplied to [`codly.lang-set_`](../components/lang.md#signature).
 
 ## Example: Basic Usage

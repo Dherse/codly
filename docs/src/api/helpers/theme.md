@@ -28,8 +28,6 @@ Named options are passed to [`codly.define-theme`](define-theme.md), which valid
 
 ## Example: Basic Usage
 
-Choose a preset to preview it on a code block:
-
 ```yaml widgets
 - type: select
   name: theme-preset

@@ -1,7 +1,7 @@
 # `codly.ref`
 
 > [!WARNING] References need a labelled figure.
-> To use references to highlight, lines, or annotations, you must ensure that the Codly code block is contained within a labelled figure. 
+> Line, highlight, and annotation references require the code block to sit inside a labelled figure; Codly discovers the figure label automatically.
 
 Sets shared formatting for references to code lines, highlights, and annotations.
 
@@ -12,7 +12,7 @@ codly.ref(body, by: "line", sep: "-", numbering: numbering.with("1"))
 codly.ref-set_(..fields)
 ```
 
-[`codly.ref`](#signature) is an element definition. Use [`codly.ref-set_(...)`](#signature) to set its fields in the current scope; it is a set-rule wrapper, not a separate element. There is no `ref-show_` wrapper because references use Typst's native reference syntax and the generated reference elements' show rules.
+[`codly.ref`](#signature) is an element definition; [`codly.ref-set_(...)`](#signature) is a set-rule wrapper for its fields, not a separate element. There is no `ref-show_`: references render through native syntax and the show rules of the generated reference elements.
 
 ## Fields
 

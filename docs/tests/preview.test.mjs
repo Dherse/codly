@@ -63,7 +63,7 @@ function boot() {
     history:{replaceState(){}}, Worker:class { constructor(){workers.push(this);this.messages=[];} postMessage(message){this.messages.push(message);} terminate(){this.terminated=true;} },
     setTimeout(fn,delay){const id=++timerId;timers.set(id,{fn,delay});return id;},clearTimeout(id){timers.delete(id);},
     Image:class extends Element {},Blob,console,matchMedia:()=>({matches:false}),
-    initializeVersionSelector(){},initializeSidebar(){return {revealCurrent(){}}},
+    initializeVersionSelector(){},initializeSidebar(){return {revealCurrent(){}}},initializeCollapsibles(){},
     validateWidgets,widgetDefaults,exampleSource,
     loadHighlighter:async()=>({highlight:async body=>{highlights.push(body);return body;}})};
   const executable=source.replace(/^import .*;\n/gm,'').replace("import('./highlight.mjs')",'loadHighlighter()');

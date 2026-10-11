@@ -28,10 +28,6 @@ All fields are named and optional.
 > Automatic skips mark gaps between displayed source ranges; they do not
 > change the source-line coordinates used by those ranges.
 
-> [!TIP] Configure the three gap locations independently.
-> `first` controls omitted lines before the first range, `rest` controls gaps
-> between ranges, and `last` controls omitted lines after the last range.
-
 Pass this value to [`codly.new`](../components/new.md)'s `smart-skip` field. A boolean casts to the same value for all three fields. A dictionary casts to this type: omitted `rest` defaults to `false`, and omitted `first` or `last` inherits `rest`. Thus `(rest: true, first: false)` enables middle skips and trailing skips, while suppressing a leading skip. With all three fields false, no automatic skips are inserted. A skip row is inserted only for a discontinuity in the displayed source lines; its represented length is the number of omitted lines.
 
 ## Example: Basic Usage

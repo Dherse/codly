@@ -42,7 +42,7 @@ The fields can also be supplied as a dictionary. A boolean casts to `enabled`.
 > [!NOTE] Only complete levels get guides
 > A guide is drawn for each complete `width`-sized level. Indentation that does not reach the next complete level has no guide.
 
-Set the block-level `indent-guides` field to `true` to use defaults, to `false` to disable inherited guides for one block, or to a configuration to customize them. `width: auto` infers the step from observed changes in leading spaces; an explicit width sets spaces per level. A level is drawn only for complete indentation steps. Interior blank lines continue only the levels shared by the surrounding nonblank lines when `blank-lines` is true; leading and trailing blank lines have no inferred guides.
+Set the block-level `indent-guides` field to `true` for defaults, `false` to disable inherited guides for one block, or a configuration to customize them. Interior blank lines continue only the levels shared by the surrounding nonblank lines when `blank-lines` is true; leading and trailing blank lines have no inferred guides.
 
 With `rainbow: auto`, guides use delimiter rainbow colors when delimiter rainbow is enabled. Explicit `rainbow: true` enables palette coloring; `false` uses `color`. An explicit palette or depth offset overrides values inherited from delimiter rainbow settings. The palette must not be empty, width must be positive or `auto`, depth offset must be nonnegative or `auto`, and thickness must be positive. Invalid field types are rejected by the declared types.
 

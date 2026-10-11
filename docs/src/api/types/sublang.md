@@ -32,7 +32,7 @@ All fields are required and named. The value can also be supplied as a dictionar
 > Codly applies each range's syntax language to its source lines while keeping
 > their text and positions in the outer code block.
 
-Pass one or more [`codly.sublang`](#signature) values in the `sublangs` argument to [`codly.new`](../components/new.md). `start` must be greater than zero, and `end` must be at least `start`; invalid ranges raise an error. Each range is counted from the first line of the raw block, independently of line-number offsets. Lines in the range are highlighted with the selected language's syntax while retaining their original source text and line positions. Lines outside the ranges keep the raw block's language. Ranges may be supplied as dictionaries with the same three fields.
+Pass one or more [`codly.sublang`](#signature) values in the `sublangs` argument to [`codly.new`](../components/new.md). `start` must be positive and `end` at least `start`; invalid ranges raise an error. Lines outside the ranges keep the raw block's language. Ranges may also be supplied as dictionaries with the same three fields.
 
 ## Example: Basic Usage
 

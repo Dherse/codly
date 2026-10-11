@@ -32,7 +32,7 @@ codly.annotation-config(start, end: none, content: none, label: none, numbering:
 
 The positional `start` argument is required. The constructor also accepts a dictionary with a `start` key. Dictionary and constructor inputs are type-checked, then normalized: a missing or `none` `end` becomes `start`, and missing `content` becomes `none`. `start` and a supplied `end` must be positive, and `end` must not precede `start`.
 
-Annotations are passed in the code block's `annotations` array. Their source-line ranges must not overlap. An annotation range is expressed in source-line coordinates, independent of any displayed line-number offset.
+Annotations are passed in the code block's `annotations` array.
 
 ## Example: Basic Usage
 

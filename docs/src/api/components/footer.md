@@ -40,13 +40,11 @@ codly.footer-show_(it => ...)
 > [!NOTE] Footer fill defaults to none
 > `fill: auto` resolves to the footer's default (`none`). Set an explicit fill when the footer should have a background; its fill is independent of line and number fills.
 
-Pass this element as the `footer` field of [`codly.new`](new.md). Plain footer content is also accepted there and is wrapped as a footer with its defaults. A [`codly.footer-set_(...)`](#signature) rule supplies defaults, while fields set on an explicit [`codly.footer(...)`](#signature) take precedence. The `repeat` field controls whether the footer appears on continuation pages.
+Pass this element as the `footer` field of [`codly.new`](new.md); plain content is also accepted there and wrapped with the defaults. A [`codly.footer-set_(...)`](#signature) rule supplies defaults, while fields set on an explicit [`codly.footer(...)`](#signature) take precedence. `repeat` controls whether the footer appears on continuation pages.
 
-[`codly.footer-show_(callback)`](#signature) applies a show rule to footer elements. The callback receives the element and must return replacement content; for example, `#show: codly.footer-show_(it => [#it])` preserves the footer body. These wrappers follow Typst's scoped set and show rules.
+[`codly.footer-show_(callback)`](#signature) applies a show rule to footer elements; the callback receives the element and returns replacement content. For example, `#show: codly.footer-show_(it => [#it])` preserves the footer body.
 
 ## Example
-
-The footer fill can be changed while previewing:
 
 ```yaml widgets
 - type: select

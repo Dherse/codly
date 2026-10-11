@@ -60,9 +60,6 @@ If both name and icon are hidden or unavailable, the badge renders no content. S
 
 ## Example: Typical Usage
 
-> [!NOTE] This is an example for configuring
-> In practice, you would style the language badge according to your needs, but you would not instantiate it directly. 
-
 ```yaml widgets
 - type: slider
   name: badge-radius
@@ -91,9 +88,6 @@ If both name and icon are hidden or unavailable, the badge renders no content. S
 ```
 
 ## Example: Custom Renderer
-
-> [!NOTE] This is an example for configuring
-> In practice, you would style the language badge according to your needs, but you would not instantiate it directly. 
 
 ````typst preview
 #import "@preview/codly:2.0.0" as codly

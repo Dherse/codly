@@ -41,7 +41,7 @@ The preset entries are complete theme dictionaries; looking up a preset does not
 
 ## Example: Basic Usage
 
-This renders one code block for each built-in preset so their appearances can be compared side by side.
+Renders one block per preset for side-by-side comparison:
 
 ````typst preview
 #import "@preview/codly:2.0.0" as codly

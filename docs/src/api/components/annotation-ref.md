@@ -1,7 +1,7 @@
 # `codly.annotation-ref`
 
 > [!WARNING] References need a labelled figure.
-> To use references to annotations, you must ensure that the Codly code block is contained within a labelled figure. 
+> An annotation label resolves only when the code block sits inside a labelled figure.
 
 A native reference element created for a labelled annotation in a code block inside a figure.
 
@@ -18,7 +18,7 @@ codly.annotation-ref-set_(..args)
 codly.annotation-ref-show_(it, ..args)
 ```
 
-Codly creates this element when Typst resolves a native reference such as `@note`. Use `annotation-ref-set_(...)` to set fields in scope, or `annotation-ref-show_(callback)` to replace or transform its display. The show wrapper accepts a callback or content, as supported by the element show-rule API.
+Codly creates this element when Typst resolves a native reference such as `@note`. Use `annotation-ref-set_(...)` to set fields in scope, or `annotation-ref-show_(callback)` to replace or transform its display.
 
 ## Fields
 
@@ -39,7 +39,7 @@ Codly creates this element when Typst resolves a native reference such as `@note
 
 ## Example: Basic usage
 
-The item-mode reference uses the annotation content after the code figure reference:
+With the default line mode, the reference appends the displayed line number to the figure reference:
 
 ````typst preview
 #import "@preview/codly:2.0.0" as codly
@@ -60,7 +60,7 @@ The annotation reference is @note.
 
 ## Example: Item-based reference
 
-The item-mode reference uses the annotation content after the code figure reference:
+With `by: "item"`, the suffix is the annotation's content; the show rule adds a prefix:
 
 ````typst preview
 #import "@preview/codly:2.0.0" as codly

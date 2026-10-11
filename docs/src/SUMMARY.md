@@ -2,6 +2,13 @@
 
 [Codly](index.md)
 
+- [Playgrounds](playgrounds/index.md)
+  - [Layout and excerpts](playgrounds/layout.md)
+  - [Annotations and references](playgrounds/annotations.md)
+  - [Diffs and mixed languages](playgrounds/diffs-and-syntax.md)
+
+- [Migrating from 1.3.0 / 1.3.1](migration-1.3.md)
+
 - [API reference](api/index.md)
   - [Components](api/components/index.md)
     - [`new`](api/components/new.md)

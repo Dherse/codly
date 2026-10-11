@@ -26,23 +26,16 @@ codly.line(body, ..fields)
 
 ## Behavior
 
-> [!NOTE] Callback indexes include generated rows.
-> The `index` passed to a fill callback counts displayed rows from zero,
-> including header and footer rows; those rows themselves do not invoke the
-> callback.
-
 > [!TIP] Whole-line highlights win.
 > A row's highlight fill takes precedence over the fill selected by this
 > element, so use highlight styling when a highlighted line needs a distinct
 > background.
 
-The fill callback receives a dictionary with `index`, `kind`, `source-line`, and `number`. `index` is zero-based in displayed-row order, including a header or footer if present. `kind` is `"code"`, `"skip"`, or `"callout"` for callback rows. `source-line` is the one-based source line for code and callout rows, and `none` for generated skip rows. `number` is the displayed line number, or `none` for unnumbered and generated rows. Header and footer rows count toward the index but do not invoke this callback. Whole-line highlights take precedence over this fill.
+The fill callback receives a dictionary with `index`, `kind`, `source-line`, and `number`. `index` is zero-based in displayed-row order, including header, footer, skip, and callout rows — header and footer rows count toward it but do not invoke the callback. `kind` is `"code"`, `"skip"`, or `"callout"` for callback rows. `source-line` is the one-based source line for code and callout rows, and `none` for generated skip rows. `number` is the displayed line number, or `none` for unnumbered and generated rows.
 
-[`codly.line-set_(..args)`](#signature) sets row fields with `show:`, while [`codly.line-show_(it => ...)`](#signature) replaces or wraps each generated row through a show rule. The show wrapper receives the row content as `it`, not a dictionary of field overrides.
+[`codly.line-set_(..args)`](#signature) sets row fields with `show:`; [`codly.line-show_(it => ...)`](#signature) replaces or wraps each generated row, receiving the row element as `it`.
 
 ## Example
-
-The slider changes the fill selected for code rows; the attached callout uses a separate fill.
 
 ```yaml widgets
 - type: slider

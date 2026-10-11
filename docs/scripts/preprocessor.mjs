@@ -8,6 +8,7 @@ import { parseWidgets, renderWidgets } from './widgets.mjs';
 import { highlightTypeTables, typeLanguage } from './type-tables.mjs';
 import { typstCodeLanguage } from './typst-code.mjs';
 import { admonitions } from './admonitions.mjs';
+import { collapsibles } from './collapsibles.mjs';
 import { mermaidFence } from './mermaid.mjs';
 if (process.argv[2] === 'supports') process.exit(process.argv[3] === 'html' ? 0 : 1);
 const [context, book] = JSON.parse(fs.readFileSync(0, 'utf8'));
@@ -20,7 +21,10 @@ function visit(items) {
     const chapter = item.Chapter;
     const source = chapter.content;
     index.push({ title: chapter.name, path: chapter.path.replace(/\.md$/,'.html'), text: source.replace(/<[^>]*>/g,' ').replace(/[#`*]/g,'').slice(0,50000) });
-    const highlightedTypes = highlightTypeTables(admonitions(source), md, highlighter, chapter.path);
+    let expanded;
+    try { expanded = collapsibles(source); }
+    catch (error) { throw new Error(`${chapter.path}: ${error.message}`); }
+    const highlightedTypes = highlightTypeTables(admonitions(expanded), md, highlighter, chapter.path);
     const lines = highlightedTypes.split('\n');
     const tokens = md.parse(highlightedTypes, {}).filter(t => t.type === 'fence');
     const configs = new Map();

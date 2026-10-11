@@ -28,7 +28,7 @@ codly.highlight-show_(it, ..args)
 ## Behavior
 
 > [!TIP] References need a labelled figure.
-> To use references to highlights, by using `label` to identify them, you must ensure that the Codly code block is contained within a labelled figure. 
+> A highlight `label` resolves only when the code block sits inside a labelled figure; Codly discovers the figure label automatically.
 
 > [!NOTE] Source coordinates
 > Highlight line numbers are one-indexed. Character offsets are zero-indexed,
@@ -42,7 +42,7 @@ Codly emits this element for spans declared in a code block's `highlights` field
 
 Each code block has an independent highlight-paint cycle, separate from whole-line highlighting. A scalar `color` repeats for every span; an array cycles in declaration order. An explicit paint in the span metadata uses that paint without advancing the cycle, while its callback receives the next palette paint. The element's `fill` and `stroke` callbacks receive that resolved span paint. Per-span `radius`, `clip`, `inset`, `outset`, `baseline`, and `stroke` settings override the corresponding element fields when present.
 
-[`codly.highlight-set_(..args)`](#signature) sets fields for matching highlight elements in the current scope. [`codly.highlight-show_(it, ..args)`](#signature) installs replacement content or a callback that receives the highlight element. Both follow Typst's scoped show-rule behavior.
+[`codly.highlight-set_(..args)`](#signature) sets fields for matching highlight elements in scope; [`codly.highlight-show_(it, ..args)`](#signature) installs replacement content or a callback receiving the highlight element.
 
 ## Example
 

@@ -64,8 +64,8 @@ codly.new(body, ..fields)
 > A code block inside an unlabeled nested figure does not inherit an outer
 > figure's label. Label the inner figure to enable references to its code.
 
-> [!WARNING] Sublang blocks performance may be impacted.
-> Sublang blocks may degrade performance, due to the requirement of re-parsing and leveraging introspection for each sublang block.
+> [!WARNING] Sublanguages cost performance.
+> Each sublang block requires re-parsing and introspection; heavy use slows compilation.
 
 Fields are validated and cast by their declared types. Gutter arrays and functions cast to `gutter-column`; `gutters: auto` includes the ordinary number column when enabled, and custom columns remain when `number-enabled` is false. Custom gutters replace diff's automatic old/new/marker columns. Diff colors may be paints, `none`, `auto` (the ordinary row fill), or callbacks receiving a row with diff information. Explicit highlights take precedence over diff backgrounds.
 

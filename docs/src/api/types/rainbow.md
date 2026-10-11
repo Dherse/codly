@@ -41,7 +41,7 @@ The value can also be a dictionary with these fields, or a boolean that sets `en
 
 Set `rainbow` on [`codly.new`](../components/new.md) or in [`codly.set_`](../components/new.md#behavior) to configure blocks in that scope. `true` enables the defaults and `false` disables the pass. Delimiters are colored according to nesting depth, cycling through `palette`; `depth-offset` shifts the starting color. Only pairs listed in `pairs` contribute to nesting. Unclosed openers and unmatched closers use `unmatched` when it is a color; otherwise they retain their syntax highlighting.
 
-The pass uses syntax scopes to find code and ignore literals and comments. `code-scopes` and `ignore-scopes` replace the built-in selector strings, so customize them when a language's grammar classifies delimiters differently. Sublanguage regions are processed with their own nesting stack.
+The pass uses syntax scopes to find code and ignore literals and comments; sublanguage regions are processed with their own nesting stack.
 
 ## Example: Basic Usage
 
