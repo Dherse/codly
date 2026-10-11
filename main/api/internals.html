@@ -191,9 +191,12 @@ that record to continue numbering.</p>
 show rules for a badge, line, highlight, or reference; keep the original element
 in your result when you want its existing behavior. Query metadata for document
 inspection after layout.</p>
-<p>For implementation work, the declarations live in
-<a href="https://github.com/Dherse/codly/blob/main/codly.typ" target="_blank" rel="noopener noreferrer" title="Opens in a new tab"><code>codly.typ</code><svg class="external-link-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3"/></svg></a>, the row and
-block pipeline in
+<p>For implementation work, field types, defaults, and descriptions live in
+<a href="https://github.com/Dherse/codly/blob/main/src/args.yaml" target="_blank" rel="noopener noreferrer" title="Opens in a new tab"><code>src/args.yaml</code><svg class="external-link-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3"/></svg></a>.
+<a href="https://github.com/Dherse/codly/blob/main/src/declarations.typ" target="_blank" rel="noopener noreferrer" title="Opens in a new tab"><code>src/declarations.typ</code><svg class="external-link-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3"/></svg></a>
+loads this metadata for the constructors, casts, and renderers in
+<a href="https://github.com/Dherse/codly/blob/main/codly.typ" target="_blank" rel="noopener noreferrer" title="Opens in a new tab"><code>codly.typ</code><svg class="external-link-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3"/></svg></a>.
+The row and block pipeline lives in
 <a href="https://github.com/Dherse/codly/blob/main/src/lib.typ" target="_blank" rel="noopener noreferrer" title="Opens in a new tab"><code>src/lib.typ</code><svg class="external-link-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3"/></svg></a>, and the
 position-based painting in
 <a href="https://github.com/Dherse/codly/blob/main/src/geometry.typ" target="_blank" rel="noopener noreferrer" title="Opens in a new tab"><code>src/geometry.typ</code><svg class="external-link-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7 9M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3"/></svg></a>.
