@@ -27,3 +27,35 @@
 
 #pagebreak()
 #include "99-local-resources.typ"
+
+// Reconstructed aliases and diffs retain the already-resolved raw text size,
+// including show-rule input, relative raw rules, and a scoped syntax theme.
+#for theme in ("thesis", "dark") {
+  for size in (11pt, 15pt) {
+    set text(size: size)
+    show: codly.theme(theme)
+    show raw: set text(0.9em)
+    show raw.where(block: true): set text(0.8em)
+    show text: it => context {
+      if it.text == "return" {
+        [#metadata((theme: theme, size: size, actual: text.size))<reconstructed-size>]
+      }
+      it
+    }
+    codly.new(raw("return value", lang: "py", block: true))
+    codly.new(raw("return value", lang: "custom", block: true), aliases: (custom: "py"))
+    codly.new(raw("+return value", lang: "diff-py", block: true))
+    {
+      show raw.where(block: true): codly.new.with(aliases: (custom: "py"))
+      raw("return value", lang: "custom", block: true)
+      raw("+return value", lang: "diff-py", block: true)
+    }
+  }
+}
+#context {
+  let sizes = query(<reconstructed-size>).map(it => it.value)
+  assert.eq(sizes.len(), 20)
+  for sample in sizes {
+    assert(calc.abs(sample.actual - sample.size * 0.8 * 0.9 * 0.8) < 0.0001pt)
+  }
+}

@@ -1236,7 +1236,9 @@
         if safe-resource(it.theme) { raw-args.insert("theme", it.theme) }
         if safe-resource(it.syntaxes) { raw-args.insert("syntaxes", it.syntaxes) }
         return context {
-          set text(size: alias-style.size)
+          // Raw's size rules already ran; preserve their resolved size.
+          let size = text.size
+          show raw: set text(size: size)
           constructor(
             raw(
               it.text,

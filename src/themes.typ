@@ -34,7 +34,7 @@
       + rule("keyword, storage", keyword)
       + rule("string", string)
       + rule("constant", constant)
-      + rule("entity.name.function, support.function", function-color)
+      + rule("entity.name.function, support.function, support.macro", function-color)
       + rule("entity.name.type, entity.name.class, support.type", type-color)
       + "</array></dict></plist>",
   )

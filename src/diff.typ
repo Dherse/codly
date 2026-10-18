@@ -172,7 +172,9 @@
     tab-size: source.tab-size,
     ..resources,
   )
-  set text(size: style.size)
+  // Each reconstructed view keeps the source's resolved raw text size.
+  let size = text.size
+  show raw: set text(size: size)
   for (index, group) in model.groups.enumerate() {
     for side in ("old", "new") {
       let rows = group.at(side)

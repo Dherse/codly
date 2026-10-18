@@ -23,7 +23,29 @@
   lower(parts.last())
 }
 
-#let prepare(body, file: auto, lang: auto) = {
+#let prepare(body, file: auto, lang: auto, syntax: auto) = {
+  // A raw passed through a show rule already has highlighted lines. Rebuild
+  // it so automatic syntax highlighting can inherit Codly's scoped theme.
+  if (
+    type(body) == content
+      and body.func() == raw
+      and body.has("lines")
+      and body.theme == auto
+      and syntax != auto
+  ) {
+    let fields = body.fields()
+    let code = fields.remove("text")
+    let _ = fields.remove("lines")
+    let _ = fields.remove("theme")
+    let target = fields.remove("label", default: none)
+    body = context {
+      // The original raw has already applied Typst's default text size.
+      let size = text.size
+      show raw: set text(size: size)
+      raw(code, ..fields)
+    }
+    if target != none { body += target }
+  }
   let from-file = type(body) == path
   let source = from-file or type(body) == str
   let original-name = if from-file and (file == auto or lang == auto) { filename(body) }

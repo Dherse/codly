@@ -728,10 +728,17 @@
       // Keep Elembic's instance tag last, preserving fields/data extraction.
       (metadata(source), ..element.children).join()
     },
-    display: it => {
+    display: it => e.get(get => {
+      let it = it
       import "src/file.typ" as file-impl
+      import "src/themes.typ": __style
       let body = it.remove("body")
-      let prepared = file-impl.prepare(body, file: it.file, lang: it.lang)
+      let prepared = file-impl.prepare(
+        body,
+        file: it.file,
+        lang: it.lang,
+        syntax: get(__style).syntax,
+      )
       body = prepared.body
       it.file = prepared.file
       let file-position = it.at("file-position")
@@ -753,7 +760,7 @@
         alias-style,
       )
       body
-    },
+    }),
     ..__declaration("elements", "new", scope: (
       diff: diff,
       gutter-column: gutter-column,
