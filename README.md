@@ -1,5 +1,3 @@
-# 🐟 Codly
-
 <p align="center">
   <a href="https://codly.dherse.dev">
     <img alt="Codly documentation site status" src="https://img.shields.io/website?down_message=offline&label=manual&up_color=007aff&up_message=online&url=https%3A%2F%2Fcodly.dherse.dev" />
@@ -9,6 +7,8 @@
   </a>
   <img alt="Codly test workflow status" src="https://github.com/Dherse/codly/actions/workflows/test.yml/badge.svg" />
 </p>
+
+# 🐟 Codly
 
 Code blocks for Typst with line numbers, references, annotations, themes, custom
 gutters, and syntax-aware diffs.
