@@ -211,3 +211,15 @@ continue its last displayed number. Disjoint excerpts preserve their gaps.
 The [manual](https://codly.dherse.dev/v2.0.0/) contains the full API and a
 [1.3.0 / 1.3.1 migration guide](https://codly.dherse.dev/v2.0.0/migration-1.3.html)
 with before/after examples.
+
+## Codly over Time
+
+There was a period of inactivity between the release of v1.3.0 and v2.0.0 but active development has resumed. 
+
+<a href="https://www.star-history.com/?repos=dherse%2Fcodly&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=dherse/codly&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=dherse/codly&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=dherse/codly&type=date&legend=top-left" />
+ </picture>
+</a>
