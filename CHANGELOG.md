@@ -5,7 +5,8 @@
 ### Fixed
 
 - Size annotation braces from the covered code cells, including wrapping and
-  row spacing, without expanding code blocks to the page height.
+  row spacing, without expanding code blocks to the page height. May cause slight
+  changes in layout of annotations.
 - Fixed themes not applying in show rules.
 
 ### Documentation
