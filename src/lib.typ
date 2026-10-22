@@ -734,7 +734,16 @@
   )
 }
 
-#let __codly-annotation-cell(constructor, body, label, num, numbering, owner, start, end) = context {
+#let __codly-annotation-cell(
+  constructor,
+  body,
+  label,
+  num,
+  numbering,
+  owner,
+  start,
+  end,
+) = context {
   let marks = query(<__codly-annotation-line>).filter(mark => {
     let value = mark.value
     value.owner == owner and value.line >= start and value.line <= end
@@ -1190,7 +1199,7 @@
     )
   ]
   let size = measure(annotation)
-  place(top + left, dy: (it.height -size.height) / 2, annotation)
+  place(top + left, dy: (it.height - size.height) / 2, annotation)
   box(width: size.width, height: body-size.height)
 }
 

@@ -15,11 +15,13 @@
   print(result)
   cleanup()
   ```,
-  annotations: ((
-    start: 2,
-    end: 4,
-    content: [Computes and displays\ the result],
-  ),),
+  annotations: (
+    (
+      start: 2,
+      end: 4,
+      content: [Computes and displays\ the result],
+    ),
+  ),
 )
 #metadata(none)<after-code>
 
