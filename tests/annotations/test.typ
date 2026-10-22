@@ -89,7 +89,7 @@
   assert.eq(wrapped.map(it => it.value.number), (1, 2, 3))
   assert.eq(wrapped-ann.location().position().page, wrapped-first.page)
   assert((wrapped-ann.location().position().y - wrapped-first.y).abs < 0.1pt)
-  assert(wrapped-ann.value.height + 9pt >= wrapped-after.y - wrapped-first.y - 0.1pt)
+  assert((wrapped-ann.value.height + 9pt - (wrapped-after.y - wrapped-first.y)).abs < 0.1pt)
 
   let ranged = lines-between(query(<ranges-case>).first(), query(<skips-case>).first())
   let ranged-ann = ann-between(query(<ranges-case>).first(), query(<skips-case>).first()).first()

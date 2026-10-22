@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.0.1
+
+### Fixed
+
+- Size annotation braces from the covered code cells, including wrapping and
+  row spacing, without expanding code blocks to the page height.
+- Fixed themes not applying in show rules.
+
+### Documentation
+
+- Improve documentation.
+
 ## 2.0.0 — 2026-10-12
 
 ### Breaking changes

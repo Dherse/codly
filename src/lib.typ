@@ -734,14 +734,23 @@
   )
 }
 
-#let __codly-annotation-cell(constructor, body, label, num, numbering) = {
-  block(height: 1fr, layout(size => constructor(
+#let __codly-annotation-cell(constructor, body, label, num, numbering, owner, start, end) = context {
+  let marks = query(<__codly-annotation-line>).filter(mark => {
+    let value = mark.value
+    value.owner == owner and value.line >= start and value.line <= end
+  })
+  let height = if marks.len() > 0 {
+    let first = marks.first().location().position()
+    let last = marks.filter(mark => mark.location().position().page == first.page).last()
+    calc.max(0pt, last.location().position().y - first.y)
+  } else { 0pt }
+  constructor(
     body,
     label,
     num: num,
     numbering: numbering,
-    height: size.height,
-  )))
+    height: height,
+  )
 }
 
 /// Resolve syntax before constructing the line so hooks receive a raw.line.
@@ -805,6 +814,7 @@
   let in-skip = false
   let in-first = true
   let has-annots = annotations.len() > 0
+  let annotation-owner = if has-annots { here() }
   let skip-index = 0
   let formatted-skips = 0
   let line-array = type(skip-line) == array
@@ -875,7 +885,7 @@
         if annotation-cell != none {
           items.at(annotation-cell) = grid.cell(
             rowspan: annotation-rows,
-            align: left + horizon,
+            align: left + top,
             items.at(annotation-cell),
           )
           annotation-cell = none
@@ -1003,6 +1013,9 @@
         label,
         annots,
         current-annot.numbering,
+        annotation-owner,
+        current-annot.start,
+        current-annot.end,
       )
     }
 
@@ -1084,6 +1097,14 @@
         (badge-row.render)(rendered-line)
       }
     }
+    if has-annots {
+      let mark = (owner: annotation-owner, line: line.number)
+      rendered-line = [
+        #place(top + left)[#metadata(mark)<__codly-annotation-line>]
+        #rendered-line
+        #place(bottom + left)[#metadata(mark)<__codly-annotation-line>]
+      ]
+    }
     items.push(if has-annots {
       grid.cell(colspan: if current-annot != none { 1 } else { 2 }, rendered-line)
     } else {
@@ -1117,7 +1138,7 @@
   if annotation-cell != none {
     items.at(annotation-cell) = grid.cell(
       rowspan: annotation-rows,
-      align: left + horizon,
+      align: left + top,
       items.at(annotation-cell),
     )
   }
@@ -1142,6 +1163,7 @@
     #it.body
     #it.label]
   let body-size = measure(body)
+  // The brace follows code-cell bounds without contributing to their row heights.
   // Keep the existing baseline for single lines and explicitly authored blocks.
   // Multiline inline content needs its own box to keep every line beside the brace.
   if (
@@ -1151,7 +1173,11 @@
     let annotation = text(font: "New Computer Modern Math", weight: 450)[
       #pdf.artifact[$lr(}, size: #it.height)$] #body
     ]
-    return box(width: measure(annotation).width, annotation)
+    return {
+      let size = measure(annotation)
+      place(top + left, dy: (it.height - size.height) / 2, annotation)
+      box(width: size.width, height: body-size.height)
+    }
   }
   let annotation = text(font: "New Computer Modern Math", weight: 450)[
     #pdf.artifact[$lr(}, size: #it.height)$]
@@ -1163,7 +1189,9 @@
       body,
     )
   ]
-  box(width: measure(annotation).width, annotation)
+  let size = measure(annotation)
+  place(top + left, dy: (it.height -sizeheight) / 2, annotation)
+  box(width: size.width, height: body-size.height)
 }
 
 // Share static captures across blocks while keeping the style lookup deferred.
