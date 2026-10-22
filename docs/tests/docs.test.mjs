@@ -415,9 +415,15 @@ test('actual WASM compiles offline, rejects missing packages, and recovers from 
 )
 #context {
   for height in (60pt, 120pt) {
+    show math.lr: it => context {
+      assert(measure(it).height >= height * 0.7,
+        message: "Annotation brace must stretch to its requested height")
+      it
+    }
     let brace = codly.annotation([], [], height: height, numbering: none)
-    assert(measure(brace).height >= height * 0.7,
-      message: "Annotation brace must stretch to its requested height")
+    assert(measure(brace).height < height * 0.7,
+      message: "Annotation brace must not expand its layout box")
+    brace
   }
 }`;
     assert((await compile(annotated)).includes('<svg'));
