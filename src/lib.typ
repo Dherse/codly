@@ -1190,7 +1190,7 @@
     )
   ]
   let size = measure(annotation)
-  place(top + left, dy: (it.height -sizeheight) / 2, annotation)
+  place(top + left, dy: (it.height -size.height) / 2, annotation)
   box(width: size.width, height: body-size.height)
 }
 
